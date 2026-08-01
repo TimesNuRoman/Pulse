@@ -1,11 +1,12 @@
 ---
 // R85: per-page footer license + version (B2 fix-blocker).
-// `version = ''` hides the version pill entirely (used on /privacy + /code-of-conduct).
+// R94a: default license is now 'Apache 2.0' (was 'MIT' — pre-R93 relic).
+// `version = ''` hides the version pill entirely (used on /privacy + /code-of-conduct + /license).
 export interface Props {
   license?: string;
   version?: string;
 }
-const { license = 'MIT', version = 'v0.3.0' } = Astro.props;
+const { license = 'Apache 2.0', version = 'v0.3.0' } = Astro.props;
 const showVersion = version.trim().length > 0;
 
 const columns = [
@@ -90,9 +91,9 @@ const columns = [
       <span>Built by Roman in Brest</span>
       <span>·</span>
       {showVersion ? (
-        <span>{license} licensed · {version}</span>
+        <span><a href="/license/">{license} licensed</a> · {version}</span>
       ) : (
-        <span>{license} licensed</span>
+        <span><a href="/license/">{license} licensed</a></span>
       )}
     </div>
   </div>
@@ -152,5 +153,14 @@ const columns = [
     display: flex; flex-wrap: wrap; gap: 0.5rem;
     color: var(--muted);
     font-size: 0.85rem;
+  }
+  .footer__bottom a {
+    color: var(--fg-dim);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border);
+  }
+  .footer__bottom a:hover {
+    color: var(--purple);
+    border-bottom-color: var(--purple);
   }
 </style>
