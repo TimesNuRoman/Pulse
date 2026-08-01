@@ -4,14 +4,16 @@ import '../styles/global.css';
 export interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
   title = "Pulse — AI that doesn't get to leave the room",
   description = "Pulse is a 12MB Tauri v2 side panel that talks to local Ollama. Local. Private. No Electron, no cloud.",
+  ogImage: ogImageProp,
 } = Astro.props;
 
-const ogImage = '/og-image.svg';
+const ogImage = ogImageProp ?? '/og-image.svg';
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://pulse.local';
 ---
 <!doctype html>
