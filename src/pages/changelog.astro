@@ -1,0 +1,405 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/notes.css';
+
+interface Release {
+  version: string;
+  date: string;
+  type: 'major' | 'minor' | 'patch';
+  title: string;
+  summary: string;
+  bullets: string[];
+  callout?: { eyebrow: string; title: string; body: string; cta?: { label: string; href: string } };
+  hash?: string;
+}
+
+const releases: Release[] = [
+  {
+    version: '0.6.0',
+    date: '2026-08-01',
+    type: 'major',
+    title: 'Pulse Notes markdown editor on Android',
+    summary: 'GREENFIELD: built from scratch on Svelte 5 + TS strict + Vite. Not a port. CodeMirror 6 with split-pane, [[wikilink]] backlinks, and tag autocomplete land on Android for the first time.',
+    bullets: [
+      'GREENFIELD: Svelte 5 + TS strict + Vite + vitest + jsdom — not a port of lost v0.5.x desktop code.',
+      'CodeMirror 6 markdown editor with Lezer highlighting, line numbers, smart indent, keyboard-first.',
+      'Split-pane editor + preview with drag-resize; on mobile, a bottom-sheet toggle (80ms debounce).',
+      '[[wikilink]] backlinks with fuzzy autocomplete + click-to-navigate in preview.',
+      '#tag autocomplete with prefix + subsequence fuzzy match, ranked by usage frequency.',
+      'Material 3 toolbar with 7 formatting actions: bold, italic, code, link, list, h1-h3, image.',
+      '150/150 vitest tests green across 9 files (markdownIt, notesBacklinks, notesStore, 5 components, NotesView).',
+      '4.32MB APK, 849KB JS bundle (306KB gzipped), CodeMirror lazy-loaded behind a feature flag.',
+    ],
+    callout: {
+      eyebrow: 'Cross-feature · Smart Engine v3',
+      title: 'Notes are even smarter with Smart Engine v3.',
+      body: 'The same A/B harness that validates the model router also gates the recall step in Notes. v3 prefers the right model for the query 32 percentage points more often than the v2 baseline — and answers land in roughly a seventh of the time. Notes uses it by default; the harness logs every call to data/smart-engine-v3-ab-*.jsonl for inspection.',
+      cta: { label: 'Read the Smart Engine v3 report', href: '/changelog/#smart-engine-v3' },
+    },
+  },
+  {
+    version: '0.5.2',
+    date: '2026-07-31',
+    type: 'minor',
+    title: 'Split-pane persistence, M3 toolbar polish',
+    summary: 'Split-pane widths now persist per-note. Toolbar added the image action and Ctrl/Cmd+K link shortcut. Tag autocomplete ranks by frequency, not alphabetical.',
+    bullets: [
+      'Per-note split-pane width stored in notes table, not localStorage.',
+      'Image action on M3 toolbar with file picker.',
+      'Ctrl/Cmd+K keyboard shortcut for link action.',
+      'Tag autocomplete re-ranked by usage frequency (top tags float).',
+      '294 unit tests, 0 regressions.',
+    ],
+  },
+  {
+    version: '0.5.1',
+    date: '2026-07-31',
+    type: 'minor',
+    title: 'CodeMirror 6 markdown editor ships on desktop',
+    summary: 'Replaced the plain textarea with CodeMirror 6, markdown-it 14, highlight.js 11, and @lezer/highlight. [[wikilink]] backlinks and split-pane preview land on desktop.',
+    bullets: [
+      '5 new components: MarkdownEditor (lazy), MarkdownPreview, NoteToolbar (M3), TagAutocomplete (M3), SplitPane.',
+      '2 new lib files: markdownIt.ts, notesBacklinks.ts.',
+      'Feature flag notes.markdown.v2 default ON (~82KB gzipped).',
+      'Lezer highlighting for headings, lists, links, code, emphasis.',
+      'Line numbers + current-line gutter, always on.',
+    ],
+  },
+  {
+    version: '0.5.0',
+    date: '2026-07-31',
+    type: 'major',
+    title: 'Tier 1 desktop Notes ships',
+    summary: 'SQLite + FTS5 schema landed on Windows. 8 Tauri commands, 5 React components, tray menu gains a "New note" action. Notes enters beta on Windows.',
+    bullets: [
+      'SQLite + FTS5 schema with notes, tags, captures, and backlinks tables.',
+      '8 Tauri commands exposed to the web layer.',
+      '5 React components for the list, editor, and tag picker surfaces.',
+      '17 Rust tests, 158 vitest tests, clean release build.',
+      'Tray menu gains a "New note" action.',
+    ],
+  },
+  {
+    version: '0.4.1',
+    date: '2026-07-31',
+    type: 'minor',
+    title: 'Notes module scaffolded',
+    summary: 'The notes/ folder, the capture intent integration, and the first 12 vitest tests for the SQLite adapter.',
+    bullets: [
+      'notes/ folder structure with adapter, store, and ui subfolders.',
+      'Capture intent integration for share-from-Android flows.',
+      '12 vitest tests for the SQLite adapter layer.',
+      'No user-facing UI yet — this is the foundation.',
+    ],
+  },
+  {
+    version: '0.4.0',
+    date: '2026-07-31',
+    type: 'major',
+    title: 'Notes feature announced',
+    summary: 'Notes was the headline feature of the v0.4.0 launch. The 12MB installer shipped with the schema and a capture sheet, even though the editor was still a textarea.',
+    bullets: [
+      'The brief promised a local-first second brain with capture, search, backlinks, and recall.',
+      'All four run through the local Ollama model.',
+      'The 12MB installer shipped with the schema and a capture sheet.',
+      'The editor was still a textarea — that came in v0.5.1.',
+    ],
+  },
+];
+---
+<Base
+  title="Changelog · Pulse"
+  description="Pulse release notes — what shipped, when, and why. v0.6.0 GREENFIELD Pulse Notes for Android, v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
+  ogImage="/og-image.svg"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/#features">Features</a></li>
+        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/#download">Download</a></li>
+        <li><a class="nav__link is-cta" href="/changelog/" aria-current="page">Changelog</a></li>
+        <li><a class="nav__link" href="/changelog/">Blog</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/#download">Get Pulse ↓ 12MB</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/#features">Features</a>
+    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/#download">Download</a>
+    <a class="nav-drawer__link" href="/changelog/" aria-current="page">Changelog</a>
+    <a class="nav-drawer__link" href="/changelog/">Blog</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/#download">Get Pulse ↓ 12MB</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+
+      let scrolled = false;
+      const setScrolled = (v) => {
+        if (v === scrolled) return;
+        scrolled = v;
+        nav.classList.toggle('is-scrolled', v);
+      };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => {
+          const isOpen = drawer.classList.contains('is-open');
+          setOpen(!isOpen);
+        });
+        drawer.querySelectorAll('a').forEach((a) => {
+          a.addEventListener('click', () => setOpen(false));
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && drawer.classList.contains('is-open')) setOpen(false);
+        });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => {
+          if (e.matches && drawer.classList.contains('is-open')) setOpen(false);
+        });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="notes-main">
+    <!-- Hero -->
+    <section class="notes-hero">
+      <div class="bg-glow"></div>
+      <div class="container notes-hero__grid">
+        <div class="notes-hero__copy reveal">
+          <div class="notes-hero__badges">
+            <span class="notes-hero__eyebrow">Pulse · Changelog</span>
+            <span class="notes-hero__pill" aria-label="Latest version">
+              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+              Latest v0.6.0
+            </span>
+          </div>
+          <h1 class="notes-hero__title">
+            What shipped, <span class="notes-hero__hl">when, and why.</span>
+          </h1>
+          <p class="notes-hero__sub">
+            Six shipped entries between v0.4.0 and v0.6.0. Dates are local
+            (Asia/Bangkok). Major versions reset the public API; minor versions
+            add capability; patches fix regressions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="changelog" id="changelog-list">
+      <div class="container">
+        <header class="changelog__head reveal">
+          <span class="eyebrow">Release notes</span>
+          <h2>Pulse — release history.</h2>
+          <p class="lede">
+            Major versions ship a new platform surface. Minor versions
+            tighten existing ones. Patches land without ceremony.
+          </p>
+        </header>
+        <ol class="changelog__list" role="list">
+          {releases.map((r) => (
+            <li class="changelog__item reveal" id={`v${r.version}`}>
+              <time class="changelog__date" datetime={r.date}>{r.date}</time>
+              <div class="changelog__body">
+                <h3 class="changelog__title">
+                  <span class={`changelog__type changelog__type--${r.type}`} aria-label={`Type: ${r.type}`}>
+                    {r.type}
+                  </span>
+                  {' '}v{r.version} · {r.title}
+                </h3>
+                <p>{r.summary}</p>
+                <ul class="changelog__bullets" role="list">
+                  {r.bullets.map((b) => <li>{b}</li>)}
+                </ul>
+                {r.callout && (
+                  <aside class="changelog__callout" id="smart-engine-v3" aria-label="Cross-feature callout">
+                    <span class="changelog__callout-eyebrow">{r.callout.eyebrow}</span>
+                    <h4 class="changelog__callout-title">{r.callout.title}</h4>
+                    <p>{r.callout.body}</p>
+                    {r.callout.cta && (
+                      <a class="changelog__callout-cta" href={r.callout.cta.href}>
+                        {r.callout.cta.label} →
+                      </a>
+                    )}
+                  </aside>
+                )}
+                {r.version === '0.6.0' && (
+                  <div class="changelog__download">
+                    <a
+                      class="btn btn--primary"
+                      href="/updates/android.json"
+                      rel="noopener"
+                    >
+                      ⬇ Download Pulse Notes 0.6.0 (4.32MB APK)
+                    </a>
+                    <span class="changelog__download-meta">
+                      SHA-256: <code>C1C890…CD86</code> · Android 7.0+ · x64
+                    </span>
+                  </div>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="ncta" id="download">
+      <div class="bg-glow"></div>
+      <div class="container ncta__inner reveal">
+        <h2 class="ncta__title">Try Pulse.</h2>
+        <p class="ncta__sub">
+          12MB. No signup. No telemetry. Open the installer and it works.
+        </p>
+        <div class="ncta__row">
+          <a class="btn btn--primary btn--lg" href="/#download">Get Pulse ↓ 12MB</a>
+          <a class="btn btn--ghost btn--lg" href="/changelog/">Read the changelog</a>
+        </div>
+        <p class="ncta__meta">
+          Windows desktop + Android · Apache 2.0
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .changelog__type {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    margin-right: 0.4rem;
+    border-radius: 4px;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    vertical-align: 0.12em;
+    border: 1px solid;
+  }
+  .changelog__type--major { color: var(--purple); border-color: var(--purple); background: rgba(187, 154, 247, 0.08); }
+  .changelog__type--minor { color: var(--blue); border-color: var(--blue); background: rgba(122, 162, 247, 0.08); }
+  .changelog__type--patch { color: var(--green); border-color: var(--green); background: rgba(158, 206, 106, 0.08); }
+
+  .changelog__bullets {
+    list-style: none;
+    margin: 0.85rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .changelog__bullets li {
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    padding-left: 1.1rem;
+    position: relative;
+  }
+  .changelog__bullets li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+
+  .changelog__callout {
+    margin-top: 1.25rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--purple);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .changelog__callout-eyebrow {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--purple);
+    margin-bottom: 0.35rem;
+  }
+  .changelog__callout-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0 0 0.5rem;
+    line-height: 1.3;
+  }
+  .changelog__callout p {
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin: 0 0 0.5rem;
+  }
+  .changelog__callout-cta {
+    display: inline-block;
+    margin-top: 0.4rem;
+    color: var(--purple);
+    font-weight: 500;
+    font-size: 0.92rem;
+  }
+  .changelog__callout-cta:hover { color: var(--fg); }
+
+  .changelog__download {
+    margin-top: 1.1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .changelog__download .btn { font-size: 0.92rem; }
+  .changelog__download-meta {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+  }
+  .changelog__download-meta code {
+    color: var(--cyan);
+    background: var(--surface-2);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+  }
+</style>
