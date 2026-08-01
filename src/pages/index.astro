@@ -1,76 +1,683 @@
 ---
 import Base from '../layouts/Base.astro';
-import Hero from '../components/Hero.astro';
-import UseCases from '../components/UseCases.astro';
-import Features from '../components/Features.astro';
-import Comparison from '../components/Comparison.astro';
-import Architecture from '../components/Architecture.astro';
-import Pricing from '../components/Pricing.astro';
 import Footer from '../components/Footer.astro';
----
-<Base>
-  <main>
-    <Hero />
-    <UseCases />
-    <Features />
-    <Comparison />
-    <Architecture />
-    <Pricing />
 
-    <section class="download" id="download">
-      <div class="container download__inner reveal">
-        <span class="eyebrow">Download</span>
-        <h2>Get Pulse.</h2>
-        <p class="lede">12MB. No signup. No telemetry. Open the installer and it works.</p>
-        <div class="download__ctas">
-          <a
-            class="btn btn--primary"
-            href="https://github.com/TimesNuRoman/pulse/releases/latest"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Download for Windows ↓
+const APK_URL = 'https://wztgxiy1eu29i.space.minimax.io/pulse-notes-0.6.2-debug.apk';
+const APK_SIZE = '4.34 MB';
+const APK_VERSION = '0.6.2';
+const APK_VERSION_CODE = '12';
+const APK_SHA = '2F8BB218…8F60';
+const APK_APP_ID = 'app.pulse.notes';
+const APK_MIN_SDK = '24';
+const APK_TARGET_SDK = '36';
+---
+
+<Base
+  title="Pulse Notes v0.6.2 — A markdown editor, built for Android, from scratch."
+  description="Pulse Notes v0.6.2 — A markdown editor, built for Android, from scratch. Svelte 5 + TS strict + CodeMirror 6 + [[wikilink]] + tag autocomplete. 4.34 MB APK, 184/184 vitest, Smart Engine v3, Apache 2.0, no cloud, no telemetry."
+  ogImage="/og/notes-v60.svg"
+  ctaText={`Get Pulse Notes ↓ ${APK_SIZE}`}
+  ctaHref={APK_URL}
+  ctaVisible={true}
+  footerLicense="Apache 2.0"
+  footerVersion="v0.6.2"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="#why">Why</a></li>
+        <li><a class="nav__link" href="#new">What is new</a></li>
+        <li><a class="nav__link" href="#download">Download</a></li>
+        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href={APK_URL} rel="noopener noreferrer">Get Pulse Notes ↓ {APK_SIZE}</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="#why">Why Pulse</a>
+    <a class="nav-drawer__link" href="#new">What is new</a>
+    <a class="nav-drawer__link" href="#download">Download</a>
+    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="btn btn--primary nav-drawer__cta" href={APK_URL} rel="noopener noreferrer">Get Pulse Notes ↓ {APK_SIZE}</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+
+      let scrolled = false;
+      const setScrolled = (v) => {
+        if (v === scrolled) return;
+        scrolled = v;
+        nav.classList.toggle('is-scrolled', v);
+      };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => {
+          const isOpen = drawer.classList.contains('is-open');
+          setOpen(!isOpen);
+        });
+        drawer.querySelectorAll('a').forEach((a) => {
+          a.addEventListener('click', () => setOpen(false));
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+            setOpen(false);
+            burger.focus();
+          }
+        });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => {
+          if (e.matches && drawer.classList.contains('is-open')) setOpen(false);
+        });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main">
+    <!-- ─── Hero ────────────────────────────────────────── -->
+    <section class="notes-hero">
+      <div class="bg-glow"></div>
+      <div class="container notes-hero__grid">
+        <div class="notes-hero__copy reveal">
+          <div class="notes-hero__badges">
+            <span class="notes-hero__eyebrow">Pulse Notes · Android · Greenfield</span>
+            <span class="notes-hero__pill" aria-label="Latest version">
+              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+              Latest v{APK_VERSION} · versionCode {APK_VERSION_CODE}
+            </span>
+          </div>
+          <h1 class="notes-hero__title">
+            A markdown editor,<br />built for Android, <span class="notes-hero__hl">from scratch.</span>
+          </h1>
+          <p class="notes-hero__sub">
+            Pulse Notes is a local-first markdown editor for Android. Written from
+            scratch on Svelte 5 + TypeScript strict, with CodeMirror 6,
+            <code>[[wikilink]]</code> backlinks, and tag autocomplete. v0.6.2
+            ships the new onboarding; the editor, search, and capture sheet have
+            been stable since v0.6.0.
+          </p>
+          <div class="notes-hero__ctas">
+            <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
+              Download Pulse Notes ↓ {APK_SIZE}
+            </a>
+            <a class="btn btn--ghost btn--lg" href="/changelog/">Read the changelog</a>
+          </div>
+          <ul class="notes-hero__stats" role="list" aria-label="Pulse Notes v0.6.2 highlights">
+            <li class="notes-hero__stat">
+              <span class="notes-hero__stat-num">+32<span class="notes-hero__stat-unit">pp</span></span>
+              <span class="notes-hero__stat-label">pass-rate (Smart Engine v3)</span>
+            </li>
+            <li class="notes-hero__stat-sep" aria-hidden="true">·</li>
+            <li class="notes-hero__stat">
+              <span class="notes-hero__stat-num">0.85<span class="notes-hero__stat-unit">ms</span></span>
+              <span class="notes-hero__stat-label">p50 parse</span>
+            </li>
+            <li class="notes-hero__stat-sep" aria-hidden="true">·</li>
+            <li class="notes-hero__stat">
+              <span class="notes-hero__stat-num">184<span class="notes-hero__stat-unit">/184</span></span>
+              <span class="notes-hero__stat-label">vitest</span>
+            </li>
+            <li class="notes-hero__stat-sep" aria-hidden="true">·</li>
+            <li class="notes-hero__stat">
+              <span class="notes-hero__stat-num">{APK_SIZE}</span>
+              <span class="notes-hero__stat-label">APK</span>
+            </li>
+          </ul>
+        </div>
+        <div class="notes-hero__composite reveal" aria-hidden="true">
+          <div class="notes-hero__halo"></div>
+          <figure class="notes-hero__shot notes-hero__shot--editor">
+            <img
+              src="/mockups/notes-v60-editor.svg"
+              alt="Pulse Notes v0.6.2 Android editor with split-pane preview"
+              width="720"
+              height="520"
+              loading="eager"
+              decoding="async"
+            />
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Why Pulse Notes ─────────────────────────────── -->
+    <section class="why" id="why">
+      <div class="container">
+        <header class="why__head reveal">
+          <span class="eyebrow">Why Pulse Notes</span>
+          <h2>Three things. No roadmap.</h2>
+          <p class="lede">
+            Pulse Notes is the only surface that ships in v0.6.2. It does three
+            things and does them on device, with no account, no telemetry, and no
+            network round-trip.
+          </p>
+        </header>
+        <div class="why__grid">
+          <article class="why__card glass reveal">
+            <span class="why__card-label">Local-first</span>
+            <h3 class="why__card-title">Your notes never leave the device.</h3>
+            <p class="why__card-body">
+              Everything lives in a local SQLite database on your Android phone.
+              The FTS5 search index is the same database. The recall step is the
+              same local model that runs chat. Nothing crosses the network
+              boundary. Wipe the app data folder and you get a clean install.
+            </p>
+            <ul class="why__card-list" role="list">
+              <li>No accounts. No signup. No cloud.</li>
+              <li>Opt-in E2E sync planned for v0.7 — disabled by default.</li>
+              <li>Manual sync today: <code>notes.db</code> is plain SQLite.</li>
+            </ul>
+          </article>
+          <article class="why__card glass reveal">
+            <span class="why__card-label">Smart</span>
+            <h3 class="why__card-title">Smart Engine v3 routes the right model for the query.</h3>
+            <p class="why__card-body">
+              v0.6.2 ships with the v3 router and the v3 recall gate as the
+              default surface. Pass-rate 88% absolute (+32&nbsp;pp over the v2
+              baseline), p50 latency −1370&nbsp;ms, threshold&nbsp;5. The same
+              A/B harness that gates desktop chat gates the recall step in
+              Notes. Every call is logged to
+              <code>data/smart-engine-v3-ab-*.jsonl</code> for inspection.
+            </p>
+            <ul class="why__card-list" role="list">
+              <li>Pass-rate +32 pp vs v2 baseline (88% absolute).</li>
+              <li>p50 latency −1370 ms vs v2 baseline.</li>
+              <li>Threshold&nbsp;5, default ON for Notes.</li>
+            </ul>
+          </article>
+          <article class="why__card glass reveal">
+            <span class="why__card-label">Fast</span>
+            <h3 class="why__card-title">4.34 MB APK. 60fps on mid-range Android.</h3>
+            <p class="why__card-body">
+              The full greenfield build is 4.34&nbsp;MB, with the JS bundle at
+              849&nbsp;KB raw / 306&nbsp;KB gzipped. The CodeMirror editor
+              lazy-loads behind a feature flag — the list view pulls in under
+              60&nbsp;KB on first paint. Cold start lands under 100&nbsp;ms on
+              Android 7+. minSdk&nbsp;24, targetSdk&nbsp;36.
+            </p>
+            <ul class="why__card-list" role="list">
+              <li>4.34 MB APK, versionCode {APK_VERSION_CODE}.</li>
+              <li>minSdk 24 (Android 7.0) · targetSdk 36.</li>
+              <li>First paint under 60 KB before CodeMirror loads.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── What's new in v0.6.x ────────────────────────── -->
+    <section class="timeline" id="new">
+      <div class="container">
+        <header class="timeline__head reveal">
+          <span class="eyebrow">What is new in v0.6.x</span>
+          <h2>Three releases, each one a step toward a stable Android surface.</h2>
+          <p class="lede">
+            v0.6.0 was the greenfield rewrite. v0.6.1 brought the app icon and
+            splash screen. v0.6.2 ships the new onboarding. The editor, search,
+            and capture sheet have been stable since v0.6.0.
+          </p>
+        </header>
+        <ol class="timeline__list" role="list">
+          <li class="timeline__item reveal" id="v062">
+            <div class="timeline__rail" aria-hidden="true">
+              <span class="timeline__dot"></span>
+            </div>
+            <div class="timeline__body">
+              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
+              <span class="timeline__tag">latest</span>
+              <h3 class="timeline__title">v0.6.2 — Onboarding v2 + 184/184 vitest</h3>
+              <p class="timeline__copy">
+                Four onboarding screens replace the single splash: Welcome,
+                Capture, Smart Engine, Local-first. M3 components only — no emoji,
+                no celebratory copy, no marketing banner. The 184 vitest cases
+                cover the new onboarding flow, the editor, the search, and the
+                capture intent. versionCode 11 → 12. APK +5&nbsp;KB.
+              </p>
+              <ul class="timeline__bullets" role="list">
+                <li>4 screens (Welcome / Capture / SmartEngine / LocalFirst), M3 only.</li>
+                <li>0 emoji, no marketing copy, dark theme only.</li>
+                <li>184/184 vitest (was 150/150 in v0.6.0 — +34 cases for onboarding + capture + search).</li>
+                <li>versionCode 11 → 12. APK 4.34 → 4.34&nbsp;MB.</li>
+              </ul>
+            </div>
+          </li>
+          <li class="timeline__item reveal" id="v061">
+            <div class="timeline__rail" aria-hidden="true">
+              <span class="timeline__dot"></span>
+            </div>
+            <div class="timeline__body">
+              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
+              <h3 class="timeline__title">v0.6.1 — Adaptive app icon + M3 splash</h3>
+              <p class="timeline__copy">
+                Tokyo Night adaptive icon (blue P + 4-point spark) with
+                monochrome variant for Android 13+ themed icons. M3 splash
+                screen replaces the white flash on cold start. versionCode 10
+                → 11. APK +12&nbsp;KB. No code changes — the app just looks
+                like it belongs on the device.
+              </p>
+              <ul class="timeline__bullets" role="list">
+                <li>Adaptive icon foreground: P (#7aa2f7) + 4-point spark (#bb9af7) on Tokyo Night bg.</li>
+                <li>Monochrome variant for Android 13+ themed icons.</li>
+                <li>AppTheme.NoActionBarLaunch now uses Theme.SplashScreen — no white flash.</li>
+                <li>versionCode 10 → 11. APK +12&nbsp;KB.</li>
+              </ul>
+            </div>
+          </li>
+          <li class="timeline__item reveal" id="v060">
+            <div class="timeline__rail" aria-hidden="true">
+              <span class="timeline__dot"></span>
+            </div>
+            <div class="timeline__body">
+              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
+              <h3 class="timeline__title">v0.6.0 — GREENFIELD Android release</h3>
+              <p class="timeline__copy">
+                Written from scratch on Svelte 5 + TS strict + Vite. CodeMirror 6
+                with split-pane (bottom-sheet on phone), <code>[[wikilink]]</code>
+                backlinks, tag autocomplete, M3 toolbar, 9 Capacitor plugins.
+                150/150 vitest, 4.32&nbsp;MB APK, versionCode 10,
+                appId <code>{APK_APP_ID}</code>, minSdk&nbsp;24, targetSdk&nbsp;36.
+                Smart Engine v3 default ON, threshold&nbsp;5.
+              </p>
+              <ul class="timeline__bullets" role="list">
+                <li>Svelte 5 + TS strict + Vite + vitest + jsdom — not a port of v0.5.x desktop.</li>
+                <li>CodeMirror 6 with Lezer highlighting, line numbers, smart indent.</li>
+                <li>Split-pane editor + preview with drag-resize; bottom-sheet on phone.</li>
+                <li><code>[[wikilink]]</code> backlinks with fuzzy autocomplete.</li>
+                <li>#tag autocomplete ranked by usage frequency.</li>
+                <li>M3 toolbar with 7 formatting actions.</li>
+                <li>9 Capacitor plugins wired in (share, clipboard, haptics, status-bar, splash-screen, keyboard, app, files, local-model).</li>
+                <li>4.32&nbsp;MB APK, 849&nbsp;KB JS bundle (306&nbsp;KB gzipped).</li>
+              </ul>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ─── Cross-platform follow-up (small) ────────────── -->
+    <section class="xfu" id="desktop">
+      <div class="container xfu__inner reveal">
+        <div class="xfu__copy">
+          <span class="eyebrow">Cross-platform follow-up · Pulse desktop</span>
+          <h2>The same code path, on Windows.</h2>
+          <p class="lede">
+            Pulse desktop v0.6.0 ships with Smart Engine v3 — 52/100 flips on the
+            router, 0.85&nbsp;ms p50 parse, 70/70 Rust + 25/25 code-edit
+            regressions. Pulse Notes ships Android first, desktop next: the
+            greenfield surface from the Android build lands on Windows in the
+            Pulse desktop v0.6.0 release, with system tray, hotkeys, native
+            installer, and the in-app update checker.
+          </p>
+        </div>
+        <div class="xfu__links">
+          <a class="xfu__link glass" href="https://github.com/TimesNuRoman/pulse/releases" rel="noopener noreferrer">
+            <span class="xfu__link-eyebrow">Current desktop</span>
+            <span class="xfu__link-title">Pulse desktop v0.6.0</span>
+            <span class="xfu__link-meta">Windows · Apache 2.0</span>
           </a>
-          <a
-            class="btn btn--ghost"
-            href="https://github.com/TimesNuRoman/pulse"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            View on GitHub →
+          <a class="xfu__link glass" href="/changelog/#v0.6.0">
+            <span class="xfu__link-eyebrow">Full release notes</span>
+            <span class="xfu__link-title">v0.6.0 changelog</span>
+            <span class="xfu__link-meta">/changelog/</span>
           </a>
         </div>
-        <p class="download__meta">v0.3.0 · Windows · Mac &amp; Linux: when they're done, not before.</p>
+      </div>
+    </section>
+
+    <!-- ─── Download CTA ────────────────────────────────── -->
+    <section class="ncta" id="download">
+      <div class="bg-glow"></div>
+      <div class="container ncta__inner reveal">
+        <span class="eyebrow">v{APK_VERSION} · Android · GREENFIELD</span>
+        <h2 class="ncta__title">Install Pulse Notes.</h2>
+        <p class="ncta__sub">
+          {APK_SIZE} APK · no Google Play · no account · no telemetry.
+        </p>
+        <div class="ncta__row">
+          <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
+            Download APK ↓ {APK_SIZE}
+          </a>
+          <a class="btn btn--ghost btn--lg" href="/changelog/">
+            Read the changelog
+          </a>
+        </div>
+        <div class="ncta__grid">
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">versionName</span>
+            <span class="ncta__meta-val">{APK_VERSION}</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">versionCode</span>
+            <span class="ncta__meta-val">{APK_VERSION_CODE}</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">appId</span>
+            <span class="ncta__meta-val">{APK_APP_ID}</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">minSdk · targetSdk</span>
+            <span class="ncta__meta-val">{APK_MIN_SDK} · {APK_TARGET_SDK}</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">SHA-256</span>
+            <span class="ncta__meta-val">{APK_SHA}</span>
+          </div>
+        </div>
+        <p class="ncta__more">
+          <a href="/changelog/#v0.6.2">Full v0.6.2 release notes →</a>
+        </p>
       </div>
     </section>
   </main>
-  <Footer />
+
+  <Footer license="Apache 2.0" version="v0.6.2" />
 </Base>
 
 <style>
-  .download {
-    background:
-      radial-gradient(700px 400px at 50% 0%, rgba(187, 154, 247, 0.10), transparent 70%);
-  }
-  .download__inner {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
-  }
-  .download__inner h2 { margin: 0.2rem 0 0.4rem; }
-  .download__inner .lede { margin: 0 auto; }
-  .download__ctas {
+  .notes-hero__stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    justify-content: center;
-    margin-top: 1.25rem;
+    align-items: center;
+    gap: 0.4rem 0.6rem;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
   }
-  .download__meta {
+  .notes-hero__stat {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    color: var(--fg);
+    font-size: 0.92rem;
+  }
+  .notes-hero__stat-num {
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--fg);
+  }
+  .notes-hero__stat-unit {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+    margin-left: 0.05rem;
+  }
+  .notes-hero__stat-label {
     color: var(--muted);
     font-size: 0.85rem;
-    margin-top: 0.5rem;
+  }
+  .notes-hero__stat-sep {
+    color: var(--border);
+    user-select: none;
+  }
+
+  /* Why */
+  .why { padding: 5rem 0 4rem; }
+  .why__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
+  .why__head .lede { margin: 0.5rem auto 0; }
+  .why__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+  @media (max-width: 920px) { .why__grid { grid-template-columns: 1fr; } }
+
+  .why__card {
+    padding: 1.5rem 1.5rem 1.75rem;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .why__card-label {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--purple);
+    margin-bottom: 0.25rem;
+  }
+  .why__card-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0 0 0.5rem;
+    line-height: 1.35;
+  }
+  .why__card-body {
+    color: var(--fg-dim);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 0.5rem;
+  }
+  .why__card-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .why__card-list li {
+    color: var(--fg-dim);
+    font-size: 0.9rem;
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.5;
+  }
+  .why__card-list li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+  .why__card-list code {
+    font-size: 0.85em;
+    color: var(--cyan);
+    background: var(--surface-2);
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+  }
+
+  /* Timeline */
+  .timeline { padding: 4rem 0 5rem; }
+  .timeline__head { text-align: center; max-width: 700px; margin: 0 auto 3rem; }
+  .timeline__head .lede { margin: 0.5rem auto 0; }
+  .timeline__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 760px;
+    margin-inline: auto;
+  }
+  .timeline__item {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+  .timeline__rail {
+    position: relative;
+    width: 32px;
+    height: 100%;
+    min-height: 32px;
+  }
+  .timeline__rail::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: -1.5rem;
+    width: 1px;
+    background: var(--border);
+    transform: translateX(-50%);
+  }
+  .timeline__item:last-child .timeline__rail::before { display: none; }
+  .timeline__dot {
+    position: absolute;
+    left: 50%;
+    top: 0.3rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--purple);
+    border: 2px solid var(--bg);
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+  .timeline__item#v062 .timeline__dot { background: var(--green); box-shadow: 0 0 0 4px rgba(158, 206, 106, 0.18); }
+  .timeline__body {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.35rem 1.35rem;
+  }
+  .timeline__date {
+    display: inline-block;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-right: 0.5rem;
+  }
+  .timeline__tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green);
+    border: 1px solid var(--green);
+    border-radius: 4px;
+    padding: 0.05rem 0.45rem;
+    margin-right: 0.5rem;
+    background: rgba(158, 206, 106, 0.08);
+    vertical-align: 0.12em;
+  }
+  .timeline__title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0.4rem 0 0.5rem;
+    line-height: 1.3;
+  }
+  .timeline__copy {
+    color: var(--fg-dim);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 0.5rem;
+  }
+  .timeline__bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .timeline__bullets li {
+    color: var(--fg-dim);
+    font-size: 0.9rem;
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.5;
+  }
+  .timeline__bullets li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+  .timeline__bullets code {
+    font-size: 0.88em;
+    color: var(--cyan);
+    background: var(--surface-2);
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+  }
+
+  /* Cross-platform follow-up */
+  .xfu { padding: 4rem 0 3rem; }
+  .xfu__inner {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (max-width: 860px) { .xfu__inner { grid-template-columns: 1fr; } }
+  .xfu__copy .lede { margin-top: 0.5rem; }
+  .xfu__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .xfu__link {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .xfu__link:hover { border-color: var(--purple); transform: translateY(-1px); }
+  .xfu__link-eyebrow {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .xfu__link-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0.25rem 0 0.15rem;
+  }
+  .xfu__link-meta {
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-family: ui-monospace, "JetBrains Mono", monospace;
   }
 </style>

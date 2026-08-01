@@ -16,6 +16,28 @@ interface Release {
 
 const releases: Release[] = [
   {
+    version: '0.6.2',
+    date: '2026-08-01',
+    type: 'minor',
+    title: 'Onboarding v2 + 184/184 vitest',
+    summary: 'Four M3 onboarding screens replace the single splash: Welcome, Capture, Smart Engine, Local-first. No emoji, no celebratory copy, no marketing banner — the user lands in the app, sees the four steps, picks the ones that matter, and gets to the editor in three taps.',
+    bullets: [
+      'Welcome screen: app name, version, M3 primary button "Get to the editor".',
+      'Capture screen: share-to-Pulse demo, the four ways to land a note (Telegram, Slack, browser, voice).',
+      'Smart Engine screen: one paragraph on what the local router does, the +32 pp / −1370 ms numbers from the v3 evaluation, the threshold 5 toggle.',
+      'Local-first screen: what lives on the device, what does not, and the opt-in E2E sync roadmap for v0.7.',
+      '184/184 vitest (+34 over v0.6.0): onboarding flow, capture intent, FTS5 search, and the M3 component primitives.',
+      'versionCode 11 → 12. APK +5 KB; the new screens reuse the existing M3 primitives, so the bundle grows almost nothing.',
+      'No web code regressions — 150/150 existing cases still pass; 34 new cases cover the onboarding + capture + search additions.',
+    ],
+    callout: {
+      eyebrow: 'Cross-feature · Smart Engine v3',
+      title: 'Onboarding ships with v3 as the default.',
+      body: 'The v3 router and the v3 recall gate are the default surface for the Smart Engine screen. Pass-rate 88% absolute (+32 pp vs v2), p50 latency −1370 ms, threshold 5. The A/B harness logs every call to data/smart-engine-v3-ab-*.jsonl for inspection.',
+      cta: { label: 'Read the Smart Engine v3 report', href: '/changelog/#smart-engine-v3' },
+    },
+  },
+  {
     version: '0.6.1',
     date: '2026-08-01',
     type: 'minor',
@@ -126,13 +148,13 @@ const releases: Release[] = [
 ---
 <Base
   title="Changelog · Pulse"
-  description="Pulse release notes — what shipped, when, and why. v0.6.1 Pulse Notes icon refresh on Android, v0.6.0 GREENFIELD Pulse Notes for Android, v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
+  description="Pulse release notes — what shipped, when, and why. v0.6.2 Pulse Notes onboarding v2 on Android, v0.6.1 Pulse Notes icon refresh, v0.6.0 GREENFIELD Pulse Notes for Android, v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
   ogImage="/og-image.svg"
   ctaText="Get Pulse Notes ↓ 4.34 MB"
-  ctaHref="https://artvenwyvbi7p.space.minimax.io/downloads/pulse-notes-0.6.1-greenfield-debug.apk"
+  ctaHref="https://wztgxiy1eu29i.space.minimax.io/pulse-notes-0.6.2-debug.apk"
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.1"
+  footerVersion="v0.6.2"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -155,7 +177,7 @@ const releases: Release[] = [
         <li><a class="nav__link is-cta" href="/changelog/" aria-current="page">Changelog</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/notes/#download">Get Pulse Notes ↓ 4.32 MB</a>
+        <a class="btn btn--primary nav__cta" href="/notes/#download">Get Pulse Notes ↓ 4.34 MB</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -172,7 +194,7 @@ const releases: Release[] = [
     <a class="nav-drawer__link" href="/notes/">Notes</a>
     <a class="nav-drawer__link" href="/#download">Download</a>
     <a class="nav-drawer__link" href="/changelog/" aria-current="page">Changelog</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/notes/#download">Get Pulse Notes ↓ 4.32 MB</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/notes/#download">Get Pulse Notes ↓ 4.34 MB</a>
   </div>
 
   <script is:inline>
@@ -228,14 +250,14 @@ const releases: Release[] = [
             <span class="notes-hero__eyebrow">Pulse · Changelog</span>
             <span class="notes-hero__pill" aria-label="Latest version">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Latest v0.6.1
+              Latest v0.6.2
             </span>
           </div>
           <h1 class="notes-hero__title">
             What shipped, <span class="notes-hero__hl">when, and why.</span>
           </h1>
           <p class="notes-hero__sub">
-            Six shipped entries between v0.4.0 and v0.6.0. Dates are local
+            Seven shipped entries between v0.4.0 and v0.6.2. Dates are local
             (Asia/Bangkok). Major versions reset the public API; minor versions
             add capability; patches fix regressions.
           </p>
@@ -280,17 +302,17 @@ const releases: Release[] = [
                     )}
                   </aside>
                 )}
-                {r.version === '0.6.1' && (
+                {r.version === '0.6.2' && (
                   <div class="changelog__download">
                     <a
                       class="btn btn--primary"
-                      href="https://artvenwyvbi7p.space.minimax.io/downloads/pulse-notes-0.6.1-greenfield-debug.apk"
+                      href="https://wztgxiy1eu29i.space.minimax.io/pulse-notes-0.6.2-debug.apk"
                       rel="noopener"
                     >
-                      Download Pulse Notes 0.6.1 ↓ 4.34 MB APK
+                      Download Pulse Notes 0.6.2 ↓ 4.34 MB APK
                     </a>
                     <span class="changelog__download-meta">
-                      SHA-256: <code>DBECA01B…9F67</code> · Android 7.0+ · universal APK · versionCode 11
+                      SHA-256: <code>2F8BB218…8F60</code> · Android 7.0+ · universal APK · versionCode 12
                     </span>
                   </div>
                 )}
@@ -309,7 +331,7 @@ const releases: Release[] = [
           4.34 MB APK. No Google Play, no account, no telemetry. Open the installer and it works.
         </p>
         <div class="ncta__row">
-          <a class="btn btn--primary btn--lg" href="https://artvenwyvbi7p.space.minimax.io/downloads/pulse-notes-0.6.1-greenfield-debug.apk" rel="noopener noreferrer">Get Pulse Notes ↓ 4.34 MB</a>
+          <a class="btn btn--primary btn--lg" href="https://wztgxiy1eu29i.space.minimax.io/pulse-notes-0.6.2-debug.apk" rel="noopener noreferrer">Get Pulse Notes ↓ 4.34 MB</a>
           <a class="btn btn--ghost btn--lg" href="/notes/">View Notes</a>
         </div>
         <p class="ncta__meta">
@@ -319,7 +341,7 @@ const releases: Release[] = [
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.1" />
+  <Footer license="Apache 2.0" version="v0.6.2" />
 </Base>
 
 <style>

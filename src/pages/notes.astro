@@ -3,25 +3,25 @@ import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/notes.css';
 
-const APK_URL = 'https://artvenwyvbi7p.space.minimax.io/downloads/pulse-notes-0.6.1-greenfield-debug.apk';
+const APK_URL = 'https://wztgxiy1eu29i.space.minimax.io/pulse-notes-0.6.2-debug.apk';
 const APK_SIZE = '4.34 MB';
-const APK_SHA = 'DBECA01B…9F67';
-const APK_VERSION = '0.6.1';
-const APK_VERSION_CODE = '11';
+const APK_SHA = '2F8BB218…8F60';
+const APK_VERSION = '0.6.2';
+const APK_VERSION_CODE = '12';
 const APK_MIN_SDK = '24';
 const APK_TARGET_SDK = '36';
 const APK_APP_ID = 'app.pulse.notes';
 ---
 
 <Base
-  title="Pulse Notes v0.6.1 — Greenfield markdown editor for Android"
-  description="Pulse Notes v0.6.1 — adaptive app icon + M3 splash on top of the v0.6.0 GREENFIELD Android markdown editor. Svelte 5 + CodeMirror 6 + split-pane + [[wikilink]] + tag autocomplete. Local-first, 4.34MB APK, 150/150 vitest, Smart Engine v3."
+  title="Pulse Notes v0.6.2 — Greenfield markdown editor for Android"
+  description="Pulse Notes v0.6.2 — onboarding v2 (4 M3 screens, 0 emoji) on top of the v0.6.0 GREENFIELD Android markdown editor. Svelte 5 + CodeMirror 6 + split-pane + [[wikilink]] + tag autocomplete. Local-first, 4.34MB APK, 184/184 vitest, Smart Engine v3."
   ogImage="/og/notes-v60.svg"
   ctaText={`Get Pulse Notes ↓ ${APK_SIZE}`}
   ctaHref={APK_URL}
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.1"
+  footerVersion="v0.6.2"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -127,7 +127,7 @@ const APK_APP_ID = 'app.pulse.notes';
             A markdown editor,<br />built for Android, <span class="notes-hero__hl">from scratch.</span>
           </h1>
           <p class="notes-hero__sub">
-            v0.6.1 is the current build (adaptive app icon + M3 splash, no code changes). v0.6.0 was the greenfield Android release: Svelte 5 + TypeScript strict + Vite, CodeMirror 6 with a drag-resize split-pane, <code>[[wikilink]]</code> backlinks, tag autocomplete, and a Material&nbsp;3 toolbar. 4.34&nbsp;MB APK, 150/150 vitest, zero cloud, zero telemetry.
+            v0.6.2 is the current build (onboarding v2 — 4 M3 screens, 0 emoji, 184/184 vitest). v0.6.0 was the greenfield Android release: Svelte 5 + TypeScript strict + Vite, CodeMirror 6 with a drag-resize split-pane, <code>[[wikilink]]</code> backlinks, tag autocomplete, and a Material&nbsp;3 toolbar. 4.34&nbsp;MB APK, zero cloud, zero telemetry.
           </p>
           <div class="notes-hero__ctas">
             <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">Download APK ↓ {APK_SIZE}</a>
@@ -147,7 +147,7 @@ const APK_APP_ID = 'app.pulse.notes';
           <p class="notes-hero__sha">
             <span class="notes-hero__sha-label">SHA-256</span>
             <code class="notes-hero__sha-code">{APK_SHA}</code>
-            <a class="notes-hero__sha-link" href="/changelog/#v0.6.0">verify →</a>
+            <a class="notes-hero__sha-link" href="/changelog/#v0.6.2">verify →</a>
           </p>
         </div>
         <div class="notes-hero__composite reveal" aria-hidden="true">
@@ -494,12 +494,26 @@ const APK_APP_ID = 'app.pulse.notes';
           <span class="eyebrow">What changed</span>
           <h2>Pulse Notes — release notes.</h2>
           <p class="lede">
-            Five shipped entries between v0.5.0 and v0.6.1. Dates are local
+            Six shipped entries between v0.5.0 and v0.6.2. Dates are local
             (Asia/Bangkok). Full audit lives in the
-            <a href="/changelog/#v0.6.1">changelog</a>.
+            <a href="/changelog/#v0.6.2">changelog</a>.
           </p>
         </header>
         <ol class="changelog__list" role="list">
+          <li class="changelog__item reveal">
+            <time class="changelog__date" datetime="2026-08-01">2026-08-01</time>
+            <div class="changelog__body">
+              <h3 class="changelog__title">v0.6.2 · Onboarding v2 + 184/184 vitest</h3>
+              <p>
+                Four M3 onboarding screens replace the single splash: Welcome,
+                Capture, Smart Engine, Local-first. 0 emoji, no marketing copy,
+                dark theme only. The test suite grows from 150 → 184 cases
+                (+34 across onboarding, capture, and search). versionCode
+                11 → 12. APK +5&nbsp;KB — onboarding screens add one extra
+                fragment, the rest of the build is unchanged.
+              </p>
+            </div>
+          </li>
           <li class="changelog__item reveal">
             <time class="changelog__date" datetime="2026-08-01">2026-08-01</time>
             <div class="changelog__body">
@@ -742,7 +756,7 @@ const APK_APP_ID = 'app.pulse.notes';
     <section class="ncta" id="download">
       <div class="bg-glow"></div>
       <div class="container ncta__inner reveal">
-        <span class="eyebrow">v0.6.0 · Android · GREENFIELD</span>
+        <span class="eyebrow">v{APK_VERSION} · Android · GREENFIELD</span>
         <h2 class="ncta__title">Install Pulse Notes.</h2>
         <p class="ncta__sub">
           {APK_SIZE} APK · no Google Play · no account · no telemetry.
@@ -778,11 +792,11 @@ const APK_APP_ID = 'app.pulse.notes';
           </div>
         </div>
         <p class="ncta__more">
-          <a href="/changelog/#v0.6.1">Full v0.6.1 release notes →</a>
+          <a href="/changelog/#v0.6.2">Full v0.6.2 release notes →</a>
         </p>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.1" />
+  <Footer license="Apache 2.0" version="v0.6.2" />
 </Base>
