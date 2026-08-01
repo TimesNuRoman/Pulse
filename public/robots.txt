@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pulse.tld/sitemap.xml
+Sitemap: https://hrkbksh0x0xz4.space.minimax.io/sitemap.xml

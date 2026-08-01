@@ -16,6 +16,46 @@ interface Release {
 
 const releases: Release[] = [
   {
+    version: '0.6.4',
+    date: '2026-08-01',
+    type: 'minor',
+    title: 'Manifest URL fallback chain',
+    summary: 'R90 fix for the chicken-and-egg URL rotation that broke every previous APK after a website_deploy rotation. UpdateChecker now tries a chain of 5 known manifest hosts instead of a single baked-in URL. The most-recent host is tried first; VITE_UPDATE_MANIFEST_URL env override is always at the head. With this chain in place, the next APK that ships after another host rotation will still find a valid manifest. UpdateResult gains a manifestUrl diagnostic field for triage, and the chain grows monotonically (5 → 6 → 7 ...) on each future ship.',
+    bullets: [
+      '5-host fallback chain in DEFAULT_MANIFEST_URLS (most-recent first): R90 → R88 → R87 → R85 → R81 → R78.',
+      'Env override VITE_UPDATE_MANIFEST_URL is always placed at index 0 — the head.',
+      'resolveManifestUrls(env) pure helper, getManifestUrls() singleton, fetchManifestFromChain(urls, opts) try-each-URL with attempts[] log.',
+      'UpdateResult gains manifestUrl: string | null for triage — surfaces which host answered.',
+      'markSeen(now: () => number = Date.now) test seam + Math.max(now(), cache.checkedAt + 1) for deterministic forward motion (fixes a pre-existing R88 flake).',
+      '252/252 vitest (16 new for chain + helper parity; 1 pre-existing markSeen flake fixed in the same patch).',
+      'versionCode 13 → 14. APK 4.34 → 4.35 MB (+408 B from added URLs).',
+      'KNOWN LIMITATION: v0.6.3 APK is locked to the R87 single URL without the chain — see the side-load page for the manual update path.',
+    ],
+    callout: {
+      eyebrow: 'v0.6.3 users · manual update path',
+      title: 'If your UpdateChecker is still on v0.6.3, side-load v0.6.4.',
+      body: 'The v0.6.3 APK was built before the manifest URL fallback chain existed, so its in-app updater polls a single host that no longer serves the v0.6.4 manifest. v0.6.3 users need to side-load v0.6.4 once; from then on the new in-app updater handles every future release.',
+      cta: { label: 'Open the v0.6.4 side-load page', href: '/release-notes-v0.6.4/' },
+    },
+  },
+  {
+    version: '0.6.3',
+    date: '2026-08-01',
+    type: 'minor',
+    title: 'In-app UpdateChecker revival',
+    summary: 'R52 shipped an in-app UpdateChecker that polled a remote manifest, surfaced an M3 dialog with force-update support, and verified SHA-256. The implementation was lost in R73 mavis-trash and the R77 greenfield reset. v0.6.3 brings it back. The component ships as update-checker.ts (core) + UpdateCheckerMount.svelte (mount) + UpdateDialog.svelte (M3 dialog). Polls the manifest at 24h TTL, surfaces soft + force modes, verifies SHA-256 against latest_apk_sha256, and opens the release-notes link via @capacitor/browser for a Chrome Custom Tab.',
+    bullets: [
+      'UpdateChecker core: 27060 B — fetch manifest, parse JSON, compareVersions, in-flight dedup, cache fallback on network error.',
+      'UpdateCheckerMount.svelte (3435 B) — mount point, defends against in-flight collapse, surfaces manifestUrl diagnostic on error.',
+      'UpdateDialog.svelte (9697 B) — M3 dialog, 0 emoji, "Update now" / "Later" actions, SHA-256 fingerprint, release-notes CTA.',
+      'compareVersions gotchas handled: leading "v" stripped, pre-release suffix ("0.6.2-beta") treated equal to "0.6.2", missing segments ("0.6" == "0.6.0"), numeric vs lex (parseInt + default 0, never string compare).',
+      'In-flight dedup by an in-class Promise field — force flag does not skip dedup, it only changes cache-vs-network decision.',
+      'Cache fallback on network error: returns cached manifest with fromCache: true when fetch fails and a cache exists. Only returns manifest: null when there is no cache to fall back to.',
+      '184/184 → 236/236 vitest (52 new for the chain + helpers + dialog states).',
+      'versionCode 12 → 13. APK 4.34 → 4.34 MB (+1.1 KB from the new components).',
+    ],
+  },
+  {
     version: '0.6.2',
     date: '2026-08-01',
     type: 'minor',
@@ -148,13 +188,13 @@ const releases: Release[] = [
 ---
 <Base
   title="Changelog · Pulse"
-  description="Pulse release notes — what shipped, when, and why. v0.6.2 Pulse Notes onboarding v2 on Android, v0.6.1 Pulse Notes icon refresh, v0.6.0 GREENFIELD Pulse Notes for Android, v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
+  description="Pulse release notes — what shipped, when, and why. v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 Pulse Notes onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse Notes for Android, v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
   ogImage="/og-image.svg"
-  ctaText="Get Pulse Notes ↓ 4.34 MB"
-  ctaHref="https://wztgxiy1eu29i.space.minimax.io/pulse-notes-0.6.2-debug.apk"
+  ctaText="Get Pulse Notes ↓ 4.35 MB"
+  ctaHref="https://9u26sgn3vblim.space.minimax.io/downloads/pulse-notes-0.6.4-debug.apk"
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.2"
+  footerVersion="v0.6.4"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -177,7 +217,7 @@ const releases: Release[] = [
         <li><a class="nav__link is-cta" href="/changelog/" aria-current="page">Changelog</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/notes/#download">Get Pulse Notes ↓ 4.34 MB</a>
+        <a class="btn btn--primary nav__cta" href="/notes/#download">Get Pulse Notes ↓ 4.35 MB</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -194,7 +234,7 @@ const releases: Release[] = [
     <a class="nav-drawer__link" href="/notes/">Notes</a>
     <a class="nav-drawer__link" href="/#download">Download</a>
     <a class="nav-drawer__link" href="/changelog/" aria-current="page">Changelog</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/notes/#download">Get Pulse Notes ↓ 4.34 MB</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/notes/#download">Get Pulse Notes ↓ 4.35 MB</a>
   </div>
 
   <script is:inline>
@@ -250,14 +290,14 @@ const releases: Release[] = [
             <span class="notes-hero__eyebrow">Pulse · Changelog</span>
             <span class="notes-hero__pill" aria-label="Latest version">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Latest v0.6.2
+              Latest v0.6.4
             </span>
           </div>
           <h1 class="notes-hero__title">
             What shipped, <span class="notes-hero__hl">when, and why.</span>
           </h1>
           <p class="notes-hero__sub">
-            Seven shipped entries between v0.4.0 and v0.6.2. Dates are local
+            Nine shipped entries between v0.4.0 and v0.6.4. Dates are local
             (Asia/Bangkok). Major versions reset the public API; minor versions
             add capability; patches fix regressions.
           </p>
@@ -302,17 +342,17 @@ const releases: Release[] = [
                     )}
                   </aside>
                 )}
-                {r.version === '0.6.2' && (
+                {r.version === '0.6.4' && (
                   <div class="changelog__download">
                     <a
                       class="btn btn--primary"
-                      href="https://wztgxiy1eu29i.space.minimax.io/pulse-notes-0.6.2-debug.apk"
+                      href="https://9u26sgn3vblim.space.minimax.io/downloads/pulse-notes-0.6.4-debug.apk"
                       rel="noopener"
                     >
-                      Download Pulse Notes 0.6.2 ↓ 4.34 MB APK
+                      Download Pulse Notes 0.6.4 ↓ 4.35 MB APK
                     </a>
                     <span class="changelog__download-meta">
-                      SHA-256: <code>2F8BB218…8F60</code> · Android 7.0+ · universal APK · versionCode 12
+                      SHA-256: <code>FB6FD8A0…0C58E</code> · Android 7.0+ · universal APK · versionCode 14
                     </span>
                   </div>
                 )}
@@ -328,10 +368,10 @@ const releases: Release[] = [
       <div class="container ncta__inner reveal">
         <h2 class="ncta__title">Try Pulse Notes.</h2>
         <p class="ncta__sub">
-          4.34 MB APK. No Google Play, no account, no telemetry. Open the installer and it works.
+          4.35 MB APK. No Google Play, no account, no telemetry. Open the installer and it works.
         </p>
         <div class="ncta__row">
-          <a class="btn btn--primary btn--lg" href="https://wztgxiy1eu29i.space.minimax.io/pulse-notes-0.6.2-debug.apk" rel="noopener noreferrer">Get Pulse Notes ↓ 4.34 MB</a>
+          <a class="btn btn--primary btn--lg" href="https://9u26sgn3vblim.space.minimax.io/downloads/pulse-notes-0.6.4-debug.apk" rel="noopener noreferrer">Get Pulse Notes ↓ 4.35 MB</a>
           <a class="btn btn--ghost btn--lg" href="/notes/">View Notes</a>
         </div>
         <p class="ncta__meta">
@@ -341,7 +381,7 @@ const releases: Release[] = [
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.2" />
+  <Footer license="Apache 2.0" version="v0.6.4" />
 </Base>
 
 <style>

@@ -1,19 +1,33 @@
 {
-  "latest_version": "0.6.2",
-  "latest_version_code": 12,
-  "latest_apk_url": "https://wztgxiy1eu29i.space.minimax.io/pulse-notes-0.6.2-debug.apk",
-  "latest_apk_size_bytes": 4551289,
-  "latest_apk_sha256": "2F8BB21841763705C34FDA9DE1281A75029D524AB212F55E48C6BD7A9A288F60",
-  "release_notes_url": "https://wztgxiy1eu29i.space.minimax.io/changelog/#v0.6.2",
+  "latest_version": "0.6.4",
+  "latest_version_code": 14,
+  "latest_apk_url": "https://9u26sgn3vblim.space.minimax.io/downloads/pulse-notes-0.6.4-debug.apk",
+  "latest_apk_size_bytes": 4556129,
+  "latest_apk_sha256": "FB6FD8A0C720DF7FB4CC902FC480EFF258A5AD5D7B5FF7A24893BA1437A0C58E",
+  "release_notes_url": "https://hrkbksh0x0xz4.space.minimax.io/changelog/#v0.6.4",
   "min_supported_version": "0.3.0",
   "force_update_below": "0.3.0",
   "versions": [
+    {
+      "version": "0.6.4",
+      "version_code": 14,
+      "date": "2026-08-01",
+      "type": "minor",
+      "summary": "R90: manifest URL fallback chain (fix chicken-and-egg URL rotation). UpdateChecker now tries a chain of 5 known hosts instead of a single baked-in URL, so a new deploy no longer orphans the previous APK's poll target."
+    },
+    {
+      "version": "0.6.3",
+      "version_code": 13,
+      "date": "2026-08-01",
+      "type": "minor",
+      "summary": "In-app UpdateChecker revival (R52 lost in R73 mavis-trash + R77 reset). Polls remote manifest, surfaces M3 dialog with force-update support, SHA-256 fingerprint, release-notes link, and 24h cache TTL."
+    },
     {
       "version": "0.6.2",
       "version_code": 12,
       "date": "2026-08-01",
       "type": "minor",
-      "summary": "Onboarding v2 (4 M3 screens, 0 emoji) + 184/184 vitest"
+      "summary": "Onboarding v2 (4 screens: Welcome, Capture, Smart Engine v3, Local-first) with M3 expressive buttons, slide transitions, anti-emoji UI"
     },
     {
       "version": "0.6.1",

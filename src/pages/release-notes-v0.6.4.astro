@@ -1,0 +1,400 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/notes.css';
+
+const APK_URL = 'https://9u26sgn3vblim.space.minimax.io/downloads/pulse-notes-0.6.4-debug.apk';
+const APK_SIZE = '4.35 MB';
+const APK_SHA_FULL = 'FB6FD8A0C720DF7FB4CC902FC480EFF258A5AD5D7B5FF7A24893BA1437A0C58E';
+const APK_SHA_SHORT = 'FB6FD8A0…0C58E';
+const APK_VERSION = '0.6.4';
+const APK_VERSION_CODE = '14';
+---
+<Base
+  title="Pulse Notes v0.6.4 release — side-load for v0.6.3 users"
+  description="Pulse Notes v0.6.4 ships an in-app UpdateChecker + manifest URL fallback chain. v0.6.3 users cannot auto-update due to a baked-in URL in the v0.6.3 APK — side-load v0.6.4 from this page."
+  ogImage="/og-image.svg"
+  ctaText={`Side-load v${APK_VERSION} ↓ ${APK_SIZE}`}
+  ctaHref={APK_URL}
+  ctaVisible={true}
+  footerLicense="Apache 2.0"
+  footerVersion="v0.6.4"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/#features">Home</a></li>
+        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+        <li><a class="nav__link is-cta" href="/release-notes-v0.6.4/" aria-current="page">v0.6.4</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href={APK_URL} rel="noopener noreferrer">Side-load v{APK_VERSION} ↓ {APK_SIZE}</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/">Home</a>
+    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="nav-drawer__link" href="/release-notes-v0.6.4/" aria-current="page">v0.6.4 release</a>
+    <a class="btn btn--primary nav-drawer__cta" href={APK_URL} rel="noopener noreferrer">Side-load v{APK_VERSION} ↓ {APK_SIZE}</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => {
+        if (v === scrolled) return;
+        scrolled = v;
+        nav.classList.toggle('is-scrolled', v);
+      };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => {
+          const isOpen = drawer.classList.contains('is-open');
+          setOpen(!isOpen);
+        });
+        drawer.querySelectorAll('a').forEach((a) => {
+          a.addEventListener('click', () => setOpen(false));
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+            setOpen(false);
+            burger.focus();
+          }
+        });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => {
+          if (e.matches && drawer.classList.contains('is-open')) setOpen(false);
+        });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="notes-main">
+    <section class="notes-hero">
+      <div class="bg-glow"></div>
+      <div class="container notes-hero__grid">
+        <div class="notes-hero__copy reveal">
+          <div class="notes-hero__badges">
+            <span class="notes-hero__eyebrow">Pulse Notes · v0.6.4 release</span>
+            <span class="notes-hero__pill" aria-label="Latest version">
+              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+              Latest v{APK_VERSION} · versionCode {APK_VERSION_CODE}
+            </span>
+          </div>
+          <h1 class="notes-hero__title">
+            Side-load v0.6.4<br />if your UpdateChecker is <span class="notes-hero__hl">still on v0.6.3.</span>
+          </h1>
+          <p class="notes-hero__sub">
+            v0.6.4 ships the in-app UpdateChecker and the manifest URL
+            fallback chain. v0.6.3 users cannot auto-update because the
+            v0.6.3 APK has a single manifest URL baked in at build time —
+            and that URL was retired in the same deploy that published
+            v0.6.4. This page is the manual side-load path.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="changelog" id="why">
+      <div class="container">
+        <header class="changelog__head reveal">
+          <span class="eyebrow">Why this page exists</span>
+          <h2>The v0.6.3 build cannot see v0.6.4.</h2>
+          <p class="lede">
+            The Pulse Notes in-app updater polls a remote manifest at a URL
+            that was compiled into the APK at build time. v0.6.3 was built
+            before the manifest URL fallback chain existed, so it polls a
+            single host. That host was retired when v0.6.4 deployed, and
+            v0.6.3 cannot reach the new host. Side-loading v0.6.4 installs
+            the new build with the new fallback chain, and from then on
+            every future release will reach the device through the in-app
+            updater.
+          </p>
+        </header>
+        <ol class="changelog__list" role="list">
+          <li class="changelog__item reveal">
+            <div class="changelog__body">
+              <h3 class="changelog__title">v0.6.3 polls a single host</h3>
+              <p>
+                The v0.6.3 APK was built with
+                <code>DEFAULT_MANIFEST_URL = https://hrkbksh0x0xz4.space.minimax.io/updates/android.json</code>
+                in
+                <code>pulse-android/web/src/lib/update-checker/update-checker.ts</code>.
+                No chain. No fallback. The updater polls that one host and
+                trusts whatever it returns.
+              </p>
+            </div>
+          </li>
+          <li class="changelog__item reveal">
+            <div class="changelog__body">
+              <h3 class="changelog__title">v0.6.4 retired that host</h3>
+              <p>
+                v0.6.4's manifest lives on a different host. The R87 host
+                still serves a v0.6.2 manifest (it was never updated to
+                v0.6.3). v0.6.3 polls the R87 host, gets v0.6.2 back, and
+                shows "your version is up to date" — even though v0.6.4 has
+                been live for hours.
+              </p>
+            </div>
+          </li>
+          <li class="changelog__item reveal">
+            <div class="changelog__body">
+              <h3 class="changelog__title">v0.6.4 adds the chain</h3>
+              <p>
+                v0.6.4 ships <code>DEFAULT_MANIFEST_URLS</code> as an
+                array of 5 known hosts (most-recent first), with the
+                <code>VITE_UPDATE_MANIFEST_URL</code> env override at the
+                head. From v0.6.4 onward, every APK that ships after a
+                host rotation will still find a valid manifest through
+                the chain.
+              </p>
+            </div>
+          </li>
+          <li class="changelog__item reveal">
+            <div class="changelog__body">
+              <h3 class="changelog__title">Long-term fix: a stable host</h3>
+              <p>
+                The fallback chain is a bridge, not a permanent solution.
+                The architectural fix is to publish the manifest at a
+                stable URL that does not rotate — Cloudflare R2 bucket,
+                GitHub Pages on
+                <code>TimesNuRoman/pulse</code>, or raw GitHub at
+                <code>raw.githubusercontent.com/TimesNuRoman/pulse/main/updates/android.json</code>.
+                Tracked as an R93+ follow-up; this page is the bridge
+                for v0.6.3 users today.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ncta" id="sideload">
+      <div class="bg-glow"></div>
+      <div class="container ncta__inner reveal">
+        <span class="eyebrow">Side-load v{APK_VERSION} · Android · universal APK</span>
+        <h2 class="ncta__title">Install v0.6.4 manually.</h2>
+        <p class="ncta__sub">
+          {APK_SIZE} APK · no Google Play · no account · no telemetry.
+        </p>
+        <div class="ncta__row">
+          <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
+            Download APK ↓ {APK_SIZE}
+          </a>
+          <a class="btn btn--ghost btn--lg" href="/changelog/#v0.6.4">Read the changelog</a>
+        </div>
+        <ol class="sideload-steps" role="list">
+          <li class="sideload-step">
+            <span class="sideload-step__num">1</span>
+            <div class="sideload-step__body">
+              <h3 class="sideload-step__title">Open the APK in a browser</h3>
+              <p>
+                On the Android device, open
+                <code>{APK_URL}</code>
+                in Chrome (or any browser). Confirm the download.
+                Some browsers may show a warning for downloads outside
+                Google Play — that is expected.
+              </p>
+            </div>
+          </li>
+          <li class="sideload-step">
+            <span class="sideload-step__num">2</span>
+            <div class="sideload-step__body">
+              <h3 class="sideload-step__title">Allow installs from this source</h3>
+              <p>
+                Android will ask for permission to install from the
+                browser (or file manager). Tap
+                <strong>Settings</strong>, toggle
+                <strong>Allow from this source</strong>, then return
+                and tap <strong>Install</strong>. This permission is
+                per-app and can be revoked after the install.
+              </p>
+            </div>
+          </li>
+          <li class="sideload-step">
+            <span class="sideload-step__num">3</span>
+            <div class="sideload-step__body">
+              <h3 class="sideload-step__title">Verify SHA-256 (optional)</h3>
+              <p>
+                Power users can verify the download against the published
+                fingerprint. The expected SHA-256 is:
+              </p>
+              <pre class="sideload-sha"><code>{APK_SHA_FULL}</code></pre>
+              <p class="sideload-sha-short">
+                Short form: <code>{APK_SHA_SHORT}</code>.
+              </p>
+            </div>
+          </li>
+          <li class="sideload-step">
+            <span class="sideload-step__num">4</span>
+            <div class="sideload-step__body">
+              <h3 class="sideload-step__title">Open Pulse Notes v0.6.4</h3>
+              <p>
+                The installer replaces the existing Pulse Notes app
+                (same <code>appId</code>,
+                <code>app.pulse.notes</code>) and preserves the local
+                SQLite database. All notes, tags, and backlinks are
+                intact. The in-app UpdateChecker is now active and will
+                handle every future release.
+              </p>
+            </div>
+          </li>
+        </ol>
+        <div class="ncta__grid">
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">versionName</span>
+            <span class="ncta__meta-val">{APK_VERSION}</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">versionCode</span>
+            <span class="ncta__meta-val">{APK_VERSION_CODE}</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">appId</span>
+            <span class="ncta__meta-val">app.pulse.notes</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">minSdk · targetSdk</span>
+            <span class="ncta__meta-val">24 · 36</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">SHA-256</span>
+            <span class="ncta__meta-val">{APK_SHA_SHORT}</span>
+          </div>
+        </div>
+        <p class="ncta__more">
+          <a href="/changelog/#v0.6.4">Full v0.6.4 release notes →</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer license="Apache 2.0" version="v0.6.4" />
+</Base>
+
+<style>
+  .sideload-steps {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    counter-reset: step;
+    max-width: 720px;
+    width: 100%;
+  }
+  .sideload-step {
+    display: flex;
+    gap: 1.1rem;
+    align-items: flex-start;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+  }
+  .sideload-step__num {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--purple);
+    color: var(--bg);
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .sideload-step__body {
+    flex: 1;
+    min-width: 0;
+  }
+  .sideload-step__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0 0 0.4rem;
+    line-height: 1.3;
+  }
+  .sideload-step p {
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin: 0 0 0.5rem;
+  }
+  .sideload-step p:last-child { margin-bottom: 0; }
+  .sideload-step code {
+    font-size: 0.86em;
+    color: var(--cyan);
+    background: var(--surface-2);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+  }
+  .sideload-sha {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.7rem 0.9rem;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-size: 0.78rem;
+    color: var(--cyan);
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    margin: 0.6rem 0 0.5rem;
+  }
+  .sideload-sha code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+  .sideload-sha-short {
+    margin-top: 0.3rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .sideload-sha-short code {
+    color: var(--cyan);
+  }
+</style>

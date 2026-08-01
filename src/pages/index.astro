@@ -2,25 +2,25 @@
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 
-const APK_URL = 'https://wztgxiy1eu29i.space.minimax.io/pulse-notes-0.6.2-debug.apk';
-const APK_SIZE = '4.34 MB';
-const APK_VERSION = '0.6.2';
-const APK_VERSION_CODE = '12';
-const APK_SHA = '2F8BB218…8F60';
+const APK_URL = 'https://9u26sgn3vblim.space.minimax.io/downloads/pulse-notes-0.6.4-debug.apk';
+const APK_SIZE = '4.35 MB';
+const APK_VERSION = '0.6.4';
+const APK_VERSION_CODE = '14';
+const APK_SHA = 'FB6FD8A0…0C58E';
 const APK_APP_ID = 'app.pulse.notes';
 const APK_MIN_SDK = '24';
 const APK_TARGET_SDK = '36';
 ---
 
 <Base
-  title="Pulse Notes v0.6.2 — A markdown editor, built for Android, from scratch."
-  description="Pulse Notes v0.6.2 — A markdown editor, built for Android, from scratch. Svelte 5 + TS strict + CodeMirror 6 + [[wikilink]] + tag autocomplete. 4.34 MB APK, 184/184 vitest, Smart Engine v3, Apache 2.0, no cloud, no telemetry."
+  title="Pulse Notes v0.6.4 — A markdown editor, built for Android, from scratch."
+  description="Pulse Notes v0.6.4 — A markdown editor, built for Android, from scratch. Svelte 5 + TS strict + CodeMirror 6 + [[wikilink]] + tag autocomplete. 4.35 MB APK, 252/252 vitest, in-app update checker, manifest URL fallback chain, Smart Engine v3, Apache 2.0, no cloud, no telemetry."
   ogImage="/og/notes-v60.svg"
   ctaText={`Get Pulse Notes ↓ ${APK_SIZE}`}
   ctaHref={APK_URL}
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.2"
+  footerVersion="v0.6.4"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -130,9 +130,10 @@ const APK_TARGET_SDK = '36';
           <p class="notes-hero__sub">
             Pulse Notes is a local-first markdown editor for Android. Written from
             scratch on Svelte 5 + TypeScript strict, with CodeMirror 6,
-            <code>[[wikilink]]</code> backlinks, and tag autocomplete. v0.6.2
-            ships the new onboarding; the editor, search, and capture sheet have
-            been stable since v0.6.0.
+            <code>[[wikilink]]</code> backlinks, and tag autocomplete. v0.6.4
+            ships the in-app UpdateChecker and the manifest URL fallback chain;
+            the editor, search, capture sheet, and onboarding have been stable
+            since v0.6.0.
           </p>
           <div class="notes-hero__ctas">
             <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
@@ -140,7 +141,7 @@ const APK_TARGET_SDK = '36';
             </a>
             <a class="btn btn--ghost btn--lg" href="/changelog/">Read the changelog</a>
           </div>
-          <ul class="notes-hero__stats" role="list" aria-label="Pulse Notes v0.6.2 highlights">
+          <ul class="notes-hero__stats" role="list" aria-label="Pulse Notes v0.6.4 highlights">
             <li class="notes-hero__stat">
               <span class="notes-hero__stat-num">+32<span class="notes-hero__stat-unit">pp</span></span>
               <span class="notes-hero__stat-label">pass-rate (Smart Engine v3)</span>
@@ -152,7 +153,7 @@ const APK_TARGET_SDK = '36';
             </li>
             <li class="notes-hero__stat-sep" aria-hidden="true">·</li>
             <li class="notes-hero__stat">
-              <span class="notes-hero__stat-num">184<span class="notes-hero__stat-unit">/184</span></span>
+              <span class="notes-hero__stat-num">252<span class="notes-hero__stat-unit">/252</span></span>
               <span class="notes-hero__stat-label">vitest</span>
             </li>
             <li class="notes-hero__stat-sep" aria-hidden="true">·</li>
@@ -167,7 +168,7 @@ const APK_TARGET_SDK = '36';
           <figure class="notes-hero__shot notes-hero__shot--editor">
             <img
               src="/mockups/notes-v60-editor.svg"
-              alt="Pulse Notes v0.6.2 Android editor with split-pane preview"
+              alt="Pulse Notes v0.6.4 Android editor with split-pane preview"
               width="720"
               height="520"
               loading="eager"
@@ -185,7 +186,7 @@ const APK_TARGET_SDK = '36';
           <span class="eyebrow">Why Pulse Notes</span>
           <h2>Three things. No roadmap.</h2>
           <p class="lede">
-            Pulse Notes is the only surface that ships in v0.6.2. It does three
+            Pulse Notes is the only surface that ships in v0.6.4. It does three
             things and does them on device, with no account, no telemetry, and no
             network round-trip.
           </p>
@@ -210,7 +211,7 @@ const APK_TARGET_SDK = '36';
             <span class="why__card-label">Smart</span>
             <h3 class="why__card-title">Smart Engine v3 routes the right model for the query.</h3>
             <p class="why__card-body">
-              v0.6.2 ships with the v3 router and the v3 recall gate as the
+              v0.6.4 ships with the v3 router and the v3 recall gate as the
               default surface. Pass-rate 88% absolute (+32&nbsp;pp over the v2
               baseline), p50 latency −1370&nbsp;ms, threshold&nbsp;5. The same
               A/B harness that gates desktop chat gates the recall step in
@@ -225,7 +226,7 @@ const APK_TARGET_SDK = '36';
           </article>
           <article class="why__card glass reveal">
             <span class="why__card-label">Fast</span>
-            <h3 class="why__card-title">4.34 MB APK. 60fps on mid-range Android.</h3>
+            <h3 class="why__card-title">4.35 MB APK. 60fps on mid-range Android.</h3>
             <p class="why__card-body">
               The full greenfield build is 4.34&nbsp;MB, with the JS bundle at
               849&nbsp;KB raw / 306&nbsp;KB gzipped. The CodeMirror editor
@@ -234,7 +235,7 @@ const APK_TARGET_SDK = '36';
               Android 7+. minSdk&nbsp;24, targetSdk&nbsp;36.
             </p>
             <ul class="why__card-list" role="list">
-              <li>4.34 MB APK, versionCode {APK_VERSION_CODE}.</li>
+              <li>4.35 MB APK, versionCode {APK_VERSION_CODE}.</li>
               <li>minSdk 24 (Android 7.0) · targetSdk 36.</li>
               <li>First paint under 60 KB before CodeMirror loads.</li>
             </ul>
@@ -248,21 +249,74 @@ const APK_TARGET_SDK = '36';
       <div class="container">
         <header class="timeline__head reveal">
           <span class="eyebrow">What is new in v0.6.x</span>
-          <h2>Three releases, each one a step toward a stable Android surface.</h2>
+          <h2>Five releases, each one a step toward a stable Android surface.</h2>
           <p class="lede">
             v0.6.0 was the greenfield rewrite. v0.6.1 brought the app icon and
-            splash screen. v0.6.2 ships the new onboarding. The editor, search,
-            and capture sheet have been stable since v0.6.0.
+            splash screen. v0.6.2 ships the new onboarding. v0.6.3 revives the
+            in-app UpdateChecker. v0.6.4 adds the manifest URL fallback chain so
+            the updater survives future host rotations. The editor, search, and
+            capture sheet have been stable since v0.6.0.
           </p>
         </header>
         <ol class="timeline__list" role="list">
-          <li class="timeline__item reveal" id="v062">
+          <li class="timeline__item reveal" id="v064">
             <div class="timeline__rail" aria-hidden="true">
               <span class="timeline__dot"></span>
             </div>
             <div class="timeline__body">
               <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
               <span class="timeline__tag">latest</span>
+              <h3 class="timeline__title">v0.6.4 — manifest URL fallback chain</h3>
+              <p class="timeline__copy">
+                UpdateChecker now tries a chain of 5 known manifest hosts instead
+                of a single baked-in URL. The most recent host is tried first;
+                <code>VITE_UPDATE_MANIFEST_URL</code> env override is always at
+                the head. Closes the chicken-and-egg loop where every
+                <code>website_deploy</code> rotation orphaned the previous APK's
+                poll target. versionCode 13 → 14. APK +408&nbsp;B.
+                v0.6.3 users cannot auto-update — see the
+                <a href="/release-notes-v0.6.4/">v0.6.4 side-load page</a>.
+              </p>
+              <ul class="timeline__bullets" role="list">
+                <li>5-host chain in <code>DEFAULT_MANIFEST_URLS</code> (most-recent first), env override at head.</li>
+                <li><code>fetchManifestFromChain</code> try-each-URL with <code>attempts[]</code> log.</li>
+                <li><code>UpdateResult.manifestUrl</code> diagnostic field for triage.</li>
+                <li>252/252 vitest (16 new for chain + helper parity).</li>
+                <li>versionCode 13 → 14. APK 4.34 → 4.35&nbsp;MB.</li>
+              </ul>
+            </div>
+          </li>
+          <li class="timeline__item reveal" id="v063">
+            <div class="timeline__rail" aria-hidden="true">
+              <span class="timeline__dot"></span>
+            </div>
+            <div class="timeline__body">
+              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
+              <h3 class="timeline__title">v0.6.3 — In-app UpdateChecker revival</h3>
+              <p class="timeline__copy">
+                R52's in-app UpdateChecker was lost in R73 mavis-trash and the
+                R77 greenfield reset. v0.6.3 brings it back. Polls a remote
+                manifest, surfaces an M3 dialog with force-update support,
+                SHA-256 fingerprint, release-notes link, and a 24h cache TTL.
+                <code>compareVersions</code> handles leading <code>v</code>,
+                pre-release suffixes, missing segments, and numeric vs lex
+                ordering. versionCode 12 → 13. APK +1.1&nbsp;KB.
+              </p>
+              <ul class="timeline__bullets" role="list">
+                <li><code>UpdateChecker</code> core + <code>UpdateCheckerMount.svelte</code> + <code>UpdateDialog.svelte</code> (M3, 0 emoji).</li>
+                <li>Soft + force update modes, 24h cache, <code>@capacitor/browser</code> for APK installs.</li>
+                <li>SHA-256 verification against <code>latest_apk_sha256</code> in the manifest.</li>
+                <li>184/184 → 236/236 vitest (52 new for the chain + helpers).</li>
+                <li>versionCode 12 → 13. APK 4.34 → 4.34&nbsp;MB.</li>
+              </ul>
+            </div>
+          </li>
+          <li class="timeline__item reveal" id="v062">
+            <div class="timeline__rail" aria-hidden="true">
+              <span class="timeline__dot"></span>
+            </div>
+            <div class="timeline__body">
+              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
               <h3 class="timeline__title">v0.6.2 — Onboarding v2 + 184/184 vitest</h3>
               <p class="timeline__copy">
                 Four onboarding screens replace the single splash: Welcome,
@@ -402,13 +456,13 @@ const APK_TARGET_SDK = '36';
           </div>
         </div>
         <p class="ncta__more">
-          <a href="/changelog/#v0.6.2">Full v0.6.2 release notes →</a>
+          <a href="/changelog/#v0.6.4">Full v0.6.4 release notes →</a>
         </p>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.2" />
+  <Footer license="Apache 2.0" version="v0.6.4" />
 </Base>
 
 <style>
