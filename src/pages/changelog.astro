@@ -16,6 +16,22 @@ interface Release {
 
 const releases: Release[] = [
   {
+    version: '0.6.1',
+    date: '2026-08-01',
+    type: 'minor',
+    title: 'Adaptive app icon + M3 splash screen',
+    summary: 'Pulse Notes now launches with a proper Android 8+ adaptive icon (Tokyo Night blue P + 4-point spark) and a Material 3 splash screen that eliminates the white flash on cold start. No code changes, no new features — the app just looks like it belongs on the device.',
+    bullets: [
+      'Adaptive icon foreground: geometric P (#7aa2f7) with a 4-point spark (#bb9af7) on Tokyo Night background (#1a1b26).',
+      'Monochrome variant for Android 13+ themed icons — the system tints it to match the wallpaper.',
+      'Legacy mipmap PNGs regenerated at mdpi/hdpi/xhdpi/xxhdpi/xxxhdpi (48 to 192 px).',
+      'AppTheme.NoActionBarLaunch now uses Theme.SplashScreen with windowSplashScreenBackground = #1a1b26, so the first frame after process start is dark — no white flash before the WebView loads.',
+      'Center 1400x1400 P+spark on the 2732x2732 splash drawable — fits inside the 1200x1200 safe zone on every screen.',
+      'versionCode 10 → 11. APK grew +12 KB (4.32 → 4.34 MB); the new splash is larger than the old one but the smaller vector icons offset the cost.',
+      '150/150 vitest still green; no web code changes.',
+    ],
+  },
+  {
     version: '0.6.0',
     date: '2026-08-01',
     type: 'major',
@@ -132,10 +148,9 @@ const releases: Release[] = [
         <li><a class="nav__link" href="/notes/">Notes</a></li>
         <li><a class="nav__link" href="/#download">Download</a></li>
         <li><a class="nav__link is-cta" href="/changelog/" aria-current="page">Changelog</a></li>
-        <li><a class="nav__link" href="/changelog/">Blog</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/#download">Get Pulse ↓ 12MB</a>
+        <a class="btn btn--primary nav__cta" href="/notes/#download">Get Pulse Notes ↓ 4.32 MB</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -152,8 +167,7 @@ const releases: Release[] = [
     <a class="nav-drawer__link" href="/notes/">Notes</a>
     <a class="nav-drawer__link" href="/#download">Download</a>
     <a class="nav-drawer__link" href="/changelog/" aria-current="page">Changelog</a>
-    <a class="nav-drawer__link" href="/changelog/">Blog</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/#download">Get Pulse ↓ 12MB</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/notes/#download">Get Pulse Notes ↓ 4.32 MB</a>
   </div>
 
   <script is:inline>
@@ -209,7 +223,7 @@ const releases: Release[] = [
             <span class="notes-hero__eyebrow">Pulse · Changelog</span>
             <span class="notes-hero__pill" aria-label="Latest version">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Latest v0.6.0
+              Latest v0.6.1
             </span>
           </div>
           <h1 class="notes-hero__title">
@@ -265,13 +279,13 @@ const releases: Release[] = [
                   <div class="changelog__download">
                     <a
                       class="btn btn--primary"
-                      href="/updates/android.json"
+                      href="https://ozfg792b0bote.space.minimax.io/downloads/pulse-notes-0.6.0-greenfield-debug.apk"
                       rel="noopener"
                     >
                       ⬇ Download Pulse Notes 0.6.0 (4.32MB APK)
                     </a>
                     <span class="changelog__download-meta">
-                      SHA-256: <code>C1C890…CD86</code> · Android 7.0+ · x64
+                      SHA-256: <code>C1C890…CD86</code> · Android 7.0+ · universal APK
                     </span>
                   </div>
                 )}
