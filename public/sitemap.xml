@@ -1,45 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://2edat6990bfwg.space.minimax.io/</loc>
+    <loc>https://e6ghos1wgcskc.space.minimax.io/</loc>
     <lastmod>2026-08-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://2edat6990bfwg.space.minimax.io/notes/</loc>
+    <loc>https://e6ghos1wgcskc.space.minimax.io/notes/</loc>
     <lastmod>2026-08-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://2edat6990bfwg.space.minimax.io/changelog/</loc>
+    <loc>https://e6ghos1wgcskc.space.minimax.io/compare/</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://e6ghos1wgcskc.space.minimax.io/changelog/</loc>
     <lastmod>2026-08-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://2edat6990bfwg.space.minimax.io/release-notes-v0.6.4/</loc>
+    <loc>https://e6ghos1wgcskc.space.minimax.io/release-notes-v0.6.4/</loc>
     <lastmod>2026-08-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://2edat6990bfwg.space.minimax.io/release-notes-v0.6.5/</loc>
+    <loc>https://e6ghos1wgcskc.space.minimax.io/release-notes-v0.6.5/</loc>
     <lastmod>2026-08-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://2edat6990bfwg.space.minimax.io/privacy/</loc>
+    <loc>https://e6ghos1wgcskc.space.minimax.io/privacy/</loc>
     <lastmod>2026-08-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://2edat6990bfwg.space.minimax.io/code-of-conduct/</loc>
+    <loc>https://e6ghos1wgcskc.space.minimax.io/code-of-conduct/</loc>
     <lastmod>2026-08-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://e6ghos1wgcskc.space.minimax.io/license/</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>

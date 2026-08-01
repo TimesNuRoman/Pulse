@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Pulse vs Raycast AI, Notion AI, AnythingLLM, LM Studio, Ollama. Local-first AI that respects your time and privacy.">
+  <title>Pulse vs Raycast AI, Notion AI, AnythingLLM, LM Studio, Ollama — local-first AI</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1b26"/>
+      <stop offset="1" stop-color="#16171f"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="0.12" cy="0.08" r="0.55">
+      <stop offset="0" stop-color="#bb9af7" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#bb9af7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0.92" cy="0.95" r="0.5">
+      <stop offset="0" stop-color="#7aa2f7" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#7aa2f7" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hl" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#bb9af7"/>
+      <stop offset="0.5" stop-color="#7aa2f7"/>
+      <stop offset="1" stop-color="#7dcfff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow1)"/>
+  <rect width="1200" height="630" fill="url(#glow2)"/>
+
+  <!-- Pulse logo (top-left) -->
+  <g transform="translate(80, 80)">
+    <circle cx="32" cy="32" r="30" fill="none" stroke="#bb9af7" stroke-width="2" opacity="0.7"/>
+    <circle cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5" opacity="0.85"/>
+    <circle cx="32" cy="32" r="9" fill="#bb9af7"/>
+    <circle cx="35" cy="30" r="2" fill="#1a1b26"/>
+  </g>
+  <text x="160" y="100" font-family="ui-sans-serif, system-ui" font-size="20" fill="#c0caf5" font-weight="700">Pulse</text>
+  <text x="160" y="124" font-family="ui-sans-serif, system-ui" font-size="13" fill="#9aa5ce" font-weight="500">AI that doesn&#39;t get to leave the room.</text>
+
+  <!-- Eyebrow ribbon -->
+  <g transform="translate(80, 200)">
+    <rect x="0" y="0" width="220" height="32" rx="16" fill="rgba(187,154,247,0.10)" stroke="rgba(187,154,247,0.4)"/>
+    <text x="20" y="22" font-family="ui-sans-serif, system-ui" font-size="13" fill="#bb9af7" font-weight="700" letter-spacing="0.05em">COMPARE - 6 PRODUCTS</text>
+  </g>
+
+  <!-- Title (two lines) -->
+  <text x="80" y="290" font-family="ui-sans-serif, system-ui" font-size="54" fill="url(#hl)" font-weight="600" letter-spacing="-0.025em">Local-first AI that</text>
+  <text x="80" y="356" font-family="ui-sans-serif, system-ui" font-size="54" fill="#c0caf5" font-weight="600" letter-spacing="-0.025em">respects your time</text>
+  <text x="80" y="422" font-family="ui-sans-serif, system-ui" font-size="54" fill="#c0caf5" font-weight="600" letter-spacing="-0.025em">and privacy.</text>
+
+  <!-- Subtitle -->
+  <text x="80" y="478" font-family="ui-sans-serif, system-ui" font-size="20" fill="#9aa5ce" font-weight="500">Pulse vs Raycast AI - Notion AI - AnythingLLM - LM Studio - Ollama</text>
+
+  <!-- Competitor pills (right side) -->
+  <g transform="translate(80, 520)">
+    <g>
+      <rect x="0" y="0" width="170" height="48" rx="24" fill="#bb9af7"/>
+      <text x="85" y="30" font-family="ui-sans-serif, system-ui" font-size="16" fill="#1a1b26" font-weight="700" text-anchor="middle">Pulse (you are here)</text>
+    </g>
+    <g transform="translate(180, 0)">
+      <rect x="0" y="0" width="120" height="48" rx="24" fill="rgba(36,40,59,0.7)" stroke="rgba(187,154,247,0.4)"/>
+      <text x="60" y="30" font-family="ui-sans-serif, system-ui" font-size="16" fill="#c0caf5" font-weight="600" text-anchor="middle">Raycast AI</text>
+    </g>
+    <g transform="translate(310, 0)">
+      <rect x="0" y="0" width="120" height="48" rx="24" fill="rgba(36,40,59,0.7)" stroke="rgba(187,154,247,0.4)"/>
+      <text x="60" y="30" font-family="ui-sans-serif, system-ui" font-size="16" fill="#c0caf5" font-weight="600" text-anchor="middle">Notion AI</text>
+    </g>
+    <g transform="translate(440, 0)">
+      <rect x="0" y="0" width="140" height="48" rx="24" fill="rgba(36,40,59,0.7)" stroke="rgba(187,154,247,0.4)"/>
+      <text x="70" y="30" font-family="ui-sans-serif, system-ui" font-size="16" fill="#c0caf5" font-weight="600" text-anchor="middle">AnythingLLM</text>
+    </g>
+    <g transform="translate(590, 0)">
+      <rect x="0" y="0" width="120" height="48" rx="24" fill="rgba(36,40,59,0.7)" stroke="rgba(187,154,247,0.4)"/>
+      <text x="60" y="30" font-family="ui-sans-serif, system-ui" font-size="16" fill="#c0caf5" font-weight="600" text-anchor="middle">LM Studio</text>
+    </g>
+    <g transform="translate(720, 0)">
+      <rect x="0" y="0" width="110" height="48" rx="24" fill="rgba(36,40,59,0.7)" stroke="rgba(187,154,247,0.4)"/>
+      <text x="55" y="30" font-family="ui-sans-serif, system-ui" font-size="16" fill="#c0caf5" font-weight="600" text-anchor="middle">Ollama</text>
+    </g>
+  </g>
+
+  <!-- Bottom meta -->
+  <text x="80" y="600" font-family="ui-sans-serif, system-ui" font-size="13" fill="#565f89" font-weight="500">Apache 2.0 - 0 emoji - 0 marketing fluff - updated 2026-08-01</text>
+</svg>

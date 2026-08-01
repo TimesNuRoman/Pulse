@@ -139,6 +139,22 @@ section + section { border-top: 1px solid var(--border); }
   max-width: 60ch;
 }
 
+/* ── Nav links (44dp+ touch target, M3 / Apple HIG) ─── */
+.nav__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 0.9rem;
+  min-height: 44px;
+  color: var(--fg-dim);
+  font-size: 0.94rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+  text-decoration: none;
+}
+.nav__link:hover { color: var(--fg); background: var(--surface); }
+.nav__link[aria-current="page"] { color: var(--purple); }
+
 /* ── Buttons ─────────────────────────────────────────── */
 .btn {
   display: inline-flex;
