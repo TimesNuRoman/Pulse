@@ -1,13 +1,20 @@
 {
-  "latest_version": "0.6.4",
-  "latest_version_code": 14,
-  "latest_apk_url": "https://9u26sgn3vblim.space.minimax.io/downloads/pulse-notes-0.6.4-debug.apk",
-  "latest_apk_size_bytes": 4556129,
-  "latest_apk_sha256": "FB6FD8A0C720DF7FB4CC902FC480EFF258A5AD5D7B5FF7A24893BA1437A0C58E",
-  "release_notes_url": "https://hrkbksh0x0xz4.space.minimax.io/changelog/#v0.6.4",
+  "latest_version": "0.6.5",
+  "latest_version_code": 15,
+  "latest_apk_url": "https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk",
+  "latest_apk_size_bytes": 4607931,
+  "latest_apk_sha256": "AD81D03C87BB96C121299F8843F1E25596FF7AE657D750D27D7A4C351D1D7607",
+  "release_notes_url": "https://2edat6990bfwg.space.minimax.io/release-notes-v0.6.5/",
   "min_supported_version": "0.3.0",
   "force_update_below": "0.3.0",
   "versions": [
+    {
+      "version": "0.6.5",
+      "version_code": 15,
+      "date": "2026-08-01",
+      "type": "minor",
+      "summary": "R93 bridge release: manifest chain grown 5 to 7 (adds R92 yv5eeknt6h6sa at index 0 and R90 ad67rp710vsl7), so v0.6.5+ devices can auto-update forward even if R90 / R88 hosts go down. v0.6.3 / v0.6.4 users side-load v0.6.5 directly (their baked-in chain does not include the new hosts)."
+    },
     {
       "version": "0.6.4",
       "version_code": 14,

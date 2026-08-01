@@ -2,25 +2,25 @@
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 
-const APK_URL = 'https://9u26sgn3vblim.space.minimax.io/downloads/pulse-notes-0.6.4-debug.apk';
-const APK_SIZE = '4.35 MB';
-const APK_VERSION = '0.6.4';
-const APK_VERSION_CODE = '14';
-const APK_SHA = 'FB6FD8A0…0C58E';
+const APK_URL = 'https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk';
+const APK_SIZE = '4.39 MB';
+const APK_VERSION = '0.6.5';
+const APK_VERSION_CODE = '15';
+const APK_SHA = 'AD81D03C…1D7607';
 const APK_APP_ID = 'app.pulse.notes';
 const APK_MIN_SDK = '24';
 const APK_TARGET_SDK = '36';
 ---
 
 <Base
-  title="Pulse Notes v0.6.4 — A markdown editor, built for Android, from scratch."
-  description="Pulse Notes v0.6.4 — A markdown editor, built for Android, from scratch. Svelte 5 + TS strict + CodeMirror 6 + [[wikilink]] + tag autocomplete. 4.35 MB APK, 252/252 vitest, in-app update checker, manifest URL fallback chain, Smart Engine v3, Apache 2.0, no cloud, no telemetry."
+  title="Pulse Notes v0.6.5 — A markdown editor, built for Android, from scratch."
+  description="Pulse Notes v0.6.5 — A markdown editor, built for Android, from scratch. Svelte 5 + TS strict + CodeMirror 6 + [[wikilink]] + tag autocomplete. 4.39 MB APK, 276/276 vitest, in-app update checker, manifest URL fallback chain (7 hosts), Smart Engine v3, Apache 2.0, no cloud, no telemetry."
   ogImage="/og/notes-v60.svg"
   ctaText={`Get Pulse Notes ↓ ${APK_SIZE}`}
   ctaHref={APK_URL}
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.4"
+  footerVersion="v0.6.5"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -141,7 +141,7 @@ const APK_TARGET_SDK = '36';
             </a>
             <a class="btn btn--ghost btn--lg" href="/changelog/">Read the changelog</a>
           </div>
-          <ul class="notes-hero__stats" role="list" aria-label="Pulse Notes v0.6.4 highlights">
+          <ul class="notes-hero__stats" role="list" aria-label="Pulse Notes v0.6.5 highlights">
             <li class="notes-hero__stat">
               <span class="notes-hero__stat-num">+32<span class="notes-hero__stat-unit">pp</span></span>
               <span class="notes-hero__stat-label">pass-rate (Smart Engine v3)</span>
@@ -153,7 +153,7 @@ const APK_TARGET_SDK = '36';
             </li>
             <li class="notes-hero__stat-sep" aria-hidden="true">·</li>
             <li class="notes-hero__stat">
-              <span class="notes-hero__stat-num">252<span class="notes-hero__stat-unit">/252</span></span>
+              <span class="notes-hero__stat-num">276<span class="notes-hero__stat-unit">/276</span></span>
               <span class="notes-hero__stat-label">vitest</span>
             </li>
             <li class="notes-hero__stat-sep" aria-hidden="true">·</li>
@@ -253,19 +253,47 @@ const APK_TARGET_SDK = '36';
           <p class="lede">
             v0.6.0 was the greenfield rewrite. v0.6.1 brought the app icon and
             splash screen. v0.6.2 ships the new onboarding. v0.6.3 revives the
-            in-app UpdateChecker. v0.6.4 adds the manifest URL fallback chain so
-            the updater survives future host rotations. The editor, search, and
-            capture sheet have been stable since v0.6.0.
+            in-app UpdateChecker. v0.6.4 adds the manifest URL fallback chain
+            (5 hosts). v0.6.5 grows the chain to 7 hosts (R92 + R90 added at
+            the head) and ships side-load docs for v0.6.3 / v0.6.4 users. The
+            editor, search, and capture sheet have been stable since v0.6.0.
           </p>
         </header>
         <ol class="timeline__list" role="list">
-          <li class="timeline__item reveal" id="v064">
+          <li class="timeline__item reveal" id="v065">
             <div class="timeline__rail" aria-hidden="true">
               <span class="timeline__dot"></span>
             </div>
             <div class="timeline__body">
               <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
               <span class="timeline__tag">latest</span>
+              <h3 class="timeline__title">v0.6.5 — manifest chain grown to 7 (R93 bridge release)</h3>
+              <p class="timeline__copy">
+                DEFAULT_MANIFEST_URLS grows from 5 to 7 entries. R92
+                (<code>yv5eeknt6h6sa</code>) and R90
+                (<code>ad67rp710vsl7</code>) are added at the head, so v0.6.5+
+                devices can auto-update forward even if the R88 / R87 hosts go
+                down. v0.6.3 users have a single baked-in URL and v0.6.4
+                users have a 5-host chain — both will keep showing
+                "your version is up to date" because their chains do not
+                include the new hosts. Side-load v0.6.5 once; from then on
+                the 7-host chain handles every future release.
+              </p>
+              <ul class="timeline__bullets" role="list">
+                <li><code>DEFAULT_MANIFEST_URLS</code>: 5 → 7 entries. New order: R92 → R90 → R88 → R87 → R85 → R81 → R78.</li>
+                <li>New <a href="/release-notes-v0.6.5/">/release-notes-v0.6.5/</a> page with 4-step side-load instructions and full SHA-256.</li>
+                <li>276/276 vitest (+24 for v0.6.5 path: chain head assertions, APP_VERSION bump, dedup + HTTPS guards).</li>
+                <li>versionCode 14 → 15. APK 4.35 → 4.39&nbsp;MB.</li>
+                <li>KNOWN LIMITATION (unchanged from R90): v0.6.3 / v0.6.4 APKs are locked to chains that do not include R92 / R90. The v0.6.3 / v0.6.4 retro gap is permanent until the v0.1 sync plan ships a stable manifest host.</li>
+              </ul>
+            </div>
+          </li>
+          <li class="timeline__item reveal" id="v064">
+            <div class="timeline__rail" aria-hidden="true">
+              <span class="timeline__dot"></span>
+            </div>
+            <div class="timeline__body">
+              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
               <h3 class="timeline__title">v0.6.4 — manifest URL fallback chain</h3>
               <p class="timeline__copy">
                 UpdateChecker now tries a chain of 5 known manifest hosts instead
@@ -456,13 +484,13 @@ const APK_TARGET_SDK = '36';
           </div>
         </div>
         <p class="ncta__more">
-          <a href="/changelog/#v0.6.4">Full v0.6.4 release notes →</a>
+          <a href="/changelog/#v0.6.5">Full v0.6.5 release notes →</a>
         </p>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.4" />
+  <Footer license="Apache 2.0" version="v0.6.5" />
 </Base>
 
 <style>

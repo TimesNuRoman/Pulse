@@ -16,6 +16,27 @@ interface Release {
 
 const releases: Release[] = [
   {
+    version: '0.6.5',
+    date: '2026-08-01',
+    type: 'minor',
+    title: 'Manifest chain grown to 7 (bridge for v0.6.3 and v0.6.4)',
+    summary: 'R93 bridge release: the manifest URL fallback chain in DEFAULT_MANIFEST_URLS grows from 5 to 7 hosts. R92 (yv5eeknt6h6sa) and R90 (ad67rp710vsl7) are added at the head, so v0.6.5+ devices can auto-update forward even if the R88 / R87 hosts go down. v0.6.3 and v0.6.4 users cannot auto-update because their baked-in chain does not include these two hosts — see the side-load page for the manual path. The update checker logic itself is unchanged from R90; this is purely a chain-length bump plus a side-load documentation release.',
+    bullets: [
+      'DEFAULT_MANIFEST_URLS: 5 → 7 entries. New order: R92 (yv5eeknt6h6sa) → R90 (ad67rp710vsl7) → R88 (32dhrw35m4x2v) → R87 (hrkbksh0x0xz4) → R85 (cq9a31txpromd) → R81 (813khigmhk9k8) → R78 (fy150e36f93n8).',
+      'APP_VERSION 0.6.4 → 0.6.5. APP_VERSION_CODE 14 → 15. package.json and web/package.json bumped to 0.6.5. android/app/build.gradle versionCode 14 → 15, versionName 0.6.5.',
+      'New /release-notes-v0.6.5/ page (M3, 0 emoji, vanilla CSS, DARK) documenting the v0.6.3 / v0.6.4 side-load path with 4-step instructions and full SHA-256 verification.',
+      '252/252 → 276/276 vitest (+24 for v0.6.5 path: chain head assertions, APP_VERSION bump, compareVersions 0.6.5 vs 0.6.4 and 0.6.10, fetchManifestFromChain walks the chain when R92 host is down, dedup guard, valid HTTPS URL guard, v0.6.5 user sees "no update needed").',
+      'APK 4,556,129 → 4,607,931 B (+51,802 B for the 2 added host strings and the new /release-notes-v0.6.5/ page asset; no code logic delta).',
+      'KNOWN LIMITATION (unchanged from R90): v0.6.3 and v0.6.4 APKs are locked to chains that do not include R92 / R90. v0.6.5 closes the loop for future v0.6.6+ updates; the v0.6.3 / v0.6.4 retro gap is permanent until the v0.1 sync plan ships a stable manifest host.',
+    ],
+    callout: {
+      eyebrow: 'v0.6.3 + v0.6.4 users · manual update path',
+      title: 'If your UpdateChecker is stuck on v0.6.3 or v0.6.4, side-load v0.6.5.',
+      body: 'The v0.6.3 APK has a single baked-in manifest URL. The v0.6.4 APK has a 5-host chain that predates the R92 and R90 deploys. Both will poll their chains, see an older version, and show "your version is up to date" — even though v0.6.5 is live. v0.6.3 and v0.6.4 users need to side-load v0.6.5 once; from then on the new 7-host chain handles every future release.',
+      cta: { label: 'Open the v0.6.5 side-load page', href: '/release-notes-v0.6.5/' },
+    },
+  },
+  {
     version: '0.6.4',
     date: '2026-08-01',
     type: 'minor',
@@ -188,13 +209,13 @@ const releases: Release[] = [
 ---
 <Base
   title="Changelog · Pulse"
-  description="Pulse release notes — what shipped, when, and why. v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 Pulse Notes onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse Notes for Android, v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
+  description="Pulse release notes — what shipped, when, and why. v0.6.5 R93 bridge release (manifest chain 5 to 7, side-load docs for v0.6.3 / v0.6.4), v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 Pulse Notes onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse Notes for Android, v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
   ogImage="/og-image.svg"
-  ctaText="Get Pulse Notes ↓ 4.35 MB"
-  ctaHref="https://9u26sgn3vblim.space.minimax.io/downloads/pulse-notes-0.6.4-debug.apk"
+  ctaText="Get Pulse Notes ↓ 4.39 MB"
+  ctaHref="https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk"
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.4"
+  footerVersion="v0.6.5"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -217,7 +238,7 @@ const releases: Release[] = [
         <li><a class="nav__link is-cta" href="/changelog/" aria-current="page">Changelog</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/notes/#download">Get Pulse Notes ↓ 4.35 MB</a>
+        <a class="btn btn--primary nav__cta" href="/notes/#download">Get Pulse Notes ↓ 4.39 MB</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -234,7 +255,7 @@ const releases: Release[] = [
     <a class="nav-drawer__link" href="/notes/">Notes</a>
     <a class="nav-drawer__link" href="/#download">Download</a>
     <a class="nav-drawer__link" href="/changelog/" aria-current="page">Changelog</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/notes/#download">Get Pulse Notes ↓ 4.35 MB</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/notes/#download">Get Pulse Notes ↓ 4.39 MB</a>
   </div>
 
   <script is:inline>
@@ -290,14 +311,14 @@ const releases: Release[] = [
             <span class="notes-hero__eyebrow">Pulse · Changelog</span>
             <span class="notes-hero__pill" aria-label="Latest version">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Latest v0.6.4
+              Latest v0.6.5
             </span>
           </div>
           <h1 class="notes-hero__title">
             What shipped, <span class="notes-hero__hl">when, and why.</span>
           </h1>
           <p class="notes-hero__sub">
-            Nine shipped entries between v0.4.0 and v0.6.4. Dates are local
+            Ten shipped entries between v0.4.0 and v0.6.5. Dates are local
             (Asia/Bangkok). Major versions reset the public API; minor versions
             add capability; patches fix regressions.
           </p>
@@ -342,6 +363,20 @@ const releases: Release[] = [
                     )}
                   </aside>
                 )}
+                {r.version === '0.6.5' && (
+                  <div class="changelog__download">
+                    <a
+                      class="btn btn--primary"
+                      href="https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk"
+                      rel="noopener"
+                    >
+                      Download Pulse Notes 0.6.5 ↓ 4.39 MB APK
+                    </a>
+                    <span class="changelog__download-meta">
+                      SHA-256: <code>AD81D03C…1D7607</code> · Android 7.0+ · universal APK · versionCode 15
+                    </span>
+                  </div>
+                )}
                 {r.version === '0.6.4' && (
                   <div class="changelog__download">
                     <a
@@ -368,10 +403,10 @@ const releases: Release[] = [
       <div class="container ncta__inner reveal">
         <h2 class="ncta__title">Try Pulse Notes.</h2>
         <p class="ncta__sub">
-          4.35 MB APK. No Google Play, no account, no telemetry. Open the installer and it works.
+          4.39 MB APK. No Google Play, no account, no telemetry. Open the installer and it works.
         </p>
         <div class="ncta__row">
-          <a class="btn btn--primary btn--lg" href="https://9u26sgn3vblim.space.minimax.io/downloads/pulse-notes-0.6.4-debug.apk" rel="noopener noreferrer">Get Pulse Notes ↓ 4.35 MB</a>
+          <a class="btn btn--primary btn--lg" href="https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk" rel="noopener noreferrer">Get Pulse Notes ↓ 4.39 MB</a>
           <a class="btn btn--ghost btn--lg" href="/notes/">View Notes</a>
         </div>
         <p class="ncta__meta">
@@ -381,7 +416,7 @@ const releases: Release[] = [
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.4" />
+  <Footer license="Apache 2.0" version="v0.6.5" />
 </Base>
 
 <style>
