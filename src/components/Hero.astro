@@ -53,7 +53,12 @@ const formattedStars = githubStars !== null
 
       {formattedStars !== null && (
         <p class="hero__trust">
-          <span class="hero__trust-item">★ {formattedStars} GitHub stars</span>
+          <span class="hero__trust-item">
+            <svg class="hero__star" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+              <path d="M12 2.5l2.95 6.5 7.05.65-5.4 4.7 1.65 7.15L12 17.95l-6.25 3.55L7.4 14.35 2 9.65l7.05-.65L12 2.5z"/>
+            </svg>
+            {formattedStars} GitHub stars
+          </span>
           <span class="hero__trust-item">·</span>
           <span class="hero__trust-item">MIT licensed</span>
           <span class="hero__trust-item">·</span>
@@ -133,7 +138,8 @@ const formattedStars = githubStars !== null
     font-size: 0.85rem; color: var(--muted);
     margin-bottom: 0.75rem;
   }
-  .hero__trust-item { white-space: nowrap; }
+  .hero__trust-item { white-space: nowrap; display: inline-flex; align-items: center; gap: 0.3rem; }
+  .hero__star { color: var(--yellow); flex-shrink: 0; }
   .hero__meta {
     font-size: 0.85rem;
     color: var(--muted);

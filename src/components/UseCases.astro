@@ -1,24 +1,34 @@
 ---
+// R85: replaced emoji with inline SVG icons (no emoji in UI).
 const cases = [
   {
-    emoji: '🕵',
+    icon: 'magnifier',
     tag: 'Privacy research',
     title: 'OCR screenshots, never leak them',
     body: 'I screenshot a confidential dashboard. Pulse reads the pixels locally with gemma3:4b vision. I ask follow-up questions in natural language. The screenshot never touches a server. Not even once.',
   },
   {
-    emoji: '💻',
+    icon: 'laptop',
     tag: 'Dev work',
     title: 'Stack-trace without context-switching',
     body: 'I\'m in VS Code staring at a Rust panic. I press Ctrl+Shift+Space, ask "what is this error?" — Pulse sees the active file, the panic line, and gemma3:4b explains it. Panel closes. I\'m back in the code.',
   },
   {
-    emoji: '⚡',
+    icon: 'lightning',
     tag: 'Daily driver',
     title: 'Hotkey → speak → done',
     body: 'I\'m writing an email. Hotkey opens the panel. I dictate a reply with voice. Pulse formats it. I paste. Panel closes. No tab switching, no app juggling, no "let me open ChatGPT real quick".',
   },
 ];
+
+const iconPath: Record<string, string> = {
+  magnifier:
+    '<circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/>',
+  laptop:
+    '<rect x="2" y="4" width="20" height="13" rx="2"/><line x1="1" y1="20" x2="23" y2="20"/>',
+  lightning:
+    '<polygon points="13 2 4 14 11 14 10 22 20 10 13 10 13 2"/>',
+};
 ---
 <section class="usecases" id="usecases">
   <div class="bg-glow"></div>
@@ -33,7 +43,7 @@ const cases = [
       {cases.map((c) => (
         <article class="usecase glass reveal">
           <div class="usecase__head">
-            <span class="usecase__emoji" aria-hidden="true">{c.emoji}</span>
+            <span class="usecase__icon" aria-hidden="true" set:html={`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${iconPath[c.icon]}</svg>`} />
             <span class="usecase__tag">{c.tag}</span>
           </div>
           <h3 class="usecase__title">{c.title}</h3>
@@ -65,7 +75,14 @@ const cases = [
     border-color: var(--purple);
   }
   .usecase__head { display: flex; align-items: center; gap: 0.6rem; }
-  .usecase__emoji { font-size: 1.4rem; }
+  .usecase__icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--purple);
+  }
   .usecase__tag {
     font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
     color: var(--purple); font-weight: 700;

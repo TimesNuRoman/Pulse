@@ -72,7 +72,14 @@ const tiers = [
           </a>
           <ul class="tier__list" role="list">
             {t.features.map((f) => (
-              <li><span class="tier__check" aria-hidden="true">✓</span>{f}</li>
+              <li>
+                <span class="tier__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                {f}
+              </li>
             ))}
           </ul>
         </li>
@@ -113,5 +120,5 @@ const tiers = [
   }
   .tier__list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
   .tier__list li { display: flex; align-items: center; gap: 0.6rem; color: var(--fg-dim); font-size: 0.95rem; }
-  .tier__check { color: var(--green); font-weight: 700; }
+  .tier__check { color: var(--green); flex-shrink: 0; display: inline-flex; }
 </style>

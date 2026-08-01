@@ -1,10 +1,12 @@
 ---
+// R85: replaced emoji yes/no marks with semantic values 'yes' | 'no' | 'partial'.
+// Render layer maps them to inline SVG icons + accessible labels.
 const rows = [
   { label: 'Installer size', pulse: '12MB',     chatgpt: '150MB+', raycast: 'n/a (ext.)', noi: '80MB',     pulseWin: true  },
-  { label: 'Local AI (Ollama)', pulse: '✅',    chatgpt: '❌',     raycast: '❌',        noi: '✅',        pulseWin: true  },
-  { label: 'Vision (gemma3:4b)', pulse: '✅',   chatgpt: '❌',     raycast: '❌',        noi: '❌',        pulseWin: true  },
-  { label: 'Smart Engine (active app)', pulse: '✅', chatgpt: '❌', raycast: 'partial',  noi: '❌',        pulseWin: true  },
-  { label: 'Open source (MIT)', pulse: '✅',     chatgpt: '❌',     raycast: '❌',        noi: '✅',        pulseWin: false },
+  { label: 'Local AI (Ollama)', pulse: 'yes',  chatgpt: 'no',    raycast: 'no',         noi: 'yes',      pulseWin: true  },
+  { label: 'Vision (gemma3:4b)', pulse: 'yes', chatgpt: 'no',    raycast: 'no',         noi: 'no',       pulseWin: true  },
+  { label: 'Smart Engine (active app)', pulse: 'yes', chatgpt: 'no', raycast: 'partial', noi: 'no',       pulseWin: true  },
+  { label: 'Open source (MIT)', pulse: 'yes',  chatgpt: 'no',    raycast: 'no',         noi: 'yes',      pulseWin: false },
   { label: 'Cross-platform',    pulse: 'Windows', chatgpt: 'Win/macOS', raycast: 'macOS only', noi: 'macOS only', pulseWin: false },
 ];
 
@@ -49,10 +51,10 @@ const maxBar = 160; // axis
           {rows.map((r) => (
             <tr>
               <th scope="row">{r.label}</th>
-              <td class={`col-pulse ${r.pulseWin ? 'is-win' : ''}`}>{r.pulse}</td>
-              <td>{r.chatgpt}</td>
-              <td>{r.raycast}</td>
-              <td>{r.noi}</td>
+              <td class={`col-pulse ${r.pulseWin ? 'is-win' : ''}`}><span class="cell-mark" data-val={r.pulse}>{r.pulse}</span></td>
+              <td><span class="cell-mark" data-val={r.chatgpt}>{r.chatgpt}</span></td>
+              <td><span class="cell-mark" data-val={r.raycast}>{r.raycast}</span></td>
+              <td><span class="cell-mark" data-val={r.noi}>{r.noi}</span></td>
             </tr>
           ))}
         </tbody>
@@ -68,12 +70,17 @@ const maxBar = 160; // axis
             <p class="comparison__card-tagline">{c.tagline}</p>
           </header>
           <dl class="comparison__card-list">
-            {rows.map((r) => (
-              <>
-                <dt>{r.label}</dt>
-                <dd class={c.highlight && r.pulseWin ? 'is-win' : ''}>{getVal(r, c.key)}</dd>
-              </>
-            ))}
+            {rows.map((r) => {
+              const v = getVal(r, c.key);
+              const isMark = v === 'yes' || v === 'no' || v === 'partial';
+              const label = v === 'yes' ? 'Yes' : v === 'no' ? 'No' : v === 'partial' ? 'Partial' : v;
+              return (
+                <>
+                  <dt>{r.label}</dt>
+                  <dd class={`${c.highlight && r.pulseWin ? 'is-win' : ''} ${isMark ? `mark mark--${v}` : ''}`}>{label}</dd>
+                </>
+              );
+            })}
           </dl>
         </article>
       ))}
@@ -141,6 +148,9 @@ const maxBar = 160; // axis
     font-variant-numeric: tabular-nums;
   }
   .comparison__card-list dd.is-win { color: var(--purple); font-weight: 600; }
+  .comparison__card-list dd.mark--yes     { color: var(--purple); font-weight: 600; }
+  .comparison__card-list dd.mark--no      { color: var(--comment); }
+  .comparison__card-list dd.mark--partial { color: var(--yellow); }
 
   .comparison__table-wrap {
     overflow-x: auto;
@@ -172,6 +182,35 @@ const maxBar = 160; // axis
   .comparison__table tbody tr:last-child td { border-bottom: 0; }
   .col-pulse { color: var(--purple); font-weight: 600; }
   .is-win { background: rgba(187, 154, 247, 0.08); }
+
+  /* R85: yes/no/partial cell mark — SVG icon for yes/no, plain text otherwise. */
+  .cell-mark { display: inline-flex; align-items: center; justify-content: center; }
+  .cell-mark[data-val="yes"] {
+    color: var(--purple);
+  }
+  .cell-mark[data-val="no"] {
+    color: var(--comment);
+  }
+  .cell-mark[data-val="partial"] {
+    color: var(--yellow);
+    font-size: 0.85em;
+  }
+  .cell-mark[data-val="yes"]::before,
+  .cell-mark[data-val="no"]::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+  .cell-mark[data-val="yes"]::before {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bb9af7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+  }
+  .cell-mark[data-val="no"]::before {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23565f89' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><line x1='6' y1='6' x2='18' y2='18'/><line x1='18' y1='6' x2='6' y2='18'/></svg>");
+  }
 
   /* Bar chart */
   .comparison__chart { margin-top: 3rem; }

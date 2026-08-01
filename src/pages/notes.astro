@@ -3,20 +3,25 @@ import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/notes.css';
 
-const APK_URL = 'https://ozfg792b0bote.space.minimax.io/downloads/pulse-notes-0.6.0-greenfield-debug.apk';
-const APK_SIZE = '4.32 MB';
-const APK_SHA = 'C1C890…CD86';
-const APK_VERSION = '0.6.0';
-const APK_VERSION_CODE = '10';
+const APK_URL = 'https://artvenwyvbi7p.space.minimax.io/downloads/pulse-notes-0.6.1-greenfield-debug.apk';
+const APK_SIZE = '4.34 MB';
+const APK_SHA = 'DBECA01B…9F67';
+const APK_VERSION = '0.6.1';
+const APK_VERSION_CODE = '11';
 const APK_MIN_SDK = '24';
 const APK_TARGET_SDK = '36';
 const APK_APP_ID = 'app.pulse.notes';
 ---
 
 <Base
-  title="Pulse Notes v0.6.0 — Greenfield markdown editor for Android"
-  description="Pulse Notes v0.6.0 — greenfield Android markdown editor. Svelte 5 + CodeMirror 6 + split-pane + [[wikilink]] + tag autocomplete. Local-first, 4.32MB APK, 150/150 vitest, Smart Engine v3."
+  title="Pulse Notes v0.6.1 — Greenfield markdown editor for Android"
+  description="Pulse Notes v0.6.1 — adaptive app icon + M3 splash on top of the v0.6.0 GREENFIELD Android markdown editor. Svelte 5 + CodeMirror 6 + split-pane + [[wikilink]] + tag autocomplete. Local-first, 4.34MB APK, 150/150 vitest, Smart Engine v3."
   ogImage="/og/notes-v60.svg"
+  ctaText={`Get Pulse Notes ↓ ${APK_SIZE}`}
+  ctaHref={APK_URL}
+  ctaVisible={true}
+  footerLicense="Apache 2.0"
+  footerVersion="v0.6.1"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -122,7 +127,7 @@ const APK_APP_ID = 'app.pulse.notes';
             A markdown editor,<br />built for Android, <span class="notes-hero__hl">from scratch.</span>
           </h1>
           <p class="notes-hero__sub">
-            v0.6.0 is the greenfield Android release: Svelte 5 + TypeScript strict + Vite, CodeMirror 6 with a drag-resize split-pane, <code>[[wikilink]]</code> backlinks, tag autocomplete, and a Material&nbsp;3 toolbar. 4.32&nbsp;MB APK, 150/150 vitest, zero cloud, zero telemetry.
+            v0.6.1 is the current build (adaptive app icon + M3 splash, no code changes). v0.6.0 was the greenfield Android release: Svelte 5 + TypeScript strict + Vite, CodeMirror 6 with a drag-resize split-pane, <code>[[wikilink]]</code> backlinks, tag autocomplete, and a Material&nbsp;3 toolbar. 4.34&nbsp;MB APK, 150/150 vitest, zero cloud, zero telemetry.
           </p>
           <div class="notes-hero__ctas">
             <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">Download APK ↓ {APK_SIZE}</a>
@@ -131,7 +136,7 @@ const APK_APP_ID = 'app.pulse.notes';
           <ul class="notes-hero__trust" role="list" aria-label="Quick highlights">
             <li class="notes-hero__trust-item">Local-first</li>
             <li class="notes-hero__trust-sep" aria-hidden="true">·</li>
-            <li class="notes-hero__trust-item">4.32 MB APK</li>
+            <li class="notes-hero__trust-item">4.34 MB APK</li>
             <li class="notes-hero__trust-sep" aria-hidden="true">·</li>
             <li class="notes-hero__trust-item">Svelte 5 + TS strict</li>
             <li class="notes-hero__trust-sep" aria-hidden="true">·</li>
@@ -407,16 +412,16 @@ const APK_APP_ID = 'app.pulse.notes';
         <article class="n6 reveal" id="v6-perf">
           <div class="n6__copy">
             <span class="n6__label">New · Footprint</span>
-            <h3 class="n6__title">4.32 MB APK, 306 KB gzipped bundle.</h3>
+            <h3 class="n6__title">4.34 MB APK, 306 KB gzipped bundle.</h3>
             <p class="n6__body">
-              The full greenfield build is 4.32&nbsp;MB, with the JS bundle at
+              The full greenfield build is 4.34&nbsp;MB, with the JS bundle at
               849&nbsp;KB raw / 306&nbsp;KB gzipped. The CodeMirror editor is
               lazy-loaded behind a feature flag — the list view pulls in under
               60&nbsp;KB on first paint. Capacitor 8 with minSdk 24 and targetSdk
               36 covers the Android install base down to Android 7.
             </p>
             <ul class="n6__list">
-              <li><strong>4.32 MB</strong> APK, versionCode 10, appId <code>app.pulse.notes</code>.</li>
+              <li><strong>4.34 MB</strong> APK, versionCode 11, appId <code>app.pulse.notes</code>.</li>
               <li><strong>minSdk 24</strong> (Android 7.0) · <strong>targetSdk 36</strong>.</li>
               <li><strong>First paint</strong> under 60&nbsp;KB before CodeMirror loads.</li>
               <li><strong>150/150 vitest</strong> green at HEAD, no flake.</li>
@@ -425,7 +430,7 @@ const APK_APP_ID = 'app.pulse.notes';
           <figure class="n6__figure">
             <div class="n6__metrics glass">
               <div class="n6__metric">
-                <span class="n6__metric-num">4.32<span class="n6__metric-unit">MB</span></span>
+                <span class="n6__metric-num">4.34<span class="n6__metric-unit">MB</span></span>
                 <span class="n6__metric-label">APK size</span>
               </div>
               <div class="n6__metric">
@@ -489,12 +494,25 @@ const APK_APP_ID = 'app.pulse.notes';
           <span class="eyebrow">What changed</span>
           <h2>Pulse Notes — release notes.</h2>
           <p class="lede">
-            Four shipped entries between v0.5.2 and v0.6.0. Dates are local
+            Five shipped entries between v0.5.0 and v0.6.1. Dates are local
             (Asia/Bangkok). Full audit lives in the
-            <a href="/changelog/#v0.6.0">changelog</a>.
+            <a href="/changelog/#v0.6.1">changelog</a>.
           </p>
         </header>
         <ol class="changelog__list" role="list">
+          <li class="changelog__item reveal">
+            <time class="changelog__date" datetime="2026-08-01">2026-08-01</time>
+            <div class="changelog__body">
+              <h3 class="changelog__title">v0.6.1 · Adaptive app icon + M3 splash</h3>
+              <p>
+                Tokyo Night adaptive icon (blue P + 4-point spark) with monochrome
+                variant for Android 13+ themed icons. M3 splash screen replaces
+                the white flash on cold start. versionCode 10 → 11. APK +12&nbsp;KB
+                (4.32 → 4.34&nbsp;MB). No code changes — the app just looks like
+                it belongs on the device.
+              </p>
+            </div>
+          </li>
           <li class="changelog__item reveal">
             <time class="changelog__date" datetime="2026-08-01">2026-08-01</time>
             <div class="changelog__body">
@@ -760,11 +778,11 @@ const APK_APP_ID = 'app.pulse.notes';
           </div>
         </div>
         <p class="ncta__more">
-          <a href="/changelog/#v0.6.0">Full v0.6.0 release notes →</a>
+          <a href="/changelog/#v0.6.1">Full v0.6.1 release notes →</a>
         </p>
       </div>
     </section>
   </main>
 
-  <Footer />
+  <Footer license="Apache 2.0" version="v0.6.1" />
 </Base>

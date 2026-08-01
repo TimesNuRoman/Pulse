@@ -1,4 +1,13 @@
 ---
+// R85: per-page footer license + version (B2 fix-blocker).
+// `version = ''` hides the version pill entirely (used on /privacy + /code-of-conduct).
+export interface Props {
+  license?: string;
+  version?: string;
+}
+const { license = 'MIT', version = 'v0.3.0' } = Astro.props;
+const showVersion = version.trim().length > 0;
+
 const columns = [
   {
     title: 'Product',
@@ -19,7 +28,7 @@ const columns = [
   {
     title: 'Legal',
     links: [
-      { label: 'MIT License', href: 'https://github.com/TimesNuRoman/pulse/blob/main/LICENSE' },
+      { label: `${license} License`, href: 'https://github.com/TimesNuRoman/pulse/blob/main/LICENSE' },
       { label: 'Privacy', href: '/privacy' },
       { label: 'Code of Conduct', href: '/code-of-conduct' },
     ],
@@ -80,7 +89,11 @@ const columns = [
     <div class="footer__bottom">
       <span>Built by Roman in Brest</span>
       <span>·</span>
-      <span>MIT licensed · v0.3.0</span>
+      {showVersion ? (
+        <span>{license} licensed · {version}</span>
+      ) : (
+        <span>{license} licensed</span>
+      )}
     </div>
   </div>
 </footer>

@@ -5,12 +5,27 @@ export interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  // R85: per-page sticky CTA (B1 fix-blocker)
+  // When `ctaVisible` is false, the sticky CTA is not rendered at all.
+  // `ctaText` may include the down-arrow character `↓` (U+2193) — not emoji.
+  ctaText?: string;
+  ctaHref?: string;
+  ctaVisible?: boolean;
+  // R85: per-page footer license + version (B2 fix-blocker)
+  // `footerVersion = ''` hides the version pill entirely.
+  footerLicense?: string;
+  footerVersion?: string;
 }
 
 const {
   title = "Pulse — AI that doesn't get to leave the room",
   description = "Pulse is a 12MB Tauri v2 side panel that talks to local Ollama. Local. Private. No Electron, no cloud.",
   ogImage: ogImageProp,
+  ctaText = 'Get Pulse ↓ 12 MB',
+  ctaHref = '/#download',
+  ctaVisible = true,
+  footerLicense = 'MIT',
+  footerVersion = 'v0.3.0',
 } = Astro.props;
 
 const ogImage = ogImageProp ?? '/og-image.svg';
@@ -46,18 +61,23 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://pulse.loca
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
   </head>
-  <body>
+  <body data-page-footer-license={footerLicense} data-page-footer-version={footerVersion}>
     <slot />
 
-    <!-- P0-1: Sticky mobile CTA (download) — appears after hero, hides at #download -->
-    <div class="sticky-cta" id="sticky-cta" hidden aria-label="Download Pulse">
-      <a class="btn btn--primary" href="#download" data-sticky-cta-link>
-        ⬇ Get Pulse — 12MB
-      </a>
-      <button type="button" class="sticky-cta__close" id="sticky-cta-close" aria-label="Dismiss">
-        ✕
-      </button>
-    </div>
+    {ctaVisible && (
+      <!-- P0-1: Sticky mobile CTA (download) — appears after hero, hides at #download. R85: per-page text + href. -->
+      <div class="sticky-cta" id="sticky-cta" hidden aria-label="Download Pulse">
+        <a class="btn btn--primary" href={ctaHref} data-sticky-cta-link>
+          {ctaText}
+        </a>
+        <button type="button" class="sticky-cta__close" id="sticky-cta-close" aria-label="Dismiss">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    )}
 
     <!-- Scroll-reveal via IntersectionObserver -->
     <script is:inline>
@@ -81,68 +101,70 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://pulse.loca
       })();
     </script>
 
-    <!-- P0-1: Sticky CTA logic — show after hero, hide at #download, dismissable -->
-    <script is:inline>
-      (() => {
-        if (window.matchMedia('(min-width: 768px)').matches) return;  // desktop only
+    {ctaVisible && (
+      <!-- P0-1: Sticky CTA logic — show after hero, hide at #download, dismissable -->
+      <script is:inline>
+        (() => {
+          if (window.matchMedia('(min-width: 768px)').matches) return;  // desktop only
 
-        const cta = document.getElementById('sticky-cta');
-        const closeBtn = document.getElementById('sticky-cta-close');
-        if (!cta || !closeBtn) return;
+          const cta = document.getElementById('sticky-cta');
+          const closeBtn = document.getElementById('sticky-cta-close');
+          if (!cta || !closeBtn) return;
 
-        const DISMISS_KEY = 'pulse_sticky_cta_dismissed';
-        if (localStorage.getItem(DISMISS_KEY) === '1') {
-          cta.hidden = true;
-          return;
-        }
-
-        const hero = document.querySelector('.hero');
-        const download = document.getElementById('download');
-        if (!hero || !download) return;
-
-        let heroOut = false;     // user has scrolled past hero
-        let atDownload = false;  // user is at #download
-
-        const showCta = () => {
-          if (heroOut && !atDownload) {
-            cta.hidden = false;
-            requestAnimationFrame(() => cta.classList.add('is-visible'));
+          const DISMISS_KEY = 'pulse_sticky_cta_dismissed';
+          if (localStorage.getItem(DISMISS_KEY) === '1') {
+            cta.hidden = true;
+            return;
           }
-        };
-        const hideCta = () => {
-          cta.classList.remove('is-visible');
-          // After transition, fully hide
-          setTimeout(() => {
-            if (!cta.classList.contains('is-visible')) cta.hidden = true;
-          }, 350);
-        };
 
-        const io = new IntersectionObserver(
-          (entries) => {
-            for (const e of entries) {
-              if (e.target === hero) heroOut = !e.isIntersecting;
-              if (e.target === download) atDownload = e.isIntersecting;
+          const hero = document.querySelector('.hero, .notes-hero, .legal');
+          const download = document.getElementById('download');
+          if (!hero || !download) return;
+
+          let heroOut = false;     // user has scrolled past hero
+          let atDownload = false;  // user is at #download
+
+          const showCta = () => {
+            if (heroOut && !atDownload) {
+              cta.hidden = false;
+              requestAnimationFrame(() => cta.classList.add('is-visible'));
             }
-            if (heroOut && !atDownload) showCta();
-            else hideCta();
-          },
-          { threshold: 0, rootMargin: '0px' }
-        );
-        io.observe(hero);
-        io.observe(download);
+          };
+          const hideCta = () => {
+            cta.classList.remove('is-visible');
+            // After transition, fully hide
+            setTimeout(() => {
+              if (!cta.classList.contains('is-visible')) cta.hidden = true;
+            }, 350);
+          };
 
-        closeBtn.addEventListener('click', () => {
-          localStorage.setItem(DISMISS_KEY, '1');
-          hideCta();
-        });
+          const io = new IntersectionObserver(
+            (entries) => {
+              for (const e of entries) {
+                if (e.target === hero) heroOut = !e.isIntersecting;
+                if (e.target === download) atDownload = e.isIntersecting;
+              }
+              if (heroOut && !atDownload) showCta();
+              else hideCta();
+            },
+            { threshold: 0, rootMargin: '0px' }
+          );
+          io.observe(hero);
+          io.observe(download);
 
-        // Smooth-scroll handled by html { scroll-behavior: smooth } in global.css;
-        // we just need to refresh visibility when hash changes.
-        cta.querySelector('[data-sticky-cta-link]')?.addEventListener('click', () => {
-          // give smooth-scroll a moment, then force-hide
-          setTimeout(hideCta, 50);
-        });
-      })();
-    </script>
+          closeBtn.addEventListener('click', () => {
+            localStorage.setItem(DISMISS_KEY, '1');
+            hideCta();
+          });
+
+          // Smooth-scroll handled by html { scroll-behavior: smooth } in global.css;
+          // we just need to refresh visibility when hash changes.
+          cta.querySelector('[data-sticky-cta-link]')?.addEventListener('click', () => {
+            // give smooth-scroll a moment, then force-hide
+            setTimeout(hideCta, 50);
+          });
+        })();
+      </script>
+    )}
   </body>
 </html>
