@@ -2,11 +2,21 @@
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/notes.css';
+
+const APK_URL = 'https://ozfg792b0bote.space.minimax.io/downloads/pulse-notes-0.6.0-greenfield-debug.apk';
+const APK_SIZE = '4.32 MB';
+const APK_SHA = 'C1C890…CD86';
+const APK_VERSION = '0.6.0';
+const APK_VERSION_CODE = '10';
+const APK_MIN_SDK = '24';
+const APK_TARGET_SDK = '36';
+const APK_APP_ID = 'app.pulse.notes';
 ---
+
 <Base
-  title="Notes that remember. · Pulse"
-  description="Pulse Notes v0.5.2 — a local-first second brain. CodeMirror 6 markdown editor, split-pane preview, [[wikilink]] backlinks, tag autocomplete, M3 toolbar. No cloud, no telemetry."
-  ogImage="/og/notes.svg"
+  title="Pulse Notes v0.6.0 — Greenfield markdown editor for Android"
+  description="Pulse Notes v0.6.0 — greenfield Android markdown editor. Svelte 5 + CodeMirror 6 + split-pane + [[wikilink]] + tag autocomplete. Local-first, 4.32MB APK, 150/150 vitest, Smart Engine v3."
+  ogImage="/og/notes-v60.svg"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -25,12 +35,11 @@ import '../styles/notes.css';
       <ul class="nav__links" role="list">
         <li><a class="nav__link" href="/#features">Features</a></li>
         <li><a class="nav__link is-cta" href="/notes/" aria-current="page">Notes</a></li>
-        <li><a class="nav__link" href="/#download">Download</a></li>
+        <li><a class="nav__link" href="#download">Download</a></li>
         <li><a class="nav__link" href="/changelog/">Changelog</a></li>
-        <li><a class="nav__link" href="/changelog/">Blog</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/#download">Get Pulse ↓ 12MB</a>
+        <a class="btn btn--primary nav__cta" href={APK_URL} rel="noopener noreferrer">Get Pulse Notes ↓ {APK_SIZE}</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -45,10 +54,9 @@ import '../styles/notes.css';
   <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
     <a class="nav-drawer__link" href="/#features">Features</a>
     <a class="nav-drawer__link" href="/notes/" aria-current="page">Notes</a>
-    <a class="nav-drawer__link" href="/#download">Download</a>
+    <a class="nav-drawer__link" href="#download">Download</a>
     <a class="nav-drawer__link" href="/changelog/">Changelog</a>
-    <a class="nav-drawer__link" href="/changelog/">Blog</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/#download">Get Pulse ↓ 12MB</a>
+    <a class="btn btn--primary nav-drawer__cta" href={APK_URL} rel="noopener noreferrer">Get Pulse Notes ↓ {APK_SIZE}</a>
   </div>
 
   <script is:inline>
@@ -104,46 +112,47 @@ import '../styles/notes.css';
       <div class="container notes-hero__grid">
         <div class="notes-hero__copy reveal">
           <div class="notes-hero__badges">
-            <span class="notes-hero__eyebrow">Pulse Notes · killer feature</span>
+            <span class="notes-hero__eyebrow">Pulse Notes · Android · Greenfield</span>
             <span class="notes-hero__pill" aria-label="Latest version">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Latest v0.5.2
+              Latest v{APK_VERSION} · versionCode {APK_VERSION_CODE}
             </span>
           </div>
           <h1 class="notes-hero__title">
-            Notes that <span class="notes-hero__hl">remember.</span>
+            A markdown editor,<br />built for Android, <span class="notes-hero__hl">from scratch.</span>
           </h1>
           <p class="notes-hero__sub">
-            Pulse Notes v0.5.2 ships a real markdown editor: CodeMirror 6 with
-            syntax highlighting, a drag-resize split-pane, <code>[[wikilink]]</code>
-            backlinks, tag autocomplete, and a Material 3 toolbar. Local-first.
-            SQLite + FTS5. The note you saved two days ago is the one Pulse
-            surfaces when you ask.
+            v0.6.0 is the greenfield Android release: Svelte 5 + TypeScript strict + Vite, CodeMirror 6 with a drag-resize split-pane, <code>[[wikilink]]</code> backlinks, tag autocomplete, and a Material&nbsp;3 toolbar. 4.32&nbsp;MB APK, 150/150 vitest, zero cloud, zero telemetry.
           </p>
           <div class="notes-hero__ctas">
-            <a class="btn btn--primary btn--lg" href="/#download">Get Pulse</a>
-            <a class="btn btn--ghost btn--lg" href="#new-in-v5">What is new</a>
+            <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">Download APK ↓ {APK_SIZE}</a>
+            <a class="btn btn--ghost btn--lg" href="#new-in-v6">What is new</a>
           </div>
           <ul class="notes-hero__trust" role="list" aria-label="Quick highlights">
             <li class="notes-hero__trust-item">Local-first</li>
             <li class="notes-hero__trust-sep" aria-hidden="true">·</li>
-            <li class="notes-hero__trust-item">SQLite + FTS5</li>
+            <li class="notes-hero__trust-item">4.32 MB APK</li>
+            <li class="notes-hero__trust-sep" aria-hidden="true">·</li>
+            <li class="notes-hero__trust-item">Svelte 5 + TS strict</li>
             <li class="notes-hero__trust-sep" aria-hidden="true">·</li>
             <li class="notes-hero__trust-item">No cloud</li>
             <li class="notes-hero__trust-sep" aria-hidden="true">·</li>
-            <li class="notes-hero__trust-item">No telemetry</li>
-            <li class="notes-hero__trust-sep" aria-hidden="true">·</li>
             <li class="notes-hero__trust-item">Apache 2.0</li>
           </ul>
+          <p class="notes-hero__sha">
+            <span class="notes-hero__sha-label">SHA-256</span>
+            <code class="notes-hero__sha-code">{APK_SHA}</code>
+            <a class="notes-hero__sha-link" href="/changelog/#v0.6.0">verify →</a>
+          </p>
         </div>
         <div class="notes-hero__composite reveal" aria-hidden="true">
           <div class="notes-hero__halo"></div>
           <figure class="notes-hero__shot notes-hero__shot--editor">
             <img
-              src="/mockups/notes-v5-editor.svg"
-              alt="Pulse Notes editor with split-pane preview"
+              src="/mockups/notes-v60-editor.svg"
+              alt="Pulse Notes v0.6.0 Android editor with split-pane preview"
               width="720"
-              height="480"
+              height="520"
               loading="eager"
               decoding="async"
             />
@@ -152,59 +161,48 @@ import '../styles/notes.css';
       </div>
     </section>
 
-    <!-- ─── Killer demo: Capture. Wait. Recall. ────────── -->
-    <section class="kd" id="killer-demo">
+    <!-- ─── Why Android-first ───────────────────────────── -->
+    <section class="waf" id="why-android">
       <div class="container">
-        <header class="kd__head reveal">
-          <span class="eyebrow">The actual flow</span>
-          <h2>Capture. Wait. Recall.</h2>
+        <header class="waf__head reveal">
+          <span class="eyebrow">Why Android first</span>
+          <h2>Capture happens on the phone. Pulse Notes too.</h2>
           <p class="lede">
-            Three steps. No cloud round-trips, no email scans, no notification
-            listeners. The same note you saved two days ago is the one Pulse
-            surfaces when you ask.
+            Telegram links, screenshots, voice notes — most of what you save in a day
+            arrives on Android first. Pulse Notes v0.6.0 was written from scratch on
+            Android instead of being ported from the desktop v0.5.x line. The desktop
+            build picks up the same code path in a follow-up release; the Android
+            surface ships today.
           </p>
         </header>
-        <ol class="kd__steps" role="list">
-          <li class="kd__step reveal" id="kd-1">
-            <div class="kd__step-num" aria-hidden="true">01</div>
-            <div class="kd__step-body">
-              <span class="kd__step-label">Capture</span>
-              <h3 class="kd__step-title">You share a Telegram message about a hotel in Bangkok.</h3>
-              <p class="kd__step-copy">
-                Pulse catches the share intent on Android, opens the capture sheet,
-                and pre-fills it with the original text. Tags like <code>#travel</code>
-                and <code>#bangkok</code> are added automatically. You tap save, or
-                you do nothing — Pulse saves it for you after 3 seconds.
-              </p>
-            </div>
-          </li>
-          <li class="kd__step reveal" id="kd-2">
-            <div class="kd__step-num" aria-hidden="true">02</div>
-            <div class="kd__step-body">
-              <span class="kd__step-label">Wait</span>
-              <h3 class="kd__step-title">Two days pass. You don't open Pulse once.</h3>
-              <p class="kd__step-copy">
-                There is nothing to do. The note sits in your local SQLite database,
-                fully searchable, with no syncing, no background calls, no telemetry
-                ping. The local model is idle, the OS is not being asked to keep
-                anything warm.
-              </p>
-            </div>
-          </li>
-          <li class="kd__step reveal" id="kd-3">
-            <div class="kd__step-num" aria-hidden="true">03</div>
-            <div class="kd__step-body">
-              <span class="kd__step-label">Recall</span>
-              <h3 class="kd__step-title">You ask Pulse: "Planning Thailand in October. What was the Bangkok hotel?"</h3>
-              <p class="kd__step-copy">
-                The agent pulls the right note from the local index, shows the
-                source, and answers. No cloud round-trip, no LLM training on your
-                messages, no email scan, no notification listener. Just the note
-                you saved, surfaced at the moment you needed it.
-              </p>
-            </div>
-          </li>
-        </ol>
+        <div class="waf__grid">
+          <article class="waf__card glass reveal">
+            <h3 class="waf__card-title">Greenfield, not a port.</h3>
+            <p class="waf__card-body">
+              Svelte 5 + TypeScript strict + Vite, with vitest + jsdom. 5 components
+              and 2 library files, written clean against the Capacitor 8 + Android
+              WebView target. No drag-along from the desktop stack.
+            </p>
+          </article>
+          <article class="waf__card glass reveal">
+            <h3 class="waf__card-title">Phone-first UX.</h3>
+            <p class="waf__card-body">
+              Split-pane degrades to a bottom-sheet toggle on small screens. The M3
+              toolbar sits at the bottom edge where thumbs land. Share intents,
+              notifications, and the clipboard are wired through native plugins
+              instead of being faked in a web shim.
+            </p>
+          </article>
+          <article class="waf__card glass reveal">
+            <h3 class="waf__card-title">Smart Engine v3 from day one.</h3>
+            <p class="waf__card-body">
+              v0.6.0 ships with the v3 router and the v3 recall gate as the default
+              surface. Pass-rate 88%, p50 latency −1370&nbsp;ms versus the v2
+              baseline, threshold&nbsp;5. Notes benefits from the same A/B harness
+              that gates desktop chat.
+            </p>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -215,245 +213,302 @@ import '../styles/notes.css';
           <span class="eyebrow">What is in the box</span>
           <h2>Four things. No roadmap.</h2>
           <p class="lede">
-            The features that ship in Pulse Notes v0.5.x. Anything not on this
-            list is in the issue tracker, not in the marketing.
+            The features that ship in Pulse Notes v0.6.0 on Android. Anything not on
+            this list is in the issue tracker, not in the marketing.
           </p>
         </header>
         <div class="nf__grid">
           <article class="nf__card glass reveal" id="capture">
             <span class="nf__card-label">Capture</span>
-            <h3 class="nf__card-title">Share from anywhere. Pulse writes the note.</h3>
+            <h3 class="nf__card-title">Share to Pulse. The note is already written.</h3>
             <p class="nf__card-body">
-              Forward a Telegram message, share from Slack, drop a screenshot.
-              Pulse turns it into a note, auto-tags it, and links it back to the
-              source. No "import" flow, no spreadsheet of bookmarks.
+              The share sheet on Android shows Pulse. Tap it from Telegram, Slack, a
+              browser, or anywhere that exports text. Pulse writes the note, tags
+              it from the source app, and parks it in the inbox for you to triage
+              later.
             </p>
           </article>
           <article class="nf__card glass reveal" id="search">
             <span class="nf__card-label">Search</span>
-            <h3 class="nf__card-title">Find anything across notes, captures, chats.</h3>
+            <h3 class="nf__card-title">FTS5 across notes, captures, and tags.</h3>
             <p class="nf__card-body">
-              FTS5 full-text search. One search box covers notes, captures, chat
-              history, and skills. Results are instant because the index lives on
-              your disk, in the same SQLite file as the data.
+              One search box hits every note, capture, and tag in the local SQLite
+              index. Results land in milliseconds because the index is the same
+              file as the data, on the device, with no network round-trip.
             </p>
           </article>
           <article class="nf__card glass reveal" id="link">
             <span class="nf__card-label">Link</span>
-            <h3 class="nf__card-title">[[wiki-style]] backlinks, tags, relations.</h3>
+            <h3 class="nf__card-title"><code>[[wiki-style]]</code> backlinks, fuzzy autocomplete.</h3>
             <p class="nf__card-body">
-              Type <code>[[</code> to link one note to another. Tags are coloured
-              by semantics — blue for topics, yellow for time, green for relations,
-              purple for tools. It feels like Obsidian because the data model is
-              the same; the difference is what runs locally.
+              Type <code>[[</code> and a ranked dropdown opens. The note title you
+              meant is almost always at the top. Tags work the same way with
+              <code>#</code>, ranked by how often you actually use each one.
             </p>
           </article>
           <article class="nf__card glass reveal" id="recall">
             <span class="nf__card-label">Recall</span>
-            <h3 class="nf__card-title">Pulse surfaces relevant notes when you ask.</h3>
+            <h3 class="nf__card-title">The right note appears when you ask.</h3>
             <p class="nf__card-body">
-              Ask "what was the Bangkok hotel?" and the right note appears, even
-              if you wrote it three weeks ago. No cloud embeddings, no telemetry.
-              The same local model that runs chat runs the recall.
+              Ask Pulse what the Bangkok hotel was, and the note surfaces with its
+              source attached. No cloud embeddings, no telemetry, no per-app
+              listeners — just the local index and the local model.
             </p>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- ─── What's new in v0.5.x — 5 new features ──────── -->
-    <section class="new-in-v5" id="new-in-v5">
+    <!-- ─── What's new in v0.6.0 ────────────────────────── -->
+    <section class="new-in-v6" id="new-in-v6">
       <div class="container">
-        <header class="new-in-v5__head reveal">
-          <span class="eyebrow">What shipped in v0.5.x</span>
-          <h2>Five things the markdown editor bought us.</h2>
+        <header class="new-in-v6__head reveal">
+          <span class="eyebrow">What shipped in v0.6.0</span>
+          <h2>Five things the greenfield rewrite bought us.</h2>
           <p class="lede">
-            v0.5.1 replaced the plain textarea with CodeMirror 6, wired up
-            markdown-it 14 + highlight.js 11 + @lezer/highlight, and split the
-            editor and preview into a drag-resize pane. The new surface unlocked
-            five capabilities that ship in the v0.5.2 build you can download
-            today.
+            v0.6.0 is the first Android release. Svelte 5 + TS strict + Vite
+            replaced a long port path, wired up CodeMirror 6 with markdown-it 14 and
+            highlight.js 11, and split the editor and preview into a drag-resize
+            pane. The new surface unlocked five capabilities that ship in the build
+            you can download today.
           </p>
         </header>
 
-        <!-- 1. Markdown editor -->
-        <article class="n5 reveal" id="v5-editor">
-          <div class="n5__copy">
-            <span class="n5__label">New · Editor</span>
-            <h3 class="n5__title">A real markdown editor, not a textarea.</h3>
-            <p class="n5__body">
-              CodeMirror 6 with the markdown grammar and the Lezer syntax tree.
-              Line numbers, code-block highlighting, smart indentation, and
-              bracket-matching on. The editor lazy-loads with the
-              <code>notes.markdown.v2</code> feature flag — default ON, ~82&nbsp;KB
-              gzipped, no impact on the list view.
+        <!-- 1. Greenfield architecture -->
+        <article class="n6 reveal" id="v6-greenfield">
+          <div class="n6__copy">
+            <span class="n6__label">New · Architecture</span>
+            <h3 class="n6__title">Written from scratch on Svelte 5 + TS strict.</h3>
+            <p class="n6__body">
+              5 components and 2 library files, with no drag-along from the v0.5.x
+              desktop code. TypeScript runs in strict mode, vite handles HMR, vitest
+              with jsdom drives the 150-test green line. The bundle is 849&nbsp;KB
+              raw / 306&nbsp;KB gzipped, and the editor lazy-loads behind a feature
+              flag so the list view stays light.
             </p>
-            <ul class="n5__list">
-              <li><strong>Lezer highlighting</strong> for headings, lists, links, code, emphasis.</li>
-              <li><strong>Line numbers</strong> + current-line gutter, always on.</li>
-              <li><strong>Smart indent</strong> on Enter inside lists and code blocks.</li>
-              <li><strong>Keyboard-first</strong> — Tab/Shift-Tab indent, Ctrl+D duplicates line.</li>
+            <ul class="n6__list">
+              <li><strong>Svelte 5</strong> runes + TS strict + Vite + vitest + jsdom.</li>
+              <li><strong>Lazy editor</strong> behind <code>notes.markdown.v2</code> — list view stays under 60&nbsp;KB.</li>
+              <li><strong>5 components</strong> + 2 lib files (<code>markdownIt.ts</code>, <code>notesBacklinks.ts</code>).</li>
+              <li><strong>150/150</strong> vitest across 9 files, 0 regressions.</li>
             </ul>
           </div>
-          <figure class="n5__figure">
+          <figure class="n6__figure">
             <img
-              src="/mockups/notes-v5-editor.svg"
-              alt="CodeMirror 6 markdown editor with split-pane preview"
-              width="1200"
-              height="800"
+              src="/mockups/notes-v60-editor.svg"
+              alt="Pulse Notes v0.6.0 Android editor with split-pane preview"
+              width="720"
+              height="520"
               loading="lazy"
               decoding="async"
             />
-            <figcaption>Editor (left) + rendered preview (right) — drag the divider to resize.</figcaption>
+            <figcaption>CodeMirror 6 with split-pane, M3 toolbar at the bottom, share intent behind the floating action button.</figcaption>
           </figure>
         </article>
 
         <!-- 2. Split-pane -->
-        <article class="n5 n5--reverse reveal" id="v5-split-pane">
-          <div class="n5__copy">
-            <span class="n5__label">New · Split-pane</span>
-            <h3 class="n5__title">Editor left, preview right. Drag the divider.</h3>
-            <p class="n5__body">
-              A horizontal divider that you can drag to any ratio from 20/80 to
-              80/20. The pane widths persist per-note in the SQLite database,
-              not in localStorage, so a note opened on the desktop and a
-              different note opened on the laptop keep their own layouts.
+        <article class="n6 n6--reverse reveal" id="v6-split-pane">
+          <div class="n6__copy">
+            <span class="n6__label">New · Split-pane</span>
+            <h3 class="n6__title">Editor left, preview right. On phone, a bottom-sheet toggle.</h3>
+            <p class="n6__body">
+              The split-pane is a horizontal divider you can drag from 20/80 to
+              80/20. On phone, it collapses into a bottom-sheet toggle: the editor
+              fills the screen, the preview slides up on demand. The pane state
+              persists per-note, so a note you opened in 60/40 stays in 60/40.
             </p>
-            <ul class="n5__list">
-              <li><strong>Drag-resize</strong> with mouse, touch, or keyboard arrows when focused.</li>
-              <li><strong>Per-note width</strong> stored in the notes table, not localStorage.</li>
-              <li><strong>Collapse</strong> either side with a single click on the divider grip.</li>
-              <li><strong>Preview updates</strong> debounced to 80&nbsp;ms — no input lag at 4K.</li>
+            <ul class="n6__list">
+              <li><strong>Drag-resize</strong> on tablet, mouse and touch.</li>
+              <li><strong>Bottom-sheet</strong> toggle on phone — 80&nbsp;ms debounce.</li>
+              <li><strong>Per-note state</strong> in the local store, not localStorage.</li>
+              <li><strong>Preview updates</strong> debounced — no input lag at any width.</li>
             </ul>
           </div>
-          <figure class="n5__figure">
+          <figure class="n6__figure">
             <img
-              src="/mockups/notes-v5-editor.svg"
+              src="/mockups/notes-v60-backlinks.svg"
               alt="Drag-resize split-pane between markdown editor and rendered preview"
               width="1200"
               height="800"
               loading="lazy"
               decoding="async"
             />
-            <figcaption>Two panes, one divider. Resize ratio persists per note.</figcaption>
+            <figcaption>Two panes, one divider. Resize ratio persists per note. Backlinks panel at the bottom.</figcaption>
           </figure>
         </article>
 
-        <!-- 3. Backlinks ([[wikilink]] autocomplete) -->
-        <article class="n5 reveal" id="v5-backlinks">
-          <div class="n5__copy">
-            <span class="n5__label">New · Backlinks</span>
-            <h3 class="n5__title"><code>[[wikilink]]</code> with autocomplete and cross-note navigation.</h3>
-            <p class="n5__body">
-              Type <code>[[</code> and a fuzzy-match dropdown opens over the
-              cursor. Pick an existing note to insert a link, or type a new
-              title and press Enter to create the target on save. Clicking a
-              <code>[[link]]</code> in the preview navigates to that note.
-              The backlink index is rebuilt on save — no background worker,
-              no debounce trick, just a single SQL query.
+        <!-- 3. Wikilinks + tags -->
+        <article class="n6 reveal" id="v6-wikilinks">
+          <div class="n6__copy">
+            <span class="n6__label">New · Wikilinks + tags</span>
+            <h3 class="n6__title"><code>[[wikilink]]</code> and <code>#tag</code>, both with fuzzy autocomplete.</h3>
+            <p class="n6__body">
+              Type <code>[[</code> and a ranked dropdown opens over the cursor. Pick
+              an existing note to insert a link, or type a new title and press
+              Enter to create the target on save. Clicking a <code>[[link]]</code>
+              in the preview navigates to that note. Tags work the same way with
+              <code>#</code>, ranked by usage frequency so the tags you actually
+              use float to the top.
             </p>
-            <ul class="n5__list">
-              <li><strong>Autocomplete</strong> on <code>[[</code> — fuzzy match against note titles.</li>
-              <li><strong>Create-on-the-fly</strong> — type a new title, press Enter, the note exists.</li>
-              <li><strong>Click to navigate</strong> in the rendered preview.</li>
+            <ul class="n6__list">
+              <li><strong>Fuzzy match</strong> on <code>[[</code> and <code>#</code>.</li>
+              <li><strong>Ranked by frequency</strong> — your top 10 tags always come first.</li>
+              <li><strong>Create-on-the-fly</strong> — type a new title, press Enter.</li>
               <li><strong>Backlinks panel</strong> at the bottom of every note shows what links in.</li>
             </ul>
           </div>
-          <figure class="n5__figure">
+          <figure class="n6__figure">
             <img
-              src="/mockups/notes-v5-backlinks.svg"
-              alt="Note editor with [[wikilink]] autocomplete dropdown"
+              src="/mockups/notes-v60-backlinks.svg"
+              alt="Note editor with [[wikilink]] autocomplete and tag suggestions"
               width="1200"
               height="800"
               loading="lazy"
               decoding="async"
             />
-            <figcaption>Type <code>[[</code> and the dropdown opens over the cursor.</figcaption>
+            <figcaption>Type <code>[[</code> and the dropdown opens. Tags float to the top by frequency.</figcaption>
           </figure>
         </article>
 
-        <!-- 4. Tag autocomplete -->
-        <article class="n5 n5--reverse reveal" id="v5-tag-autocomplete">
-          <div class="n5__copy">
-            <span class="n5__label">New · Tag autocomplete</span>
-            <h3 class="n5__title">Type <code>#</code> and existing tags surface.</h3>
-            <p class="n5__body">
-              The tag autocomplete in v0.5.2 is a real fuzzy match, not a
-              static list. It runs against every tag currently in the database
-              (case-insensitive prefix + subsequence match), ranked by usage
-              frequency so the tags you actually use float to the top.
+        <!-- 4. M3 toolbar + 9 plugins -->
+        <article class="n6 n6--reverse reveal" id="v6-toolbar">
+          <div class="n6__copy">
+            <span class="n6__label">New · Toolbar + native plugins</span>
+            <h3 class="n6__title">M3 toolbar and 9 Capacitor plugins wired in.</h3>
+            <p class="n6__body">
+              The bottom toolbar carries the seven formatting actions that cover
+              most editing needs: bold, italic, code, link, list, heading, image.
+              Below them sit 9 Capacitor plugins: share, clipboard, haptics,
+              status bar, splash, keyboard, app, files, and a local model bridge.
+              The web bundle in the APK is the same one that runs in a desktop
+              browser; native paths attach through Capacitor at runtime.
             </p>
-            <ul class="n5__list">
-              <li><strong>Fuzzy match</strong> — <code>#bkk</code> matches <code>#bangkok</code>.</li>
-              <li><strong>Ranked by frequency</strong> — your top 10 tags always come first.</li>
-              <li><strong>Inline create</strong> — type a new tag, press Space, it exists.</li>
-              <li><strong>Keyboard nav</strong> — ↑/↓/Enter/Escape, no mouse required.</li>
+            <ul class="n6__list">
+              <li><strong>7 actions</strong> on the M3 toolbar, all keyboard-mapped.</li>
+              <li><strong>9 Capacitor plugins</strong> (+share, +clipboard, +haptics, +status-bar, +splash-screen, +keyboard, +app, +files, +local-model).</li>
+              <li><strong>Share intent</strong> pre-fills the capture sheet.</li>
+              <li><strong>Web fallback</strong> for browser preview — same bundle, no fork.</li>
             </ul>
           </div>
-          <figure class="n5__figure">
+          <figure class="n6__figure">
             <img
-              src="/mockups/notes-v5-backlinks.svg"
-              alt="Note editor with #tag autocomplete dropdown"
-              width="1200"
-              height="800"
+              src="/mockups/notes-v60-editor.svg"
+              alt="Pulse Notes v0.6.0 Android editor with M3 bottom toolbar"
+              width="720"
+              height="520"
               loading="lazy"
               decoding="async"
             />
-            <figcaption>Tag fuzzy-match dropdown, ranked by how often you actually use each tag.</figcaption>
+            <figcaption>Seven actions, one toolbar. Native share intent when the user taps the floating action button.</figcaption>
           </figure>
         </article>
 
-        <!-- 5. M3 toolbar -->
-        <article class="n5 reveal" id="v5-toolbar">
-          <div class="n5__copy">
-            <span class="n5__label">New · Toolbar</span>
-            <h3 class="n5__title">Seven formatting actions on a Material 3 toolbar.</h3>
-            <p class="n5__body">
-              A floating action bar at the top of the editor with the seven
-              actions that cover 90% of formatting needs. Each one is a
-              keyboard shortcut, a button tap, and a menu item — pick your
-              path. The toolbar uses Material 3 spacing tokens on Android and
-              the macOS / Windows fluent pattern on desktop, so it feels native
-              on every platform.
+        <!-- 5. Performance / footprint -->
+        <article class="n6 reveal" id="v6-perf">
+          <div class="n6__copy">
+            <span class="n6__label">New · Footprint</span>
+            <h3 class="n6__title">4.32 MB APK, 306 KB gzipped bundle.</h3>
+            <p class="n6__body">
+              The full greenfield build is 4.32&nbsp;MB, with the JS bundle at
+              849&nbsp;KB raw / 306&nbsp;KB gzipped. The CodeMirror editor is
+              lazy-loaded behind a feature flag — the list view pulls in under
+              60&nbsp;KB on first paint. Capacitor 8 with minSdk 24 and targetSdk
+              36 covers the Android install base down to Android 7.
             </p>
-            <ul class="n5__list">
-              <li><strong>Bold</strong> — wraps selection in <code>**</code>. Shortcut: Ctrl/Cmd+B.</li>
-              <li><strong>Italic</strong> — wraps selection in <code>*</code>. Shortcut: Ctrl/Cmd+I.</li>
-              <li><strong>Code</strong> — wraps inline in backticks or 4-space-fences a block.</li>
-              <li><strong>Link</strong> — <code>[text](url)</code>. Shortcut: Ctrl/Cmd+K.</li>
-              <li><strong>List</strong> — toggles between ordered and unordered.</li>
-              <li><strong>Heading</strong> — cycles H1 → H2 → H3 → paragraph.</li>
-              <li><strong>Image</strong> — <code>![alt](path)</code> with a file picker.</li>
+            <ul class="n6__list">
+              <li><strong>4.32 MB</strong> APK, versionCode 10, appId <code>app.pulse.notes</code>.</li>
+              <li><strong>minSdk 24</strong> (Android 7.0) · <strong>targetSdk 36</strong>.</li>
+              <li><strong>First paint</strong> under 60&nbsp;KB before CodeMirror loads.</li>
+              <li><strong>150/150 vitest</strong> green at HEAD, no flake.</li>
             </ul>
           </div>
-          <figure class="n5__figure">
-            <img
-              src="/mockups/notes-v5-editor.svg"
-              alt="M3 toolbar with seven formatting buttons above the editor"
-              width="1200"
-              height="800"
-              loading="lazy"
-              decoding="async"
-            />
-            <figcaption>Seven actions, one toolbar. Shortcuts shown on hover.</figcaption>
+          <figure class="n6__figure">
+            <div class="n6__metrics glass">
+              <div class="n6__metric">
+                <span class="n6__metric-num">4.32<span class="n6__metric-unit">MB</span></span>
+                <span class="n6__metric-label">APK size</span>
+              </div>
+              <div class="n6__metric">
+                <span class="n6__metric-num">306<span class="n6__metric-unit">KB gz</span></span>
+                <span class="n6__metric-label">JS bundle</span>
+              </div>
+              <div class="n6__metric">
+                <span class="n6__metric-num">150<span class="n6__metric-unit">/150</span></span>
+                <span class="n6__metric-label">vitest</span>
+              </div>
+              <div class="n6__metric">
+                <span class="n6__metric-num">9</span>
+                <span class="n6__metric-label">Capacitor plugins</span>
+              </div>
+            </div>
+            <figcaption>What 5 components + 2 libs + 1 greenfield rewrite measure against the install base.</figcaption>
           </figure>
         </article>
       </div>
     </section>
 
-    <!-- ─── What changed — changelog entries ────────────── -->
+    <!-- ─── Smart Engine v3 callout (cross-feature) ─────── -->
+    <section class="se3" id="smart-engine-v3">
+      <div class="container se3__inner reveal">
+        <div class="se3__copy">
+          <span class="eyebrow">Cross-feature · Smart Engine v3</span>
+          <h2>Notes get even smarter with Smart Engine v3.</h2>
+          <p class="lede">
+            The same A/B harness that gates the chat router on desktop also gates
+            the recall step in Notes on Android. v3 prefers the right model for the
+            query 32 percentage points more often than the v2 baseline — and
+            answers land in roughly a seventh of the time. v0.6.0 ships with v3
+            as the default, threshold&nbsp;5. The harness logs every call to
+            <code>data/smart-engine-v3-ab-*.jsonl</code> for inspection.
+          </p>
+          <div class="se3__stats" role="list" aria-label="Smart Engine v3 results">
+            <div class="se3__stat" role="listitem">
+              <span class="se3__stat-num">+32<span class="se3__stat-unit">pp</span></span>
+              <span class="se3__stat-label">pass-rate vs v2 baseline (88% absolute)</span>
+            </div>
+            <div class="se3__stat" role="listitem">
+              <span class="se3__stat-num">−1370<span class="se3__stat-unit">ms</span></span>
+              <span class="se3__stat-label">p50 latency vs v2 baseline</span>
+            </div>
+            <div class="se3__stat" role="listitem">
+              <span class="se3__stat-num">5</span>
+              <span class="se3__stat-label">PassThreshold, default ON for Notes</span>
+            </div>
+          </div>
+          <a class="se3__cta" href="/changelog/#smart-engine-v3">
+            Read the Smart Engine v3 report →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Changelog snapshot ──────────────────────────── -->
     <section class="changelog" id="changelog">
       <div class="container">
         <header class="changelog__head reveal">
           <span class="eyebrow">What changed</span>
           <h2>Pulse Notes — release notes.</h2>
           <p class="lede">
-            Five shipped entries between v0.4.0 and v0.5.2. Dates are local
+            Four shipped entries between v0.5.2 and v0.6.0. Dates are local
             (Asia/Bangkok). Full audit lives in the
             <a href="/changelog/#v0.6.0">changelog</a>.
           </p>
         </header>
         <ol class="changelog__list" role="list">
+          <li class="changelog__item reveal">
+            <time class="changelog__date" datetime="2026-08-01">2026-08-01</time>
+            <div class="changelog__body">
+              <h3 class="changelog__title">v0.6.0 · GREENFIELD Android release</h3>
+              <p>
+                Written from scratch on Svelte 5 + TS strict + Vite. CodeMirror 6
+                with split-pane (bottom-sheet on phone), <code>[[wikilink]]</code>
+                backlinks, tag autocomplete, M3 toolbar, 9 Capacitor plugins.
+                150/150 vitest, 4.32&nbsp;MB APK, versionCode 10,
+                appId <code>app.pulse.notes</code>, minSdk&nbsp;24, targetSdk&nbsp;36.
+                Smart Engine v3 default ON, threshold&nbsp;5.
+              </p>
+            </div>
+          </li>
           <li class="changelog__item reveal">
             <time class="changelog__date" datetime="2026-07-31">2026-07-31</time>
             <div class="changelog__body">
@@ -469,15 +524,13 @@ import '../styles/notes.css';
           <li class="changelog__item reveal">
             <time class="changelog__date" datetime="2026-07-31">2026-07-31</time>
             <div class="changelog__body">
-              <h3 class="changelog__title">v0.5.1 · CodeMirror 6 markdown editor ships</h3>
+              <h3 class="changelog__title">v0.5.1 · CodeMirror 6 markdown editor ships on desktop</h3>
               <p>
                 Replaced the plain textarea with CodeMirror 6, markdown-it 14,
-                highlight.js 11, and @lezer/highlight. Five new components:
-                MarkdownEditor (lazy), MarkdownPreview, NoteToolbar (M3),
-                TagAutocomplete (M3), SplitPane. Two new lib files:
-                <code>markdownIt.ts</code>, <code>notesBacklinks.ts</code>.
-                <code>[[wikilink]]</code> backlinks and split-pane preview
-                land. Feature flag <code>notes.markdown.v2</code> default ON.
+                highlight.js 11, and <code>@lezer/highlight</code>. Five new
+                components, two new lib files. <code>[[wikilink]]</code> backlinks
+                and split-pane preview land on desktop. Feature flag
+                <code>notes.markdown.v2</code> default ON.
               </p>
             </div>
           </li>
@@ -486,34 +539,11 @@ import '../styles/notes.css';
             <div class="changelog__body">
               <h3 class="changelog__title">v0.5.0 · Tier 1 desktop Notes ships</h3>
               <p>
-                SQLite + FTS5 schema landed, with 8 Tauri commands and 5 React
-                components. Tray menu gains a "New note" action. 17 Rust tests,
+                SQLite + FTS5 schema landed on Windows. 8 Tauri commands, 5 React
+                components, tray menu gains a "New note" action. 17 Rust tests,
                 158 vitest tests, clean release build. Notes enters beta on
-                Windows.
-              </p>
-            </div>
-          </li>
-          <li class="changelog__item reveal">
-            <time class="changelog__date" datetime="2026-07-31">2026-07-31</time>
-            <div class="changelog__body">
-              <h3 class="changelog__title">v0.4.1 · Notes module scaffolded</h3>
-              <p>
-                The notes/ folder, the capture intent integration, and the
-                first 12 vitest tests for the SQLite adapter. No user-facing
-                UI yet — this is the foundation.
-              </p>
-            </div>
-          </li>
-          <li class="changelog__item reveal">
-            <time class="changelog__date" datetime="2026-07-31">2026-07-31</time>
-            <div class="changelog__body">
-              <h3 class="changelog__title">v0.4.0 · Notes feature announced</h3>
-              <p>
-                Notes was the headline feature of the v0.4.0 launch. The brief
-                promised a local-first second brain with capture, search,
-                backlinks, and recall — all running through the local Ollama
-                model. The 12MB installer shipped with the schema and a
-                capture sheet, even though the editor was still a textarea.
+                Windows — the surface that the Android greenfield rewrite
+                ultimately replaces.
               </p>
             </div>
           </li>
@@ -528,38 +558,39 @@ import '../styles/notes.css';
           <span class="eyebrow">Privacy · honest version</span>
           <h2>Your notes never leave your device.</h2>
           <p class="lede">
-            Pulse stores everything in a local SQLite database on your disk.
-            The full-text search index is the same database. The recall step
-            is the same local model that runs chat. Nothing crosses the
+            Pulse stores everything in a local SQLite database on your Android
+            device. The full-text search index is the same database. The recall
+            step is the same local model that runs chat. Nothing crosses the
             network boundary.
           </p>
           <ul class="np__list" role="list">
             <li>
-              <strong>Tier 1 (free, forever):</strong> local only. No accounts,
-              no signup, no cloud. You wipe the folder, you get a clean install.
+              <strong>Local only, forever:</strong> no accounts, no signup, no
+              cloud. Wipe the app's data folder and you get a clean install.
             </li>
             <li>
-              <strong>Tier 2 (Pro, $5/mo, planned for v0.6):</strong> opt-in
-              end-to-end-encrypted sync across devices. Pro is the only path
-              that uses the network. You can disable it and nothing changes.
+              <strong>Free sync, today:</strong> the <code>notes.db</code> file is
+              plain SQLite. Drop the app data folder into a git repo, a Syncthing
+              pair, or a folder-sync tool and you have manual sync without paying
+              anyone.
             </li>
             <li>
-              <strong>Free sync, today:</strong> the <code>notes.db</code> file
-              is plain SQLite. Point any git client at <code>~/.pulse</code>
-              and you have manual sync without paying anyone.
+              <strong>Pro sync, planned for v0.7:</strong> opt-in
+              end-to-end-encrypted sync across devices. Pro is the only path that
+              uses the network. Disable it and nothing changes.
             </li>
           </ul>
           <p class="np__more">
             Full audit, source code, and the security model live on the
-            <a href="/privacy/">Security &amp; privacy</a>.
+            <a href="/privacy/">Security &amp; privacy</a> page.
           </p>
         </div>
         <aside class="np__card glass" aria-label="What Pulse does and does not do">
           <h3 class="np__card-title">What Pulse does.</h3>
           <ul class="np__card-list np__card-list--yes" role="list">
-            <li>Stores notes in a local SQLite database</li>
+            <li>Stores notes in a local SQLite database on the device</li>
             <li>Runs FTS5 search on the same database</li>
-            <li>Calls the local Ollama over loopback HTTP</li>
+            <li>Calls the local model over loopback</li>
             <li>Surfaces relevant notes from the local index</li>
           </ul>
           <h3 class="np__card-title">What Pulse does not do.</h3>
@@ -573,83 +604,30 @@ import '../styles/notes.css';
       </div>
     </section>
 
-    <!-- ─── How it works ────────────────────────────────── -->
-    <section class="hw" id="how-it-works">
-      <div class="container">
-        <header class="hw__head reveal">
-          <span class="eyebrow">How it works</span>
-          <h2>Three steps. About five minutes.</h2>
+    <!-- ─── Desktop follow-up ───────────────────────────── -->
+    <section class="dfo" id="desktop-followup">
+      <div class="container dfo__inner reveal">
+        <div class="dfo__copy">
+          <span class="eyebrow">Also shipping soon · Desktop v0.6.0</span>
+          <h2>The same code path, on Windows.</h2>
           <p class="lede">
-            From the installer to your first saved note is roughly the time it
-            takes to make coffee. No accounts, no credit card, no email
-            confirmation loop.
+            The desktop v0.6.0 release is in progress — it picks up the greenfield
+            surface from the Android build and adds the missing desktop surfaces
+            (system tray, hotkeys, native installer, in-app update checker). v0.5.2
+            is the current stable desktop build; v0.6.0 desktop follows in the
+            next Pulse desktop release after Android stabilizes.
           </p>
-        </header>
-        <ol class="hw__steps" role="list">
-          <li class="hw__step reveal">
-            <div class="hw__step-num">01</div>
-            <h3 class="hw__step-title">Install Pulse.</h3>
-            <p class="hw__step-body">
-              12MB Windows installer. No admin rights for the app itself. Pull
-              <code>gemma3:4b</code> through Ollama if you don't already have a
-              model. The first 90 seconds are install + one model pull.
-            </p>
-            <a class="hw__step-cta" href="/changelog/#v0.6.0">Install guide →</a>
-          </li>
-          <li class="hw__step reveal">
-            <div class="hw__step-num">02</div>
-            <h3 class="hw__step-title">Open Notes.</h3>
-            <p class="hw__step-body">
-              From the system tray, hit the Notes button, or use the
-              <code>Win+Shift+N</code> hotkey. The list lands on a single
-              screen with five note cards, three tag chips, and a purple FAB
-              at the bottom-right.
-            </p>
-          </li>
-          <li class="hw__step reveal">
-            <div class="hw__step-num">03</div>
-            <h3 class="hw__step-title">Share anything. Pulse remembers.</h3>
-            <p class="hw__step-body">
-              Forward a message, drop a screenshot, dictate a thought. Pulse
-              writes a note, indexes it, and links it back. Two days from now,
-              when you ask, the right note is already there.
-            </p>
-            <a class="hw__step-cta" href="#killer-demo">See the demo →</a>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ─── Smart Engine v3 callout (cross-feature) ─────── -->
-    <section class="se3" id="smart-engine-v3">
-      <div class="container se3__inner reveal">
-        <div class="se3__copy">
-          <span class="eyebrow">Cross-feature · Smart Engine v3</span>
-          <h2>Notes are even smarter with Smart Engine v3.</h2>
-          <p class="lede">
-            The same A/B harness that validates the model router also gates
-            the recall step in Notes. v3 prefers the right model for the
-            query 32 percentage points more often than the v2 baseline — and
-            answers land in roughly a seventh of the time. Notes uses it by
-            default; the harness logs every call to
-            <code>data/smart-engine-v3-ab-*.jsonl</code> for inspection.
-          </p>
-          <div class="se3__stats" role="list" aria-label="Smart Engine v3 results">
-            <div class="se3__stat" role="listitem">
-              <span class="se3__stat-num">+32pp</span>
-              <span class="se3__stat-label">pass rate vs v2 baseline</span>
-            </div>
-            <div class="se3__stat" role="listitem">
-              <span class="se3__stat-num">7×</span>
-              <span class="se3__stat-label">faster p50 latency</span>
-            </div>
-            <div class="se3__stat" role="listitem">
-              <span class="se3__stat-num">50</span>
-              <span class="se3__stat-label">A/B test tasks, 0 manual reruns</span>
-            </div>
-          </div>
-          <a class="se3__cta" href="/changelog/#smart-engine-v3">
-            Read the Smart Engine v3 report →
+        </div>
+        <div class="dfo__links">
+          <a class="dfo__link glass" href="https://github.com/TimesNuRoman/pulse/releases" rel="noopener noreferrer">
+            <span class="dfo__link-eyebrow">Current desktop</span>
+            <span class="dfo__link-title">Pulse desktop v0.5.2</span>
+            <span class="dfo__link-meta">Windows · MIT</span>
+          </a>
+          <a class="dfo__link glass" href="/changelog/#v0.6.0">
+            <span class="dfo__link-eyebrow">Next desktop</span>
+            <span class="dfo__link-title">Pulse desktop v0.6.0</span>
+            <span class="dfo__link-meta">ETA Q3 2026 · 3 installers</span>
           </a>
         </div>
       </div>
@@ -659,12 +637,12 @@ import '../styles/notes.css';
     <section class="nfaq" id="faq">
       <div class="container">
         <header class="nfaq__head reveal">
-          <span class="eyebrow">FAQ · Notes</span>
+          <span class="eyebrow">FAQ · Notes on Android</span>
           <h2>The four things people ask first.</h2>
           <p class="lede">
             If your question is not here, the
-            <a href="/faq.html">full FAQ</a> covers privacy, performance, and
-            comparison.
+            <a href="/privacy/">privacy page</a> covers the security model and the
+            <a href="/changelog/">changelog</a> lists every release.
           </p>
         </header>
         <ul class="nfaq__list" role="list">
@@ -678,8 +656,10 @@ import '../styles/notes.css';
                 <p class="nfaq__a">
                   Local-first like Obsidian. Voice-first like nothing else.
                   Free forever like Evernote once was, before it stopped being.
-                  The data model is plain SQLite plus a markdown body, so it
-                  opens in any tool you already use.
+                  The data model is plain SQLite plus a markdown body, so it opens
+                  in any tool you already use. The Android build is a Capacitor
+                  shell around a web bundle, so the same code path runs in a
+                  desktop browser too.
                 </p>
               </div>
             </details>
@@ -694,9 +674,8 @@ import '../styles/notes.css';
                 <p class="nfaq__a">
                   Only what you choose to share. There is no SMS access, no
                   notification listener, no accessibility-service trick that
-                  quietly scans other apps. The capture sheet opens only when
-                  you tap "share to Pulse" in another app. That's the entire
-                  surface.
+                  quietly scans other apps. The capture sheet opens only when you
+                  tap "share to Pulse" in another app. That's the entire surface.
                 </p>
               </div>
             </details>
@@ -709,12 +688,12 @@ import '../styles/notes.css';
               </summary>
               <div class="nfaq__body">
                 <p class="nfaq__a">
-                  In the v0.5 release, Pulse is single-device. The Pro tier
-                  (planned, $5/mo) will add opt-in end-to-end-encrypted sync
-                  across your devices. If you want it now, the
-                  <code>notes.db</code> file is a plain SQLite database —
-                  point any git client at <code>~/.pulse</code> and you have
-                  free, manual sync.
+                  In v0.6.0, Pulse is single-device on each platform. Manual sync
+                  works today: the <code>notes.db</code> file is plain SQLite, so
+                  point Syncthing, a folder-sync tool, or a git client at the
+                  app's data directory and you have free cross-device sync. Pro
+                  tier (planned, $5/mo) will add opt-in end-to-end-encrypted
+                  automatic sync.
                 </p>
               </div>
             </details>
@@ -727,11 +706,12 @@ import '../styles/notes.css';
               </summary>
               <div class="nfaq__body">
                 <p class="nfaq__a">
-                  Your <code>notes.db</code> is plain SQLite. Open it with any
-                  database browser (DB Browser for SQLite, sqlite3 CLI,
-                  Beekeeper Studio) and your data is right there. Export to
-                  markdown from Settings → Data, one click, one .zip. No
-                  export cap, no "premium-only" feature, no retention.
+                  Your <code>notes.db</code> is plain SQLite. The Android app data
+                  directory on the device is accessible through a file manager
+                  with root or via ADB backup. Open the file with any SQLite
+                  browser, or export to a folder of <code>.md</code> files from
+                  Settings → Data. No export cap, no premium-only feature, no
+                  retention.
                 </p>
               </div>
             </details>
@@ -744,19 +724,43 @@ import '../styles/notes.css';
     <section class="ncta" id="download">
       <div class="bg-glow"></div>
       <div class="container ncta__inner reveal">
-        <h2 class="ncta__title">Try Pulse.</h2>
+        <span class="eyebrow">v0.6.0 · Android · GREENFIELD</span>
+        <h2 class="ncta__title">Install Pulse Notes.</h2>
         <p class="ncta__sub">
-          12MB. No signup. No telemetry. Open the installer and it works.
+          {APK_SIZE} APK · no Google Play · no account · no telemetry.
         </p>
         <div class="ncta__row">
-          <a class="btn btn--primary btn--lg" href="/#download">Get Pulse ↓ 12MB</a>
-          <a class="btn btn--ghost btn--lg" href="/changelog/">Read the changelog</a>
+          <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
+            Download APK ↓ {APK_SIZE}
+          </a>
+          <a class="btn btn--ghost btn--lg" href="/changelog/">
+            Read the changelog
+          </a>
         </div>
-        <p class="ncta__meta">
-          Notes ships in v0.5.2 desktop · Windows + Android · Apache 2.0
-        </p>
+        <div class="ncta__grid">
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">versionName</span>
+            <span class="ncta__meta-val">{APK_VERSION}</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">versionCode</span>
+            <span class="ncta__meta-val">{APK_VERSION_CODE}</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">appId</span>
+            <span class="ncta__meta-val">{APK_APP_ID}</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">minSdk · targetSdk</span>
+            <span class="ncta__meta-val">{APK_MIN_SDK} · {APK_TARGET_SDK}</span>
+          </div>
+          <div class="ncta__meta">
+            <span class="ncta__meta-key">SHA-256</span>
+            <span class="ncta__meta-val">{APK_SHA}</span>
+          </div>
+        </div>
         <p class="ncta__more">
-          <a href="/changelog/">All releases →</a>
+          <a href="/changelog/#v0.6.0">Full v0.6.0 release notes →</a>
         </p>
       </div>
     </section>

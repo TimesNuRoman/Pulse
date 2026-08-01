@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Pulse Notes v0.6.0 wikilink autocomplete and tag suggestions on Android">
+  <title>Wikilink autocomplete and tag suggestions</title>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1b26"/>
+      <stop offset="1" stop-color="#16171f"/>
+    </linearGradient>
+    <linearGradient id="hl2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#bb9af7"/>
+      <stop offset="0.5" stop-color="#7aa2f7"/>
+      <stop offset="1" stop-color="#7dcfff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#bg2)"/>
+
+  <!-- Browser-like chrome (it's web) -->
+  <rect x="0" y="0" width="1200" height="56" fill="#1f2233"/>
+  <circle cx="28" cy="28" r="6" fill="#f7768e"/>
+  <circle cx="48" cy="28" r="6" fill="#e0af68"/>
+  <circle cx="68" cy="28" r="6" fill="#9ece6a"/>
+  <rect x="100" y="14" width="1000" height="28" rx="6" fill="#16171f" stroke="#2f334d"/>
+  <text x="120" y="32" font-family="ui-monospace, monospace" font-size="11" fill="#9aa5ce">pulse://notes/bangkok-oct</text>
+  <text x="1080" y="32" font-family="ui-monospace, monospace" font-size="11" fill="#bb9af7" font-weight="600">AUTO-SAVED</text>
+
+  <!-- Two-pane layout: editor on the left with the cursor + dropdown, preview on the right -->
+  <rect x="0" y="56" width="700" height="744" fill="#1a1b26"/>
+  <rect x="700" y="56" width="500" height="744" fill="#1f2233"/>
+
+  <!-- Editor pane content -->
+  <text x="48" y="100" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">1</text>
+  <text x="48" y="124" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">2</text>
+  <text x="48" y="148" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">3</text>
+  <text x="48" y="172" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">4</text>
+  <text x="48" y="196" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">5</text>
+  <text x="48" y="220" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">6</text>
+  <text x="48" y="244" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">7</text>
+  <text x="48" y="268" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">8</text>
+  <text x="48" y="292" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">9</text>
+  <text x="48" y="316" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">10</text>
+  <text x="48" y="340" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">11</text>
+  <text x="48" y="364" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">12</text>
+  <text x="48" y="388" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">13</text>
+  <text x="48" y="412" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">14</text>
+  <text x="48" y="436" font-family="ui-monospace, monospace" font-size="11" fill="#565f89">15</text>
+
+  <text x="80" y="100" font-family="ui-sans-serif, system-ui" font-size="15" fill="#bb9af7" font-weight="700"># Bangkok, October trip</text>
+  <text x="80" y="124" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9aa5ce">Hotel near BTS, ~1200 THB/night, pool, breakfast.</text>
+  <text x="80" y="148" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9aa5ce">Three nights before flying south to Phuket.</text>
+  <text x="80" y="184" font-family="ui-sans-serif, system-ui" font-size="14" fill="#e0af68" font-weight="700">## Tips from Sasha</text>
+  <text x="80" y="208" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9aa5ce">- Take the airport rail, not a taxi from BKK.</text>
+  <text x="80" y="232" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9aa5ce">- Get a SIM at the airport, Klook, not AIS counter.</text>
+  <text x="80" y="256" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9aa5ce">- Carry 200 THB cash for the first tuk-tuk.</text>
+  <text x="80" y="292" font-family="ui-sans-serif, system-ui" font-size="14" fill="#e0af68" font-weight="700">## Cross-references</text>
+  <text x="80" y="316" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9aa5ce">See also:</text>
+  <text x="80" y="340" font-family="ui-sans-serif, system-ui" font-size="14" fill="#7aa2f7">[[</text>
+  <text x="106" y="340" font-family="ui-sans-serif, system-ui" font-size="14" fill="#7dcfff" font-weight="600">Sa</text>
+  <rect x="102" y="328" width="20" height="20" fill="none" stroke="#7aa2f7" stroke-width="1" opacity="0.4"/>
+  <line x1="80" y1="350" x2="120" y2="350" stroke="#7aa2f7" stroke-width="1.5"/>
+  <text x="80" y="372" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9aa5ce">Tags:</text>
+  <text x="116" y="372" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9ece6a">#travel</text>
+  <text x="170" y="372" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9ece6a">#bkk</text>
+  <text x="212" y="372" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9ece6a">#oct</text>
+  <text x="80" y="396" font-family="ui-sans-serif, system-ui" font-size="14" fill="#bb9af7">— Roman, Aug 1</text>
+
+  <!-- Autocomplete dropdown floating over editor -->
+  <g transform="translate(80, 360)">
+    <rect x="0" y="0" width="320" height="140" rx="8" fill="#24283b" stroke="#bb9af7" stroke-width="1.5"/>
+    <text x="14" y="22" font-family="ui-sans-serif, system-ui" font-size="10" fill="#565f89" letter-spacing="0.1em">WIKILINK · 3 MATCHES</text>
+    <!-- Match 1 (selected) -->
+    <rect x="0" y="32" width="320" height="32" fill="rgba(187,154,247,0.18)"/>
+    <text x="14" y="52" font-family="ui-sans-serif, system-ui" font-size="13" fill="#bb9af7" font-weight="600">Sasha-Bangkok</text>
+    <text x="180" y="52" font-family="ui-monospace, monospace" font-size="10" fill="#9aa5ce">Sasha</text>
+    <text x="220" y="52" font-family="ui-monospace, monospace" font-size="10" fill="#9ece6a">12×</text>
+    <text x="290" y="52" font-family="ui-monospace, monospace" font-size="10" fill="#bb9af7">↩</text>
+    <!-- Match 2 -->
+    <text x="14" y="84" font-family="ui-sans-serif, system-ui" font-size="13" fill="#c0caf5">Sasha-phuket-ferry</text>
+    <text x="180" y="84" font-family="ui-monospace, monospace" font-size="10" fill="#9aa5ce">Sasha</text>
+    <text x="220" y="84" font-family="ui-monospace, monospace" font-size="10" fill="#9ece6a">4×</text>
+    <!-- Match 3 -->
+    <text x="14" y="112" font-family="ui-sans-serif, system-ui" font-size="13" fill="#c0caf5">Sasha — visa run notes</text>
+    <text x="180" y="112" font-family="ui-monospace, monospace" font-size="10" fill="#9aa5ce">Sasha</text>
+    <text x="220" y="112" font-family="ui-monospace, monospace" font-size="10" fill="#9ece6a">1×</text>
+  </g>
+
+  <!-- Tag autocomplete dropdown -->
+  <g transform="translate(80, 392)">
+    <rect x="40" y="0" width="220" height="64" rx="8" fill="#24283b" stroke="#9ece6a" stroke-width="1.5"/>
+    <text x="54" y="20" font-family="ui-sans-serif, system-ui" font-size="10" fill="#565f89" letter-spacing="0.1em">#TAG · RANKED</text>
+    <text x="54" y="40" font-family="ui-sans-serif, system-ui" font-size="12" fill="#9ece6a" font-weight="600">#bkk</text>
+    <text x="98" y="40" font-family="ui-sans-serif, system-ui" font-size="10" fill="#9aa5ce">#bangkok</text>
+    <text x="54" y="58" font-family="ui-sans-serif, system-ui" font-size="12" fill="#c0caf5">#booked</text>
+  </g>
+
+  <!-- Right preview pane -->
+  <text x="740" y="100" font-family="ui-sans-serif, system-ui" font-size="22" fill="#bb9af7" font-weight="700">Bangkok, October trip</text>
+  <line x1="740" y1="116" x2="1180" y2="116" stroke="#2f334d"/>
+  <text x="740" y="148" font-family="ui-sans-serif, system-ui" font-size="15" fill="#c0caf5">Hotel near BTS, ~1200 THB/night, pool, breakfast.</text>
+  <text x="740" y="172" font-family="ui-sans-serif, system-ui" font-size="15" fill="#c0caf5">Three nights before flying south to Phuket.</text>
+
+  <text x="740" y="220" font-family="ui-sans-serif, system-ui" font-size="18" fill="#e0af68" font-weight="700">Tips from Sasha</text>
+  <text x="740" y="252" font-family="ui-sans-serif, system-ui" font-size="14" fill="#c0caf5">•  Take the airport rail, not a taxi from BKK.</text>
+  <text x="740" y="276" font-family="ui-sans-serif, system-ui" font-size="14" fill="#c0caf5">•  Get a SIM at the airport, Klook, not AIS counter.</text>
+  <text x="740" y="300" font-family="ui-sans-serif, system-ui" font-size="14" fill="#c0caf5">•  Carry 200 THB cash for the first tuk-tuk.</text>
+
+  <text x="740" y="348" font-family="ui-sans-serif, system-ui" font-size="18" fill="#e0af68" font-weight="700">Cross-references</text>
+  <text x="740" y="380" font-family="ui-sans-serif, system-ui" font-size="14" fill="#c0caf5">See also:</text>
+  <text x="800" y="380" font-family="ui-sans-serif, system-ui" font-size="14" fill="#7aa2f7" text-decoration="underline">Sasha-Bangkok</text>
+  <text x="918" y="380" font-family="ui-sans-serif, system-ui" font-size="14" fill="#c0caf5">,</text>
+  <text x="800" y="404" font-family="ui-sans-serif, system-ui" font-size="14" fill="#7aa2f7" text-decoration="underline">Sasha-phuket-ferry</text>
+
+  <!-- Tags chips -->
+  <g transform="translate(740, 432)">
+    <rect x="0" y="0" width="62" height="26" rx="13" fill="rgba(158,206,106,0.12)" stroke="rgba(158,206,106,0.4)"/>
+    <text x="14" y="18" font-family="ui-sans-serif, system-ui" font-size="12" fill="#9ece6a" font-weight="500">#travel</text>
+
+    <rect x="70" y="0" width="50" height="26" rx="13" fill="rgba(158,206,106,0.12)" stroke="rgba(158,206,106,0.4)"/>
+    <text x="84" y="18" font-family="ui-sans-serif, system-ui" font-size="12" fill="#9ece6a" font-weight="500">#bkk</text>
+
+    <rect x="128" y="0" width="46" height="26" rx="13" fill="rgba(158,206,106,0.12)" stroke="rgba(158,206,106,0.4)"/>
+    <text x="142" y="18" font-family="ui-sans-serif, system-ui" font-size="12" fill="#9ece6a" font-weight="500">#oct</text>
+  </g>
+
+  <!-- Backlinks panel -->
+  <g transform="translate(740, 500)">
+    <line x1="0" y1="0" x2="440" y2="0" stroke="#2f334d"/>
+    <text x="0" y="32" font-family="ui-sans-serif, system-ui" font-size="11" fill="#565f89" letter-spacing="0.15em" font-weight="600">BACKLINKS · 2 NOTES LINK IN</text>
+    <text x="0" y="60" font-family="ui-sans-serif, system-ui" font-size="14" fill="#7aa2f7" text-decoration="underline">→ Sasha-Bangkok</text>
+    <text x="160" y="60" font-family="ui-sans-serif, system-ui" font-size="11" fill="#9aa5ce">3 backlinks</text>
+    <text x="0" y="84" font-family="ui-sans-serif, system-ui" font-size="14" fill="#7aa2f7" text-decoration="underline">→ Sasha-phuket-ferry</text>
+    <text x="180" y="84" font-family="ui-sans-serif, system-ui" font-size="11" fill="#9aa5ce">1 backlink</text>
+  </g>
+
+  <!-- Footer bar -->
+  <rect x="0" y="744" width="1200" height="56" fill="#1f2233"/>
+  <rect x="0" y="744" width="1200" height="2" fill="url(#hl2)" opacity="0.4"/>
+  <text x="40" y="780" font-family="ui-monospace, monospace" font-size="11" fill="#9aa5ce">LF  UTF-8  Markdown  v0.6.0</text>
+  <text x="640" y="780" font-family="ui-monospace, monospace" font-size="11" fill="#9ece6a">Auto-saved 2s ago</text>
+  <text x="1020" y="780" font-family="ui-monospace, monospace" font-size="11" fill="#9aa5ce">847 chars · 31 words</text>
+</svg>

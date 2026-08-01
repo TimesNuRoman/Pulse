@@ -1058,3 +1058,378 @@ body.has-nav { padding-top: 0; }
   .ncta__row .btn { width: 100%; }
   .changelog__item { padding: 1.25rem 1.4rem; }
 }
+
+/* ── R80 v0.6.0 additions ────────────────────────────── */
+
+/* SHA-256 line in hero */
+.notes-hero__sha {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.7rem;
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.notes-hero__sha-label {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--purple);
+  font-size: 0.72rem;
+}
+.notes-hero__sha-code {
+  background: var(--surface);
+  padding: 0.2em 0.55em;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-family: ui-monospace, "JetBrains Mono", monospace;
+  font-size: 0.84em;
+  color: var(--cyan);
+}
+.notes-hero__sha-link {
+  color: var(--blue);
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(122, 162, 247, 0.4);
+  padding-bottom: 1px;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.notes-hero__sha-link:hover { color: var(--purple); border-bottom-color: var(--purple); }
+
+/* Why Android first (waf) — 3 card grid */
+.waf__head {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.waf__head h2 { max-width: 22ch; margin: 0; }
+.waf__head .lede { margin: 0.5rem auto 0; max-width: 64ch; }
+.waf__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 760px) {
+  .waf__grid { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+}
+.waf__card {
+  padding: 1.5rem 1.5rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.waf__card:hover { transform: translateY(-2px); border-color: rgba(187, 154, 247, 0.5); }
+.waf__card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+  margin: 0;
+  color: var(--fg);
+}
+.waf__card-body {
+  color: var(--fg-dim);
+  font-size: 0.96rem;
+  line-height: 1.6;
+  margin: 0;
+}
+.waf__card-body code {
+  background: var(--surface);
+  padding: 0.05em 0.35em;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  font-size: 0.88em;
+  color: var(--cyan);
+}
+
+/* What's new in v0.6.0 (n6) — same shape as v0.5.x n5 */
+.new-in-v6__head {
+  text-align: center;
+  margin-bottom: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.new-in-v6__head h2 { max-width: 26ch; margin: 0; }
+.new-in-v6__head .lede { margin: 0.5rem auto 0; max-width: 64ch; }
+.new-in-v6__head .lede code {
+  background: var(--surface);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 0.88em;
+  color: var(--cyan);
+}
+.n6 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+  padding: clamp(28px, 4vw, 48px) 0;
+  border-top: 1px solid var(--border);
+  scroll-margin-top: 80px;
+}
+.n6:first-of-type { border-top: 0; padding-top: 0; }
+@media (min-width: 880px) {
+  .n6 {
+    grid-template-columns: 1fr 1.1fr;
+    gap: clamp(40px, 5vw, 72px);
+  }
+  .n6--reverse .n6__copy { order: 2; }
+  .n6--reverse .n6__figure { order: 1; }
+}
+.n6__label {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 0.6rem;
+}
+.n6__title {
+  font-size: clamp(1.5rem, 1.5vw + 1rem, 2rem);
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  line-height: 1.15;
+  margin: 0 0 1rem;
+  max-width: 24ch;
+}
+.n6__title code {
+  background: var(--surface);
+  padding: 0.05em 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 0.78em;
+  color: var(--cyan);
+}
+.n6__body {
+  color: var(--fg-dim);
+  font-size: 1.02rem;
+  line-height: 1.65;
+  margin: 0 0 1.25rem;
+  max-width: 56ch;
+}
+.n6__body code {
+  background: var(--surface);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 0.86em;
+  color: var(--cyan);
+}
+.n6__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.n6__list li {
+  position: relative;
+  padding-left: 1.4rem;
+  color: var(--fg-dim);
+  font-size: 0.96rem;
+  line-height: 1.55;
+}
+.n6__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--purple);
+}
+.n6__list strong { color: var(--fg); font-weight: 600; }
+.n6__list code {
+  background: var(--surface);
+  padding: 0.05em 0.3em;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  font-size: 0.86em;
+  color: var(--cyan);
+}
+.n6__figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: center;
+}
+.n6__figure img {
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px -20px rgba(187, 154, 247, 0.3),
+              0 8px 20px rgba(0, 0, 0, 0.5);
+}
+.n6__figure figcaption {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+  max-width: 48ch;
+}
+.n6__figure figcaption code {
+  background: var(--surface);
+  padding: 0.05em 0.3em;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  font-size: 0.86em;
+  color: var(--cyan);
+}
+
+/* n6 metrics block (used in the perf card) */
+.n6__metrics {
+  width: 100%;
+  padding: 1.5rem 1.4rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem 1.5rem;
+}
+@media (min-width: 520px) {
+  .n6__metrics { grid-template-columns: repeat(4, 1fr); }
+}
+.n6__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+.n6__metric-num {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--purple);
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+.n6__metric-unit {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--fg-dim);
+}
+.n6__metric-label {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+/* Desktop follow-up (dfo) */
+.dfo {
+  background: radial-gradient(800px 400px at 80% 0%, rgba(187,154,247,0.05), transparent 65%),
+              radial-gradient(700px 400px at 10% 100%, rgba(122,162,247,0.06), transparent 65%);
+}
+.dfo__inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+@media (min-width: 880px) {
+  .dfo__inner { grid-template-columns: 1.2fr 1fr; gap: 3rem; }
+}
+.dfo__copy h2 { margin: 0.5rem 0 1rem; max-width: 22ch; }
+.dfo__copy .lede { margin: 0; }
+.dfo__links {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+.dfo__link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1.4rem 1.5rem;
+  text-decoration: none;
+  color: var(--fg);
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.dfo__link:hover { transform: translateY(-2px); border-color: rgba(187, 154, 247, 0.5); }
+.dfo__link-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--purple);
+}
+.dfo__link-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  margin: 0;
+}
+.dfo__link-meta {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ncta metadata grid (APK info) */
+.ncta__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem 1.5rem;
+  margin: 1.5rem auto 0;
+  max-width: 720px;
+  width: 100%;
+  padding: 1rem 1.4rem;
+  background: rgba(13, 14, 20, 0.5);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+@media (min-width: 540px) {
+  .ncta__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 880px) {
+  .ncta__grid { grid-template-columns: repeat(3, 1fr); }
+}
+.ncta__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-variant-numeric: tabular-nums;
+}
+.ncta__meta-key {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ncta__meta-val {
+  font-size: 0.92rem;
+  color: var(--fg);
+  font-family: ui-monospace, "JetBrains Mono", monospace;
+}
+
+/* ── R80 enhanced mobile pass ────────────────────────── */
+@media (max-width: 639px) {
+  .notes-hero__title { font-size: clamp(1.75rem, 8vw, 2.4rem); }
+  .notes-hero__sub { font-size: 1.05rem; }
+  .notes-hero__sha { font-size: 0.78rem; }
+  .waf__card, .nfaq__item { padding: 1.4rem 1.25rem; }
+  .n6__title { font-size: 1.4rem; }
+  .n6__body { font-size: 0.96rem; }
+  .n6__metrics { padding: 1.25rem 1.1rem; gap: 1rem 1.25rem; }
+  .n6__metric-num { font-size: 1.4rem; }
+  .dfo__link { padding: 1.2rem 1.3rem; }
+  .ncta__title { font-size: clamp(2rem, 9vw, 3rem); }
+  .ncta__sub { font-size: 1rem; }
+  .ncta__grid { padding: 0.85rem 1rem; }
+}
+@media (min-width: 640px) and (max-width: 879px) {
+  .n6__title { font-size: 1.5rem; }
+  .notes-hero__title { max-width: 18ch; }
+}
