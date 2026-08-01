@@ -1,0 +1,27 @@
+# Node
+node_modules/
+.npm/
+.pnpm-store/
+
+# Build outputs
+dist/
+.astro/
+.cache/
+
+# Logs
+*.log
+preview.log
+preview.err.log
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+$RECYCLE.BIN/

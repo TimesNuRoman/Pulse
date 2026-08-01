@@ -1,0 +1,215 @@
+---
+// Hero — top of the page
+// P1-8: fetch GitHub stars at build time. Hide the trust block if API fails
+// (no fake numbers — honest UX beats a fabricated dashboard every time).
+let githubStars: number | null = null;
+try {
+  const res = await fetch('https://api.github.com/repos/TimesNuRoman/pulse', {
+    headers: { 'Accept': 'application/vnd.github+json' },
+  });
+  if (res.ok) {
+    const data = await res.json();
+    if (typeof data.stargazers_count === 'number') {
+      githubStars = data.stargazers_count;
+    }
+  }
+} catch (_) {
+  // network/CORS/build-time failure → hide block, no fake numbers
+}
+const formattedStars = githubStars !== null
+  ? new Intl.NumberFormat('en-US').format(githubStars)
+  : null;
+---
+<section class="hero">
+  <div class="bg-glow"></div>
+  <div class="container hero__grid">
+    <div class="hero__copy reveal">
+      <div class="hero__brand">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="44" height="44" aria-hidden="true">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5" />
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5" />
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5" />
+          <circle cx="32" cy="32" r="9" fill="#bb9af7" />
+          <circle cx="35" cy="30" r="2" fill="#1a1b26" />
+        </svg>
+        <span class="hero__brandname">Pulse</span>
+      </div>
+
+      <h1 class="hero__title">
+        AI that <span class="hero__hl">doesn't get to leave the room.</span>
+      </h1>
+      <p class="hero__sub">
+        Local. Private. 12MB. That's not a feature list, that's a stand.
+      </p>
+
+      <div class="hero__ctas">
+        <a class="btn btn--primary" href="#download">
+          Get Pulse ⤓
+        </a>
+        <a class="btn btn--ghost" href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer" target="_blank">
+          View on GitHub →
+        </a>
+      </div>
+
+      {formattedStars !== null && (
+        <p class="hero__trust">
+          <span class="hero__trust-item">★ {formattedStars} GitHub stars</span>
+          <span class="hero__trust-item">·</span>
+          <span class="hero__trust-item">MIT licensed</span>
+          <span class="hero__trust-item">·</span>
+          <span class="hero__trust-item">v0.3.0</span>
+        </p>
+      )}
+
+      <p class="hero__meta">Windows now. Mac/Linux: when they're done, not before.</p>
+    </div>
+
+    <div class="hero__shot reveal" aria-hidden="true">
+      <div class="hero__shot-frame">
+        <div class="hero__shot-bar">
+          <span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+          <span class="hero__shot-title">pulse — side panel</span>
+        </div>
+        <div class="hero__shot-body">
+          <div class="hero__shot-msg hero__shot-msg--user">what does this Rust panic mean?</div>
+          <div class="hero__shot-msg hero__shot-msg--ai">
+            <span class="kbd">gemma3:4b</span> You're hitting a borrow checker error in <code>main.rs:42</code> — the <code>&amp;mut</code> outlives the immutable borrow. Refactor to…
+          </div>
+          <div class="hero__shot-typing"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: clamp(40px, 8vw, 80px);
+    padding-bottom: clamp(60px, 10vw, 120px);
+    overflow: hidden;
+  }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(40px, 6vw, 64px);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hero__grid { grid-template-columns: 1.05fr 1fr; }
+  }
+
+  .hero__brand {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.4rem 0.8rem 0.4rem 0.4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+  }
+  .pulse-logo { flex-shrink: 0; }
+  .hero__brandname { font-weight: 700; letter-spacing: 0.04em; }
+
+  .hero__title {
+    margin-bottom: 1rem;
+  }
+  .hero__hl {
+    background: linear-gradient(120deg, var(--purple), var(--blue));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero__sub {
+    font-size: 1.15rem;
+    color: var(--fg-dim);
+    margin-bottom: 2rem;
+    max-width: 50ch;
+  }
+  .hero__ctas {
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .hero__trust {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
+    font-size: 0.85rem; color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .hero__trust-item { white-space: nowrap; }
+  .hero__meta {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  /* Screenshot placeholder (dark, frame-only) — P1-5: windowed mockup */
+  .hero__shot {
+    position: relative;
+  }
+  .hero__shot-frame {
+    background: #0d0e14;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+  }
+  .hero__shot-bar {
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.7rem 0.9rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dot--r { background: var(--red); }
+  .dot--y { background: var(--yellow); }
+  .dot--g { background: var(--green); }
+  .hero__shot-title {
+    margin-left: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-family: ui-monospace, monospace;
+  }
+  .hero__shot-body {
+    padding: 1.5rem;
+    display: flex; flex-direction: column; gap: 0.9rem;
+    min-height: 260px;
+  }
+  .hero__shot-msg {
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    max-width: 90%;
+  }
+  .hero__shot-msg--user {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    align-self: flex-end;
+  }
+  .hero__shot-msg--ai {
+    background: linear-gradient(180deg, rgba(187,154,247,0.10), rgba(122,162,247,0.06));
+    border: 1px solid rgba(187,154,247,0.25);
+    align-self: flex-start;
+  }
+  .kbd {
+    display: inline-block;
+    background: var(--surface-2);
+    color: var(--purple);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.78rem;
+    margin-right: 0.3rem;
+  }
+  .hero__shot-typing {
+    display: inline-flex; gap: 4px; padding: 0.7rem 0.9rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; align-self: flex-start;
+  }
+  .hero__shot-typing span {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--fg-dim);
+    animation: typing 1.2s infinite;
+  }
+  .hero__shot-typing span:nth-child(2) { animation-delay: 0.15s; }
+  .hero__shot-typing span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes typing {
+    0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-3px); }
+  }
+</style>

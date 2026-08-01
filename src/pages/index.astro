@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import UseCases from '../components/UseCases.astro';
+import Features from '../components/Features.astro';
+import Comparison from '../components/Comparison.astro';
+import Architecture from '../components/Architecture.astro';
+import Pricing from '../components/Pricing.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base>
+  <main>
+    <Hero />
+    <UseCases />
+    <Features />
+    <Comparison />
+    <Architecture />
+    <Pricing />
+
+    <section class="download" id="download">
+      <div class="container download__inner reveal">
+        <span class="eyebrow">Download</span>
+        <h2>Get Pulse.</h2>
+        <p class="lede">12MB. No signup. No telemetry. Open the installer and it works.</p>
+        <div class="download__ctas">
+          <a
+            class="btn btn--primary"
+            href="https://github.com/TimesNuRoman/pulse/releases/latest"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            ⬇ Download for Windows
+          </a>
+          <a
+            class="btn btn--ghost"
+            href="https://github.com/TimesNuRoman/pulse"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            View on GitHub →
+          </a>
+        </div>
+        <p class="download__meta">v0.3.0 · Windows · Mac &amp; Linux: when they're done, not before.</p>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .download {
+    background:
+      radial-gradient(700px 400px at 50% 0%, rgba(187, 154, 247, 0.10), transparent 70%);
+  }
+  .download__inner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .download__inner h2 { margin: 0.2rem 0 0.4rem; }
+  .download__inner .lede { margin: 0 auto; }
+  .download__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1.25rem;
+  }
+  .download__meta {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+</style>

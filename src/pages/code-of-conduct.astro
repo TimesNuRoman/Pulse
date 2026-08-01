@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Code of Conduct — Pulse"
+  description="Pulse follows the Contributor Covenant. Be kind, assume good faith, focus on the work."
+>
+  <main class="legal">
+    <div class="container">
+      <header class="legal__head reveal">
+        <span class="eyebrow">Community</span>
+        <h1>Code of Conduct.</h1>
+        <p class="lede">Pulse follows the Contributor Covenant, v2.1. Be kind. Focus on the work. Assume good faith.</p>
+      </header>
+
+      <article class="legal__body">
+        <p>
+          Our pledge: everyone who participates in the Pulse project — issues, pull requests,
+          Discord, comments, sponsors — gets a harassment-free experience, regardless of gender,
+          gender identity, sexual orientation, disability, appearance, body size, race, age,
+          religion, or nationality. This applies to maintainers and first-time contributors alike.
+        </p>
+
+        <p>
+          Expected behaviour: critique ideas, not people. Give context when you push back. Use
+          welcoming language. Apologise when you make a mistake and move on. Unacceptable
+          behaviour includes harassment, trolling, public or private harassment, publishing
+          others' private information, and any conduct a reasonable person would consider
+          inappropriate in a professional setting.
+        </p>
+
+        <p>
+          Enforcement: Roman (TimesNuRoman on GitHub) handles reports. Mail
+          <a href="mailto:hi@pulse.tld">hi@pulse.tld</a>. Reports are confidential. The full
+          text of the covenant lives at
+          <a href="https://www.contributor-covenant.org/version/2/1/code_of_conduct/" target="_blank" rel="noopener noreferrer">contributor-covenant.org</a>.
+        </p>
+      </article>
+
+      <p class="legal__back reveal"><a href="/">← Back to Pulse</a></p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .legal { padding-block: clamp(60px, 10vw, 120px); }
+  .legal__head { text-align: left; margin-bottom: 2.5rem; }
+  .legal__head .lede { margin-top: 0.6rem; }
+  .legal__body {
+    max-width: 65ch;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    color: var(--fg-dim);
+    font-size: 1.02rem;
+  }
+  .legal__back {
+    margin-top: 3rem;
+    font-size: 0.95rem;
+  }
+</style>

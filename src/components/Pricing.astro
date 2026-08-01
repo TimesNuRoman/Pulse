@@ -1,0 +1,117 @@
+---
+const tiers = [
+  {
+    name: 'Free',
+    tag: 'Open Source',
+    price: '$0',
+    sub: 'forever, no catch',
+    cta: 'Get Pulse',
+    href: '/#download',
+    primary: true,
+    features: [
+      'MIT licensed source',
+      'All features unlocked',
+      'GitHub releases',
+      'Community Discord',
+    ],
+  },
+  {
+    name: 'Sponsor',
+    tag: 'Buy me a coffee',
+    price: '$5',
+    sub: 'per month',
+    cta: 'Become Sponsor',
+    href: 'https://github.com/sponsors/TimesNuRoman',
+    primary: false,
+    features: [
+      'Your name in CREDITS. Forever. Even if you cancel.',
+      'Coffee = 1 hour of bug fixes. Pizza = 1 release.',
+      'Priority issue triage',
+      'Early-access builds',
+      'Name in release notes',
+    ],
+  },
+  {
+    name: 'Talk to us',
+    tag: 'Custom',
+    price: 'Free',
+    sub: 'feedback · integrations · custom builds',
+    cta: 'Say hi',
+    href: 'mailto:hi@pulse.tld',
+    primary: false,
+    features: [
+      'You have a use case Pulse doesn\'t cover yet',
+      'You want a custom integration or a tweak',
+      'You\'re exploring a build for your team',
+      'No sales pitch — just an email and a reply',
+    ],
+  },
+];
+---
+<section class="pricing" id="pricing">
+  <div class="container">
+    <header class="pricing__head reveal">
+      <span class="eyebrow">Pricing</span>
+      <h2>Pay nothing. Or sponsor a cup of coffee.</h2>
+      <p class="lede">If it helps you, consider sponsoring the project. That's it.</p>
+    </header>
+
+    <ul class="pricing__grid" role="list">
+      {tiers.map((t) => (
+        <li class={`tier card reveal ${t.primary ? 'tier--primary' : ''}`}>
+          <div class="tier__head">
+            <span class="tier__name">{t.name}</span>
+            <span class="tier__tag">{t.tag}</span>
+          </div>
+          <div class="tier__price">
+            <span class="tier__amount">{t.price}</span>
+            <span class="tier__sub">{t.sub}</span>
+          </div>
+          <a class={`btn ${t.primary ? 'btn--primary' : 'btn--ghost'} tier__cta`} href={t.href}>
+            {t.cta} →
+          </a>
+          <ul class="tier__list" role="list">
+            {t.features.map((f) => (
+              <li><span class="tier__check" aria-hidden="true">✓</span>{f}</li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .pricing__head { text-align: center; margin-bottom: 3rem; }
+  .pricing__head .lede { margin: 0.5rem auto 0; }
+
+  .pricing__grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 800px) { .pricing__grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .tier { padding: 1.75rem; display: flex; flex-direction: column; gap: 1rem; }
+  .tier--primary {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 1px rgba(187,154,247,0.25), var(--shadow-md);
+  }
+
+  .tier__head { display: flex; justify-content: space-between; align-items: baseline; }
+  .tier__name { font-size: 1.1rem; font-weight: 700; }
+  .tier__tag  { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--purple); }
+
+  .tier__price { display: flex; align-items: baseline; gap: 0.5rem; }
+  .tier__amount { font-size: 2.4rem; font-weight: 800; line-height: 1; }
+  .tier__sub    { color: var(--muted); font-size: 0.9rem; }
+
+  .tier__cta { align-self: flex-start; }
+  @media (max-width: 767px) {
+    .tier__cta { align-self: stretch; width: 100%; min-height: 52px; }
+  }
+  .tier__list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+  .tier__list li { display: flex; align-items: center; gap: 0.6rem; color: var(--fg-dim); font-size: 0.95rem; }
+  .tier__check { color: var(--green); font-weight: 700; }
+</style>

@@ -1,0 +1,218 @@
+---
+const rows = [
+  { label: 'Installer size', pulse: '12MB',     chatgpt: '150MB+', raycast: 'n/a (ext.)', noi: '80MB',     pulseWin: true  },
+  { label: 'Local AI (Ollama)', pulse: '✅',    chatgpt: '❌',     raycast: '❌',        noi: '✅',        pulseWin: true  },
+  { label: 'Vision (gemma3:4b)', pulse: '✅',   chatgpt: '❌',     raycast: '❌',        noi: '❌',        pulseWin: true  },
+  { label: 'Smart Engine (active app)', pulse: '✅', chatgpt: '❌', raycast: 'partial',  noi: '❌',        pulseWin: true  },
+  { label: 'Open source (MIT)', pulse: '✅',     chatgpt: '❌',     raycast: '❌',        noi: '✅',        pulseWin: false },
+  { label: 'Cross-platform',    pulse: 'Windows', chatgpt: 'Win/macOS', raycast: 'macOS only', noi: 'macOS only', pulseWin: false },
+];
+
+// P0-4: card-stack view for mobile (one card per competitor)
+const competitors = [
+  { key: 'pulse',   name: 'Pulse',           tagline: '12MB. Local. Open source.', highlight: true  },
+  { key: 'chatgpt', name: 'ChatGPT Desktop', tagline: 'Cloud-tied. 150MB+.' },
+  { key: 'raycast', name: 'Raycast AI',      tagline: 'macOS only. Paid extension.' },
+  { key: 'noi',     name: 'Noi',             tagline: 'Local but 80MB. macOS only.' },
+];
+const getVal = (row: any, k: string) => (row as any)[k];
+
+const bars = [
+  { name: 'Pulse',           mb: 12,  color: 'var(--purple)',  highlight: true  },
+  { name: 'Noi',             mb: 80,  color: 'var(--cyan)' },
+  { name: 'ChatGPT Desktop', mb: 150, color: 'var(--red)' },
+  { name: 'Raycast AI',      mb: 0,   color: 'var(--muted)', missing: true },
+];
+const maxBar = 160; // axis
+---
+<section class="comparison" id="comparison">
+  <div class="container">
+    <header class="comparison__head reveal">
+      <span class="eyebrow">Comparison</span>
+      <h2>Pulse vs the rest. 12MB vs 150MB. That's not a difference, that's a confession.</h2>
+      <p class="lede">Honest comparison, no asterisks. The numbers are real.</p>
+    </header>
+
+    {/* Desktop / tablet (≥768px) — original horizontal table */}
+    <div class="comparison__table-wrap reveal">
+      <table class="comparison__table">
+        <thead>
+          <tr>
+            <th scope="col">Feature</th>
+            <th scope="col" class="col-pulse">Pulse</th>
+            <th scope="col">ChatGPT Desktop</th>
+            <th scope="col">Raycast AI</th>
+            <th scope="col">Noi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr>
+              <th scope="row">{r.label}</th>
+              <td class={`col-pulse ${r.pulseWin ? 'is-win' : ''}`}>{r.pulse}</td>
+              <td>{r.chatgpt}</td>
+              <td>{r.raycast}</td>
+              <td>{r.noi}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    {/* P0-4: mobile (<768px) — card stack, one card per competitor */}
+    <div class="comparison__cards">
+      {competitors.map((c) => (
+        <article class={`comparison__card reveal ${c.highlight ? 'is-highlight' : ''}`}>
+          <header class="comparison__card-head">
+            <h3 class="comparison__card-name">{c.name}</h3>
+            <p class="comparison__card-tagline">{c.tagline}</p>
+          </header>
+          <dl class="comparison__card-list">
+            {rows.map((r) => (
+              <>
+                <dt>{r.label}</dt>
+                <dd class={c.highlight && r.pulseWin ? 'is-win' : ''}>{getVal(r, c.key)}</dd>
+              </>
+            ))}
+          </dl>
+        </article>
+      ))}
+    </div>
+
+    <div class="comparison__chart reveal">
+      <h3 class="comparison__chart-title">Installer size (MB, lower is better)</h3>
+      <ul class="bars" role="list">
+        {bars.map((b) => (
+          <li class="bar" class:list={[{ 'is-highlight': b.highlight, 'is-missing': b.missing }]}>
+            <span class="bar__name">{b.name}</span>
+            <div class="bar__track">
+              <div class="bar__fill" style={`width: ${(b.mb / maxBar) * 100}%; background: ${b.color}`}>
+                {!b.missing && <span class="bar__val">{b.mb}MB</span>}
+                {b.missing && <span class="bar__val">n/a (extension)</span>}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p class="comparison__src">Sizes: installer as published. Raycast AI is a paid extension, not a standalone app.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .comparison__head { text-align: center; margin-bottom: 3rem; }
+  .comparison__head .lede { margin: 0.5rem auto 0; }
+
+  /* P0-4: mobile card-stack — hidden on desktop, shown on mobile */
+  .comparison__cards { display: none; }
+  @media (max-width: 767px) {
+    .comparison__cards { display: flex; flex-direction: column; gap: 1rem; }
+    .comparison__table-wrap { display: none; }
+  }
+
+  .comparison__card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+  .comparison__card.is-highlight {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 1px rgba(187, 154, 247, 0.25), 0 0 32px rgba(187, 154, 247, 0.15);
+  }
+  .comparison__card-head { margin-bottom: 1rem; }
+  .comparison__card-name { font-size: 1.15rem; font-weight: 500; margin-bottom: 0.2rem; }
+  .comparison__card.is-highlight .comparison__card-name { color: var(--purple); }
+  .comparison__card-tagline { font-size: 0.85rem; color: var(--muted); }
+  .comparison__card-list {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.55rem 1rem;
+    margin: 0;
+  }
+  .comparison__card-list dt {
+    color: var(--fg-dim);
+    font-size: 0.88rem;
+  }
+  .comparison__card-list dd {
+    color: var(--fg);
+    font-size: 0.88rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .comparison__card-list dd.is-win { color: var(--purple); font-weight: 600; }
+
+  .comparison__table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .comparison__table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 640px;
+    font-size: 0.95rem;
+  }
+  .comparison__table th,
+  .comparison__table td {
+    text-align: left;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .comparison__table thead th {
+    background: var(--bg-soft);
+    font-weight: 600;
+    color: var(--fg);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+  }
+  .comparison__table tbody th { font-weight: 500; color: var(--fg-dim); }
+  .comparison__table tbody tr:last-child th,
+  .comparison__table tbody tr:last-child td { border-bottom: 0; }
+  .col-pulse { color: var(--purple); font-weight: 600; }
+  .is-win { background: rgba(187, 154, 247, 0.08); }
+
+  /* Bar chart */
+  .comparison__chart { margin-top: 3rem; }
+  .comparison__chart-title { margin-bottom: 1.25rem; }
+  .bars { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .bar {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    align-items: center;
+    gap: 1rem;
+  }
+  .bar__name { font-weight: 600; color: var(--fg-dim); font-size: 0.92rem; }
+  .bar__track {
+    height: 28px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .bar__fill {
+    height: 100%;
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 0.7rem;
+    color: #1a1b26;
+    font-size: 0.78rem;
+    font-weight: 700;
+    min-width: 40px;
+    transition: width 900ms var(--ease);
+  }
+  .bar.is-missing .bar__fill {
+    background: var(--surface-2) !important;
+    color: var(--muted);
+    width: 100%;
+  }
+  .bar.is-highlight .bar__name { color: var(--purple); }
+  .bar__val { white-space: nowrap; }
+
+  .comparison__src {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+</style>
