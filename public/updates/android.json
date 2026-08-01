@@ -1,19 +1,26 @@
 {
   "latest_version": "0.6.5",
   "latest_version_code": 15,
-  "latest_apk_url": "https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk",
-  "latest_apk_size_bytes": 4607931,
-  "latest_apk_sha256": "AD81D03C87BB96C121299F8843F1E25596FF7AE657D750D27D7A4C351D1D7607",
-  "release_notes_url": "https://2edat6990bfwg.space.minimax.io/release-notes-v0.6.5/",
+  "latest_apk_url": "https://ruft9q2ph90ro.space.minimax.io/pulse-notes-0.6.5.apk",
+  "latest_apk_size_bytes": 1349437,
+  "latest_apk_sha256": "ADECE4B2F5D0B5038A653D4179C92745E0982012F45C8DE6BA966AA954C716BB",
+  "release_notes_url": "https://67f0ve7exapyy.space.minimax.io/release-notes-v0.6.5/",
   "min_supported_version": "0.3.0",
   "force_update_below": "0.3.0",
+  "signature_scheme": "v2+v3",
+  "keystore_alias": "pulse-release",
+  "signed_by": "R93b release.keystore (CN=Pulse Notes, O=Lesside, L=Brest, ST=Brest, C=BY, RSA-2048, valid until 2053-12-17)",
+  "certificate_sha256": "FD:BD:5F:61:29:43:D6:41:C8:99:80:9B:C1:39:85:C2:AD:12:38:53:8D:6B:6E:CC:C4:1E:0E:79:50:07:BF:EF",
+  "re_signed_round": "R95a",
+  "re_signed_at": "2026-08-01",
+  "previous_signed_by": "Android debug keystore (per-developer-machine, debug.keystore). Replaced in R95a to enable in-place upgrade path for v0.6.6+.",
   "versions": [
     {
       "version": "0.6.5",
       "version_code": 15,
       "date": "2026-08-01",
       "type": "minor",
-      "summary": "R93 bridge release: manifest chain grown 5 to 7 (adds R92 yv5eeknt6h6sa at index 0 and R90 ad67rp710vsl7), so v0.6.5+ devices can auto-update forward even if R90 / R88 hosts go down. v0.6.3 / v0.6.4 users side-load v0.6.5 directly (their baked-in chain does not include the new hosts)."
+      "summary": "R93 bridge release (manifest chain 5 to 7); R95a re-signed with the R93b release.keystore (CN=Pulse Notes, O=Lesside) under APK Signature Scheme v2 + v3. APK is 1.35 MB (minify+shrink from R93b build config). v0.6.3 / v0.6.4 users side-load v0.6.5 directly. Users who installed the pre-R95a debug-signed v0.6.5 must uninstall first because the signing key changed."
     },
     {
       "version": "0.6.4",
