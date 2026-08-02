@@ -3,5 +3,6 @@ Allow: /
 Allow: /faq
 Allow: /changelog
 Allow: /install
+Allow: /changelog.xml
 
 Sitemap: https://ownlocalml.com/sitemap.xml
