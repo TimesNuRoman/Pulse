@@ -68,8 +68,8 @@ const variants = [
   },
   {
     name: 'pricing',
-    title: 'Free, forever',
-    subtitle: 'Apache 2.0 license',
+    title: 'Pricing',
+    subtitle: 'Free forever · PRO from $5/mo',
     site: site('pricing')
   }
 ];
