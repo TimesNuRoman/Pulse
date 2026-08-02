@@ -30,11 +30,11 @@ const {
 } = Astro.props;
 
 const ogImage = ogImageProp ?? '/og-image.svg';
-// r104: fallback to the canonical R104 deploy host. Matches
-// astro.config.mjs so og:url never ships a placeholder ('pulse.local' /
-// 'pulse.tld') even if Astro.site is undefined (e.g. build with
-// PULSE_SITE= overriding the config at runtime).
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://wb7ae24fk5p93.space.minimax.io';
+// r116: fallback to the canonical R2 deploy host (ownlocalml.com).
+// Matches astro.config.mjs so og:url never ships a placeholder
+// ('pulse.local' / 'pulse.tld') even if Astro.site is undefined
+// (e.g. build with PULSE_SITE= overriding the config at runtime).
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ownlocalml.com';
 ---
 <!doctype html>
 <html lang="en">
