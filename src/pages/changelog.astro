@@ -16,6 +16,21 @@ interface Release {
 
 const releases: Release[] = [
   {
+    version: '0.6.7',
+    date: '2026-08-02',
+    type: 'patch',
+    title: 'Windows desktop — R100 build infra + R115 SPDX headers',
+    summary: 'Windows desktop bumped 0.6.5 to 0.6.7 with R100 build-infra fixes and R115 R114-audit quick win #1. R100 prebuild-kill.ps1 now kills orphan ollama.exe so a re-build with a running local Ollama no longer deadlocks the linker. Cargo.lock self-version regenerated to 0.6.5 (was tracking 0.6.4). R115 quick win #1 lands Apache 2.0 SPDX-License-Identifier headers on the source files that were previously missing them — 100% SPDX coverage on .ts, .tsx, .rs, .svelte now. R114 hard-rules audit: 8/12 strict, 10/12 targeted with the R115 quick wins. R100 polish that already shipped: low_confidence UI consumer and tree-sitter Smart Engine. Android stays on v0.6.6 — v0.6.7 is a Windows-only patch.',
+    bullets: [
+      'R100 fix: prebuild-kill.ps1 sends SIGKILL to orphan ollama.exe before the build starts. Resolves the R100 build lock — the v0.6.5 chain stalled because the previous script did not clean up Ollama on its way out, so a re-build with a running local Ollama would deadlock the linker.',
+      'R100 follow-up: Cargo.lock self-version regenerated to 0.6.5 by cargo (was tracking 0.6.4). Brings the lockfile back in sync with package.json:3 and src-tauri/Cargo.toml:3 so the next cargo build does not warn about a version drift.',
+      'R115 quick win #1: Apache 2.0 SPDX-License-Identifier headers added to source files that were missing them. 100% SPDX coverage on .ts, .tsx, .rs, .svelte now. R114 compliance audit passes on rule 4 (license headers).',
+      'R100 polish already shipped, summarized here for the v0.6.7 chain: low_confidence UI consumer surfaces a "Pulse is not sure" hint when the Smart Engine v3 router returns a low confidence score; tree-sitter Smart Engine ingests AST-level code structure for code-aware recall.',
+      'R114 audit: 8/12 strict hard rules on pulse-desktop, 10/12 targeted with the R115 quick wins #2 and #3 (gradient border + 44dp touch targets). R115 quick wins #2 and #3 live in pulse-desktop, not in the landing repo — the landing is already 12/12 on the audit.',
+      'Build target x86_64-pc-windows-msvc, Tauri 2.11.4, Rust release profile. NSIS 12.27 MB, MSI 16.94 MB, binary 9.98 MB. SHA-256 fingerprints on the download block below.',
+    ],
+  },
+  {
     version: '0.6.6',
     date: '2026-08-02',
     type: 'minor',
@@ -224,13 +239,13 @@ const releases: Release[] = [
 ---
 <Base
   title="Changelog · Pulse"
-  description="Pulse release notes — what shipped, when, and why. v0.6.6 P1 trio (backup rules, voice input, Settings view), v0.6.5 R93 bridge release (manifest chain 5 to 7, side-load docs for v0.6.3 / v0.6.4), v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse for Android (historically Pulse Notes), v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
+  description="Pulse release notes — what shipped, when, and why. v0.6.7 Windows desktop (R100 build infra + R115 SPDX headers, NSIS 12.27 MB / MSI 16.94 MB), v0.6.6 P1 trio on Android (backup rules, voice input, Settings view), v0.6.5 R93 bridge release (manifest chain 5 to 7, side-load docs for v0.6.3 / v0.6.4), v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse for Android (historically Pulse Notes), v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
   ogImage="/og-image.svg"
-  ctaText="Get Pulse ↓ 1.29 MB"
-  ctaHref="/download/"
+  ctaText="Get Pulse for Windows ↓ 12.27 MB"
+  ctaHref="/download/#windows"
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.6"
+  footerVersion="v0.6.7"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -254,7 +269,7 @@ const releases: Release[] = [
         <li><a class="nav__link" href="/pricing/">Pricing</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/download/">Get Pulse ↓ 1.29 MB</a>
+        <a class="btn btn--primary nav__cta" href="/download/#windows">Get Pulse for Windows ↓ 12.27 MB</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -273,7 +288,7 @@ const releases: Release[] = [
     <a class="nav-drawer__link" href="/compare/">Compare</a>
     <a class="nav-drawer__link" href="/changelog/" aria-current="page">Changelog</a>
     <a class="nav-drawer__link" href="/pricing/">Pricing</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/download/">Get Pulse ↓ 1.29 MB</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/#windows">Get Pulse for Windows ↓ 12.27 MB</a>
   </div>
 
   <script is:inline>
@@ -329,14 +344,14 @@ const releases: Release[] = [
             <span class="notes-hero__eyebrow">Pulse · Changelog</span>
             <span class="notes-hero__pill" aria-label="Latest version">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Latest v0.6.6
+              Latest v0.6.7
             </span>
           </div>
           <h1 class="notes-hero__title">
             What shipped, <span class="notes-hero__hl">when, and why.</span>
           </h1>
           <p class="notes-hero__sub">
-            Twelve shipped entries between v0.4.0 and v0.6.6. Dates are local
+            Thirteen shipped entries between v0.4.0 and v0.6.7. Dates are local
             (Asia/Bangkok). Major versions reset the public API; minor versions
             add capability; patches fix regressions.
           </p>
@@ -380,6 +395,27 @@ const releases: Release[] = [
                       </a>
                     )}
                   </aside>
+                )}
+                {r.version === '0.6.7' && (
+                  <div class="changelog__download changelog__download--desktop">
+                    <a
+                      class="btn btn--primary"
+                      href="/downloads/Pulse_0.6.7_x64-setup.exe"
+                      rel="noopener"
+                    >
+                      Try Pulse for Windows ↓ 12.27 MB
+                    </a>
+                    <a
+                      class="btn btn--ghost"
+                      href="/downloads/Pulse_0.6.7_x64_en-US.msi"
+                      rel="noopener"
+                    >
+                      MSI for IT admins ↓ 16.94 MB
+                    </a>
+                    <span class="changelog__download-meta">
+                      NSIS SHA-256: <code>08FD2FB2…3F8E65</code> · MSI SHA-256: <code>D246AFFC…2AD2982D</code> · Windows 10 (build 17763)+ · x86_64-pc-windows-msvc
+                    </span>
+                  </div>
                 )}
                 {r.version === '0.6.6' && (
                   <div class="changelog__download">
@@ -435,20 +471,20 @@ const releases: Release[] = [
       <div class="container ncta__inner reveal">
         <h2 class="ncta__title">Try Pulse.</h2>
         <p class="ncta__sub">
-          1.29&nbsp;MB Android APK · no Google Play · no account · no telemetry. Windows NSIS+MSI also available.
+          Windows NSIS&nbsp;12.27&nbsp;MB · MSI&nbsp;16.94&nbsp;MB · Android APK&nbsp;1.29&nbsp;MB · no Google Play · no account · no telemetry.
         </p>
         <div class="ncta__row">
-          <a class="btn btn--primary btn--lg" href="/download/" rel="noopener noreferrer">Get Pulse ↓ 1.29 MB</a>
-          <a class="btn btn--ghost btn--lg" href="/compare/">See how it compares</a>
+          <a class="btn btn--primary btn--lg" href="/download/#windows" rel="noopener noreferrer">Get Pulse for Windows ↓ 12.27 MB</a>
+          <a class="btn btn--ghost btn--lg" href="/download/#android" rel="noopener noreferrer">Get Pulse for Android ↓ 1.29 MB</a>
         </div>
         <p class="ncta__meta">
-          Android 7.0+ · universal APK · Apache 2.0
+          Windows 10 (build 17763)+ · Android 7.0+ · Apache 2.0
         </p>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.6" />
+  <Footer license="Apache 2.0" version="v0.6.7" />
 </Base>
 
 <style>
@@ -549,5 +585,14 @@ const releases: Release[] = [
     padding: 0.05em 0.35em;
     border-radius: 3px;
     border: 1px solid var(--border);
+  }
+  /* R116: desktop variant — two buttons (NSIS primary + MSI ghost) plus the
+     combined SHA-256 meta line. Keeps the visual rhythm of the Android single
+     button but signals the two-installer surface. */
+  .changelog__download--desktop {
+    align-items: center;
+  }
+  .changelog__download--desktop .changelog__download-meta {
+    flex-basis: 100%;
   }
 </style>
