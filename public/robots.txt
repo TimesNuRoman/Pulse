@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Allow: /install
 
 Sitemap: https://e6ghos1wgcskc.space.minimax.io/sitemap.xml

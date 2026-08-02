@@ -5,6 +5,9 @@ export interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  // R135: per-page canonical URL (was passed as a prop by changelog.astro
+  // but never wired into <head>; R135 wires it through).
+  canonical?: string;
   // R85: per-page sticky CTA (B1 fix-blocker)
   // When `ctaVisible` is false, the sticky CTA is not rendered at all.
   // `ctaText` may include the down-arrow character `↓` (U+2193) — not emoji.
@@ -21,6 +24,7 @@ const {
   title = "Pulse — AI that doesn't get to leave the room",
   description = "Pulse is a 12MB Tauri v2 side panel that talks to local Ollama. Local. Private. No Electron, no cloud.",
   ogImage: ogImageProp,
+  canonical,
   ctaText = 'Get Pulse ↓ 12 MB',
   ctaHref = '/#download',
   ctaVisible = true,
@@ -43,6 +47,8 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://pulse.loca
 
     <title>{title}</title>
     <meta name="description" content={description} />
+
+    {canonical && <link rel="canonical" href={canonical} />}
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
