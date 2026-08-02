@@ -1,10 +1,10 @@
 {
-  "latest_version": "0.6.6",
-  "latest_version_code": 16,
-  "latest_apk_url": "https://ownlocalml.com/downloads/pulse-notes-0.6.6.apk",
-  "latest_apk_size_bytes": 1352869,
-  "latest_apk_sha256": "AD6E33029D3871609774C407597BE49894ECC64B82A53D31C3C066374B45BAB5",
-  "release_notes_url": "https://ownlocalml.com/changelog/#v0.6.6",
+  "latest_version": "0.6.7",
+  "latest_version_code": 17,
+  "latest_apk_url": "https://ownlocalml.com/downloads/pulse-notes-0.6.7.apk",
+  "latest_apk_size_bytes": 1350285,
+  "latest_apk_sha256": "47f5e915bd51e3f2b3843c37e5e413290e73b746c573b26e8d49e4d6076a6730",
+  "release_notes_url": "https://ownlocalml.com/changelog/#v0.6.7",
   "min_supported_version": "0.3.0",
   "force_update_below": "0.3.0",
   "signature_scheme": "v2+v3",
@@ -15,6 +15,13 @@
   "re_signed_at": "2026-08-01",
   "previous_signed_by": "Android debug keystore (per-developer-machine, debug.keystore). Replaced in R95a to enable in-place upgrade path for v0.6.6+. Pre-R95a users (debug-signed builds) must uninstall before installing v0.6.6 because the signing key changed.",
   "versions": [
+    {
+      "version": "0.6.7",
+      "version_code": 17,
+      "date": "2026-08-02",
+      "type": "minor",
+      "summary": "R118 polish: haptics (light/medium/heavy/selection, persists pulse.haptics.enabled, native @capacitor/haptics + web navigator.vibrate fallback, wired to note save/delete, tab switch, mic start/stop, with Settings → Feedback toggle) and 3-slide first-launch onboarding (Local-first, Voice+AI, Markdown+[[wikilinks]], replaces R85+ flow). 331/331 vitest (+9: 6 haptics + 3 OnboardingView). R93b-signed APK 1.29 MB, SHA-256 47f5e91...6a6730."
+    },
     {
       "version": "0.6.6",
       "version_code": 16,
