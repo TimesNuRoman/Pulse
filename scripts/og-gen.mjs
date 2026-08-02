@@ -10,36 +10,65 @@
 //
 // Design rules: 12-point hard rules (DARK only, Tokyo Night palette,
 // no emoji, no marketing copy, descriptive text only).
+//
+// r101: rewrote variants to match the actual product (Pulse Notes,
+// Android markdown editor) — the previous copy ("Local-first AI side
+// panel", "macOS / Windows / Linux", "pulse.tld") was left over from
+// the pre-R87 Pulse AI desktop side panel. Site host is now read from
+// astro.config.mjs (the canonical source of truth) with PULSE_SITE
+// env override and a hardcoded fallback for safety.
 
 import { writeFile, mkdir } from 'node:fs/promises';
 import { Resvg } from '@resvg/resvg-js';
+import astroConfig from '../astro.config.mjs';
+
+// --- Site host --------------------------------------------------------------
+// Priority: PULSE_SITE env > astro.config.site > hardcoded canonical.
+// Keeping the hardcoded fallback (ebjklgbf0qvnp.space.minimax.io) means
+// the OG never shows "pulse.tld" again, even if astro.config drifts back
+// to a placeholder during in-flight rewrites (e.g. R97-HOTFIX).
+//
+// Pill display: drop the protocol (https://) so the host fits in the
+// 280px-wide pill at 20pt monospace. The full URL is still in the page
+// <link rel="canonical"> / og:url meta — the pill is just a visual hint.
+
+const SITE_HOST = process.env.PULSE_SITE
+  || astroConfig.site
+  || 'https://ebjklgbf0qvnp.space.minimax.io';
+const SITE_DISPLAY = SITE_HOST.replace(/^https?:\/\//, '').replace(/\/$/, '');
+const site = (suffix) => suffix ? `${SITE_DISPLAY}/${suffix}` : SITE_DISPLAY;
 
 // --- Variants ---------------------------------------------------------------
+// r101: all 4 kept for now — install/pricing have no matching pages, but
+// the PNGs are useful as "what would the install / pricing OG look like"
+// artifacts. Roman's call: drop later if no /install/ or /pricing/ page
+// is on the roadmap. The site pill uses the canonical host (no more
+// "pulse.tld" placeholder) so all 4 are at least visually correct.
 
 const variants = [
   {
     name: 'home',
-    title: 'Pulse',
-    subtitle: 'Local-first AI side panel',
-    site: 'pulse.tld'
+    title: 'Pulse Notes',
+    subtitle: 'Local-first markdown notes',
+    site: site('')  // bare canonical URL — no suffix
   },
   {
     name: 'notes',
     title: 'Pulse Notes',
-    subtitle: 'Markdown notes on Android',
-    site: 'pulse.tld / notes'
+    subtitle: 'Markdown editor for Android',
+    site: site('notes')
   },
   {
     name: 'install',
-    title: 'Install Pulse',
-    subtitle: 'macOS / Windows / Linux',
-    site: 'pulse.tld / install'
+    title: 'Install Pulse Notes',
+    subtitle: 'Android APK · Apache 2.0',
+    site: site('downloads')
   },
   {
     name: 'pricing',
-    title: 'Pricing',
-    subtitle: 'Apache 2.0 — always free',
-    site: 'pulse.tld / pricing'
+    title: 'Always Free',
+    subtitle: 'Apache 2.0 license',
+    site: site('license')
   }
 ];
 
@@ -54,7 +83,12 @@ const xmlEscape = (s) =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
 
-const svg = ({ title, subtitle, site }) => `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${xmlEscape(title)} — ${xmlEscape(subtitle)}">
+const svg = ({ title, subtitle, site }) => {
+  // Auto-size the site pill: ~12px/char at 20pt monospace + 32px padding.
+  // Caps the pill at 1040px so the right edge stays inside the 1200px
+  // canvas (we translate(80, 540) so 80 + 1040 = 1120, leaves 80px gutter).
+  const pillW = Math.min(1040, Math.max(280, site.length * 12 + 32));
+  return `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${xmlEscape(title)} — ${xmlEscape(subtitle)}">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%"   stop-color="#1a1b26"/>
@@ -105,12 +139,13 @@ const svg = ({ title, subtitle, site }) => `<svg width="1200" height="630" viewB
   <!-- Subtitle -->
   <text x="80" y="420" font-family="ui-sans-serif, system-ui, sans-serif" font-size="40" font-weight="500" fill="#a9b1d6">${xmlEscape(subtitle)}</text>
 
-  <!-- Footer chip: site path, monospaced, dim -->
+  <!-- Footer chip: site path, monospaced, dim (auto-sized) -->
   <g transform="translate(80, 540)">
-    <rect x="0" y="0" width="280" height="48" rx="24" fill="none" stroke="#2f334d" stroke-width="2"/>
-    <text x="140" y="32" font-family="ui-monospace, ui-monospace, monospace" font-size="20" font-weight="500" fill="#7dcfff" text-anchor="middle">${xmlEscape(site)}</text>
+    <rect x="0" y="0" width="${pillW}" height="48" rx="24" fill="none" stroke="#2f334d" stroke-width="2"/>
+    <text x="${pillW / 2}" y="32" font-family="ui-monospace, ui-monospace, monospace" font-size="20" font-weight="500" fill="#7dcfff" text-anchor="middle">${xmlEscape(site)}</text>
   </g>
 </svg>`;
+};
 
 // --- Render loop ------------------------------------------------------------
 
