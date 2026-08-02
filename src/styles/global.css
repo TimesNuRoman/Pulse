@@ -1,4 +1,5 @@
-/* ──────────────────────────────────────────────────────────
+/* SPDX-License-Identifier: Apache-2.0
+   ──────────────────────────────────────────────────────────
    Pulse — global styles
    Tokyo Night palette, mobile-first, vanilla CSS, no framework
    ────────────────────────────────────────────────────────── */
@@ -454,14 +455,81 @@ body.has-nav { padding-top: 0; }
 }
 
 /* ── Mobile button overrides ─────────────────────────── */
+/* R133: every selector here uses !important because Astro's page
+   scoping adds [data-astro-cid-XXX] to every page-level selector
+   (bumping specificity to 0,0,2,0). Unscoped global rules (0,0,1,0)
+   lose the cascade without it. Mobile-only @media makes the
+   !important scope well-defined. */
 @media (max-width: 639px) {
-  .btn { min-height: 52px; width: 100%; padding: 0.9em 1.4em; }
+  .btn { min-height: 52px !important; width: 100% !important; padding: 0.9em 1.4em !important; }
   .hero__ctas,
-  .download__ctas {
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
+  .download__ctas,
+  .home-hero__ctas,
+  .home-get__ctas,
+  .home-free__row,
+  .pr-hero__ctas,
+  .pr-cta__row,
+  .compare-hero__ctas {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
   }
   .hero__ctas .btn,
-  .download__ctas .btn { width: 100%; }
+  .download__ctas .btn,
+  .home-hero__ctas .btn,
+  .home-get__ctas .btn,
+  .home-free__row .btn,
+  .pr-hero__ctas .btn,
+  .pr-cta__row .btn,
+  .compare-hero__ctas .btn { width: 100% !important; }
+
+  /* R133: download hero platform picker — <li><a.btn/></li>, not just .btn.
+     Each <li> must take full width so the 2 platform jump-links stack. */
+  .dl-hero__platforms { flex-direction: column !important; align-items: stretch !important; }
+  .dl-hero__platforms li { width: 100% !important; }
+  .dl-hero__platforms .btn { width: 100% !important; }
+
+  /* R133: tier amount — 2.4rem on desktop, 1.9rem on small screens.
+     Keeps "$48" / "per year" on one line at 375px. */
+  .tier__amount,
+  .pr-tier__amount { font-size: 1.9rem !important; }
+
+  /* R133: comparison card-lists collapse to 1 column on phones.
+     Prevents "Community Discord" / "Email, 48h" values from colliding
+     with long dt labels like "Cross-device sync". */
+  .compare__card-list,
+  .comparison__card-list,
+  .pr-compare__card-list {
+    grid-template-columns: 1fr !important;
+    gap: 0.4rem 0 !important;
+  }
+  .compare__card-list dd,
+  .comparison__card-list dd,
+  .pr-compare__card-list dd { text-align: left !important; }
+
+  /* R133: dl-card meta — SHA-256 hash is 13+ chars; on 375px the dt
+     label and the hash collide. Wrap to 2 lines (label on its own row,
+     hash below indented). */
+  .dl-card__meta-row { flex-wrap: wrap !important; gap: 0.2rem 0.75rem !important; }
+  .dl-card__meta-row dt { flex: 0 0 100% !important; font-size: 0.65rem !important; }
+  .dl-card__meta-row dd { flex: 1 1 100% !important; text-align: left !important; font-size: 0.78rem !important; }
+  .dl-card__sha { text-align: left !important; }
+
+  /* R133: bar chart in old Comparison section — 140px label column
+     eats too much of a 375px viewport. Reduce to 96px so the bar gets
+     the rest. */
+  .bar { grid-template-columns: 96px 1fr !important; gap: 0.6rem !important; }
+  .bar__name { font-size: 0.85rem !important; }
+  .bar__val { font-size: 0.72rem !important; }
+}
+
+/* R133: extra-extra-small viewport (≤380px — iPhone SE 1st gen,
+   Galaxy Fold cover screen, Android One entry handsets). Fluid type
+   already handles most of the scaling, but a few spots needed a
+   tighter cap so the longest hero / page titles still wrap cleanly.
+   !important for the same Astro-scoping reason as above. */
+@media (max-width: 380px) {
+  h1, .home-hero__title, .hero__title, .pr-hero__title,
+  .compare-hero__title, .dl-hero__title { letter-spacing: -0.015em !important; }
+  .nav__brand-name { font-size: 0.92rem !important; }
 }
