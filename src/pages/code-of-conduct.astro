@@ -1,11 +1,14 @@
 ---
+// SPDX-License-Identifier: Apache-2.0
+// R143: Code of Conduct — full rewrite under R141 brand policy.
+// Pulse-specific, Contributor Covenant inspired. Short.
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 ---
 
 <Base
   title="Code of Conduct — Pulse"
-  description="Pulse follows the Contributor Covenant. Be kind, assume good faith, focus on the work."
+  description="Standards for the Pulse issue tracker, pull requests, and discussions. Be kind. Critique ideas, not people. No harassment, no spam, no malware."
   ctaVisible={false}
   footerLicense=""
   footerVersion=""
@@ -15,33 +18,52 @@ import Footer from '../components/Footer.astro';
       <header class="legal__head reveal">
         <span class="eyebrow">Community</span>
         <h1>Code of Conduct.</h1>
-        <p class="lede">Pulse follows the Contributor Covenant, v2.1. Be kind. Focus on the work. Assume good faith.</p>
+        <p class="lede">Be kind. Critique ideas, not people. Assume good faith.</p>
       </header>
 
       <article class="legal__body">
+        <h2 class="legal__h2">Where this applies.</h2>
         <p>
-          Our pledge: everyone who participates in the Pulse project — issues, pull requests,
-          Discord, comments, sponsors — gets a harassment-free experience, regardless of gender,
-          gender identity, sexual orientation, disability, appearance, body size, race, age,
-          religion, or nationality. This applies to maintainers and first-time contributors alike.
+          This code applies to all Pulse community spaces: the issue tracker,
+          pull requests, discussions, and any project-related communication
+          on the
+          <a href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">public GitHub repository</a>.
         </p>
 
-        <p>
-          Expected behaviour: critique ideas, not people. Give context when you push back. Use
-          welcoming language. Apologise when you make a mistake and move on. Unacceptable
-          behaviour includes harassment, trolling, public or private harassment, publishing
-          others' private information, and any conduct a reasonable person would consider
-          inappropriate in a professional setting.
-        </p>
+        <h2 class="legal__h2">Expected behaviour.</h2>
+        <ul>
+          <li>Critique ideas, not people. Give context when pushing back.</li>
+          <li>Use welcoming language. Apologise when a mistake is made and move on.</li>
+          <li>Respect the time of maintainers. Search before opening a duplicate issue.</li>
+          <li>Default to English in issues and pull requests to keep the conversation accessible.</li>
+        </ul>
 
+        <h2 class="legal__h2">Unacceptable behaviour.</h2>
+        <ul>
+          <li>Harassment, including public or private insults, slurs, or intimidation.</li>
+          <li>Trolling, sustained disruption of discussions, or off-topic posts in issue threads.</li>
+          <li>Publishing others' private information without consent.</li>
+          <li>Spam: advertising unrelated products, mass-posting, or soliciting users via issues.</li>
+          <li>Submitting code, binaries, or links that distribute malware, cryptominers, or credential-stealers — even framed as a "test" or a "joke".</li>
+        </ul>
+
+        <h2 class="legal__h2">Enforcement.</h2>
         <p>
-          Enforcement: reports are handled by the Pulse team via the public
-          GitHub repository. Open a confidential issue on
-          <a href="https://github.com/TimesNuRoman/pulse/security" rel="noopener noreferrer">the security advisories page</a>
-          or email the address on the
-          <a href="/privacy/">privacy page</a>. Reports are kept confidential. The full
-          text of the covenant lives at
-          <a href="https://www.contributor-covenant.org/version/2/1/code_of_conduct/" target="_blank" rel="noopener noreferrer">contributor-covenant.org</a>.
+          Reports are handled by the maintainers of the Pulse repository.
+          To file a confidential report, open an issue on the
+          <a href="https://github.com/TimesNuRoman/pulse/security" rel="noopener noreferrer">security advisories page</a>
+          or contact via the address linked from the
+          <a href="/privacy/">privacy page</a>. Reports are kept confidential.
+        </p>
+        <p>
+          Maintainers may edit or remove comments, lock threads, or ban
+          accounts to keep the spaces usable. Decisions can be appealed by
+          replying to the closing comment.
+        </p>
+        <p>
+          This code draws on the
+          <a href="https://www.contributor-covenant.org/version/2/1/code_of_conduct/" target="_blank" rel="noopener noreferrer">Contributor Covenant, v2.1</a>
+          for structure and vocabulary.
         </p>
       </article>
 
@@ -62,6 +84,19 @@ import Footer from '../components/Footer.astro';
     gap: 1.25rem;
     color: var(--fg-dim);
     font-size: 1.02rem;
+  }
+  .legal__h2 {
+    margin-top: 1.5rem;
+    font-size: 1.15rem;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+  .legal__body ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
   .legal__back {
     margin-top: 3rem;
