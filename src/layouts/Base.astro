@@ -30,7 +30,11 @@ const {
 } = Astro.props;
 
 const ogImage = ogImageProp ?? '/og-image.svg';
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://pulse.local';
+// r116: fallback to the canonical R2 deploy host (ownlocalml.com).
+// Matches astro.config.mjs so og:url never ships a placeholder
+// ('pulse.local' / 'pulse.tld') even if Astro.site is undefined
+// (e.g. build with PULSE_SITE= overriding the config at runtime).
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ownlocalml.com';
 ---
 <!doctype html>
 <html lang="en">
@@ -55,6 +59,9 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://pulse.loca
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${title} — ${description}`} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -159,7 +166,7 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://pulse.loca
           });
 
           // Smooth-scroll handled by html { scroll-behavior: smooth } in global.css;
-          // we just need to refresh visibility when hash changes.
+          // need to refresh visibility when hash changes.
           cta.querySelector('[data-sticky-cta-link]')?.addEventListener('click', () => {
             // give smooth-scroll a moment, then force-hide
             setTimeout(hideCta, 50);

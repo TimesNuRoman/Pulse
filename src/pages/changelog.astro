@@ -16,6 +16,36 @@ interface Release {
 
 const releases: Release[] = [
   {
+    version: '0.6.7',
+    date: '2026-08-02',
+    type: 'patch',
+    title: 'Windows desktop — R100 build infra + R115 SPDX headers',
+    summary: 'Windows desktop bumped 0.6.5 to 0.6.7 with R100 build-infra fixes and R115 R114-audit quick win #1. R100 prebuild-kill.ps1 now kills orphan ollama.exe so a re-build with a running local Ollama no longer deadlocks the linker. Cargo.lock self-version regenerated to 0.6.5 (was tracking 0.6.4). R115 quick win #1 lands Apache 2.0 SPDX-License-Identifier headers on the source files that were previously missing them — 100% SPDX coverage on .ts, .tsx, .rs, .svelte now. R114 hard-rules audit: 8/12 strict, 10/12 targeted with the R115 quick wins. R100 polish that already shipped: low_confidence UI consumer and tree-sitter Smart Engine. Android stays on v0.6.6 — v0.6.7 is a Windows-only patch.',
+    bullets: [
+      'R100 fix: prebuild-kill.ps1 sends SIGKILL to orphan ollama.exe before the build starts. Resolves the R100 build lock — the v0.6.5 chain stalled because the previous script did not clean up Ollama on its way out, so a re-build with a running local Ollama would deadlock the linker.',
+      'R100 follow-up: Cargo.lock self-version regenerated to 0.6.5 by cargo (was tracking 0.6.4). Brings the lockfile back in sync with package.json:3 and src-tauri/Cargo.toml:3 so the next cargo build does not warn about a version drift.',
+      'R115 quick win #1: Apache 2.0 SPDX-License-Identifier headers added to source files that were missing them. 100% SPDX coverage on .ts, .tsx, .rs, .svelte now. R114 compliance audit passes on rule 4 (license headers).',
+      'R100 polish already shipped, summarized here for the v0.6.7 chain: low_confidence UI consumer surfaces a "Pulse is not sure" hint when the Smart Engine v3 router returns a low confidence score; tree-sitter Smart Engine ingests AST-level code structure for code-aware recall.',
+      'R114 audit: 8/12 strict hard rules on pulse-desktop, 10/12 targeted with the R115 quick wins #2 and #3 (gradient border + 44dp touch targets). R115 quick wins #2 and #3 live in pulse-desktop, not in the landing repo — the landing is already 12/12 on the audit.',
+      'Build target x86_64-pc-windows-msvc, Tauri 2.11.4, Rust release profile. NSIS 12.27 MB, MSI 16.94 MB, binary 9.98 MB. SHA-256 fingerprints on the download block below.',
+    ],
+  },
+  {
+    version: '0.6.6',
+    date: '2026-08-02',
+    type: 'minor',
+    title: 'P1 trio — backup rules, voice input, Settings view',
+    summary: 'P1 audit (Roman, 2026-08-02) closed: backup rules now exclude app_webview/ from both cloud-backup and device-transfer so the local-first promise holds; voice input via SpeechRecognition is the 8th tool in the NotesView toolbar; the Settings view (Profile, Theme, About, Actions) opens from a gear button in NotesView. R93b-signed APK (v2+v3, no v1) — pre-R95a debug-signed users must uninstall first. Vitest 304/304 (+2 version-assertion tests for APP_VERSION / APP_VERSION_CODE).',
+    bullets: [
+      'Backup rules (P1 #1): app_webview/ excluded from android:allowBackup and android:fullBackupContent, so Auto Backup to Google Drive and Android device-transfer no longer include the WebView localStorage, IndexedDB, or Capacitor filesystem paths. notes.db and captures.db (the actual user data) still back up as before — only the WebView cache is excluded.',
+      'Voice input (P1 #2): 8th tool in the NotesView M3 toolbar. Tap the mic → webkitSpeechRecognition / Android SpeechRecognizer (Capacitor 8 plugin) starts a stream → text is inserted at the cursor position on final transcript. 3-state visual: idle (outline mic) → listening (red, animated) → finalizing (greyed). Locale auto-detect; falls back to en-US on no-match.',
+      'Settings view (P1 #3): gear button in the NotesView top-right. 4 sections — Profile (display name, app id, version, versionCode), Theme (system / dark / light, currently dark-only), About (Apache 2.0, R93b-signed, link to the changelog), Actions (export notes.db, clear cache, factory reset). No network calls; everything reads from the local store.',
+      'Vitest 302/302 → 304/304 (+2: APP_VERSION 0.6.6 / APP_VERSION_CODE 16 in update-checker.test.ts; gradleReleaseConfig.test.ts pins versionName="0.6.6" / versionCode=16 against the AndroidManifest XML).',
+      'APK 4,607,931 → 1,352,869 B (-3,255,062 B; the migration from a debug-keyed, unminified 4.6 MB bundle to an R93b-signed, R8-shrunk 1.29 MB bundle. R8 obfuscation is on; the JSC bytecode is hermes-compiled; resources.arsc is the only large asset left).',
+      'SHA-256 AD6E33029D3871609774C407597BE49894ECC64B82A53D31C3C066374B45BAB5 (v0.6.6). R93b release.keystore (CN=Pulse Notes, O=Lesside, L=Brest, ST=Brest, C=BY, RSA-2048, valid until 2053-12-17). v1 disabled in R95a; v0.6.6 builds on the same v2+v3 path. Pre-R95a users (debug-signed builds) must uninstall before installing v0.6.6 because the signing key changed.',
+    ],
+  },
+  {
     version: '0.6.5',
     date: '2026-08-01',
     type: 'minor',
@@ -209,13 +239,13 @@ const releases: Release[] = [
 ---
 <Base
   title="Changelog · Pulse"
-  description="Pulse release notes — what shipped, when, and why. v0.6.5 R93 bridge release (manifest chain 5 to 7, side-load docs for v0.6.3 / v0.6.4), v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 Pulse Notes onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse Notes for Android, v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
+  description="Pulse release notes — what shipped, when, and why. v0.6.7 Windows desktop (R100 build infra + R115 SPDX headers, NSIS 12.27 MB / MSI 16.94 MB), v0.6.6 P1 trio on Android (backup rules, voice input, Settings view), v0.6.5 R93 bridge release (manifest chain 5 to 7, side-load docs for v0.6.3 / v0.6.4), v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse for Android (historically Pulse Notes), v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
   ogImage="/og-image.svg"
-  ctaText="Get Pulse Notes ↓ 4.39 MB"
-  ctaHref="https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk"
+  ctaText="Get Pulse for Windows ↓ 12.27 MB"
+  ctaHref="/download/#windows"
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.5"
+  footerVersion="v0.6.7"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -232,14 +262,14 @@ const releases: Release[] = [
         <span class="nav__brand-name">Pulse</span>
       </a>
       <ul class="nav__links" role="list">
-        <li><a class="nav__link" href="/#features">Features</a></li>
-        <li><a class="nav__link" href="/notes/">Notes</a></li>
-        <li><a class="nav__link" href="/#download">Download</a></li>
+        <li><a class="nav__link" href="/#why">Why</a></li>
+        <li><a class="nav__link" href="/download/">Download</a></li>
         <li><a class="nav__link" href="/compare/">Compare</a></li>
         <li><a class="nav__link is-cta" href="/changelog/" aria-current="page">Changelog</a></li>
+        <li><a class="nav__link" href="/pricing/">Pricing</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/notes/#download">Get Pulse Notes ↓ 4.39 MB</a>
+        <a class="btn btn--primary nav__cta" href="/download/#windows">Get Pulse for Windows ↓ 12.27 MB</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -252,12 +282,13 @@ const releases: Release[] = [
   </nav>
 
   <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
-    <a class="nav-drawer__link" href="/#features">Features</a>
-    <a class="nav-drawer__link" href="/notes/">Notes</a>
-    <a class="nav-drawer__link" href="/#download">Download</a>
+    <a class="nav-drawer__link" href="/">Home</a>
+    <a class="nav-drawer__link" href="/#why">Why Pulse</a>
+    <a class="nav-drawer__link" href="/download/">Download</a>
     <a class="nav-drawer__link" href="/compare/">Compare</a>
     <a class="nav-drawer__link" href="/changelog/" aria-current="page">Changelog</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/notes/#download">Get Pulse Notes ↓ 4.39 MB</a>
+    <a class="nav-drawer__link" href="/pricing/">Pricing</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/#windows">Get Pulse for Windows ↓ 12.27 MB</a>
   </div>
 
   <script is:inline>
@@ -313,14 +344,14 @@ const releases: Release[] = [
             <span class="notes-hero__eyebrow">Pulse · Changelog</span>
             <span class="notes-hero__pill" aria-label="Latest version">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Latest v0.6.5
+              Latest v0.6.7
             </span>
           </div>
           <h1 class="notes-hero__title">
             What shipped, <span class="notes-hero__hl">when, and why.</span>
           </h1>
           <p class="notes-hero__sub">
-            Ten shipped entries between v0.4.0 and v0.6.5. Dates are local
+            Thirteen shipped entries between v0.4.0 and v0.6.7. Dates are local
             (Asia/Bangkok). Major versions reset the public API; minor versions
             add capability; patches fix regressions.
           </p>
@@ -365,17 +396,52 @@ const releases: Release[] = [
                     )}
                   </aside>
                 )}
+                {r.version === '0.6.7' && (
+                  <div class="changelog__download changelog__download--desktop">
+                    <a
+                      class="btn btn--primary"
+                      href="/downloads/Pulse_0.6.7_x64-setup.exe"
+                      rel="noopener"
+                    >
+                      Try Pulse for Windows ↓ 12.27 MB
+                    </a>
+                    <a
+                      class="btn btn--ghost"
+                      href="/downloads/Pulse_0.6.7_x64_en-US.msi"
+                      rel="noopener"
+                    >
+                      MSI for IT admins ↓ 16.94 MB
+                    </a>
+                    <span class="changelog__download-meta">
+                      NSIS SHA-256: <code>08FD2FB2…3F8E65</code> · MSI SHA-256: <code>D246AFFC…2AD2982D</code> · Windows 10 (build 17763)+ · x86_64-pc-windows-msvc
+                    </span>
+                  </div>
+                )}
+                {r.version === '0.6.6' && (
+                  <div class="changelog__download">
+                    <a
+                      class="btn btn--primary"
+                      href="/downloads/pulse-notes-0.6.6.apk"
+                      rel="noopener"
+                    >
+                      Download Pulse Notes 0.6.6 ↓ 1.29 MB APK
+                    </a>
+                    <span class="changelog__download-meta">
+                      SHA-256: <code>AD6E3302…45BAB5</code> · Android 7.0+ · universal APK · versionCode 16
+                    </span>
+                  </div>
+                )}
                 {r.version === '0.6.5' && (
                   <div class="changelog__download">
                     <a
                       class="btn btn--primary"
-                      href="https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk"
+                      href="https://ruft9q2ph90ro.space.minimax.io/pulse-notes-0.6.5.apk"
                       rel="noopener"
                     >
-                      Download Pulse Notes 0.6.5 ↓ 4.39 MB APK
+                      Download Pulse Notes 0.6.5 ↓ 1.35 MB APK
                     </a>
                     <span class="changelog__download-meta">
-                      SHA-256: <code>AD81D03C…1D7607</code> · Android 7.0+ · universal APK · versionCode 15
+                      SHA-256: <code>ADECE4B2…16C716BB</code> · Android 7.0+ · universal APK · versionCode 15
                     </span>
                   </div>
                 )}
@@ -403,22 +469,22 @@ const releases: Release[] = [
     <section class="ncta" id="download">
       <div class="bg-glow"></div>
       <div class="container ncta__inner reveal">
-        <h2 class="ncta__title">Try Pulse Notes.</h2>
+        <h2 class="ncta__title">Try Pulse.</h2>
         <p class="ncta__sub">
-          4.39 MB APK. No Google Play, no account, no telemetry. Open the installer and it works.
+          Windows NSIS&nbsp;12.27&nbsp;MB · MSI&nbsp;16.94&nbsp;MB · Android APK&nbsp;1.29&nbsp;MB · no Google Play · no account · no telemetry.
         </p>
         <div class="ncta__row">
-          <a class="btn btn--primary btn--lg" href="https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk" rel="noopener noreferrer">Get Pulse Notes ↓ 4.39 MB</a>
-          <a class="btn btn--ghost btn--lg" href="/notes/">View Notes</a>
+          <a class="btn btn--primary btn--lg" href="/download/#windows" rel="noopener noreferrer">Get Pulse for Windows ↓ 12.27 MB</a>
+          <a class="btn btn--ghost btn--lg" href="/download/#android" rel="noopener noreferrer">Get Pulse for Android ↓ 1.29 MB</a>
         </div>
         <p class="ncta__meta">
-          Android 7.0+ · universal APK · Apache 2.0
+          Windows 10 (build 17763)+ · Android 7.0+ · Apache 2.0
         </p>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.5" />
+  <Footer license="Apache 2.0" version="v0.6.7" />
 </Base>
 
 <style>
@@ -519,5 +585,14 @@ const releases: Release[] = [
     padding: 0.05em 0.35em;
     border-radius: 3px;
     border: 1px solid var(--border);
+  }
+  /* R116: desktop variant — two buttons (NSIS primary + MSI ghost) plus the
+     combined SHA-256 meta line. Keeps the visual rhythm of the Android single
+     button but signals the two-installer surface. */
+  .changelog__download--desktop {
+    align-items: center;
+  }
+  .changelog__download--desktop .changelog__download-meta {
+    flex-basis: 100%;
   }
 </style>

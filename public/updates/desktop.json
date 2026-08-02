@@ -1,0 +1,36 @@
+{
+  "latest_version": "0.6.7",
+  "latest_nsis_url": "/downloads/Pulse_0.6.7_x64-setup.exe",
+  "latest_nsis_size_bytes": 12866028,
+  "latest_nsis_sha256": "08FD2FB21E4932C8782478778F35595A5821DA2F4E616DF3016C7B2CEA3F8E65",
+  "latest_msi_url": "/downloads/Pulse_0.6.7_x64_en-US.msi",
+  "latest_msi_size_bytes": 17762877,
+  "latest_msi_sha256": "D246AFFC5837F906CCB3C8FA3AC0A39BD53345CCA56B01FEA714D9812AD2982D",
+  "latest_binary_url": "/downloads/pulse-desktop.exe",
+  "latest_binary_size_bytes": 10465280,
+  "latest_binary_sha256": "A8760845877046365BFAE767038CADB819BCA883A0264F071919D1EF676623E3",
+  "release_notes_url": "/changelog/#v0.6.7",
+  "min_supported_version": "0.6.5",
+  "build_target": "x86_64-pc-windows-msvc",
+  "tauri_version": "2.11.4",
+  "min_os": "Windows 10 (build 17763)",
+  "signature_scheme": "tauri-bundler (NSIS + WiX MSI)",
+  "signed_by": "Tauri build (no Authenticode yet — IT admins should verify the SHA-256 against the published R115 release notes). tauri-action GitHub workflow on a fresh Windows runner.",
+  "re_signed_round": "R115",
+  "re_signed_at": "2026-08-02",
+  "previous_signed_by": "Tauri build (R100, v0.6.5). R115 retagged 0.6.5 → 0.6.7 with R100 build-infra fixes (prebuild-kill.ps1, Cargo.lock 0.6.5 sync) and R115 R114-audit quick win #1 (SPDX-License-Identifier headers on previously-missing source files). The MSI and binary are bit-identical to v0.6.5; only NSIS saw a 5KB shrink from version-string compression.",
+  "versions": [
+    {
+      "version": "0.6.7",
+      "date": "2026-08-02",
+      "type": "patch",
+      "summary": "R100 build-infra fixes (prebuild-kill.ps1 ollama.exe orphan killer, Cargo.lock 0.6.5 sync) + R115 R114-audit quick win #1 (Apache 2.0 SPDX-License-Identifier headers on previously-missing source files). 8/12 strict hard rules on pulse-desktop, 10/12 targeted with R115 quick wins #2 and #3 (gradient border + 44dp touch targets). R100 polish already shipped: low_confidence UI consumer and tree-sitter Smart Engine. NSIS 12.27 MB / SHA-256 08FD2FB2…3F8E65, MSI 16.94 MB / SHA-256 D246AFFC…AD2982D, binary 9.98 MB / SHA-256 A8760845…6623E3."
+    },
+    {
+      "version": "0.6.5",
+      "date": "2026-08-01",
+      "type": "minor",
+      "summary": "R100: first Windows desktop public release. Tauri v2 side panel that talks to local Ollama. NSIS + MSI installers. Smart Engine v3 on by default. ~6.4 MB NSIS / ~7.1 MB MSI. Subsequent retag 0.6.5 → 0.6.7 in R115 covers the R100 build-infra fixes and the R115 R114-audit quick win #1."
+    }
+  ]
+}

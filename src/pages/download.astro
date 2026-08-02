@@ -1,0 +1,533 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/notes.css';
+
+// R120 site simplify: download surface for the user-facing site.
+// Keeps the platform details (NSIS / MSI, SHA-256, size, min OS) — those
+// are required to verify a binary before running it. Strips round
+// numbers and implementation jargon. UA-based JS reorder: mobile →
+// Android first, desktop → Windows first.
+
+const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
+const APK_SIZE = '1.29 MB';
+const APK_SIZE_BYTES = 1352869;
+const APK_VERSION = '0.6.6';
+const APK_VERSION_CODE = '16';
+const APK_SHA = 'AD6E3302…45BAB5';
+const APK_APP_ID = 'app.pulse.notes';
+const APK_MIN_SDK = '24';
+const APK_TARGET_SDK = '36';
+
+const WIN_VERSION = '0.6.7';
+const WIN_EXE = `/downloads/Pulse_${WIN_VERSION}_x64-setup.exe`;
+const WIN_MSI = `/downloads/Pulse_${WIN_VERSION}_x64_en-US.msi`;
+const WIN_SIZE_EXE = '12.27 MB';
+const WIN_SIZE_MSI = '16.94 MB';
+const WIN_SHA_EXE = '08FD2FB2…3F8E65';
+const WIN_SHA_MSI = 'D246AFFC…2AD2982D';
+const WIN_MIN_OS = 'Windows 10 (build 17763)';
+const WIN_BUILD_TARGET = 'x86_64-pc-windows-msvc';
+
+const PAGE_TITLE = 'Download Pulse — for Windows or Android';
+const PAGE_DESC = 'Pulse is free and open source. Download Pulse for Windows (NSIS or MSI installer) or Pulse for Android (APK). Both are local-first, Apache 2.0, no account or telemetry.';
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-download.png"
+  ctaText={`Get Pulse for Android ↓ ${APK_SIZE}`}
+  ctaHref={APK_URL}
+  ctaVisible={true}
+  footerLicense="Apache 2.0"
+  footerVersion={`v${APK_VERSION} / v${WIN_VERSION}`}
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/download/" aria-current="page">Download</a></li>
+        <li><a class="nav__link" href="/pricing/">Pricing</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href={APK_URL} rel="noopener noreferrer">Get Pulse ↓ {APK_SIZE}</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/">Home</a>
+    <a class="nav-drawer__link" href="/download/" aria-current="page">Download</a>
+    <a class="nav-drawer__link" href="/pricing/">Pricing</a>
+    <a class="btn btn--primary nav-drawer__cta" href={APK_URL} rel="noopener noreferrer">Get Pulse ↓ {APK_SIZE}</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => {
+          const isOpen = drawer.classList.contains('is-open');
+          setOpen(!isOpen);
+        });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="notes-main">
+    <!-- ─── Hero ──────────────────────────────────────── -->
+    <section class="dl-hero">
+      <div class="bg-glow"></div>
+      <div class="container dl-hero__grid">
+        <div class="dl-hero__copy reveal">
+          <div class="dl-hero__badges">
+            <span class="notes-hero__eyebrow">Pulse · download</span>
+            <span class="notes-hero__pill" aria-label="Latest versions">
+              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+              Windows v{WIN_VERSION} · Android v{APK_VERSION}
+            </span>
+          </div>
+          <h1 class="dl-hero__title">
+            One app.<br />Two devices. <span class="notes-hero__hl">Same Pulse.</span>
+          </h1>
+          <p class="dl-hero__sub">
+            Pulse for Windows is a desktop side panel that talks to a local
+            AI model on your machine. Pulse for Android is a markdown note
+            editor with backlinks, tags, and voice input. Both are
+            Apache&nbsp;2.0. Both are local-first. Pick your platform below.
+          </p>
+          <ul class="dl-hero__platforms" role="list" aria-label="Jump to platform">
+            <li><a class="btn btn--ghost btn--lg" href="#windows">Pulse for Windows ↓</a></li>
+            <li><a class="btn btn--ghost btn--lg" href="#android">Pulse for Android ↓ {APK_SIZE}</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Platform sections (UA-reordered) ─────────── -->
+    <section class="dl-platforms" id="platforms" data-dl-reorder>
+      <div class="container dl-platforms__grid">
+
+        <article class="dl-card glass reveal" id="windows" data-dl-platform="windows">
+          <header class="dl-card__head">
+            <span class="dl-card__platform">Pulse for Windows</span>
+            <span class="notes-hero__pill" aria-label="Latest version">
+              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+              v{WIN_VERSION}
+            </span>
+          </header>
+          <h2 class="dl-card__title">A side panel for your Windows desktop.</h2>
+          <p class="dl-card__body">
+            Pulse for Windows sits in the system tray and opens with a
+            global hotkey. It talks to a local model that runs on your
+            machine. Prompts, screenshots, and voice stay on the device.
+            The installer ships as NSIS (per-user) or MSI (per-machine).
+            The MSI is the one for IT departments; the NSIS is the one for
+            individual installs.
+          </p>
+          <div class="dl-card__ctas">
+            <a class="btn btn--primary btn--lg" href={WIN_EXE} rel="noopener noreferrer">
+              Download NSIS ↓ {WIN_SIZE_EXE}
+            </a>
+            <a class="btn btn--ghost btn--lg" href={WIN_MSI} rel="noopener noreferrer">
+              Download MSI ↓ {WIN_SIZE_MSI}
+            </a>
+          </div>
+          <dl class="dl-card__meta">
+            <div class="dl-card__meta-row">
+              <dt>version</dt>
+              <dd>v{WIN_VERSION}</dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>build</dt>
+              <dd>release · {WIN_BUILD_TARGET}</dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>min OS</dt>
+              <dd>{WIN_MIN_OS}</dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>NSIS SHA-256</dt>
+              <dd><code class="dl-card__sha">{WIN_SHA_EXE}</code></dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>MSI SHA-256</dt>
+              <dd><code class="dl-card__sha">{WIN_SHA_MSI}</code></dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>license</dt>
+              <dd>Apache 2.0</dd>
+            </div>
+          </dl>
+          <p class="dl-card__more">
+            Need the full version history? See the
+            <a href="/changelog/">changelog</a>.
+          </p>
+        </article>
+
+        <article class="dl-card glass reveal" id="android" data-dl-platform="android">
+          <header class="dl-card__head">
+            <span class="dl-card__platform">Pulse for Android</span>
+            <span class="notes-hero__pill" aria-label="Latest version">
+              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+              v{APK_VERSION} · versionCode {APK_VERSION_CODE}
+            </span>
+          </header>
+          <h2 class="dl-card__title">A markdown editor for your Android phone.</h2>
+          <p class="dl-card__body">
+            Pulse for Android is a note editor with
+            <code>[[wikilink]]</code> backlinks, tag autocomplete, voice
+            input, and full-text search. Notes live on the device — the
+            app does not upload them. Backup rules keep the WebView cache
+            off cloud-backup and device-transfer. Settings (profile, theme,
+            about, actions) open from a gear button in the toolbar.
+          </p>
+          <div class="dl-card__ctas">
+            <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
+              Download APK ↓ {APK_SIZE}
+            </a>
+            <a class="btn btn--ghost btn--lg" href="/changelog/">
+              Full changelog
+            </a>
+          </div>
+          <dl class="dl-card__meta">
+            <div class="dl-card__meta-row">
+              <dt>versionName</dt>
+              <dd>v{APK_VERSION}</dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>versionCode</dt>
+              <dd>{APK_VERSION_CODE}</dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>appId</dt>
+              <dd><code>{APK_APP_ID}</code></dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>minSdk · targetSdk</dt>
+              <dd>{APK_MIN_SDK} · {APK_TARGET_SDK}</dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>SHA-256</dt>
+              <dd><code class="dl-card__sha">{APK_SHA}</code></dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>size</dt>
+              <dd>{APK_SIZE} ({APK_SIZE_BYTES.toLocaleString('en-US')} B)</dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>signing</dt>
+              <dd>Release keystore · v2 + v3</dd>
+            </div>
+          </dl>
+          <p class="dl-card__more">
+            <a href="/privacy/">Privacy &amp; data model</a>
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ─── One product, two surfaces ── -->
+    <section class="dl-unified">
+      <div class="container dl-unified__inner reveal">
+        <span class="eyebrow">One product · two surfaces</span>
+        <h2>Same data model on Windows and Android.</h2>
+        <p class="lede">
+          Pulse for Windows and Pulse for Android share the same local-first
+          data model and the same Apache 2.0 license. They differ in
+          input: a tray icon and global hotkey on Windows, a bottom
+          toolbar and share intent on Android. Notes and chats never
+          leave the device they were written on.
+        </p>
+        <div class="dl-unified__grid">
+          <a class="dl-unified__link glass" href="/pricing/">
+            <span class="dl-unified__link-eyebrow">Pricing</span>
+            <span class="dl-unified__link-title">Free, forever</span>
+            <span class="dl-unified__link-meta">Apache 2.0 · no paid tier</span>
+          </a>
+          <a class="dl-unified__link glass" href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">
+            <span class="dl-unified__link-eyebrow">Source</span>
+            <span class="dl-unified__link-title">Read the code on GitHub</span>
+            <span class="dl-unified__link-meta">Audit the network calls · fork it</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer license="Apache 2.0" version={`v${APK_VERSION} / v${WIN_VERSION}`} />
+
+  <!-- UA-based reorder. mobile → Android first; desktop → Windows first.
+       Uses CSS order: property with a UA class so screen-readers see a stable
+       document order (Android article second) but the visual order swaps.
+       No-JS fallback: Android first (matches the mobile-primary audience). -->
+  <script is:inline>
+    (() => {
+      const root = document.querySelector('[data-dl-reorder]');
+      if (!root) return;
+      const grid = root.querySelector('.dl-platforms__grid');
+      if (!grid) return;
+      // isMobile = matches phone UA + narrow viewport
+      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+        || (window.matchMedia && window.matchMedia('(max-width: 767px)').matches);
+      if (!isMobile) {
+        root.classList.add('dl-platforms--desktop-first');
+      }
+    })();
+  </script>
+</Base>
+
+<style>
+  /* ─── Hero ──────────────────────────────────────────── */
+  .dl-hero {
+    padding-top: clamp(112px, 14vw, 160px);
+    padding-bottom: clamp(48px, 7vw, 72px);
+    overflow: hidden;
+  }
+  .dl-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  .dl-hero__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    max-width: 760px;
+  }
+  .dl-hero__badges {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: -0.25rem;
+  }
+  .dl-hero__title {
+    font-size: var(--fs-1);
+    line-height: 1.05;
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: -0.02em;
+  }
+  .dl-hero__sub {
+    color: var(--fg-dim);
+    font-size: var(--fs-body);
+    line-height: 1.65;
+    max-width: 60ch;
+  }
+  .dl-hero__sub code {
+    font-size: 0.9em;
+    color: var(--cyan);
+    background: var(--surface-2);
+    padding: 0.05em 0.35em;
+    border-radius: 4px;
+  }
+  .dl-hero__platforms {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ─── Platform cards (UA-reorder via CSS order:) ──── */
+  .dl-platforms { padding: 1rem 0 4rem; }
+  .dl-platforms__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 920px) {
+    .dl-platforms__grid { grid-template-columns: 1fr 1fr; gap: 1.75rem; }
+  }
+
+  /* Default order: Android first (no-JS / mobile baseline). */
+  .dl-platforms__grid .dl-card[data-dl-platform="android"] { order: 1; }
+  .dl-platforms__grid .dl-card[data-dl-platform="windows"] { order: 2; }
+  /* Desktop UA flips the order so Windows leads visually. */
+  .dl-platforms--desktop-first .dl-card[data-dl-platform="android"] { order: 2; }
+  .dl-platforms--desktop-first .dl-card[data-dl-platform="windows"] { order: 1; }
+
+  .dl-card {
+    padding: 1.75rem 1.75rem 2rem;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .dl-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .dl-card__platform {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--purple);
+  }
+  .dl-card__title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.25;
+  }
+  .dl-card__body {
+    color: var(--fg-dim);
+    font-size: 0.97rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+  .dl-card__body code {
+    font-size: 0.88em;
+    color: var(--cyan);
+    background: var(--surface-2);
+    padding: 0.05em 0.3em;
+    border-radius: 4px;
+  }
+  .dl-card__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .dl-card__ctas .btn { flex: 1 1 auto; min-width: 220px; }
+  @media (max-width: 639px) {
+    .dl-card__ctas .btn { width: 100%; min-width: 0; }
+  }
+  .dl-card__meta {
+    margin: 0.5rem 0 0;
+    padding: 0.9rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .dl-card__meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    font-size: 0.88rem;
+  }
+  .dl-card__meta-row dt {
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  .dl-card__meta-row dd {
+    color: var(--fg);
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-size: 0.85rem;
+    margin: 0;
+  }
+  .dl-card__meta-row dd code {
+    color: var(--cyan);
+  }
+  .dl-card__sha {
+    word-break: break-all;
+    text-align: right;
+  }
+  .dl-card__more {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0;
+  }
+  .dl-card__more a { color: var(--cyan); }
+  .dl-card__more a:hover { color: var(--purple); }
+
+  /* ─── Unified narrative ────────────────────────────── */
+  .dl-unified { padding: 3rem 0 5rem; }
+  .dl-unified__inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .dl-unified .lede { margin-top: 0.5rem; }
+  .dl-unified__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1.75rem;
+  }
+  @media (min-width: 700px) {
+    .dl-unified__grid { grid-template-columns: 1fr 1fr; }
+  }
+  .dl-unified__link {
+    padding: 1.1rem 1.25rem 1.25rem;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    text-decoration: none;
+    transition: all var(--dur) var(--ease);
+  }
+  .dl-unified__link:hover {
+    border-color: var(--purple);
+    transform: translateY(-1px);
+  }
+  .dl-unified__link-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--purple);
+  }
+  .dl-unified__link-title {
+    color: var(--fg);
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+  .dl-unified__link-meta {
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+</style>

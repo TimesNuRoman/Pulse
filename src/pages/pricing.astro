@@ -1,0 +1,784 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+
+// R120 site simplify: pricing page, three plain tiers, no jargon.
+// PRO unlocks multi-model switching, code-aware chat, voice input,
+// and web search. Polar.sh handles billing. No student discount at
+// launch. Anonymous team — no founder credit, no first-person voice.
+
+const PAGE_TITLE = 'Pricing — Pulse is free, plus PRO for power users';
+const PAGE_DESC = 'Pulse is free, open source, and runs on your device. PRO adds multiple AI models, code-aware chat, voice input, and web search. Monthly $5 or annual $48. Apache 2.0.';
+
+const tiers = [
+  {
+    name: 'Free',
+    price: '$0',
+    period: 'forever',
+    tag: 'Open source',
+    description: 'Everything most people need to run Pulse on a Windows desktop or Android phone.',
+    cta: 'Get Pulse',
+    href: '/download/',
+    primary: false,
+    features: [
+      'Text chat with a local AI model',
+      'One model on your device (bring your own)',
+      'Local notes with backlinks and tags',
+      'Pulse for Windows + Android',
+      'Apache 2.0 source on GitHub',
+      'No telemetry, no account',
+    ],
+  },
+  {
+    name: 'PRO Monthly',
+    price: '$5',
+    period: 'per month',
+    tag: 'Pay monthly',
+    description: 'All Free features plus the advanced AI stack for daily coding and writing work.',
+    cta: 'Start Monthly',
+    href: 'https://buy.polar.sh/pulse-monthly',
+    primary: false,
+    features: [
+      'Everything in Free',
+      'Switch between multiple AI models',
+      'Code-aware chat in any language',
+      'Voice input for hands-free notes',
+      'Web search for fresh answers',
+      'Priority updates',
+      'Email support, 48h response',
+    ],
+  },
+  {
+    name: 'PRO Annual',
+    price: '$48',
+    period: 'per year',
+    tag: 'Save 20%',
+    description: 'Same PRO features as monthly, billed yearly. Two months free.',
+    cta: 'Start Annual',
+    href: 'https://buy.polar.sh/pulse-annual',
+    primary: true,
+    badge: 'Most popular',
+    features: [
+      'Everything in PRO Monthly',
+      'Saves $12 per year vs monthly',
+      'Same features, same license key',
+      'One email receipt per year',
+      'Cancel any time, no penalty',
+    ],
+  },
+];
+
+const comparisonRows = [
+  { label: 'Text chat with a local AI model',                 free: 'yes', pro: 'yes' },
+  { label: 'Local notes with backlinks and tags',             free: 'yes', pro: 'yes' },
+  { label: 'Pulse for Windows + Android',                     free: 'yes', pro: 'yes' },
+  { label: 'Apache 2.0 source on GitHub',                     free: 'yes', pro: 'yes' },
+  { label: 'No telemetry, no account required',               free: 'yes', pro: 'yes' },
+  { label: 'Switch between multiple AI models',               free: 'no',  pro: 'yes' },
+  { label: 'Code-aware chat',                                 free: 'no',  pro: 'yes' },
+  { label: 'Voice input',                                     free: 'no',  pro: 'yes' },
+  { label: 'Web search',                                      free: 'no',  pro: 'yes' },
+  { label: 'Cross-device sync',                               free: 'no',  pro: 'yes' },
+  { label: 'Priority updates',                                free: 'no',  pro: 'yes' },
+  { label: 'Support response time',                           free: 'Community Discord', pro: 'Email, 48h' },
+];
+
+const trustSignals = [
+  {
+    title: 'Anonymous team',
+    body: 'No founder photos, no team bio page with names, no personal credits. The team behind Pulse stays anonymous because the code is the credit.',
+  },
+  {
+    title: 'Apache 2.0 licensed',
+    body: 'Every line of Pulse — the desktop app, the Android app, this website, the build scripts — is Apache 2.0. You can fork, audit, and ship a competing product. The license is the contract.',
+  },
+  {
+    title: 'No telemetry, no tracking',
+    body: 'No analytics SDK, no error reporter, no "phone home" endpoint. The only network call Pulse makes is the optional update-checker manifest poll, and you can disable it in settings.',
+  },
+  {
+    title: 'Hosted on your device',
+    body: 'Notes live in a local database on your device. Chats are processed by a local model. PRO only validates your license key against the license server — your content never leaves the device.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Can I switch plans or cancel any time?',
+    a: 'Yes. Upgrade, downgrade, or cancel from your account at any time. Monthly cancels at the end of the current billing period. Annual refunds are pro-rated within the first 14 days. The license key just stops working when the subscription ends — your data is never touched.',
+  },
+  {
+    q: 'What happens to my notes and chats if I unsubscribe from PRO?',
+    a: 'Pulse is local-first. Your notes stay in the local database and your chats stay in the local log files. Removing the PRO license key only hides the gated features (multi-model switching, code-aware chat, voice input, web search). You do not lose any data, and the free features keep working exactly as before.',
+  },
+  {
+    q: 'Do you offer refunds?',
+    a: 'Yes — 14-day money-back on any PRO purchase, no questions asked. Email the support address from your receipt and the refund goes through the same channel you paid with. After 14 days, annual plans can still be canceled but are not refunded for the unused months.',
+  },
+  {
+    q: 'Is my data private?',
+    a: 'Yes. Notes, chats, voice transcriptions, and code-aware chat caches never leave your device. The PRO license check sends only an opaque key to the license server, and that key is not tied to any content. Pulse does not run an analytics SDK, an error reporter, or a "phone home" endpoint. The Apache 2.0 source is on GitHub so you can audit the network calls yourself.',
+  },
+  {
+    q: 'Can I use Pulse offline?',
+    a: 'Yes. The desktop app, the local model, the notes database, and the chat history all work without a network connection. PRO has a 14-day offline grace period: the app pings the license server once per day on cold start, and the license keeps validating locally for 14 days after the last successful ping. After that, gated features pause until the next online check.',
+  },
+  {
+    q: 'Will Pulse stay open source?',
+    a: 'Apache 2.0 is a copyleft-free permissive license. Once released under Apache 2.0, every version of Pulse stays under Apache 2.0. You can fork the code today, build a competing product, and charge for it. The official Pulse builds will stay open source too — that is the contract, and it does not depend on any one person or company keeping the promise.',
+  },
+  {
+    q: 'How do I install Pulse?',
+    a: 'Go to <a href="/download/">/download/</a> and pick your platform. Pulse for Windows is a 12 MB side-panel installer (NSIS or MSI). Pulse for Android is a 1.29 MB APK. Both are signed binaries with SHA-256 checksums published on the download page. No account, no email, no activation server roundtrip for the Free tier.',
+  },
+  {
+    q: 'Do you offer student or education discounts?',
+    a: 'Not at launch.',
+  },
+];
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-pricing.png"
+  ctaText="Get Pulse ↓"
+  ctaHref="/download/"
+  ctaVisible={true}
+  footerLicense="Apache 2.0"
+  footerVersion=""
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/download/">Download</a></li>
+        <li><a class="nav__link" href="/pricing/" aria-current="page">Pricing</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/download/" rel="noopener noreferrer">Get Pulse ↓</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/">Home</a>
+    <a class="nav-drawer__link" href="/download/">Download</a>
+    <a class="nav-drawer__link" href="/pricing/" aria-current="page">Pricing</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/" rel="noopener noreferrer">Get Pulse ↓</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => {
+          const isOpen = drawer.classList.contains('is-open');
+          setOpen(!isOpen);
+        });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main">
+    <!-- ─── Hero ─────────────────────────────────────── -->
+    <section class="pr-hero">
+      <div class="bg-glow"></div>
+      <div class="container pr-hero__grid">
+        <div class="pr-hero__copy reveal">
+          <span class="eyebrow">Pricing</span>
+          <h1 class="pr-hero__title">Start free. Upgrade when you need more.</h1>
+          <p class="pr-hero__sub">
+            Pulse is local-first and open source. Your data stays on your device.
+            PRO adds advanced AI features for daily coding and writing work.
+          </p>
+          <p class="pr-hero__trust">
+            Anonymous team · Apache 2.0 · No telemetry
+          </p>
+          <div class="pr-hero__ctas">
+            <a class="btn btn--primary btn--lg" href="#tiers">See the plans ↓</a>
+            <a class="btn btn--ghost btn--lg" href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">View source on GitHub →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Tier cards ───────────────────────────────── -->
+    <section class="pr-tiers" id="tiers">
+      <div class="container">
+        <header class="pr-tiers__head reveal">
+          <span class="eyebrow">Plans</span>
+          <h2>Three plans. One codebase. No upsells.</h2>
+        </header>
+        <ul class="pr-tiers__grid" role="list">
+          {tiers.map((t) => (
+            <li class={`pr-tier reveal ${t.primary ? 'pr-tier--featured' : ''}`}>
+              {t.badge && <span class="pr-tier__badge">{t.badge}</span>}
+              <header class="pr-tier__head">
+                <h3 class="pr-tier__name">{t.name}</h3>
+                <span class="pr-tier__tag">{t.tag}</span>
+              </header>
+              <div class="pr-tier__price">
+                <span class="pr-tier__amount">{t.price}</span>
+                <span class="pr-tier__period">{t.period}</span>
+              </div>
+              <p class="pr-tier__desc">{t.description}</p>
+              <a
+                class={`btn ${t.primary ? 'btn--primary' : 'btn--ghost'} pr-tier__cta`}
+                href={t.href}
+                rel={t.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              >
+                {t.cta} →
+              </a>
+              <ul class="pr-tier__list" role="list">
+                {t.features.map((f) => (
+                  <li>
+                    <span class="pr-tier__check" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── Comparison table ─────────────────────────── -->
+    <section class="pr-compare" id="compare">
+      <div class="container">
+        <header class="pr-compare__head reveal">
+          <span class="eyebrow">Feature comparison</span>
+          <h2>Free vs PRO, line by line.</h2>
+        </header>
+
+        <!-- Desktop / tablet (>=768px) — table -->
+        <div class="pr-compare__table-wrap reveal" role="region" aria-label="Free vs PRO feature comparison">
+          <table class="pr-compare__table">
+            <caption class="visually-hidden">Pulse Free vs PRO feature comparison</caption>
+            <thead>
+              <tr>
+                <th scope="col">Feature</th>
+                <th scope="col" class="col-free">Free</th>
+                <th scope="col" class="col-pro">PRO</th>
+              </tr>
+            </thead>
+            <tbody>
+              {comparisonRows.map((r) => (
+                <tr>
+                  <th scope="row">{r.label}</th>
+                  <td class={r.free === 'yes' ? 'mark mark--yes' : r.free === 'no' ? 'mark mark--no' : ''}>
+                    {r.free === 'yes' ? (
+                      <span class="pr-compare__mark" data-val="yes" aria-hidden="true"><span class="visually-hidden">Included</span></span>
+                    ) : r.free === 'no' ? (
+                      <span class="pr-compare__mark" data-val="no" aria-hidden="true"><span class="visually-hidden">Not included</span></span>
+                    ) : r.free}
+                  </td>
+                  <td class={r.pro === 'yes' ? 'col-pro mark mark--yes' : r.pro === 'no' ? 'col-pro mark mark--no' : 'col-pro'}>
+                    {r.pro === 'yes' ? (
+                      <span class="pr-compare__mark" data-val="yes" aria-hidden="true"><span class="visually-hidden">Included</span></span>
+                    ) : r.pro === 'no' ? (
+                      <span class="pr-compare__mark" data-val="no" aria-hidden="true"><span class="visually-hidden">Not included</span></span>
+                    ) : r.pro}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile (<768px) — stacked cards -->
+        <div class="pr-compare__cards">
+          {['free', 'pro'].map((which) => (
+            <article class={`pr-compare__card reveal ${which === 'pro' ? 'is-highlight' : ''}`}>
+              <header class="pr-compare__card-head">
+                <h3 class="pr-compare__card-name">{which === 'free' ? 'Free' : 'PRO'}</h3>
+                <p class="pr-compare__card-tagline">{which === 'free' ? '$0, forever' : 'From $5/mo or $48/yr'}</p>
+              </header>
+              <dl class="pr-compare__card-list">
+                {comparisonRows.map((r) => {
+                  const v = which === 'free' ? r.free : r.pro;
+                  const text = v === 'yes' ? 'Included' : v === 'no' ? 'Not included' : v;
+                  return (
+                    <>
+                      <dt>{r.label}</dt>
+                      <dd class={v === 'yes' ? 'mark mark--yes' : v === 'no' ? 'mark mark--no' : ''}>{text}</dd>
+                    </>
+                  );
+                })}
+              </dl>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Trust signals ────────────────────────────── -->
+    <section class="pr-trust" id="trust">
+      <div class="container">
+        <header class="pr-trust__head reveal">
+          <span class="eyebrow">How Pulse is built</span>
+          <h2>The fine print, in plain language.</h2>
+        </header>
+        <ul class="pr-trust__grid" role="list">
+          {trustSignals.map((s) => (
+            <li class="pr-trust__item reveal">
+              <h3 class="pr-trust__title">{s.title}</h3>
+              <p class="pr-trust__body">{s.body}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── FAQ ──────────────────────────────────────── -->
+    <section class="pr-faq" id="faq">
+      <div class="container">
+        <header class="pr-faq__head reveal">
+          <span class="eyebrow">FAQ</span>
+          <h2>Common questions.</h2>
+        </header>
+        <div class="pr-faq__list">
+          {faqs.map((f, i) => (
+            <details class="faq__item reveal" open={i === 0}>
+              <summary class="faq__q">
+                <span class="faq__q-text">{f.q}</span>
+                <svg class="faq__chev" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </summary>
+              <div class="faq__a" set:html={f.a} />
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Final CTA ────────────────────────────────── -->
+    <section class="pr-cta">
+      <div class="container pr-cta__inner reveal">
+        <h2>Try the Free tier first. Upgrade only if you actually need the extra features.</h2>
+        <div class="pr-cta__row">
+          <a class="btn btn--primary btn--lg" href="/download/">Get Pulse ↓</a>
+          <a class="btn btn--ghost btn--lg" href="#tiers">Compare plans</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer license="Apache 2.0" version="" />
+</Base>
+
+<style>
+  /* ─── Hero ──────────────────────────────────────── */
+  .pr-hero {
+    padding-top: clamp(112px, 14vw, 160px);
+    padding-bottom: clamp(56px, 8vw, 96px);
+    overflow: hidden;
+  }
+  .pr-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(40px, 5vw, 64px);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .pr-hero__grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  .pr-hero__copy { display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; max-width: 56ch; }
+  .pr-hero__title {
+    font-size: var(--fs-1);
+    line-height: 1.05;
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: -0.02em;
+  }
+  .pr-hero__sub {
+    color: var(--fg-dim);
+    font-size: var(--fs-body);
+    line-height: 1.65;
+  }
+  .pr-hero__trust {
+    color: var(--muted);
+    font-size: 0.92rem;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    letter-spacing: 0.02em;
+  }
+  .pr-hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ─── Tier cards ────────────────────────────────── */
+  .pr-tiers { padding-block: clamp(48px, 7vw, 96px); }
+  .pr-tiers__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
+  .pr-tiers__head h2 { font-size: var(--fs-2); }
+
+  .pr-tiers__grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+  @media (min-width: 720px) {
+    .pr-tiers__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1100px) {
+    .pr-tiers__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .pr-tier {
+    position: relative;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.85rem 1.75rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: border-color var(--dur) var(--ease),
+                transform var(--dur) var(--ease),
+                box-shadow var(--dur) var(--ease);
+  }
+  .pr-tier:hover {
+    border-color: var(--fg-dim);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .pr-tier--featured {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 1px rgba(187,154,247,0.25),
+                0 12px 40px rgba(187,154,247,0.18);
+  }
+  .pr-tier--featured:hover {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 1px rgba(187,154,247,0.45),
+                0 16px 48px rgba(187,154,247,0.25);
+  }
+
+  .pr-tier__badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--purple);
+    color: #1a1b26;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border-radius: 9999px;
+    white-space: nowrap;
+  }
+
+  .pr-tier__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .pr-tier__name { font-size: 1.1rem; font-weight: 700; color: var(--fg); }
+  .pr-tier__tag  {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--purple);
+  }
+  .pr-tier--featured .pr-tier__tag { color: var(--green); }
+
+  .pr-tier__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .pr-tier__amount {
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .pr-tier__period { color: var(--muted); font-size: 0.95rem; }
+
+  .pr-tier__desc {
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .pr-tier__cta { align-self: stretch; width: 100%; min-height: 48px; }
+  @media (min-width: 720px) {
+    .pr-tier__cta { align-self: flex-start; width: auto; }
+  }
+
+  .pr-tier__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-top: 0.4rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .pr-tier__list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+  .pr-tier__check {
+    color: var(--green);
+    flex-shrink: 0;
+    display: inline-flex;
+    margin-top: 1px;
+  }
+
+  /* ─── Comparison table ─────────────────────────── */
+  .pr-compare { padding-block: clamp(48px, 7vw, 96px); }
+  .pr-compare__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
+  .pr-compare__head h2 { font-size: var(--fs-2); }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Mobile (<768px) — stacked cards, table hidden */
+  .pr-compare__cards { display: flex; flex-direction: column; gap: 1rem; }
+  @media (max-width: 767px) {
+    .pr-compare__cards { display: flex; }
+    .pr-compare__table-wrap { display: none; }
+  }
+  @media (min-width: 768px) {
+    .pr-compare__cards { display: none; }
+  }
+
+  .pr-compare__card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+  .pr-compare__card.is-highlight {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 1px rgba(187,154,247,0.25), 0 0 32px rgba(187,154,247,0.15);
+  }
+  .pr-compare__card-head { margin-bottom: 1rem; }
+  .pr-compare__card-name { font-size: 1.15rem; font-weight: 500; margin-bottom: 0.2rem; }
+  .pr-compare__card.is-highlight .pr-compare__card-name { color: var(--purple); }
+  .pr-compare__card-tagline { font-size: 0.85rem; color: var(--muted); }
+  .pr-compare__card-list {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.55rem 1rem;
+    margin: 0;
+  }
+  .pr-compare__card-list dt { color: var(--fg-dim); font-size: 0.88rem; }
+  .pr-compare__card-list dd { color: var(--fg); font-size: 0.88rem; text-align: right; }
+  .pr-compare__card-list dd.mark--yes { color: var(--purple); font-weight: 600; }
+  .pr-compare__card-list dd.mark--no  { color: var(--comment); }
+
+  /* Desktop / tablet (>=768px) — table */
+  .pr-compare__table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .pr-compare__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+  .pr-compare__table th,
+  .pr-compare__table td {
+    text-align: left;
+    padding: 0.8rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .pr-compare__table thead th {
+    background: var(--bg-soft);
+    font-weight: 600;
+    color: var(--fg);
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .pr-compare__table tbody th { font-weight: 500; color: var(--fg-dim); }
+  .pr-compare__table tbody tr:last-child th,
+  .pr-compare__table tbody tr:last-child td { border-bottom: 0; }
+  .col-pro { color: var(--purple); }
+  .pr-compare__table td.col-pro { background: rgba(187, 154, 247, 0.06); }
+
+  /* Cell marks — inline SVG icon (no emoji) */
+  .pr-compare__mark {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    vertical-align: middle;
+  }
+  .pr-compare__mark[data-val="yes"] {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bb9af7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+  }
+  .pr-compare__mark[data-val="no"] {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23565f89' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><line x1='6' y1='6' x2='18' y2='18'/><line x1='18' y1='6' x2='6' y2='18'/></svg>");
+  }
+  .mark--yes { color: var(--purple); }
+  .mark--no  { color: var(--comment); }
+
+  /* ─── Trust signals ────────────────────────────── */
+  .pr-trust { padding-block: clamp(48px, 7vw, 96px); }
+  .pr-trust__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
+  .pr-trust__head h2 { font-size: var(--fs-2); }
+  .pr-trust__grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 720px)  { .pr-trust__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .pr-trust__grid { grid-template-columns: repeat(4, 1fr); } }
+  .pr-trust__item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.4rem 1.5rem;
+  }
+  .pr-trust__title {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin-bottom: 0.5rem;
+  }
+  .pr-trust__body {
+    color: var(--fg-dim);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  /* ─── FAQ ──────────────────────────────────────── */
+  .pr-faq { padding-block: clamp(48px, 7vw, 96px); }
+  .pr-faq__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
+  .pr-faq__head h2 { font-size: var(--fs-2); }
+
+  .pr-faq__list {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  /* faq__q / faq__item / faq__chev / faq__a — same as compare.astro
+     to satisfy the 12-hard-rules .faq__q min-height check. */
+  .faq__item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color var(--dur) var(--ease);
+  }
+  .faq__item[open] { border-color: var(--purple); }
+  .faq__q {
+    list-style: none;
+    cursor: pointer;
+    padding: 1rem 1.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 48px;
+    color: var(--fg);
+    font-weight: 500;
+  }
+  .faq__q::-webkit-details-marker { display: none; }
+  .faq__q-text { flex: 1; line-height: 1.4; }
+  .faq__chev {
+    color: var(--fg-dim);
+    flex-shrink: 0;
+    transition: transform var(--dur) var(--ease);
+  }
+  .faq__item[open] .faq__chev { transform: rotate(180deg); }
+  .faq__a {
+    padding: 0 1.15rem 1.15rem;
+    color: var(--fg-dim);
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+  .faq__a a { color: var(--cyan); }
+  .faq__a a:hover { color: var(--purple); }
+
+  /* ─── Final CTA ────────────────────────────────── */
+  .pr-cta { padding-block: clamp(40px, 6vw, 80px); }
+  .pr-cta__inner { max-width: 760px; margin: 0 auto; text-align: center; }
+  .pr-cta h2 {
+    font-size: var(--fs-3);
+    font-weight: 600;
+    color: var(--fg);
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+  }
+  .pr-cta__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+  }
+</style>

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://e6ghos1wgcskc.space.minimax.io/sitemap.xml
+Sitemap: https://ownlocalml.com/sitemap.xml
