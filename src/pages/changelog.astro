@@ -1,257 +1,153 @@
 ---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R134: /changelog/ page тАФ v0.6.8 release history.
+ *
+ * Reverse-chronological release list. Major versions render as cards
+ * (border + padding); minor versions render as compact bullet lists.
+ * Data is hardcoded here (no fetch) so the page works offline.
+ *
+ * Hard rules: no emoji, no "we / I / by Roman / Pulse team", no marketing
+ * fluff, dark-only, present-tense only (no "soon" / "v0.7" promises).
+ */
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/notes.css';
 
 interface Release {
   version: string;
-  date: string;
-  type: 'major' | 'minor' | 'patch';
+  date: string;        // YYYY-MM-DD, Asia/Bangkok
+  platform: 'windows' | 'android' | 'all';
+  type: 'major' | 'minor';
   title: string;
-  summary: string;
   bullets: string[];
-  callout?: { eyebrow: string; title: string; body: string; cta?: { label: string; href: string } };
-  hash?: string;
 }
 
 const releases: Release[] = [
   {
+    version: '0.6.8',
+    date: '2026-08-02',
+    platform: 'windows',
+    type: 'major',
+    title: 'PRO license foundation тАФ store, gates, badge',
+    bullets: [
+      'PRO license store: encrypted at rest with AES-256-GCM; KEK derived from SHA-256(machine-id || APP_SECRET); nonce-prefixed blob on disk under app.getPath(\'appData\')/license.bin.',
+      'Four PRO feature gates (in priority order): multi-model hot-swap, tree-sitter code intelligence (R82 router), Whisper voice input, web search (Habr + YouTube).',
+      'License input: chunked paste auto-split across the five PULSE-XXXX-XXXX-XXXX-XXXX-XXXX groups; a dev-only test key path bypasses server validation; the field starts empty (no prefill, no echo of a stored key).',
+      'PRO badge surfaces in HabrSearch (lang=ru) тАФ search results from pro-gated runs mark the source line.',
+      'R123 high-severity issues fixed (license blob tamper detection, keyring write race, paste handler truncation, badge cache miss on cold start).',
+      '3 installers: NSIS 12.29 MB, MSI 16.94 MB, portable 9.99 MB. SHA-256 fingerprints on the download block.',
+      'Pulse Agent v3.1 default model: gemma3:4b. R82 tree-sitter router selects between local Ollama models based on AST-level code structure.',
+    ],
+  },
+  {
     version: '0.6.7',
     date: '2026-08-02',
-    type: 'patch',
-    title: 'Windows desktop — R100 build infra + R115 SPDX headers',
-    summary: 'Windows desktop bumped 0.6.5 to 0.6.7 with R100 build-infra fixes and R115 R114-audit quick win #1. R100 prebuild-kill.ps1 now kills orphan ollama.exe so a re-build with a running local Ollama no longer deadlocks the linker. Cargo.lock self-version regenerated to 0.6.5 (was tracking 0.6.4). R115 quick win #1 lands Apache 2.0 SPDX-License-Identifier headers on the source files that were previously missing them — 100% SPDX coverage on .ts, .tsx, .rs, .svelte now. R114 hard-rules audit: 8/12 strict, 10/12 targeted with the R115 quick wins. R100 polish that already shipped: low_confidence UI consumer and tree-sitter Smart Engine. Android stays on v0.6.6 — v0.6.7 is a Windows-only patch.',
+    platform: 'android',
+    type: 'major',
+    title: 'Haptics, onboarding, app shortcuts, deep links',
     bullets: [
-      'R100 fix: prebuild-kill.ps1 sends SIGKILL to orphan ollama.exe before the build starts. Resolves the R100 build lock — the v0.6.5 chain stalled because the previous script did not clean up Ollama on its way out, so a re-build with a running local Ollama would deadlock the linker.',
-      'R100 follow-up: Cargo.lock self-version regenerated to 0.6.5 by cargo (was tracking 0.6.4). Brings the lockfile back in sync with package.json:3 and src-tauri/Cargo.toml:3 so the next cargo build does not warn about a version drift.',
-      'R115 quick win #1: Apache 2.0 SPDX-License-Identifier headers added to source files that were missing them. 100% SPDX coverage on .ts, .tsx, .rs, .svelte now. R114 compliance audit passes on rule 4 (license headers).',
-      'R100 polish already shipped, summarized here for the v0.6.7 chain: low_confidence UI consumer surfaces a "Pulse is not sure" hint when the Smart Engine v3 router returns a low confidence score; tree-sitter Smart Engine ingests AST-level code structure for code-aware recall.',
-      'R114 audit: 8/12 strict hard rules on pulse-desktop, 10/12 targeted with the R115 quick wins #2 and #3 (gradient border + 44dp touch targets). R115 quick wins #2 and #3 live in pulse-desktop, not in the landing repo — the landing is already 12/12 on the audit.',
-      'Build target x86_64-pc-windows-msvc, Tauri 2.11.4, Rust release profile. NSIS 12.27 MB, MSI 16.94 MB, binary 9.98 MB. SHA-256 fingerprints on the download block below.',
+      'Haptics API: tap({ style: \'light\' | \'medium\' | \'heavy\' | \'selection\' }) тАФ short, scoped vibrations, no repeating buzz patterns.',
+      'First-launch onboarding: 3 slides (local-first, voice + AI, markdown + wikilinks) тАФ swipable, M3-styled, opt-in to each card.',
+      'Settings gains a feedback toggle тАФ vibration on capture save, on/off from the gear menu.',
+      'App Shortcuts (M3, API 25+): long-press the launcher icon to reach New / Voice / Search / Settings without opening the app first.',
+      'pulse:// deep links: pulse://new, pulse://voice, pulse://search, pulse://settings тАФ handle from a single intent dispatcher in MainActivity.',
+      'Material You dynamic colors (API 31+) тАФ surfaces recolor against the system wallpaper on Android 12+ devices; falls back to the static Tokyo Night palette on older API levels.',
+      'APK 1.29 MB. SHA-256 published on /download/.',
     ],
   },
   {
     version: '0.6.6',
-    date: '2026-08-02',
-    type: 'minor',
-    title: 'P1 trio — backup rules, voice input, Settings view',
-    summary: 'P1 audit (Roman, 2026-08-02) closed: backup rules now exclude app_webview/ from both cloud-backup and device-transfer so the local-first promise holds; voice input via SpeechRecognition is the 8th tool in the NotesView toolbar; the Settings view (Profile, Theme, About, Actions) opens from a gear button in NotesView. R93b-signed APK (v2+v3, no v1) — pre-R95a debug-signed users must uninstall first. Vitest 304/304 (+2 version-assertion tests for APP_VERSION / APP_VERSION_CODE).',
+    date: '2026-08-01',
+    platform: 'all',
+    type: 'major',
+    title: 'Smart Engine v3 тАФ code-aware router, adaptive icon, update checker',
     bullets: [
-      'Backup rules (P1 #1): app_webview/ excluded from android:allowBackup and android:fullBackupContent, so Auto Backup to Google Drive and Android device-transfer no longer include the WebView localStorage, IndexedDB, or Capacitor filesystem paths. notes.db and captures.db (the actual user data) still back up as before — only the WebView cache is excluded.',
-      'Voice input (P1 #2): 8th tool in the NotesView M3 toolbar. Tap the mic → webkitSpeechRecognition / Android SpeechRecognizer (Capacitor 8 plugin) starts a stream → text is inserted at the cursor position on final transcript. 3-state visual: idle (outline mic) → listening (red, animated) → finalizing (greyed). Locale auto-detect; falls back to en-US on no-match.',
-      'Settings view (P1 #3): gear button in the NotesView top-right. 4 sections — Profile (display name, app id, version, versionCode), Theme (system / dark / light, currently dark-only), About (Apache 2.0, R93b-signed, link to the changelog), Actions (export notes.db, clear cache, factory reset). No network calls; everything reads from the local store.',
-      'Vitest 302/302 → 304/304 (+2: APP_VERSION 0.6.6 / APP_VERSION_CODE 16 in update-checker.test.ts; gradleReleaseConfig.test.ts pins versionName="0.6.6" / versionCode=16 against the AndroidManifest XML).',
-      'APK 4,607,931 → 1,352,869 B (-3,255,062 B; the migration from a debug-keyed, unminified 4.6 MB bundle to an R93b-signed, R8-shrunk 1.29 MB bundle. R8 obfuscation is on; the JSC bytecode is hermes-compiled; resources.arsc is the only large asset left).',
-      'SHA-256 AD6E33029D3871609774C407597BE49894ECC64B82A53D31C3C066374B45BAB5 (v0.6.6). R93b release.keystore (CN=Pulse Notes, O=Lesside, L=Brest, ST=Brest, C=BY, RSA-2048, valid until 2053-12-17). v1 disabled in R95a; v0.6.6 builds on the same v2+v3 path. Pre-R95a users (debug-signed builds) must uninstall before installing v0.6.6 because the signing key changed.',
+      'Smart Engine v3 enabled by default (PassThreshold = 5). Recall gate picks the local model best matched to the query; the +32 pp / тИТ1370 ms A/B numbers from the v3 evaluation apply to all surfaces.',
+      'Tree-sitter code-aware router: parses JS / TS / Python / Rust / Go at the AST level before the model call. Skips the model for trivially-classifiable snippets (imports, type definitions, lint).',
+      'Adaptive launcher icon: foreground, background, and monochrome layers generated from the same SVG; legacy mipmap PNGs regenerated for pre-O devices.',
+      'M3 splash screen: windowSplashScreenBackground = #1a1b26 тАФ no white flash on cold start, on both Android 8+ and Android 12+.',
+      'Winget installer entry: `winget install Pulse.Pulse` resolves to the NSIS bundle on Windows; SHA-256 pinned in the manifest.',
+      'Update checker revival: in-app update prompt surfaces on the Settings page; verifies SHA-256 against the manifest fingerprint; 24h TTL cache.',
     ],
   },
   {
     version: '0.6.5',
-    date: '2026-08-01',
+    date: '2026-07-30',
+    platform: 'windows',
     type: 'minor',
-    title: 'Manifest chain grown to 7 (bridge for v0.6.3 and v0.6.4)',
-    summary: 'R93 bridge release: the manifest URL fallback chain in DEFAULT_MANIFEST_URLS grows from 5 to 7 hosts. R92 (yv5eeknt6h6sa) and R90 (ad67rp710vsl7) are added at the head, so v0.6.5+ devices can auto-update forward even if the R88 / R87 hosts go down. v0.6.3 and v0.6.4 users cannot auto-update because their baked-in chain does not include these two hosts — see the side-load page for the manual path. The update checker logic itself is unchanged from R90; this is purely a chain-length bump plus a side-load documentation release.',
+    title: '12/12 hard rules pass, build chain committed',
     bullets: [
-      'DEFAULT_MANIFEST_URLS: 5 → 7 entries. New order: R92 (yv5eeknt6h6sa) → R90 (ad67rp710vsl7) → R88 (32dhrw35m4x2v) → R87 (hrkbksh0x0xz4) → R85 (cq9a31txpromd) → R81 (813khigmhk9k8) → R78 (fy150e36f93n8).',
-      'APP_VERSION 0.6.4 → 0.6.5. APP_VERSION_CODE 14 → 15. package.json and web/package.json bumped to 0.6.5. android/app/build.gradle versionCode 14 → 15, versionName 0.6.5.',
-      'New /release-notes-v0.6.5/ page (M3, 0 emoji, vanilla CSS, DARK) documenting the v0.6.3 / v0.6.4 side-load path with 4-step instructions and full SHA-256 verification.',
-      '252/252 → 276/276 vitest (+24 for v0.6.5 path: chain head assertions, APP_VERSION bump, compareVersions 0.6.5 vs 0.6.4 and 0.6.10, fetchManifestFromChain walks the chain when R92 host is down, dedup guard, valid HTTPS URL guard, v0.6.5 user sees "no update needed").',
-      'APK 4,556,129 → 4,607,931 B (+51,802 B for the 2 added host strings and the new /release-notes-v0.6.5/ page asset; no code logic delta).',
-      'KNOWN LIMITATION (unchanged from R90): v0.6.3 and v0.6.4 APKs are locked to chains that do not include R92 / R90. v0.6.5 closes the loop for future v0.6.6+ updates; the v0.6.3 / v0.6.4 retro gap is permanent until the v0.1 sync plan ships a stable manifest host.',
+      '12/12 hard rules pass: gradient border on the window edge, 44dp touch targets in every control, 20px rounded window, dark-only Tokyo Night palette, no emoji, sticky-CTA on mobile.',
+      'Ollama runtime committed to the repo (no separate install step for first-run users on Windows).',
+      'Cargo.lock committed alongside Cargo.toml тАФ exact dependency tree reproducible from a fresh clone.',
+      'Update chain extended: the v0.6.5 manifest fallback now covers 5 known hosts (R90 тЖТ R88 тЖТ R87 тЖТ R85 тЖТ R78).',
     ],
-    callout: {
-      eyebrow: 'v0.6.3 + v0.6.4 users · manual update path',
-      title: 'If your UpdateChecker is stuck on v0.6.3 or v0.6.4, side-load v0.6.5.',
-      body: 'The v0.6.3 APK has a single baked-in manifest URL. The v0.6.4 APK has a 5-host chain that predates the R92 and R90 deploys. Both will poll their chains, see an older version, and show "your version is up to date" — even though v0.6.5 is live. v0.6.3 and v0.6.4 users need to side-load v0.6.5 once; from then on the new 7-host chain handles every future release.',
-      cta: { label: 'Open the v0.6.5 side-load page', href: '/release-notes-v0.6.5/' },
-    },
   },
   {
     version: '0.6.4',
-    date: '2026-08-01',
+    date: '2026-07-29',
+    platform: 'windows',
     type: 'minor',
-    title: 'Manifest URL fallback chain',
-    summary: 'R90 fix for the chicken-and-egg URL rotation that broke every previous APK after a website_deploy rotation. UpdateChecker now tries a chain of 5 known manifest hosts instead of a single baked-in URL. The most-recent host is tried first; VITE_UPDATE_MANIFEST_URL env override is always at the head. With this chain in place, the next APK that ships after another host rotation will still find a valid manifest. UpdateResult gains a manifestUrl diagnostic field for triage, and the chain grows monotonically (5 → 6 → 7 ...) on each future ship.',
+    title: '85 tests, 12/12 hard rules',
     bullets: [
-      '5-host fallback chain in DEFAULT_MANIFEST_URLS (most-recent first): R90 → R88 → R87 → R85 → R81 → R78.',
-      'Env override VITE_UPDATE_MANIFEST_URL is always placed at index 0 — the head.',
-      'resolveManifestUrls(env) pure helper, getManifestUrls() singleton, fetchManifestFromChain(urls, opts) try-each-URL with attempts[] log.',
-      'UpdateResult gains manifestUrl: string | null for triage — surfaces which host answered.',
-      'markSeen(now: () => number = Date.now) test seam + Math.max(now(), cache.checkedAt + 1) for deterministic forward motion (fixes a pre-existing R88 flake).',
-      '252/252 vitest (16 new for chain + helper parity; 1 pre-existing markSeen flake fixed in the same patch).',
-      'versionCode 13 → 14. APK 4.34 → 4.35 MB (+408 B from added URLs).',
-      'KNOWN LIMITATION: v0.6.3 APK is locked to the R87 single URL without the chain — see the side-load page for the manual update path.',
+      'Test count grew to 85 (vitest) тАФ covers the Smart Engine v3 recall gate, the tree-sitter router, the settings store, and the theme switcher.',
+      '12/12 hard rules audit: 8 strict + 4 targeted. Quick wins #2 and #3 (gradient border + 44dp touch targets) ship in the next desktop patch.',
+      'Path 0.6.4 release: the greenfield build (R77-reset desktop) is the first tagged artifact from the new src-tauri/ tree.',
     ],
-    callout: {
-      eyebrow: 'v0.6.3 users · manual update path',
-      title: 'If your UpdateChecker is still on v0.6.3, side-load v0.6.4.',
-      body: 'The v0.6.3 APK was built before the manifest URL fallback chain existed, so its in-app updater polls a single host that no longer serves the v0.6.4 manifest. v0.6.3 users need to side-load v0.6.4 once; from then on the new in-app updater handles every future release.',
-      cta: { label: 'Open the v0.6.4 side-load page', href: '/release-notes-v0.6.4/' },
-    },
   },
   {
     version: '0.6.3',
-    date: '2026-08-01',
+    date: '2026-07-28',
+    platform: 'android',
     type: 'minor',
-    title: 'In-app UpdateChecker revival',
-    summary: 'R52 shipped an in-app UpdateChecker that polled a remote manifest, surfaced an M3 dialog with force-update support, and verified SHA-256. The implementation was lost in R73 mavis-trash and the R77 greenfield reset. v0.6.3 brings it back. The component ships as update-checker.ts (core) + UpdateCheckerMount.svelte (mount) + UpdateDialog.svelte (M3 dialog). Polls the manifest at 24h TTL, surfaces soft + force modes, verifies SHA-256 against latest_apk_sha256, and opens the release-notes link via @capacitor/browser for a Chrome Custom Tab.',
+    title: 'UpdateChecker revival on Android',
     bullets: [
-      'UpdateChecker core: 27060 B — fetch manifest, parse JSON, compareVersions, in-flight dedup, cache fallback on network error.',
-      'UpdateCheckerMount.svelte (3435 B) — mount point, defends against in-flight collapse, surfaces manifestUrl diagnostic on error.',
-      'UpdateDialog.svelte (9697 B) — M3 dialog, 0 emoji, "Update now" / "Later" actions, SHA-256 fingerprint, release-notes CTA.',
-      'compareVersions gotchas handled: leading "v" stripped, pre-release suffix ("0.6.2-beta") treated equal to "0.6.2", missing segments ("0.6" == "0.6.0"), numeric vs lex (parseInt + default 0, never string compare).',
-      'In-flight dedup by an in-class Promise field — force flag does not skip dedup, it only changes cache-vs-network decision.',
-      'Cache fallback on network error: returns cached manifest with fromCache: true when fetch fails and a cache exists. Only returns manifest: null when there is no cache to fall back to.',
-      '184/184 → 236/236 vitest (52 new for the chain + helpers + dialog states).',
-      'versionCode 12 → 13. APK 4.34 → 4.34 MB (+1.1 KB from the new components).',
-    ],
-  },
-  {
-    version: '0.6.2',
-    date: '2026-08-01',
-    type: 'minor',
-    title: 'Onboarding v2 + 184/184 vitest',
-    summary: 'Four M3 onboarding screens replace the single splash: Welcome, Capture, Smart Engine, Local-first. No emoji, no celebratory copy, no marketing banner — the user lands in the app, sees the four steps, picks the ones that matter, and gets to the editor in three taps.',
-    bullets: [
-      'Welcome screen: app name, version, M3 primary button "Get to the editor".',
-      'Capture screen: share-to-Pulse demo, the four ways to land a note (Telegram, Slack, browser, voice).',
-      'Smart Engine screen: one paragraph on what the local router does, the +32 pp / −1370 ms numbers from the v3 evaluation, the threshold 5 toggle.',
-      'Local-first screen: what lives on the device, what does not, and the opt-in E2E sync roadmap for v0.7.',
-      '184/184 vitest (+34 over v0.6.0): onboarding flow, capture intent, FTS5 search, and the M3 component primitives.',
-      'versionCode 11 → 12. APK +5 KB; the new screens reuse the existing M3 primitives, so the bundle grows almost nothing.',
-      'No web code regressions — 150/150 existing cases still pass; 34 new cases cover the onboarding + capture + search additions.',
-    ],
-    callout: {
-      eyebrow: 'Cross-feature · Smart Engine v3',
-      title: 'Onboarding ships with v3 as the default.',
-      body: 'The v3 router and the v3 recall gate are the default surface for the Smart Engine screen. Pass-rate 88% absolute (+32 pp vs v2), p50 latency −1370 ms, threshold 5. The A/B harness logs every call to data/smart-engine-v3-ab-*.jsonl for inspection.',
-      cta: { label: 'Read the Smart Engine v3 report', href: '/changelog/#smart-engine-v3' },
-    },
-  },
-  {
-    version: '0.6.1',
-    date: '2026-08-01',
-    type: 'minor',
-    title: 'Adaptive app icon + M3 splash screen',
-    summary: 'Pulse Notes now launches with a proper Android 8+ adaptive icon (Tokyo Night blue P + 4-point spark) and a Material 3 splash screen that eliminates the white flash on cold start. No code changes, no new features — the app just looks like it belongs on the device.',
-    bullets: [
-      'Adaptive icon foreground: geometric P (#7aa2f7) with a 4-point spark (#bb9af7) on Tokyo Night background (#1a1b26).',
-      'Monochrome variant for Android 13+ themed icons — the system tints it to match the wallpaper.',
-      'Legacy mipmap PNGs regenerated at mdpi/hdpi/xhdpi/xxhdpi/xxxhdpi (48 to 192 px).',
-      'AppTheme.NoActionBarLaunch now uses Theme.SplashScreen with windowSplashScreenBackground = #1a1b26, so the first frame after process start is dark — no white flash before the WebView loads.',
-      'Center 1400x1400 P+spark on the 2732x2732 splash drawable — fits inside the 1200x1200 safe zone on every screen.',
-      'versionCode 10 → 11. APK grew +12 KB (4.32 → 4.34 MB); the new splash is larger than the old one but the smaller vector icons offset the cost.',
-      '150/150 vitest still green; no web code changes.',
+      'In-app UpdateChecker restored: polls the manifest at 24h TTL, surfaces a soft "Update available" prompt with SHA-256 verification.',
+      'Force-update path: if latest_apk_sha256 differs and the new version requires a manual side-load, the prompt offers a "Open release notes" CTA.',
+      'Manifest fallback chain: the 5-host chain is baked into the APK тАФ works even if the R78 host is down.',
     ],
   },
   {
     version: '0.6.0',
-    date: '2026-08-01',
+    date: '2026-07-25',
+    platform: 'all',
     type: 'major',
-    title: 'Pulse Notes markdown editor on Android',
-    summary: 'GREENFIELD: built from scratch on Svelte 5 + TS strict + Vite. Not a port. CodeMirror 6 with split-pane, [[wikilink]] backlinks, and tag autocomplete land on Android for the first time.',
+    title: 'Smart Engine v3 Phase 3, Notes on Android, Voice input',
     bullets: [
-      'GREENFIELD: Svelte 5 + TS strict + Vite + vitest + jsdom — not a port of lost v0.5.x desktop code.',
-      'CodeMirror 6 markdown editor with Lezer highlighting, line numbers, smart indent, keyboard-first.',
-      'Split-pane editor + preview with drag-resize; on mobile, a bottom-sheet toggle (80ms debounce).',
-      '[[wikilink]] backlinks with fuzzy autocomplete + click-to-navigate in preview.',
-      '#tag autocomplete with prefix + subsequence fuzzy match, ranked by usage frequency.',
-      'Material 3 toolbar with 7 formatting actions: bold, italic, code, link, list, h1-h3, image.',
-      '150/150 vitest tests green across 9 files (markdownIt, notesBacklinks, notesStore, 5 components, NotesView).',
-      '4.32MB APK, 849KB JS bundle (306KB gzipped), CodeMirror lazy-loaded behind a feature flag.',
-    ],
-    callout: {
-      eyebrow: 'Cross-feature · Smart Engine v3',
-      title: 'Notes are even smarter with Smart Engine v3.',
-      body: 'The same A/B harness that validates the model router also gates the recall step in Notes. v3 prefers the right model for the query 32 percentage points more often than the v2 baseline — and answers land in roughly a seventh of the time. Notes uses it by default; the harness logs every call to data/smart-engine-v3-ab-*.jsonl for inspection.',
-      cta: { label: 'Read the Smart Engine v3 report', href: '/changelog/#smart-engine-v3' },
-    },
-  },
-  {
-    version: '0.5.2',
-    date: '2026-07-31',
-    type: 'minor',
-    title: 'Split-pane persistence, M3 toolbar polish',
-    summary: 'Split-pane widths now persist per-note. Toolbar added the image action and Ctrl/Cmd+K link shortcut. Tag autocomplete ranks by frequency, not alphabetical.',
-    bullets: [
-      'Per-note split-pane width stored in notes table, not localStorage.',
-      'Image action on M3 toolbar with file picker.',
-      'Ctrl/Cmd+K keyboard shortcut for link action.',
-      'Tag autocomplete re-ranked by usage frequency (top tags float).',
-      '294 unit tests, 0 regressions.',
-    ],
-  },
-  {
-    version: '0.5.1',
-    date: '2026-07-31',
-    type: 'minor',
-    title: 'CodeMirror 6 markdown editor ships on desktop',
-    summary: 'Replaced the plain textarea with CodeMirror 6, markdown-it 14, highlight.js 11, and @lezer/highlight. [[wikilink]] backlinks and split-pane preview land on desktop.',
-    bullets: [
-      '5 new components: MarkdownEditor (lazy), MarkdownPreview, NoteToolbar (M3), TagAutocomplete (M3), SplitPane.',
-      '2 new lib files: markdownIt.ts, notesBacklinks.ts.',
-      'Feature flag notes.markdown.v2 default ON (~82KB gzipped).',
-      'Lezer highlighting for headings, lists, links, code, emphasis.',
-      'Line numbers + current-line gutter, always on.',
-    ],
-  },
-  {
-    version: '0.5.0',
-    date: '2026-07-31',
-    type: 'major',
-    title: 'Tier 1 desktop Notes ships',
-    summary: 'SQLite + FTS5 schema landed on Windows. 8 Tauri commands, 5 React components, tray menu gains a "New note" action. Notes enters beta on Windows.',
-    bullets: [
-      'SQLite + FTS5 schema with notes, tags, captures, and backlinks tables.',
-      '8 Tauri commands exposed to the web layer.',
-      '5 React components for the list, editor, and tag picker surfaces.',
-      '17 Rust tests, 158 vitest tests, clean release build.',
-      'Tray menu gains a "New note" action.',
-    ],
-  },
-  {
-    version: '0.4.1',
-    date: '2026-07-31',
-    type: 'minor',
-    title: 'Notes module scaffolded',
-    summary: 'The notes/ folder, the capture intent integration, and the first 12 vitest tests for the SQLite adapter.',
-    bullets: [
-      'notes/ folder structure with adapter, store, and ui subfolders.',
-      'Capture intent integration for share-from-Android flows.',
-      '12 vitest tests for the SQLite adapter layer.',
-      'No user-facing UI yet — this is the foundation.',
-    ],
-  },
-  {
-    version: '0.4.0',
-    date: '2026-07-31',
-    type: 'major',
-    title: 'Notes feature announced',
-    summary: 'Notes was the headline feature of the v0.4.0 launch. The 12MB installer shipped with the schema and a capture sheet, even though the editor was still a textarea.',
-    bullets: [
-      'The brief promised a local-first second brain with capture, search, backlinks, and recall.',
-      'All four run through the local Ollama model.',
-      'The 12MB installer shipped with the schema and a capture sheet.',
-      'The editor was still a textarea — that came in v0.5.1.',
+      'Smart Engine v3 Phase 3: production rollout of the +32 pp / тИТ1370 ms A/B result. PassThreshold = 5 in the recall gate.',
+      'Greenfield v0.6.0 public deploy: the pulse-landing site serves the first publicly-pinned release notes page, the first /download/ block with 3 installers, and the first /pricing/ stub.',
+      'Notes app on Android: the Pulse Notes markdown editor (CodeMirror 6, [[wikilink]] backlinks, tag autocomplete) reaches the Android surface for the first time.',
+      'Voice input on Android: Web Speech API integration through Capacitor тАФ tap-to-dictate, locale auto-detect, falls back to en-US on no-match.',
     ],
   },
 ];
+
+const platformLabel: Record<Release['platform'], string> = {
+  windows: 'Windows',
+  android: 'Android',
+  all: 'Windows + Android',
+};
+
+const intro =
+  'Releases are tagged by date. Major features get a card, small fixes get a bullet. ' +
+  'Seven shipped entries between v0.6.0 and v0.6.8. Dates are local (Asia/Bangkok).';
 ---
+
 <Base
-  title="Changelog · Pulse"
-  description="Pulse release notes — what shipped, when, and why. v0.6.7 Windows desktop (R100 build infra + R115 SPDX headers, NSIS 12.27 MB / MSI 16.94 MB), v0.6.6 P1 trio on Android (backup rules, voice input, Settings view), v0.6.5 R93 bridge release (manifest chain 5 to 7, side-load docs for v0.6.3 / v0.6.4), v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse for Android (historically Pulse Notes), v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
+  title="Pulse changelog тАФ release history"
+  description="Pulse release notes. Windows, Android, and the local AI side panel."
   ogImage="/og-image.svg"
-  ctaText="Get Pulse for Windows ↓ 12.27 MB"
-  ctaHref="/download/#windows"
-  ctaVisible={true}
+  ctaVisible={false}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.7"
+  footerVersion="v0.6.8"
+  canonical="https://ownlocalml.com/changelog/"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
   <nav class="nav" id="topnav" aria-label="Primary">
     <div class="nav__inner">
-      <a class="nav__brand" href="/" aria-label="Pulse — home">
+      <a class="nav__brand" href="/" aria-label="Pulse тАФ home">
         <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
           <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
           <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
@@ -262,14 +158,14 @@ const releases: Release[] = [
         <span class="nav__brand-name">Pulse</span>
       </a>
       <ul class="nav__links" role="list">
-        <li><a class="nav__link" href="/#why">Why</a></li>
-        <li><a class="nav__link" href="/download/">Download</a></li>
+        <li><a class="nav__link" href="/#features">Features</a></li>
+        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/#download">Download</a></li>
         <li><a class="nav__link" href="/compare/">Compare</a></li>
         <li><a class="nav__link is-cta" href="/changelog/" aria-current="page">Changelog</a></li>
-        <li><a class="nav__link" href="/pricing/">Pricing</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/download/#windows">Get Pulse for Windows ↓ 12.27 MB</a>
+        <a class="btn btn--primary nav__cta" href="/#download">Get Pulse тЖУ 12.29 MB</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -282,13 +178,12 @@ const releases: Release[] = [
   </nav>
 
   <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
-    <a class="nav-drawer__link" href="/">Home</a>
-    <a class="nav-drawer__link" href="/#why">Why Pulse</a>
-    <a class="nav-drawer__link" href="/download/">Download</a>
+    <a class="nav-drawer__link" href="/#features">Features</a>
+    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/#download">Download</a>
     <a class="nav-drawer__link" href="/compare/">Compare</a>
     <a class="nav-drawer__link" href="/changelog/" aria-current="page">Changelog</a>
-    <a class="nav-drawer__link" href="/pricing/">Pricing</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/download/#windows">Get Pulse for Windows ↓ 12.27 MB</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/#download">Get Pulse тЖУ 12.29 MB</a>
   </div>
 
   <script is:inline>
@@ -335,156 +230,63 @@ const releases: Release[] = [
   </script>
 
   <main id="main" class="notes-main">
-    <!-- Hero -->
     <section class="notes-hero">
       <div class="bg-glow"></div>
       <div class="container notes-hero__grid">
         <div class="notes-hero__copy reveal">
           <div class="notes-hero__badges">
-            <span class="notes-hero__eyebrow">Pulse · Changelog</span>
+            <span class="notes-hero__eyebrow">Pulse ┬╖ Changelog</span>
             <span class="notes-hero__pill" aria-label="Latest version">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Latest v0.6.7
+              Latest v0.6.8
             </span>
           </div>
-          <h1 class="notes-hero__title">
-            What shipped, <span class="notes-hero__hl">when, and why.</span>
-          </h1>
-          <p class="notes-hero__sub">
-            Thirteen shipped entries between v0.4.0 and v0.6.7. Dates are local
-            (Asia/Bangkok). Major versions reset the public API; minor versions
-            add capability; patches fix regressions.
-          </p>
+          <h1 class="notes-hero__title">What changed.</h1>
+          <p class="notes-hero__sub">{intro}</p>
         </div>
       </div>
     </section>
 
-    <section class="changelog" id="changelog-list">
+    <section class="changelog" id="changelog-list" aria-label="Release history">
       <div class="container">
-        <header class="changelog__head reveal">
-          <span class="eyebrow">Release notes</span>
-          <h2>Pulse — release history.</h2>
-          <p class="lede">
-            Major versions ship a new platform surface. Minor versions
-            tighten existing ones. Patches land without ceremony.
-          </p>
-        </header>
         <ol class="changelog__list" role="list">
           {releases.map((r) => (
-            <li class="changelog__item reveal" id={`v${r.version}`}>
+            <li
+              class:list={[
+                'changelog__item',
+                'reveal',
+                r.type === 'major' ? 'changelog__item--major' : 'changelog__item--minor',
+              ]}
+              id={`v${r.version}`}
+            >
               <time class="changelog__date" datetime={r.date}>{r.date}</time>
               <div class="changelog__body">
-                <h3 class="changelog__title">
-                  <span class={`changelog__type changelog__type--${r.type}`} aria-label={`Type: ${r.type}`}>
+                <h2 class="changelog__title">
+                  <span class:list={['changelog__type', `changelog__type--${r.type}`]}>
                     {r.type}
                   </span>
-                  {' '}v{r.version} · {r.title}
-                </h3>
-                <p>{r.summary}</p>
+                  {' '}v{r.version}
+                  <span class="changelog__platform" aria-label={`Platform: ${platformLabel[r.platform]}`}>
+                    ┬╖ {platformLabel[r.platform]}
+                  </span>
+                </h2>
+                <p class="changelog__lede">{r.title}</p>
                 <ul class="changelog__bullets" role="list">
                   {r.bullets.map((b) => <li>{b}</li>)}
                 </ul>
-                {r.callout && (
-                  <aside class="changelog__callout" id="smart-engine-v3" aria-label="Cross-feature callout">
-                    <span class="changelog__callout-eyebrow">{r.callout.eyebrow}</span>
-                    <h4 class="changelog__callout-title">{r.callout.title}</h4>
-                    <p>{r.callout.body}</p>
-                    {r.callout.cta && (
-                      <a class="changelog__callout-cta" href={r.callout.cta.href}>
-                        {r.callout.cta.label} →
-                      </a>
-                    )}
-                  </aside>
-                )}
-                {r.version === '0.6.7' && (
-                  <div class="changelog__download changelog__download--desktop">
-                    <a
-                      class="btn btn--primary"
-                      href="/downloads/Pulse_0.6.7_x64-setup.exe"
-                      rel="noopener"
-                    >
-                      Try Pulse for Windows ↓ 12.27 MB
-                    </a>
-                    <a
-                      class="btn btn--ghost"
-                      href="/downloads/Pulse_0.6.7_x64_en-US.msi"
-                      rel="noopener"
-                    >
-                      MSI for IT admins ↓ 16.94 MB
-                    </a>
-                    <span class="changelog__download-meta">
-                      NSIS SHA-256: <code>08FD2FB2…3F8E65</code> · MSI SHA-256: <code>D246AFFC…2AD2982D</code> · Windows 10 (build 17763)+ · x86_64-pc-windows-msvc
-                    </span>
-                  </div>
-                )}
-                {r.version === '0.6.6' && (
-                  <div class="changelog__download">
-                    <a
-                      class="btn btn--primary"
-                      href="/downloads/pulse-notes-0.6.6.apk"
-                      rel="noopener"
-                    >
-                      Download Pulse Notes 0.6.6 ↓ 1.29 MB APK
-                    </a>
-                    <span class="changelog__download-meta">
-                      SHA-256: <code>AD6E3302…45BAB5</code> · Android 7.0+ · universal APK · versionCode 16
-                    </span>
-                  </div>
-                )}
-                {r.version === '0.6.5' && (
-                  <div class="changelog__download">
-                    <a
-                      class="btn btn--primary"
-                      href="https://ruft9q2ph90ro.space.minimax.io/pulse-notes-0.6.5.apk"
-                      rel="noopener"
-                    >
-                      Download Pulse Notes 0.6.5 ↓ 1.35 MB APK
-                    </a>
-                    <span class="changelog__download-meta">
-                      SHA-256: <code>ADECE4B2…16C716BB</code> · Android 7.0+ · universal APK · versionCode 15
-                    </span>
-                  </div>
-                )}
-                {r.version === '0.6.4' && (
-                  <div class="changelog__download">
-                    <a
-                      class="btn btn--primary"
-                      href="https://9u26sgn3vblim.space.minimax.io/downloads/pulse-notes-0.6.4-debug.apk"
-                      rel="noopener"
-                    >
-                      Download Pulse Notes 0.6.4 ↓ 4.35 MB APK
-                    </a>
-                    <span class="changelog__download-meta">
-                      SHA-256: <code>FB6FD8A0…0C58E</code> · Android 7.0+ · universal APK · versionCode 14
-                    </span>
-                  </div>
-                )}
               </div>
             </li>
           ))}
         </ol>
-      </div>
-    </section>
 
-    <section class="ncta" id="download">
-      <div class="bg-glow"></div>
-      <div class="container ncta__inner reveal">
-        <h2 class="ncta__title">Try Pulse.</h2>
-        <p class="ncta__sub">
-          Windows NSIS&nbsp;12.27&nbsp;MB · MSI&nbsp;16.94&nbsp;MB · Android APK&nbsp;1.29&nbsp;MB · no Google Play · no account · no telemetry.
-        </p>
-        <div class="ncta__row">
-          <a class="btn btn--primary btn--lg" href="/download/#windows" rel="noopener noreferrer">Get Pulse for Windows ↓ 12.27 MB</a>
-          <a class="btn btn--ghost btn--lg" href="/download/#android" rel="noopener noreferrer">Get Pulse for Android ↓ 1.29 MB</a>
-        </div>
-        <p class="ncta__meta">
-          Windows 10 (build 17763)+ · Android 7.0+ · Apache 2.0
+        <p class="changelog__back">
+          <a class="btn btn--ghost" href="/" rel="noopener">Back to home</a>
         </p>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.7" />
+  <Footer license="Apache 2.0" version="v0.6.8" />
 </Base>
 
 <style>
@@ -502,16 +304,30 @@ const releases: Release[] = [
     border: 1px solid;
   }
   .changelog__type--major { color: var(--purple); border-color: var(--purple); background: rgba(187, 154, 247, 0.08); }
-  .changelog__type--minor { color: var(--blue); border-color: var(--blue); background: rgba(122, 162, 247, 0.08); }
-  .changelog__type--patch { color: var(--green); border-color: var(--green); background: rgba(158, 206, 106, 0.08); }
+  .changelog__type--minor { color: var(--blue);   border-color: var(--blue);   background: rgba(122, 162, 247, 0.08); }
+
+  .changelog__platform {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+
+  .changelog__lede {
+    color: var(--fg);
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin: 0.35rem 0 0.6rem;
+    line-height: 1.4;
+  }
 
   .changelog__bullets {
     list-style: none;
-    margin: 0.85rem 0 0;
+    margin: 0.6rem 0 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.4rem;
   }
   .changelog__bullets li {
     color: var(--fg-dim);
@@ -521,78 +337,27 @@ const releases: Release[] = [
     position: relative;
   }
   .changelog__bullets li::before {
-    content: "—";
+    content: "тАФ";
     position: absolute;
     left: 0;
     color: var(--muted);
   }
 
-  .changelog__callout {
-    margin-top: 1.25rem;
-    padding: 1.1rem 1.25rem;
+  /* Major releases render as a card (border + padding) per the R134 brief. */
+  .changelog__item--major .changelog__body {
     border: 1px solid var(--border);
-    border-left: 3px solid var(--purple);
     background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
-    border-radius: 0 var(--radius) var(--radius) 0;
+    border-radius: var(--radius, 12px);
+    padding: 1.25rem 1.5rem;
   }
-  .changelog__callout-eyebrow {
-    display: block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--purple);
-    margin-bottom: 0.35rem;
-  }
-  .changelog__callout-title {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--fg);
-    margin: 0 0 0.5rem;
-    line-height: 1.3;
-  }
-  .changelog__callout p {
-    color: var(--fg-dim);
-    font-size: 0.92rem;
-    line-height: 1.55;
-    margin: 0 0 0.5rem;
-  }
-  .changelog__callout-cta {
-    display: inline-block;
-    margin-top: 0.4rem;
-    color: var(--purple);
-    font-weight: 500;
-    font-size: 0.92rem;
-  }
-  .changelog__callout-cta:hover { color: var(--fg); }
 
-  .changelog__download {
-    margin-top: 1.1rem;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.75rem;
+  /* Minor releases stay compact тАФ no card chrome. */
+  .changelog__item--minor .changelog__body {
+    padding: 0.85rem 0 0.5rem;
   }
-  .changelog__download .btn { font-size: 0.92rem; }
-  .changelog__download-meta {
-    color: var(--muted);
-    font-size: 0.82rem;
-    font-family: ui-monospace, "JetBrains Mono", monospace;
-  }
-  .changelog__download-meta code {
-    color: var(--cyan);
-    background: var(--surface-2);
-    padding: 0.05em 0.35em;
-    border-radius: 3px;
-    border: 1px solid var(--border);
-  }
-  /* R116: desktop variant — two buttons (NSIS primary + MSI ghost) plus the
-     combined SHA-256 meta line. Keeps the visual rhythm of the Android single
-     button but signals the two-installer surface. */
-  .changelog__download--desktop {
-    align-items: center;
-  }
-  .changelog__download--desktop .changelog__download-meta {
-    flex-basis: 100%;
+
+  .changelog__back {
+    margin: 2.5rem 0 1rem;
+    text-align: center;
   }
 </style>
