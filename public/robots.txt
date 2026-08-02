@@ -1,9 +1,7 @@
 User-agent: *
 Allow: /
-<<<<<<< HEAD
 Allow: /faq
-=======
 Allow: /changelog
->>>>>>> feat/r134-changelog-page
+Allow: /install
 
 Sitemap: https://ownlocalml.com/sitemap.xml

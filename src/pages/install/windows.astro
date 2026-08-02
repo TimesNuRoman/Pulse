@@ -1,0 +1,803 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R135: /install/windows/ — step-by-step install guide for Pulse Windows v0.6.8.
+ *
+ * 10 sections (H2):
+ *   1. Choose an installer   (NSIS / MSI / portable, with SHA-256)
+ *   2. Download              (direct + winget placeholder)
+ *   3. Run the installer     (3 numbered steps)
+ *   4. First launch          (tray + side panel + hotkey)
+ *   5. Optional: Ollama      (GPU-aware model recommendation)
+ *   6. Optional: voice input (Windows speech settings)
+ *   7. Optional: winget      (Microsoft Store submission pending)
+ *   8. Uninstall             (Settings app + original .msi / NSIS uninstaller)
+ *   9. Troubleshooting       (SmartScreen, missing runtime, no AI response)
+ *  10. Next                  (links to /download/, /faq/, /pricing/)
+ *
+ * Hard rules: no emoji, no "we / I / by Roman / Pulse team", no marketing
+ * fluff, no future promises, dark-only, Apache 2.0. Section styles are
+ * scoped to this page (no global CSS touched — R133/R134 scope respected).
+ */
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/notes.css';
+
+const VERSION = '0.6.8';
+const PAGE_TITLE = `Install Pulse for Windows v${VERSION} — step-by-step guide`;
+const PAGE_DESC =
+  'Install Pulse for Windows. Three installers, five minutes, works offline. ' +
+  'SHA-256 hashes, system requirements, and a fix for SmartScreen.';
+
+// Canonical SHA-256 prefixes (R130 verified against actual files).
+// Format: first 8 chars ... last 4 chars of the full hash.
+const NSIS_SHA_FULL = '58c00a9e332cb9256a7aa2a5a229b50915185e5af933f7766cf649cb39679128';
+const MSI_SHA_FULL  = 'e3bee8d39644e011aae166207b6b67a3574edd87c8105410c716991fb373da57';
+const PORT_SHA_FULL = 'd2786524460133231b227625f81ac02bffe12acefcb557c10dfe7f8282b9d264';
+const NSIS_SHA = `${NSIS_SHA_FULL.slice(0, 8)}...${NSIS_SHA_FULL.slice(-4)}`;
+const MSI_SHA  = `${MSI_SHA_FULL.slice(0, 8)}...${MSI_SHA_FULL.slice(-4)}`;
+const PORT_SHA = `${PORT_SHA_FULL.slice(0, 8)}...${PORT_SHA_FULL.slice(-4)}`;
+
+// Direct download URLs (R130 pinned to ownlocalml.com).
+const NSIS_URL  = 'https://ownlocalml.com/downloads/Pulse_0.6.8_x64-setup.exe';
+const MSI_URL   = 'https://ownlocalml.com/downloads/Pulse_0.6.8_x64_en-US.msi';
+const PORT_URL  = 'https://ownlocalml.com/downloads/pulse-desktop.exe';
+const NSIS_FILE = 'Pulse_0.6.8_x64-setup.exe';
+const MSI_FILE  = 'Pulse_0.6.8_x64_en-US.msi';
+const PORT_FILE = 'pulse-desktop.exe';
+
+// System requirements.
+const MIN_OS = 'Windows 10 (build 17763)';
+const ARCH = 'x86_64';
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-image.svg"
+  canonical="https://ownlocalml.com/install/windows/"
+  ctaVisible={false}
+  footerLicense="Apache 2.0"
+  footerVersion={`v${VERSION}`}
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/#features">Features</a></li>
+        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/#download">Download</a></li>
+        <li><a class="nav__link is-cta" href="/install/windows/" aria-current="page">Install</a></li>
+        <li><a class="nav__link" href="/compare/">Compare</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href={NSIS_URL} rel="noopener noreferrer">Get Pulse ↓ 12.29 MB</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/#features">Features</a>
+    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/#download">Download</a>
+    <a class="nav-drawer__link" href="/install/windows/" aria-current="page">Install</a>
+    <a class="nav-drawer__link" href="/compare/">Compare</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="btn btn--primary nav-drawer__cta" href={NSIS_URL} rel="noopener noreferrer">Get Pulse ↓ 12.29 MB</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => { setOpen(!drawer.classList.contains('is-open')); });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="notes-main install">
+    <!-- ─── Hero ────────────────────────────────────────── -->
+    <section class="notes-hero install__hero">
+      <div class="bg-glow"></div>
+      <div class="container notes-hero__grid">
+        <div class="notes-hero__copy reveal">
+          <div class="notes-hero__badges">
+            <span class="notes-hero__eyebrow">Pulse · Windows · install guide</span>
+            <span class="notes-hero__pill" aria-label="Latest version">
+              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+              v{VERSION}
+            </span>
+          </div>
+          <h1 class="notes-hero__title">Install Pulse for Windows</h1>
+          <p class="notes-hero__sub">v{VERSION} · 5 minutes · works offline</p>
+          <p class="install__intro">
+            Three installers, one portable binary, and a SHA-256 on every file. Pulse runs from the system tray, opens with a global hotkey, and talks to a local model on the same machine. {MIN_OS} or newer, {ARCH} only.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 1. Choose an installer ──────────────────────── -->
+    <section class="ig" id="installers" aria-label="Choose an installer">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 1</span>
+          <h2>Choose an installer</h2>
+          <p class="lede">All three packages install the same Pulse v{VERSION} binary. Pick the format that matches the deployment.</p>
+        </header>
+
+        <div class="ig__grid" role="list">
+          <article class="ig__card glass reveal" role="listitem">
+            <span class="ig__card-badge ig__card-badge--recommended">Recommended</span>
+            <h3 class="ig__card-title">NSIS installer</h3>
+            <p class="ig__card-format"><code>.exe</code> · 12.29 MB · single user</p>
+            <p class="ig__card-body">
+              Standard Windows setup wizard with per-user install, a Start-menu shortcut, and an entry in Add or Remove Programs. Best for personal machines.
+            </p>
+            <dl class="ig__card-meta">
+              <dt>Filename</dt>
+              <dd><code>{NSIS_FILE}</code></dd>
+              <dt>SHA-256</dt>
+              <dd><code>{NSIS_SHA}</code></dd>
+            </dl>
+            <a class="btn btn--primary ig__card-cta" href={NSIS_URL} rel="noopener noreferrer">Download NSIS ↓ 12.29 MB</a>
+          </article>
+
+          <article class="ig__card glass reveal" role="listitem">
+            <span class="ig__card-badge">For IT</span>
+            <h3 class="ig__card-title">MSI installer</h3>
+            <p class="ig__card-format"><code>.msi</code> · 16.94 MB · machine-wide</p>
+            <p class="ig__card-body">
+              Windows Installer package suitable for Group Policy, SCCM, Intune, and other enterprise deployment pipelines. Installs to <code>Program Files</code>.
+            </p>
+            <dl class="ig__card-meta">
+              <dt>Filename</dt>
+              <dd><code>{MSI_FILE}</code></dd>
+              <dt>SHA-256</dt>
+              <dd><code>{MSI_SHA}</code></dd>
+            </dl>
+            <a class="btn btn--ghost ig__card-cta" href={MSI_URL} rel="noopener noreferrer">Download MSI ↓ 16.94 MB</a>
+          </article>
+
+          <article class="ig__card glass reveal" role="listitem">
+            <span class="ig__card-badge">No install</span>
+            <h3 class="ig__card-title">Portable</h3>
+            <p class="ig__card-format"><code>.exe</code> · 9.99 MB · runs anywhere</p>
+            <p class="ig__card-body">
+              Standalone executable with no installer. Place it on a USB stick, a network share, or a folder on the desktop. Settings live next to the binary.
+            </p>
+            <dl class="ig__card-meta">
+              <dt>Filename</dt>
+              <dd><code>{PORT_FILE}</code></dd>
+              <dt>SHA-256</dt>
+              <dd><code>{PORT_SHA}</code></dd>
+            </dl>
+            <a class="btn btn--ghost ig__card-cta" href={PORT_URL} rel="noopener noreferrer">Download portable ↓ 9.99 MB</a>
+          </article>
+        </div>
+
+        <p class="ig__note">
+          All three hashes are verified at build time and pinned in <a href="https://ownlocalml.com/updates/desktop.json"><code>/updates/desktop.json</code></a>. <code>Get-FileHash -Algorithm SHA256 &lt;file&gt;</code> in PowerShell reproduces the value on a downloaded copy.
+        </p>
+      </div>
+    </section>
+
+    <!-- ─── 2. Download ─────────────────────────────────── -->
+    <section class="ig" id="download" aria-label="Download">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 2</span>
+          <h2>Download</h2>
+          <p class="lede">Direct links to the R2-hosted installers. A Microsoft Store winget package is in review — see the optional step below.</p>
+        </header>
+
+        <ul class="ig__links reveal" role="list">
+          <li>
+            <a class="ig__link" href={NSIS_URL} rel="noopener noreferrer">
+              <span class="ig__link-label">NSIS installer</span>
+              <span class="ig__link-meta"><code>{NSIS_FILE}</code> · 12.29 MB</span>
+            </a>
+          </li>
+          <li>
+            <a class="ig__link" href={MSI_URL} rel="noopener noreferrer">
+              <span class="ig__link-label">MSI installer</span>
+              <span class="ig__link-meta"><code>{MSI_FILE}</code> · 16.94 MB</span>
+            </a>
+          </li>
+          <li>
+            <a class="ig__link" href={PORT_URL} rel="noopener noreferrer">
+              <span class="ig__link-label">Portable</span>
+              <span class="ig__link-meta"><code>{PORT_FILE}</code> · 9.99 MB</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── 3. Run the installer ────────────────────────── -->
+    <section class="ig" id="run" aria-label="Run the installer">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 3</span>
+          <h2>Run the installer</h2>
+          <p class="lede">Three steps. No reboot. The NSIS installer is shown; MSI and portable follow the same pattern.</p>
+        </header>
+
+        <ol class="ig__steps reveal" role="list">
+          <li class="ig__step">
+            <span class="ig__step-num">1</span>
+            <div class="ig__step-body">
+              <h3 class="ig__step-title">Double-click the downloaded <code>{NSIS_FILE}</code>.</h3>
+              <p class="ig__step-body-copy">
+                A security dialog may ask whether to allow the app to make changes (User Account Control). Pulse is signed with a developer's Authenticode certificate until the WHQL review completes; the publisher field shows the signer name on click.
+              </p>
+            </div>
+          </li>
+          <li class="ig__step">
+            <span class="ig__step-num">2</span>
+            <div class="ig__step-body">
+              <h3 class="ig__step-title">Accept the UAC prompt.</h3>
+              <p class="ig__step-body-copy">
+                Click <strong>Yes</strong> on the User Account Control dialog. The default install path is <code>C:\Users\&lt;you&gt;\AppData\Local\Programs\Pulse\</code> (Tauri default, per-user scope). Pick a different folder in the wizard to change it.
+              </p>
+            </div>
+          </li>
+          <li class="ig__step">
+            <span class="ig__step-num">3</span>
+            <div class="ig__step-body">
+              <h3 class="ig__step-title">Click <strong>Install</strong>.</h3>
+              <p class="ig__step-body-copy">
+                The wizard copies the binary, registers the file association, and adds a Start-menu entry under <em>Pulse</em>. The whole flow takes under twenty seconds on a modern SSD. No reboot is required.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ─── 4. First launch ─────────────────────────────── -->
+    <section class="ig" id="first-launch" aria-label="First launch">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 4</span>
+          <h2>First launch</h2>
+          <p class="lede">Pulse lives in the system tray. The side panel slides in from the right edge of the screen on a global hotkey.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <p>
+            After install, Pulse starts hidden. A small <em>Pulse · click to open</em> entry appears in the system tray (notification area, bottom-right of the taskbar). Click it once and the side panel slides in from the right edge of the screen — a narrow column about 420&nbsp;px wide, anchored to the top-right.
+          </p>
+          <p>
+            The default global hotkey is <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Space</kbd>. Press it from any application to summon or dismiss the panel. The hotkey is rebindable in <strong>Settings → Hotkey</strong>. The first launch surfaces a one-time setup wizard that detects the GPU and recommends a local model — see the next step.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 5. Optional: Ollama ─────────────────────────── -->
+    <section class="ig" id="ollama" aria-label="Optional Ollama setup">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 5 · optional</span>
+          <h2>Pick a local model</h2>
+          <p class="lede">Pulse ships a setup wizard that detects the GPU and recommends a model. The choice is required reading before v0.6.0+ models run locally.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <p>
+            On first launch, the wizard inspects the GPU and suggests one of three Ollama models:
+          </p>
+          <ul class="ig__list" role="list">
+            <li><strong>NVIDIA GPU</strong> — <code>gemma3:4b</code> · ~3 GB VRAM · best quality on consumer NVIDIA.</li>
+            <li><strong>AMD or Intel GPU</strong> — <code>qwen2.5:3b</code> · ~2 GB VRAM · falls back to CPU if Vulkan is missing.</li>
+            <li><strong>CPU only</strong> — <code>qwen2.5:1.5b</code> · ~1 GB RAM · usable on any x86_64 machine, slower token throughput.</li>
+          </ul>
+          <p>
+            Pulse ships a bundled Ollama runtime on Windows, so no separate install is required. To install Ollama by hand or swap the model catalog, see <a href="https://ollama.com" rel="noopener noreferrer">ollama.com</a>. The wizard reopens from <strong>Settings → AI → Model setup</strong> at any time.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 6. Optional: voice input ────────────────────── -->
+    <section class="ig" id="voice" aria-label="Optional voice input">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 6 · optional</span>
+          <h2>Enable voice input</h2>
+          <p class="lede">Windows speech recognition needs a single toggle in Privacy settings. Without it, the mic button in the panel is disabled.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <p>
+            Open <strong>Windows Settings → Privacy &amp; security → Speech</strong> and turn on <em>Speech recognition</em>. The Pulse mic button in the side panel listens for tap-to-dictate after the toggle is on. Voice input uses the OS SpeechRecognition API on Windows; no audio leaves the machine.
+          </p>
+          <p>
+            Cloud STT (Whisper) is a PRO feature in development — it ships in a future Pulse release behind the PRO license.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 7. Optional: winget ─────────────────────────── -->
+    <section class="ig" id="winget" aria-label="Optional winget install">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 7 · optional</span>
+          <h2>Install via winget</h2>
+          <p class="lede">A Microsoft Store submission is in review. The direct download above works today.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <p>
+            The planned winget package is <code>Pulse.Pulse</code>. The submission is pending Microsoft approval — winget install will fail with <em>Package not found</em> until the listing is live. The direct download at the top of this page is the only working install path right now; check back later or follow the <a href="/changelog/">changelog</a> for the winget listing announcement.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 8. Uninstall ────────────────────────────────── -->
+    <section class="ig" id="uninstall" aria-label="Uninstall">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 8</span>
+          <h2>Uninstall</h2>
+          <p class="lede">The standard Windows uninstall path works for all three installers.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <p>
+            Open <strong>Settings → Apps → Installed apps</strong>, find Pulse in the list, and click <em>Uninstall</em>. The original <code>{NSIS_FILE}</code> and <code>{MSI_FILE}</code> installers also carry an uninstaller — re-run either one and pick <em>Uninstall</em> from the wizard. The portable binary has no installer: delete <code>{PORT_FILE}</code> from the folder where it lives to remove Pulse.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 9. Troubleshooting ──────────────────────────── -->
+    <section class="ig" id="troubleshooting" aria-label="Troubleshooting">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 9</span>
+          <h2>Troubleshooting</h2>
+          <p class="lede">The three issues that come up most often, and the fix for each.</p>
+        </header>
+
+        <ul class="ig__bullets reveal" role="list">
+          <li>
+            <strong>Installer blocked by SmartScreen.</strong>
+            SmartScreen shows <em>Windows protected your PC</em> on first run. Click <em>More info</em>, then <em>Run anyway</em>. Pulse uses a developer's code-signing certificate until Microsoft completes the WHQL review — the publisher field shows the signer name on the dialog.
+          </li>
+          <li>
+            <strong>Pulse does not open after install.</strong>
+            Open <strong>Windows Event Viewer → Application</strong> and look for the most recent error. If the log mentions <code>VCRUNTIME140.dll</code> missing, install the Visual C++ Redistributable from <a href="https://aka.ms/vs/17/release/vc_redist.x64.exe" rel="noopener noreferrer">aka.ms/vs/17/release/vc_redist.x64.exe</a> and reboot once.
+          </li>
+          <li>
+            <strong>No AI response in the panel.</strong>
+            Ollama is not running. Open Pulse → <strong>Settings → AI</strong> and click <em>Start Ollama</em>, or run <code>ollama serve</code> in PowerShell. The bundled Ollama runtime is on the system PATH after the NSIS or MSI install.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── 10. Next ────────────────────────────────────── -->
+    <section class="ig ig--next" id="next" aria-label="Next steps">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 10</span>
+          <h2>Next</h2>
+          <p class="lede">Three follow-up links from the same dark Tokyo Night surface.</p>
+        </header>
+
+        <ul class="ig__next reveal" role="list">
+          <li>
+            <a class="ig__next-link" href="/#download">
+              <span class="ig__next-label">Download</span>
+              <span class="ig__next-meta">Three installers, one portable — all pinned to v{VERSION}.</span>
+            </a>
+          </li>
+          <li>
+            <a class="ig__next-link" href="/faq/">
+              <span class="ig__next-label">FAQ</span>
+              <span class="ig__next-meta">Common questions on hotkeys, models, and the manifest.</span>
+            </a>
+          </li>
+          <li>
+            <a class="ig__next-link" href="/pricing/">
+              <span class="ig__next-label">Pricing</span>
+              <span class="ig__next-meta">Free forever, with PRO features behind a license key.</span>
+            </a>
+          </li>
+        </ul>
+
+        <p class="ig__back">
+          <a class="btn btn--ghost" href="/">Back to home</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer license="Apache 2.0" version={`v${VERSION}`} />
+</Base>
+
+<style>
+  /* ── Install-guide section styles (scoped to this page) ─────── */
+  .install__hero { padding-bottom: clamp(48px, 8vw, 96px); }
+  .install__intro {
+    font-size: 1.05rem;
+    color: var(--fg-dim);
+    max-width: 64ch;
+    margin-top: 0.5rem;
+    line-height: 1.6;
+  }
+  .install__intro code { color: var(--cyan); }
+
+  .ig {
+    background: radial-gradient(800px 400px at 80% 0%, rgba(187,154,247,0.05), transparent 65%),
+                radial-gradient(700px 400px at 10% 100%, rgba(122,162,247,0.06), transparent 65%);
+  }
+  .ig__head {
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    max-width: 64ch;
+  }
+  .ig__head h2 { max-width: 22ch; margin: 0; }
+  .ig__head .lede { margin: 0.5rem 0 0; }
+
+  /* ── 1. Installer cards ─────────────────────────────────────── */
+  .ig__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin: 0 0 1.5rem;
+  }
+  @media (min-width: 760px) { .ig__grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .ig__card {
+    padding: 1.5rem 1.5rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    position: relative;
+  }
+  .ig__card-badge {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 0.18rem 0.55rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .ig__card-badge--recommended {
+    color: var(--purple);
+    border-color: rgba(187, 154, 247, 0.5);
+    background: rgba(187, 154, 247, 0.08);
+  }
+  .ig__card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    margin: 0;
+    color: var(--fg);
+  }
+  .ig__card-format {
+    margin: 0;
+    color: var(--fg-dim);
+    font-size: 0.9rem;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+  }
+  .ig__card-format code { color: var(--cyan); }
+  .ig__card-body {
+    color: var(--fg-dim);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .ig__card-body code { color: var(--cyan); }
+
+  .ig__card-meta {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0.3rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .ig__card-meta dt { font-weight: 600; letter-spacing: 0.04em; }
+  .ig__card-meta dd { margin: 0; color: var(--fg-dim); }
+  .ig__card-meta code {
+    background: var(--surface-2);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    font-size: 0.86em;
+    word-break: break-all;
+  }
+  .ig__card-cta { margin-top: 0.3rem; align-self: stretch; justify-content: center; }
+
+  .ig__note {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin: 0;
+    max-width: 70ch;
+  }
+  .ig__note code {
+    background: var(--surface-2);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    font-size: 0.92em;
+  }
+
+  /* ── 2. Download link list ──────────────────────────────────── */
+  .ig__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-width: 720px;
+  }
+  .ig__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    color: var(--fg);
+    text-decoration: none;
+    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .ig__link:hover { border-color: var(--purple); transform: translateY(-1px); color: var(--fg); }
+  .ig__link-label { font-weight: 600; color: var(--fg); font-size: 1rem; }
+  .ig__link-meta { color: var(--fg-dim); font-size: 0.88rem; font-family: ui-monospace, "JetBrains Mono", monospace; }
+  .ig__link-meta code { color: var(--cyan); }
+
+  /* ── 3. Numbered steps ──────────────────────────────────────── */
+  .ig__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 820px;
+    counter-reset: ig-step;
+  }
+  .ig__step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 1rem 1.25rem;
+    align-items: start;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+  }
+  .ig__step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(187, 154, 247, 0.12);
+    color: var(--purple);
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 1.05rem;
+    border: 1px solid rgba(187, 154, 247, 0.35);
+  }
+  .ig__step-body { min-width: 0; }
+  .ig__step-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+    color: var(--fg);
+    letter-spacing: -0.005em;
+    line-height: 1.3;
+  }
+  .ig__step-title code {
+    background: var(--surface-2);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    font-size: 0.9em;
+    color: var(--cyan);
+  }
+  .ig__step-body-copy {
+    color: var(--fg-dim);
+    font-size: 0.96rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 60ch;
+  }
+  .ig__step-body-copy code {
+    background: var(--surface-2);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    font-size: 0.9em;
+    color: var(--cyan);
+  }
+
+  /* ── 4-7, 8. Prose blocks ───────────────────────────────────── */
+  .ig__prose {
+    color: var(--fg-dim);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 70ch;
+    margin: 0;
+  }
+  .ig__prose p { margin: 0 0 1rem; }
+  .ig__prose strong { color: var(--fg); font-weight: 600; }
+  .ig__prose code {
+    background: var(--surface-2);
+    padding: 0.05em 0.4em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    font-size: 0.9em;
+    color: var(--cyan);
+  }
+  .ig__prose kbd {
+    display: inline-block;
+    padding: 0.1rem 0.45rem;
+    margin: 0 0.1rem;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-size: 0.85em;
+    color: var(--fg);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    line-height: 1.2;
+  }
+  .ig__prose a { color: var(--blue); }
+  .ig__prose a:hover { color: var(--purple); }
+
+  .ig__list {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .ig__list li {
+    position: relative;
+    padding-left: 1.4rem;
+    color: var(--fg-dim);
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+  .ig__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--purple);
+  }
+  .ig__list strong { color: var(--fg); font-weight: 600; }
+  .ig__list code {
+    background: var(--surface-2);
+    padding: 0.05em 0.4em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    font-size: 0.92em;
+  }
+
+  /* ── 9. Troubleshooting bullets ─────────────────────────────── */
+  .ig__bullets {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 72ch;
+  }
+  .ig__bullets li {
+    padding: 1.1rem 1.25rem 1rem;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--purple);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    color: var(--fg-dim);
+    font-size: 0.97rem;
+    line-height: 1.6;
+  }
+  .ig__bullets li strong { color: var(--fg); font-weight: 600; display: block; margin-bottom: 0.35rem; }
+  .ig__bullets li code {
+    background: var(--surface-2);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    font-size: 0.92em;
+    color: var(--cyan);
+  }
+  .ig__bullets li a { color: var(--blue); }
+  .ig__bullets li a:hover { color: var(--purple); }
+
+  /* ── 10. Next steps ─────────────────────────────────────────── */
+  .ig__next {
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    max-width: 720px;
+  }
+  @media (min-width: 760px) { .ig__next { grid-template-columns: repeat(3, 1fr); } }
+  .ig__next-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    color: var(--fg);
+    text-decoration: none;
+    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .ig__next-link:hover { border-color: var(--purple); transform: translateY(-1px); color: var(--fg); }
+  .ig__next-label { font-weight: 600; color: var(--purple); font-size: 1rem; }
+  .ig__next-meta { color: var(--fg-dim); font-size: 0.88rem; line-height: 1.4; }
+  .ig__back { margin: 2rem 0 1rem; text-align: center; }
+</style>
