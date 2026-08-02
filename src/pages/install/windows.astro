@@ -57,7 +57,7 @@ const ARCH = 'x86_64';
   ogImage="/og-image.svg"
   canonical="https://ownlocalml.com/install/windows/"
   ctaVisible={false}
-  footerLicense="Apache 2.0"
+  footerLicense=""
   footerVersion={`v${VERSION}`}
 >
   <a class="skip-link" href="#main">Skip to content</a>
@@ -83,7 +83,7 @@ const ARCH = 'x86_64';
         <li><a class="nav__link" href="/changelog/">Changelog</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href={NSIS_URL} rel="noopener noreferrer">Get Pulse ↓ 12.29 MB</a>
+        <a class="btn btn--primary nav__cta" href={NSIS_URL} rel="noopener noreferrer">Start trial ↓ 12.29 MB</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -102,7 +102,7 @@ const ARCH = 'x86_64';
     <a class="nav-drawer__link" href="/install/windows/" aria-current="page">Install</a>
     <a class="nav-drawer__link" href="/compare/">Compare</a>
     <a class="nav-drawer__link" href="/changelog/">Changelog</a>
-    <a class="btn btn--primary nav-drawer__cta" href={NSIS_URL} rel="noopener noreferrer">Get Pulse ↓ 12.29 MB</a>
+    <a class="btn btn--primary nav-drawer__cta" href={NSIS_URL} rel="noopener noreferrer">Start trial ↓ 12.29 MB</a>
   </div>
 
   <script is:inline>
@@ -443,7 +443,7 @@ const ARCH = 'x86_64';
           <li>
             <a class="ig__next-link" href="/pricing/">
               <span class="ig__next-label">Pricing</span>
-              <span class="ig__next-meta">Free forever, with PRO features behind a license key.</span>
+              <span class="ig__next-meta">14-day trial, then $20/mo or $192/yr.</span>
             </a>
           </li>
         </ul>
@@ -455,7 +455,7 @@ const ARCH = 'x86_64';
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version={`v${VERSION}`} />
+  <Footer license="" version={`v${VERSION}`} />
 </Base>
 
 <style>
@@ -801,3 +801,4 @@ const ARCH = 'x86_64';
   .ig__next-meta { color: var(--fg-dim); font-size: 0.88rem; line-height: 1.4; }
   .ig__back { margin: 2rem 0 1rem; text-align: center; }
 </style>
+

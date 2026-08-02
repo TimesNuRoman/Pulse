@@ -14,11 +14,11 @@ const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
 const APK_SIZE = '1.29 MB';
 
 const PAGE_TITLE = 'Pulse vs Raycast AI, Notion AI, GitHub Copilot, Claude Pro, AnythingLLM, LM Studio, Ollama — local-first AI';
-const PAGE_DESC = "Honest side-by-side: Pulse (Free and PRO), Raycast AI, Notion AI, GitHub Copilot, Claude Pro, AnythingLLM, LM Studio, Ollama. Local-first, voice input, markdown notes, price, open source, mobile, RAM, privacy — no asterisks, no marketing fluff. Updated 2026-08-02.";
+const PAGE_DESC = "Honest side-by-side: Pulse (trial and PRO), Raycast AI, Notion AI, GitHub Copilot, Claude Pro, AnythingLLM, LM Studio, Ollama. Local-first, voice input, markdown notes, price, mobile, RAM, privacy - no asterisks, no marketing fluff. Updated 2026-08-03.";
 
 const products = [
-  { key: 'pulse',     name: 'Pulse',             tagline: 'Voice + notes. Local. Apache 2.0.',          highlight: true  },
-  { key: 'pulsepro',  name: 'Pulse PRO',         tagline: 'Multi-model, code-aware, web search. Apache 2.0.', highlight: true  },
+  { key: 'pulse',     name: 'Pulse',             tagline: 'Voice + notes. Local. Yours to use.',          highlight: true  },
+  { key: 'pulsepro',  name: 'Pulse PRO',         tagline: 'Multi-model, code-aware, web search.', highlight: true  },
   { key: 'raycast',   name: 'Raycast AI',        tagline: 'macOS only. $8/mo. Cloud-tied.' },
   { key: 'notion',    name: 'Notion AI',         tagline: 'Cloud wiki + AI. $10/mo. Tracking.' },
   { key: 'copilot',   name: 'GitHub Copilot',    tagline: 'IDE AI. $10/mo. GitHub cloud.' },
@@ -33,8 +33,7 @@ const rows = [
   { label: 'Local-first',        values: { pulse: 'yes',                pulsepro: 'yes',               raycast: 'no',                notion: 'no',                copilot: 'no',           claude: 'no',        anyllm: 'yes',              lmstu: 'yes',                  ollama: 'yes' } },
   { label: 'Voice input',        values: { pulse: 'yes',                pulsepro: 'yes',               raycast: 'partial',           notion: 'no',                copilot: 'no',           claude: 'no',        anyllm: 'partial',          lmstu: 'no',                   ollama: 'no' } },
   { label: 'Markdown notes',     values: { pulse: 'yes',                pulsepro: 'yes',               raycast: 'no',                notion: 'partial',           copilot: 'no',           claude: 'no',        anyllm: 'no',               lmstu: 'no',                   ollama: 'no' } },
-  { label: 'Price',              values: { pulse: 'Free',               pulsepro: 'see /pricing/',     raycast: '$8 / mo',           notion: '$10 / mo',          copilot: '$10 / mo',     claude: '$20 / mo',  anyllm: 'Free',             lmstu: 'Free',                 ollama: 'Free' } },
-  { label: 'Open source',        values: { pulse: 'Apache 2.0',         pulsepro: 'Apache 2.0',        raycast: 'no',                notion: 'no',                copilot: 'no',           claude: 'no',        anyllm: 'MIT',              lmstu: 'MIT',                  ollama: 'MIT' } },
+  { label: 'Price',              values: { pulse: '14-day trial, then $20/mo', pulsepro: 'see /pricing/', raycast: '$8 / mo',           notion: '$10 / mo',          copilot: '$10 / mo',     claude: '$20 / mo',  anyllm: 'Free',             lmstu: 'Free',                 ollama: 'Free' } },
   { label: 'Mobile',             values: { pulse: 'Android',            pulsepro: 'Android',           raycast: 'no',                notion: 'iOS + Android',     copilot: 'no',           claude: 'no',        anyllm: 'no',               lmstu: 'no',                   ollama: 'no' } },
   { label: 'Setup time',         values: { pulse: '~2 min',             pulsepro: '~2 min + key',      raycast: '~5 min + sub',      notion: '~10 min + account', copilot: '~5 min + sub',claude: '~2 min + sub',anyllm: '~30+ min',         lmstu: '~10 min',              ollama: '~5+ min' } },
   { label: 'RAM for 7B model',   values: { pulse: '~4-8 GB',            pulsepro: '~4-8 GB',           raycast: 'n/a (cloud)',       notion: 'n/a (cloud)',       copilot: 'n/a (cloud)',claude: 'n/a (cloud)',anyllm: '~4-16 GB',         lmstu: '~4-16 GB',             ollama: '~4-16 GB' } },
@@ -62,11 +61,6 @@ const whyCards = [
     body: 'Pulse talks to a local Ollama instance on desktop and uses on-device Whisper on Android. No cloud round-trip, no account, no telemetry. The on-device update checker only knows your version number.',
   },
   {
-    label: 'Open source',
-    title: 'Apache 2.0. Read the code.',
-    body: 'Pulse is Apache 2.0 across all three surfaces: Windows desktop, Android notes, and this site. Free for everyone, with an optional PRO tier for power users — see /pricing/. The license does not change between the two.',
-  },
-  {
     label: 'Voice + notes',
     title: 'One side panel, one editor.',
     body: 'Voice is the desktop side panel. Markdown is the Android editor. Both are offline by default. Both are first-class surfaces, not a feature flag.',
@@ -75,6 +69,11 @@ const whyCards = [
     label: 'No tracking',
     title: 'Zero analytics. No opt-out needed.',
     body: 'There is no analytics SDK. There is no error reporter. There is no "phone home" with usage data. The only network call Pulse makes is the manifest poll for updates, and you can disable it. PRO only checks the license key against the license server — your content never leaves the device.',
+  },
+  {
+    label: 'Trial + PRO',
+    title: 'Try it for 14 days. Then $20/mo or $192/yr.',
+    body: 'The trial unlocks single-model chat, local notes, code-aware chat, and 50 web-search queries per day. PRO adds multi-model hot-swap, voice input, unlimited web search, and cross-device sync. No credit card to start.',
   },
 ];
 
@@ -94,7 +93,7 @@ const faqs = [
   { q: 'Which AI models does Pulse support?', a: 'Anything Ollama serves on desktop: Llama 3, Qwen 2.5, Mistral, Gemma 2, Phi-3, DeepSeek, and any other GGUF model. The 4-8B range (Qwen 2.5 7B, Llama 3.1 8B, Mistral Nemo 12B) hits the best latency / quality balance on a 16 GB laptop. On Android, Pulse for Android uses its on-device model for the recall step and ships the Smart Engine v3 router.' },
   { q: 'Can I sync notes between Android and desktop?', a: 'The on-device SQLite file is plain and portable — copy notes.db off the device with any file manager, restore the same way. No proprietary export format. End-to-end encrypted sync between Android and desktop is not in v0.6.x. The current release notes track what is shipping now.' },
   { q: 'Does Pulse work on Linux or iOS?', a: 'Linux desktop is not in v0.6.x. The desktop binary is Windows (Tauri 2). iOS is not planned for the Notes surface. Android is minSdk 24 (Android 7.0) with targetSdk 36.' },
-  { q: 'Is there a paid tier or PRO version?', a: 'Yes. Pulse is free and open source for both surfaces. PRO adds multi-model hot-swap, code-aware chat, voice input on desktop (Whisper), web search, and priority updates. PRO is billed monthly or annually via Polar.sh — see /pricing/ for the current price. The PRO license only validates against the license server; your content never leaves the device.' },
+  { q: 'Is there a paid tier?', a: 'Yes. PRO is $20/mo or $192/yr. There is a 14-day trial — no credit card. After 14 days the app continues in read-only mode. The full list of PRO features lives on the pricing page.' },
   { q: 'How is Pulse different from ChatGPT or Claude?', a: 'Privacy, cost, and offline use. ChatGPT and Claude route every prompt through their cloud, log it, and charge per token. Pulse runs the model on your hardware, costs nothing per query, and works on a plane. The trade-off: a 7B local model is not as capable than GPT-4 on hard reasoning tasks. If you need frontier capability, use a frontier tool. If you need a fast, private, always-available AI for daily work, Pulse is the better fit.' },
   { q: 'What does Pulse PRO add that GitHub Copilot or Claude Pro does not?', a: 'PRO adds notes, voice, mobile (Android), and an on-device engine. Copilot is IDE-only. Claude Pro is web-and-API only. Both are excellent at their core use cases, but neither ships a notes app, neither runs offline, neither has a mobile surface, and both send your prompts to their cloud. PRO gives you notes + voice + multi-model + web search, on your hardware, for less than either.' },
   { q: 'Can I self-host Pulse?', a: 'There is nothing to host. Pulse is local-first. The desktop app talks to your local Ollama; the Android app runs on-device. The site is a static Astro build. The only network endpoint is the manifest poll for updates, and the chain of hosts is public.' },
@@ -119,10 +118,10 @@ const faqJsonLd = {
   title={PAGE_TITLE}
   description={PAGE_DESC}
   ogImage="/og/compare.svg"
-  ctaText={`Get Pulse ↓ ${APK_SIZE}`}
+  ctaText={`Start trial ↓ ${APK_SIZE}`}
   ctaHref={APK_URL}
   ctaVisible={true}
-  footerLicense="Apache 2.0"
+  footerLicense=""
   footerVersion="v0.6.6"
 >
   <a class="skip-link" href="#main">Skip to content</a>
@@ -147,7 +146,7 @@ const faqJsonLd = {
         <li><a class="nav__link" href="/pricing/">Pricing</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/download/" rel="noopener noreferrer">Get Pulse ↓ {APK_SIZE}</a>
+        <a class="btn btn--primary nav__cta" href="/download/" rel="noopener noreferrer">Start trial ↓ {APK_SIZE}</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -166,7 +165,7 @@ const faqJsonLd = {
     <a class="nav-drawer__link" href="/compare/" aria-current="page">Compare</a>
     <a class="nav-drawer__link" href="/changelog/">Changelog</a>
     <a class="nav-drawer__link" href="/pricing/">Pricing</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/download/" rel="noopener noreferrer">Get Pulse ↓ {APK_SIZE}</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/" rel="noopener noreferrer">Start trial ↓ {APK_SIZE}</a>
   </div>
 
   <script is:inline>
@@ -228,15 +227,15 @@ const faqJsonLd = {
           </h1>
           <p class="compare-hero__sub">
             Pulse is a voice-first AI side panel for Windows and a markdown
-            notes app for Android. Both run on-device. Both are Apache 2.0.
-            This page is the honest side-by-side: how Pulse (Free and PRO)
+            notes app for Android. Both run on-device. Both start with a
+            This page is the honest side-by-side: how Pulse (trial and PRO)
             stacks up against Raycast AI, Notion AI, GitHub Copilot,
             Claude Pro, AnythingLLM, LM Studio, and bare Ollama. No
             asterisks, no marketing copy.
           </p>
           <div class="compare-hero__ctas">
             <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
-              Get Pulse ↓ {APK_SIZE}
+              Start trial ↓ {APK_SIZE}
             </a>
             <a class="btn btn--ghost btn--lg" href="#matrix">See the matrix</a>
           </div>
@@ -369,25 +368,25 @@ const faqJsonLd = {
     <section class="cta-final">
       <div class="container">
         <div class="cta-final__card glass reveal">
-          <h2 class="cta-final__title">Try Pulse. Both surfaces. Apache 2.0.</h2>
+          <h2 class="cta-final__title">Try Pulse. Both surfaces. 14 days, no credit card.</h2>
           <p class="cta-final__sub">
-            Pulse for Android is a 1.29&nbsp;MB APK, no Play Store, side-load from the link below. Pulse for Windows is a ~6.4&nbsp;MB Tauri 2 NSIS/MSI installer, also from this site. Both are open source, both work offline, both are the same Apache 2.0 source tree.
+            Pulse for Android is a 1.29&nbsp;MB APK, no Play Store, side-load from the link below. Pulse for Windows is a ~12&nbsp;MB Tauri 2 NSIS/MSI installer, also from this site. Both run on-device, both start with a 14-day trial.
           </p>
           <div class="cta-final__ctas">
             <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
-              Get Pulse for Android ↓ {APK_SIZE}
+              Start trial for Android ↓ {APK_SIZE}
             </a>
             <a class="btn btn--ghost btn--lg" href="/notes/">Read the Notes page</a>
           </div>
           <p class="cta-final__meta">
-            <a href="/license/">Apache 2.0</a> licensed · <a href="/privacy/">No telemetry, no accounts</a> · <a href="/changelog/">Read the changelog</a>
+            <a href="/license/">License</a> · <a href="/privacy/">No telemetry, no accounts</a> · <a href="/changelog/">Read the changelog</a>
           </p>
         </div>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.6" />
+  <Footer license="" version="v0.6.6" />
 </Base>
 
 <style>
@@ -589,3 +588,4 @@ const faqJsonLd = {
   .cta-final__meta a { color: var(--fg-dim); }
   .cta-final__meta a:hover { color: var(--purple); }
 </style>
+

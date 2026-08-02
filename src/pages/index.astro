@@ -17,11 +17,13 @@ const WIN_MSI_URL = '/downloads/Pulse_0.6.7_x64_en-US.msi';
 const WIN_NSIS_SIZE = '12.27 MB';
 const WIN_MSI_SIZE = '16.94 MB';
 
-const PAGE_TITLE = 'Pulse — Free desktop and Android app that runs AI on your machine';
-const PAGE_DESC = 'Pulse is a free, open-source app that runs AI on your computer or phone. Notes, chat, and your model stay on the device. No account, no cloud, no telemetry. Apache 2.0.';
+const PAGE_TITLE = 'Pulse — AI side panel for Windows and Android, paid with a 14-day trial';
+const PAGE_DESC = 'Pulse is a paid, local-first AI side panel for Windows and a notes app for Android. 14-day trial, then $20/month or $192/year. No account, no cloud, no telemetry.';
 
 // R128 SEO polish: JSON-LD SoftwareApplication block for the home page.
-// Surfaced as a JSON script tag below; values match the visible copy.
+// R141e: offers is no longer price:0 — it's the trial model. priceSpecification
+// would be ideal but we keep the schema minimal and honest: price = "0" means
+// the trial is free; the subscription lives on the Polar.sh product pages.
 const softwareAppJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -32,9 +34,9 @@ const softwareAppJsonLd = {
     '@type': 'Offer',
     price: '0',
     priceCurrency: 'USD',
+    description: '14-day trial, then $20/month or $192/year subscription',
   },
-  description: 'Free desktop and Android app that runs AI on your machine.',
-  license: 'https://www.apache.org/licenses/LICENSE-2.0',
+  description: 'Local-first AI side panel for Windows and notes app for Android. 14-day trial, then $20/month or $192/year.',
 };
 ---
 
@@ -42,10 +44,10 @@ const softwareAppJsonLd = {
   title={PAGE_TITLE}
   description={PAGE_DESC}
   ogImage="/og-home.png"
-  ctaText="Get Pulse ↓"
+  ctaText="Start 14-day trial ↓"
   ctaHref="/download/"
   ctaVisible={true}
-  footerLicense="Apache 2.0"
+  footerLicense=""
   footerVersion=""
   canonical="https://ownlocalml.com/"
 >
@@ -69,7 +71,7 @@ const softwareAppJsonLd = {
         <li><a class="nav__link" href="/faq/">FAQ</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/download/">Get Pulse ↓</a>
+        <a class="btn btn--primary nav__cta" href="/download/">Start trial ↓</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -86,7 +88,7 @@ const softwareAppJsonLd = {
     <a class="nav-drawer__link" href="/download/">Download</a>
     <a class="nav-drawer__link" href="/pricing/">Pricing</a>
     <a class="nav-drawer__link" href="/faq/">FAQ</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/download/">Get Pulse ↓</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/">Start trial ↓</a>
   </div>
 
   <script is:inline>
@@ -145,15 +147,15 @@ const softwareAppJsonLd = {
             AI on your machine.<br /><span class="home-hero__hl">Not in someone else's cloud.</span>
           </h1>
           <p class="home-hero__sub">
-            Pulse is a free desktop and Android app that runs AI on your
-            own device. Notes, chat, and your model stay local. No account,
-            no telemetry, no upload.
+            Pulse is a paid, local-first AI side panel for Windows and a
+            notes app for Android. Notes, chat, and your model stay on the
+            device. No account, no telemetry, no upload.
           </p>
           <div class="home-hero__ctas">
-            <a class="btn btn--primary btn--lg" id="hero-download" href="/download/" rel="noopener noreferrer">Get Pulse ↓</a>
+            <a class="btn btn--primary btn--lg" id="hero-download" href="/download/" rel="noopener noreferrer">Start 14-day trial ↓</a>
             <a class="btn btn--ghost btn--lg" href="#what">See what it does →</a>
           </div>
-          <p class="home-hero__meta">Free · Apache 2.0 · Windows + Android</p>
+          <p class="home-hero__meta">14-day trial · $20/mo or $192/yr · Windows + Android</p>
         </div>
       </div>
     </section>
@@ -191,15 +193,15 @@ const softwareAppJsonLd = {
       </div>
     </section>
 
-    <!-- ─── Get Pulse: two cards ─────────────────────── -->
+    <!-- ─── Start trial: two cards ─────────────────────── -->
     <section class="home-get" id="get">
       <div class="container">
         <header class="home-get__head reveal">
-          <span class="eyebrow">Get Pulse</span>
+          <span class="eyebrow">Start trial</span>
           <h2>Pick your device.</h2>
           <p class="lede">
             Both versions are the same Pulse. Different install, same data
-            model, same Apache 2.0 license.
+            model, same on-device engine.
           </p>
         </header>
         <div class="home-get__grid">
@@ -233,27 +235,27 @@ const softwareAppJsonLd = {
       </div>
     </section>
 
-    <!-- ─── Free ──────────────────────────────────────── -->
-    <section class="home-free" id="free">
+    <!-- ─── Trial ──────────────────────────────────────── -->
+    <section class="home-free" id="trial">
       <div class="container home-free__inner reveal">
-        <span class="eyebrow">Free</span>
-        <h2>Free, forever. No premium lock on the basics.</h2>
+        <span class="eyebrow">Trial</span>
+        <h2>14 days, no credit card. After that, decide.</h2>
         <p>
-          Pulse is free for everything most people need: notes, chat with a
-          local model, full-text search, backlinks, voice input. Apache 2.0
-          source on GitHub. Runs offline once installed. The only paid tier
-          (PRO) adds multi-model switching and a few extras for daily
-          coding work.
+          The trial unlocks the basics: notes, chat with a local model,
+          full-text search, backlinks, code-aware chat, and 50 web-search
+          queries per day. The trial clock starts at first launch. After
+          14 days the app continues to work in read-only mode unless you
+          upgrade to PRO.
         </p>
         <div class="home-free__row">
-          <a class="btn btn--primary btn--lg" href="/download/">Get Pulse ↓</a>
+          <a class="btn btn--primary btn--lg" href="/download/">Start 14-day trial ↓</a>
           <a class="btn btn--ghost btn--lg" href="/pricing/">See pricing →</a>
         </div>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="" />
+  <Footer license="" version="" />
 
   <!-- R128 SEO polish: SoftwareApplication JSON-LD for search engines.
        Same data as the visible home page copy, no extra claims. -->
@@ -363,7 +365,7 @@ const softwareAppJsonLd = {
     margin: 0;
   }
 
-  /* ─── Get Pulse cards ────────────────────────────── */
+  /* ─── Start trial cards ────────────────────────────── */
   .home-get { padding: 3rem 0 4rem; }
   .home-get__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
   .home-get__head h2 { font-size: var(--fs-2); }
@@ -442,3 +444,4 @@ const softwareAppJsonLd = {
     margin-top: 0.5rem;
   }
 </style>
+

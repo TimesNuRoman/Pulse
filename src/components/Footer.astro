@@ -8,7 +8,7 @@ export interface Props {
   license?: string;
   version?: string;
 }
-const { license = 'Apache 2.0', version = 'v0.3.0' } = Astro.props;
+const { license = '', version = 'v0.3.0' } = Astro.props;
 const showVersion = version.trim().length > 0;
 
 const columns = [
@@ -48,7 +48,7 @@ const columns = [
           </svg>
           <span>Pulse</span>
         </div>
-        <p class="footer__tagline">Free desktop and Android app that runs AI on your machine.</p>
+        <p class="footer__tagline">Local-first AI side panel for Windows and Android. 14-day trial, then $20/mo or $192/yr.</p>
 
         <ul class="footer__socials" role="list" aria-label="Social links">
           <li>
