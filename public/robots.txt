@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ncfosklh79sxf.space.minimax.io/sitemap.xml
+Sitemap: https://wb7ae24fk5p93.space.minimax.io/sitemap.xml

@@ -1,13 +1,11 @@
 import { defineConfig } from 'astro/config';
 
-// r104: site URL placeholder for the r104 unification deploy. The actual
-// URL on the live host is whatever website_deploy returns at build time
-// (each deploy gets a fresh space.minimax.io subdomain). The constant
-// here is the floor — if PULSE_SITE is not set and Astro.site is unset,
-// the og:url and sitemap.xml entries fall back to this. The brief
+// r104: site URL pinned to the r104 unification deploy host
+// (https://wb7ae24fk5p93.space.minimax.io). PULSE_SITE env override
+// remains for ad-hoc rebuilds against a different host. The brief
 // explicitly bans 'pulse.local' / 'pulse.tld' as production URLs.
 // scripts/og-gen.mjs and Base.astro:siteUrl use the same fallback.
-const PULSE_SITE = process.env.PULSE_SITE || 'https://ncfosklh79sxf.space.minimax.io';
+const PULSE_SITE = process.env.PULSE_SITE || 'https://wb7ae24fk5p93.space.minimax.io';
 
 export default defineConfig({
   site: PULSE_SITE,

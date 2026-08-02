@@ -37,7 +37,7 @@ import astroConfig from '../astro.config.mjs';
 
 const SITE_HOST = process.env.PULSE_SITE
   || astroConfig.site
-  || 'https://ncfosklh79sxf.space.minimax.io';
+  || 'https://wb7ae24fk5p93.space.minimax.io';
 const SITE_DISPLAY = SITE_HOST.replace(/^https?:\/\//, '').replace(/\/$/, '');
 const site = (suffix) => suffix ? `${SITE_DISPLAY}/${suffix}` : SITE_DISPLAY;
 
