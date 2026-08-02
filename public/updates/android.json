@@ -1,10 +1,10 @@
 {
   "latest_version": "0.6.6",
   "latest_version_code": 16,
-  "latest_apk_url": "https://mohkoj2dmvqp6.space.minimax.io/downloads/pulse-notes-0.6.6.apk",
+  "latest_apk_url": "https://ownlocalml.com/downloads/pulse-notes-0.6.6.apk",
   "latest_apk_size_bytes": 1352869,
   "latest_apk_sha256": "AD6E33029D3871609774C407597BE49894ECC64B82A53D31C3C066374B45BAB5",
-  "release_notes_url": "https://mohkoj2dmvqp6.space.minimax.io/changelog/#v0.6.6",
+  "release_notes_url": "https://ownlocalml.com/changelog/#v0.6.6",
   "min_supported_version": "0.3.0",
   "force_update_below": "0.3.0",
   "signature_scheme": "v2+v3",
