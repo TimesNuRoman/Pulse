@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Allow: /faq
 
 Sitemap: https://ownlocalml.com/sitemap.xml

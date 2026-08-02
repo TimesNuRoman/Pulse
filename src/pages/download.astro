@@ -31,6 +31,44 @@ const WIN_BUILD_TARGET = 'x86_64-pc-windows-msvc';
 
 const PAGE_TITLE = 'Download Pulse — for Windows or Android';
 const PAGE_DESC = 'Pulse is free and open source. Download Pulse for Windows (NSIS or MSI installer) or Pulse for Android (APK). Both are local-first, Apache 2.0, no account or telemetry.';
+
+// R128 SEO polish: JSON-LD for the two apps on this page.
+// One SoftwareApplication per platform so search engines can surface
+// each platform's installer + APK separately. Free / open-source.
+const softwareAppsJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Pulse for Windows',
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Windows 10, Windows 11',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    description: 'A side panel for Windows. Sits in the system tray, opens with a global hotkey, talks to a local model.',
+    softwareVersion: WIN_VERSION,
+    license: 'https://www.apache.org/licenses/LICENSE-2.0',
+    downloadUrl: `https://ownlocalml.com${WIN_EXE}`,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Pulse for Android',
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Android 7.0+',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    description: 'A markdown note editor for Android with backlinks, tags, voice input, and full-text search.',
+    softwareVersion: APK_VERSION,
+    license: 'https://www.apache.org/licenses/LICENSE-2.0',
+    downloadUrl: `https://ownlocalml.com${APK_URL}`,
+  },
+];
 ---
 
 <Base
@@ -42,6 +80,7 @@ const PAGE_DESC = 'Pulse is free and open source. Download Pulse for Windows (NS
   ctaVisible={true}
   footerLicense="Apache 2.0"
   footerVersion={`v${APK_VERSION} / v${WIN_VERSION}`}
+  canonical="https://ownlocalml.com/download/"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -294,6 +333,10 @@ const PAGE_DESC = 'Pulse is free and open source. Download Pulse for Windows (NS
   </main>
 
   <Footer license="Apache 2.0" version={`v${APK_VERSION} / v${WIN_VERSION}`} />
+
+  <!-- R128 SEO polish: one SoftwareApplication per platform so search
+       engines can surface each installer / APK independently. -->
+  <script type="application/ld+json" set:html={JSON.stringify(softwareAppsJsonLd)} />
 
   <!-- UA-based reorder. mobile → Android first; desktop → Windows first.
        Uses CSS order: property with a UA class so screen-readers see a stable

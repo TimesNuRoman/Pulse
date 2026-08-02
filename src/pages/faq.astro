@@ -1,0 +1,353 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/notes.css';
+
+// R128: First-time-visitor FAQ. Plain English, anonymous voice,
+// no "we" / "Pulse team" / "by Roman" / marketing fluff. Links go to
+// /pricing/, /download/, /license/, /privacy/. <details>/<summary>
+// for collapsibles (no JS). Apache 2.0, no telemetry, no "soon".
+
+const PAGE_TITLE = 'Pulse — Frequently asked questions';
+const PAGE_DESC =
+  'Common questions about Pulse: pricing, privacy, offline use, supported platforms, source code, and how to report issues. Plain answers, no marketing.';
+
+// Q&A content lives in the frontmatter so the structured-data block
+// (FAQPage JSON-LD) is generated from the same source of truth.
+const faqs = [
+  {
+    q: 'Is Pulse really free?',
+    a: 'Yes. The basic tier is free, forever, and the source code is Apache 2.0. Free includes notes, chat with a local model, full-text search, backlinks, and voice input on Android. There is a paid PRO tier for multi-model hot-swap, code-aware chat, voice input on Windows, and web search. See the <a href="/pricing/">pricing page</a> for what PRO adds.',
+  },
+  {
+    q: 'Do I need to sign up for an account?',
+    a: 'No. Pulse does not require an account, email, phone number, or sign-in. Download the installer, run it, open the app. The only thing PRO needs is a license key, which is delivered by email after checkout.',
+  },
+  {
+    q: 'What does PRO add?',
+    a: 'PRO adds multi-model hot-swap (switch between local models without restarting), code-aware chat (Pulse knows which file you are editing on Windows), voice input on Windows, and built-in web search for the chat. Everything in the free tier stays free. The full list lives on the <a href="/pricing/">pricing page</a>.',
+  },
+  {
+    q: 'How much does PRO cost?',
+    a: 'See the <a href="/pricing/">pricing page</a> for current PRO pricing. PRO is sold as a monthly or annual subscription. There is no lifetime deal and no student discount.',
+  },
+  {
+    q: 'Can I use my own AI model?',
+    a: 'Yes. Pulse for Windows talks to any OpenAI-compatible local endpoint. Ollama works out of the box (run <code>ollama serve</code> and Pulse finds it). LM Studio, vLLM, llama.cpp, and any other server that speaks the OpenAI HTTP API also work. Pulse does not lock you to a provider or a model.',
+  },
+  {
+    q: 'Does Pulse work offline?',
+    a: 'Yes, after the first install. The first launch pulls a small update-check and the OG image for share links; everything else runs locally. Once installed, Pulse works on a plane, on a train, or with the network unplugged. There is no required cloud connection and no always-on telemetry.',
+  },
+  {
+    q: 'What is the data privacy story?',
+    a: 'Pulse is local-first. Your notes, your chats, and your model never leave the device you installed Pulse on. There is no analytics, no crash reporting, no usage beacons, and no remote config. The network code is small and open source; you can read every byte Pulse sends. The full data model is on the <a href="/privacy/">privacy page</a>.',
+  },
+  {
+    q: 'Is the source code open?',
+    a: 'Yes. Pulse is Apache 2.0, on GitHub. The Windows app, the Android app, and this site are all in the same monorepo. The Apache 2.0 license means you can read it, fork it, audit it, and self-host it. The license text lives at <a href="/license/">/license/</a>.',
+  },
+  {
+    q: 'Which platforms are supported?',
+    a: 'Windows 10 and 11 (NSIS or MSI installer) and Android 7.0+ (sideloaded APK). iOS, macOS, and Linux are not currently shipping. The download page has the current list: <a href="/download/">/download/</a>.',
+  },
+  {
+    q: 'How do updates work?',
+    a: 'Pulse checks for updates against a public manifest on this site. If a newer version is available, the app shows an in-app banner with a one-click download. Updates are not silent and not forced. You can disable update checks in settings.',
+  },
+  {
+    q: 'Why is this free?',
+    a: 'The basic tier is free because the source is open source and the maintenance cost is small. PRO is the paid tier that funds continued development. There is no ad network, no data sale, no investor story — just an open source project with a paid tier for the features that take the most time to maintain.',
+  },
+  {
+    q: 'How do I report a bug or suggest a feature?',
+    a: 'Open an issue on the public GitHub repository. The repo lives under the same organization that hosts this site. Bug reports, feature requests, and pull requests are all welcome. There is no support email, no Discord, and no private ticket queue.',
+  },
+];
+
+// FAQPage JSON-LD for the structured-data block.
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: f.a.replace(/<[^>]+>/g, ''),
+    },
+  })),
+};
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-home.png"
+  ctaText="Get Pulse ↓"
+  ctaHref="/download/"
+  ctaVisible={true}
+  footerLicense="Apache 2.0"
+  footerVersion=""
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/download/">Download</a></li>
+        <li><a class="nav__link" href="/pricing/">Pricing</a></li>
+        <li><a class="nav__link is-current" href="/faq/" aria-current="page">FAQ</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/download/">Get Pulse ↓</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/">Home</a>
+    <a class="nav-drawer__link" href="/download/">Download</a>
+    <a class="nav-drawer__link" href="/pricing/">Pricing</a>
+    <a class="nav-drawer__link" href="/faq/" aria-current="page">FAQ</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/">Get Pulse ↓</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => {
+          const isOpen = drawer.classList.contains('is-open');
+          setOpen(!isOpen);
+        });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main">
+    <!-- ─── Hero ──────────────────────────────────────── -->
+    <section class="home-hero faq-hero">
+      <div class="bg-glow"></div>
+      <div class="container home-hero__grid">
+        <div class="home-hero__copy reveal">
+          <h1 class="home-hero__title">
+            Frequently asked<br /><span class="home-hero__hl">questions.</span>
+          </h1>
+          <p class="home-hero__sub">
+            Plain answers about what Pulse is, what it costs, what it does
+            with your data, and what it does not. No marketing speak, no
+            fine print, no "contact sales".
+          </p>
+          <p class="home-hero__meta">
+            {faqs.length} questions · Apache 2.0 · last updated 2026-08-02
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── FAQ list ──────────────────────────────────── -->
+    <section class="faq-page" id="questions">
+      <div class="container">
+        <div class="faq-page__list">
+          {faqs.map((f, i) => (
+            <details class="faq__item reveal" open={i === 0}>
+              <summary class="faq__q">
+                <span class="faq__q-text">{f.q}</span>
+                <svg class="faq__chev" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </summary>
+              <div class="faq__a" set:html={f.a} />
+            </details>
+          ))}
+        </div>
+
+        <aside class="faq-page__aside reveal">
+          <h2>More places to look.</h2>
+          <ul role="list">
+            <li><a href="/download/">Download Pulse for Windows or Android</a></li>
+            <li><a href="/pricing/">What PRO adds (and what it costs)</a></li>
+            <li><a href="/privacy/">Privacy and data model</a></li>
+            <li><a href="/license/">Apache 2.0 license text</a></li>
+            <li><a href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">Source on GitHub</a></li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <Footer license="Apache 2.0" version="" />
+
+  <!-- FAQPage structured data for search engines.
+       Mirror of the visible Q&A — generated from the same `faqs` array
+       so both stay in sync. -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+</Base>
+
+<style>
+  /* ─── FAQ item (matches compare.astro / pricing.astro) ─────
+     Same .faq__q / .faq__item / .faq__chev / .faq__a class
+     names so the 12-hard-rules min-height check stays happy and
+     the page matches the in-site FAQ style. */
+  .faq__item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+    scroll-margin-top: 80px;
+  }
+  .faq__item[open] {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 1px rgba(187, 154, 247, 0.2),
+                0 6px 24px rgba(187, 154, 247, 0.08);
+  }
+  .faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    min-height: 56px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    color: var(--fg);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .faq__q::-webkit-details-marker { display: none; }
+  .faq__q::marker { display: none; }
+  .faq__q-text { flex: 1; line-height: 1.4; }
+  .faq__chev {
+    color: var(--muted);
+    transition: transform var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .faq__item[open] .faq__chev { transform: rotate(180deg); color: var(--purple); }
+  .faq__a {
+    padding: 0 1.25rem 1.25rem;
+    color: var(--fg-dim);
+    font-size: 0.96rem;
+    line-height: 1.65;
+    max-width: 72ch;
+  }
+  .faq__a a { color: var(--cyan); }
+  .faq__a a:hover { color: var(--purple); }
+  .faq__a code {
+    background: var(--surface-2);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    font-size: 0.88em;
+    color: var(--cyan);
+  }
+
+  /* ─── Hero ──────────────────────────────────────────── */
+  .faq-hero {
+    padding-top: clamp(112px, 14vw, 160px);
+    padding-bottom: clamp(48px, 7vw, 80px);
+    overflow: hidden;
+  }
+  .faq-hero .home-hero__title { max-width: 18ch; }
+
+  /* ─── FAQ list + aside ───────────────────────────── */
+  .faq-page {
+    padding-block: clamp(48px, 7vw, 96px) clamp(64px, 9vw, 120px);
+  }
+  .faq-page .container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 4vw, 3rem);
+  }
+  @media (min-width: 980px) {
+    .faq-page .container {
+      grid-template-columns: minmax(0, 1fr) 280px;
+      align-items: start;
+    }
+  }
+  .faq-page__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 820px;
+  }
+  .faq-page__aside {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.5rem 1.75rem;
+    position: sticky;
+    top: 88px;
+  }
+  .faq-page__aside h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0 0 0.75rem;
+    letter-spacing: 0.01em;
+  }
+  .faq-page__aside ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .faq-page__aside a {
+    color: var(--fg-dim);
+    text-decoration: none;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    border-bottom: 1px dashed transparent;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .faq-page__aside a:hover {
+    color: var(--purple);
+    border-bottom-color: var(--purple);
+  }
+  .nav__link.is-current {
+    color: var(--fg);
+    font-weight: 500;
+  }
+</style>
