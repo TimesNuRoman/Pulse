@@ -3,10 +3,13 @@ import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/notes.css';
 
-// R104: unified download page for both Pulse for Windows (desktop v0.6.5
-// NSIS+MSI from R100) and Pulse for Android (Notes v0.6.6 APK, signed
-// R93b). UA-based JS reorder: mobile → Android first, desktop → Windows
-// first. Same SHA-256 + "what is new" link per platform.
+// R116: Pulse for Windows bumped v0.6.5 to v0.6.7 (R100 build-infra fixes
+// + R115 R114-audit quick win #1, SPDX headers). Android stays on v0.6.6.
+// Build artifact is on the local disk; the /downloads/ paths below are the
+// canonical landing-site surface (404 until the artifact is mirrored to
+// public/, per the r116 brief). UA-based JS reorder: mobile → Android
+// first, desktop → Windows first. Same SHA-256 + "what is new" link per
+// platform.
 
 const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
 const APK_SIZE = '1.29 MB';
@@ -18,15 +21,25 @@ const APK_APP_ID = 'app.pulse.notes';
 const APK_MIN_SDK = '24';
 const APK_TARGET_SDK = '36';
 
-const WIN_VERSION = '0.6.5';
-const WIN_EXE = `https://github.com/TimesNuRoman/pulse/releases/download/v${WIN_VERSION}/Pulse_${WIN_VERSION}_x64-setup.exe`;
-const WIN_MSI = `https://github.com/TimesNuRoman/pulse/releases/download/v${WIN_VERSION}/Pulse_${WIN_VERSION}_x64_en-US.msi`;
-const WIN_SIZE_EXE = '~6.4 MB';
-const WIN_SIZE_MSI = '~7.1 MB';
+const WIN_VERSION = '0.6.7';
+// TODO(R116): the v0.6.7 NSIS + MSI artifacts are on the local disk and
+// not yet mirrored to a public CDN. /downloads/ 404s until then. Roman
+// uploads pulse-desktop target/release/Pulse_0.6.7_x64-setup.exe and
+// the matching MSI to the public/downloads/ folder when the host is
+// ready. The SHA-256 + size below are the verified fingerprints from
+// the R115 build on feat/r115-v067-release-prep.
+const WIN_EXE = `/downloads/Pulse_${WIN_VERSION}_x64-setup.exe`;
+const WIN_MSI = `/downloads/Pulse_${WIN_VERSION}_x64_en-US.msi`;
+const WIN_SIZE_EXE = '12.27 MB';
+const WIN_SIZE_MSI = '16.94 MB';
+const WIN_SHA_EXE = '08FD2FB2…3F8E65';
+const WIN_SHA_MSI = 'D246AFFC…2AD2982D';
 const WIN_MIN_OS = 'Windows 10 (build 17763)';
+const WIN_BUILD_TARGET = 'x86_64-pc-windows-msvc';
+const WIN_TAURI = 'Tauri 2.11.4';
 
-const PAGE_TITLE = 'Download Pulse — Windows desktop + Android APK';
-const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS + MSI installer, ~6 MB, v0.6.5) and Pulse for Android (markdown notes, 1.29 MB APK, v0.6.6, SHA-256 AD6E3302…45BAB5). Local-first, Apache 2.0, no cloud.';
+const PAGE_TITLE = 'Download Pulse — Windows desktop v0.6.7 + Android v0.6.6';
+const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS 12.27 MB / MSI 16.94 MB, v0.6.7, SHA-256 08FD2FB2…3F8E65) and Pulse for Android (markdown notes, 1.29 MB APK, v0.6.6, SHA-256 AD6E3302…45BAB5). Local-first, Apache 2.0, no cloud.';
 ---
 
 <Base
@@ -166,7 +179,10 @@ const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS + MSI installer,
             <code>127.0.0.1:11434</code> and keeps prompts, screenshots, and
             voice on the device. The installer ships as NSIS (per-user) or
             MSI (per-machine). The MSI is the one for IT departments; the
-            NSIS is the one for individual installs.
+            NSIS is the one for individual installs. v0.6.7 is the R115
+            retag of v0.6.5 — R100 build-infra fixes (prebuild-kill.ps1
+            kills orphan ollama.exe, Cargo.lock 0.6.5 sync) and the R115
+            R114-audit quick win #1 (Apache 2.0 SPDX headers).
           </p>
           <div class="dl-card__ctas">
             <a class="btn btn--primary btn--lg" href={WIN_EXE} rel="noopener noreferrer">
@@ -183,11 +199,23 @@ const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS + MSI installer,
             </div>
             <div class="dl-card__meta-row">
               <dt>build</dt>
-              <dd>release · x86_64-pc-windows-msvc</dd>
+              <dd>release · {WIN_BUILD_TARGET}</dd>
             </div>
             <div class="dl-card__meta-row">
               <dt>min OS</dt>
               <dd>{WIN_MIN_OS}</dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>NSIS SHA-256</dt>
+              <dd><code class="dl-card__sha">{WIN_SHA_EXE}</code></dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>MSI SHA-256</dt>
+              <dd><code class="dl-card__sha">{WIN_SHA_MSI}</code></dd>
+            </div>
+            <div class="dl-card__meta-row">
+              <dt>tauri</dt>
+              <dd>{WIN_TAURI}</dd>
             </div>
             <div class="dl-card__meta-row">
               <dt>license</dt>
@@ -196,9 +224,8 @@ const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS + MSI installer,
           </dl>
           <p class="dl-card__more">
             What is new in v{WIN_VERSION}? See the
-            <a href="/changelog/#v0.6.0">v0.6.0 release notes</a> (Windows desktop
-            is at v{WIN_VERSION} as of the R100 build; the next desktop
-            release is a follow-up to the v0.6.6 Android P1 trio).
+            <a href="/changelog/#v0.6.7">v{WIN_VERSION} release notes</a> (Windows desktop
+            retag 0.6.5 → 0.6.7, R115). Pulse for Android stays on v0.6.6.
           </p>
         </article>
 
