@@ -15,6 +15,10 @@ export interface Props {
   // `footerVersion = ''` hides the version pill entirely.
   footerLicense?: string;
   footerVersion?: string;
+  // R128 SEO polish: per-page <link rel="canonical"> override.
+  // When set, rendered as <link rel="canonical" href={canonical}> inside <head>.
+  // When empty/absent, no canonical link is emitted.
+  canonical?: string;
 }
 
 const {
@@ -27,6 +31,8 @@ const {
   // R94a: default footer license is 'Apache 2.0' (was 'MIT' — pre-R93 relic).
   footerLicense = 'Apache 2.0',
   footerVersion = 'v0.3.0',
+  // R128 SEO polish: per-page canonical URL. Default '' → no canonical emitted.
+  canonical = '',
 } = Astro.props;
 
 const ogImage = ogImageProp ?? '/og-image.svg';
@@ -47,6 +53,8 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ownlocalml
 
     <title>{title}</title>
     <meta name="description" content={description} />
+
+    {canonical && <link rel="canonical" href={canonical} />}
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 

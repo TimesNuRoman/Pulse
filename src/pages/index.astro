@@ -19,6 +19,23 @@ const WIN_MSI_SIZE = '16.94 MB';
 
 const PAGE_TITLE = 'Pulse — Free desktop and Android app that runs AI on your machine';
 const PAGE_DESC = 'Pulse is a free, open-source app that runs AI on your computer or phone. Notes, chat, and your model stay on the device. No account, no cloud, no telemetry. Apache 2.0.';
+
+// R128 SEO polish: JSON-LD SoftwareApplication block for the home page.
+// Surfaced as a JSON script tag below; values match the visible copy.
+const softwareAppJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Pulse',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Windows, Android',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  description: 'Free desktop and Android app that runs AI on your machine.',
+  license: 'https://www.apache.org/licenses/LICENSE-2.0',
+};
 ---
 
 <Base
@@ -30,6 +47,7 @@ const PAGE_DESC = 'Pulse is a free, open-source app that runs AI on your compute
   ctaVisible={true}
   footerLicense="Apache 2.0"
   footerVersion=""
+  canonical="https://ownlocalml.com/"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -48,6 +66,7 @@ const PAGE_DESC = 'Pulse is a free, open-source app that runs AI on your compute
       <ul class="nav__links" role="list">
         <li><a class="nav__link" href="/download/">Download</a></li>
         <li><a class="nav__link" href="/pricing/">Pricing</a></li>
+        <li><a class="nav__link" href="/faq/">FAQ</a></li>
       </ul>
       <div class="nav__right">
         <a class="btn btn--primary nav__cta" href="/download/">Get Pulse ↓</a>
@@ -66,6 +85,7 @@ const PAGE_DESC = 'Pulse is a free, open-source app that runs AI on your compute
     <a class="nav-drawer__link" href="/">Home</a>
     <a class="nav-drawer__link" href="/download/">Download</a>
     <a class="nav-drawer__link" href="/pricing/">Pricing</a>
+    <a class="nav-drawer__link" href="/faq/">FAQ</a>
     <a class="btn btn--primary nav-drawer__cta" href="/download/">Get Pulse ↓</a>
   </div>
 
@@ -234,6 +254,10 @@ const PAGE_DESC = 'Pulse is a free, open-source app that runs AI on your compute
   </main>
 
   <Footer license="Apache 2.0" version="" />
+
+  <!-- R128 SEO polish: SoftwareApplication JSON-LD for search engines.
+       Same data as the visible home page copy, no extra claims. -->
+  <script type="application/ld+json" set:html={JSON.stringify(softwareAppJsonLd)} />
 
   <script is:inline>
     (() => {
