@@ -166,7 +166,7 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ownlocalml
           });
 
           // Smooth-scroll handled by html { scroll-behavior: smooth } in global.css;
-          // we just need to refresh visibility when hash changes.
+          // need to refresh visibility when hash changes.
           cta.querySelector('[data-sticky-cta-link]')?.addEventListener('click', () => {
             // give smooth-scroll a moment, then force-hide
             setTimeout(hideCta, 50);

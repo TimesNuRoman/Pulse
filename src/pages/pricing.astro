@@ -2,13 +2,13 @@
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 
-// R116: real /pricing/ page with Free + PRO Monthly + PRO Annual tiers.
-// Roman's GTM (locked 2026-08-02): freemium + subscription, monthly +
-// annual only, no lifetime, anonymous team. Polar.sh placeholder
-// checkout URLs land at the gated features when v0.7 ships (R118).
+// R120 site simplify: pricing page, three plain tiers, no jargon.
+// PRO unlocks multi-model switching, code-aware chat, voice input,
+// and web search. Polar.sh handles billing. No student discount at
+// launch. Anonymous team — no founder credit, no first-person voice.
 
 const PAGE_TITLE = 'Pricing — Pulse is free, plus PRO for power users';
-const PAGE_DESC = 'Pulse is local-first and open source. The Free tier covers text chat, local notes, and one LLM model on Windows and Android. PRO adds multi-model hot-swap, tree-sitter code intelligence, voice input, web search, and priority updates. Monthly $5 or annual $48 (save 20%). Apache 2.0.';
+const PAGE_DESC = 'Pulse is free, open source, and runs on your device. PRO adds multiple AI models, code-aware chat, voice input, and web search. Monthly $5 or annual $48. Apache 2.0.';
 
 const tiers = [
   {
@@ -16,18 +16,17 @@ const tiers = [
     price: '$0',
     period: 'forever',
     tag: 'Open source',
-    description: 'Everything you need to run a local-first AI workspace, no account, no telemetry.',
+    description: 'Everything most people need to run Pulse on a Windows desktop or Android phone.',
     cta: 'Get Pulse',
     href: '/download/',
     primary: false,
     features: [
-      'Text chat with local AI',
-      'One LLM model (bring your own GGUF)',
-      'Smart engine for context recall',
-      'Local notes with [[wikilinks]]',
+      'Text chat with a local AI model',
+      'One model on your device (bring your own)',
+      'Local notes with backlinks and tags',
       'Pulse for Windows + Android',
       'Apache 2.0 source on GitHub',
-      'No telemetry, no account needed',
+      'No telemetry, no account',
     ],
   },
   {
@@ -41,10 +40,10 @@ const tiers = [
     primary: false,
     features: [
       'Everything in Free',
-      'Multiple LLM models + hot-swap',
-      'Tree-sitter code intelligence',
-      'Voice input (Whisper STT)',
-      'Web search (Habr, YouTube)',
+      'Switch between multiple AI models',
+      'Code-aware chat in any language',
+      'Voice input for hands-free notes',
+      'Web search for fresh answers',
       'Priority updates',
       'Email support, 48h response',
     ],
@@ -54,7 +53,7 @@ const tiers = [
     price: '$48',
     period: 'per year',
     tag: 'Save 20%',
-    description: 'Same PRO features as monthly, billed yearly. Equivalent of $4 per month, two months free.',
+    description: 'Same PRO features as monthly, billed yearly. Two months free.',
     cta: 'Start Annual',
     href: 'https://buy.polar.sh/pulse-annual',
     primary: true,
@@ -70,25 +69,24 @@ const tiers = [
 ];
 
 const comparisonRows = [
-  { label: 'Text chat with local AI',                       free: 'yes', pro: 'yes' },
-  { label: 'Local notes with [[wikilinks]]',                 free: 'yes', pro: 'yes' },
-  { label: 'Smart engine for context recall',                free: 'yes', pro: 'yes' },
-  { label: 'Pulse for Windows + Android',                    free: 'yes', pro: 'yes' },
-  { label: 'Apache 2.0 source on GitHub',                    free: 'yes', pro: 'yes' },
-  { label: 'No telemetry, no account required',             free: 'yes', pro: 'yes' },
-  { label: 'Multiple LLM models + hot-swap',                 free: 'no',  pro: 'yes' },
-  { label: 'Tree-sitter code intelligence',                 free: 'no',  pro: 'yes' },
-  { label: 'Voice input (Whisper STT)',                     free: 'no',  pro: 'yes' },
-  { label: 'Web search (Habr, YouTube)',                     free: 'no',  pro: 'yes' },
-  { label: 'Cross-device sync (R120)',                       free: 'no',  pro: 'yes' },
-  { label: 'Priority updates',                               free: 'no',  pro: 'yes' },
-  { label: 'Support response time',                          free: 'Community Discord', pro: 'Email, 48h' },
+  { label: 'Text chat with a local AI model',                 free: 'yes', pro: 'yes' },
+  { label: 'Local notes with backlinks and tags',             free: 'yes', pro: 'yes' },
+  { label: 'Pulse for Windows + Android',                     free: 'yes', pro: 'yes' },
+  { label: 'Apache 2.0 source on GitHub',                     free: 'yes', pro: 'yes' },
+  { label: 'No telemetry, no account required',               free: 'yes', pro: 'yes' },
+  { label: 'Switch between multiple AI models',               free: 'no',  pro: 'yes' },
+  { label: 'Code-aware chat',                                 free: 'no',  pro: 'yes' },
+  { label: 'Voice input',                                     free: 'no',  pro: 'yes' },
+  { label: 'Web search',                                      free: 'no',  pro: 'yes' },
+  { label: 'Cross-device sync',                               free: 'no',  pro: 'yes' },
+  { label: 'Priority updates',                                free: 'no',  pro: 'yes' },
+  { label: 'Support response time',                           free: 'Community Discord', pro: 'Email, 48h' },
 ];
 
 const trustSignals = [
   {
     title: 'Anonymous team',
-    body: 'No founder photos, no "About us" with bios, no personal names in the credits. The team behind Pulse goes by "the Pulse team" because the code is the credit.',
+    body: 'No founder photos, no team bio page with names, no personal credits. The team behind Pulse stays anonymous because the code is the credit.',
   },
   {
     title: 'Apache 2.0 licensed',
@@ -100,7 +98,7 @@ const trustSignals = [
   },
   {
     title: 'Hosted on your device',
-    body: 'Notes live in a local SQLite database on your device. Chats are processed by a local model. PRO only validates your license key against our server — your content never leaves the device.',
+    body: 'Notes live in a local database on your device. Chats are processed by a local model. PRO only validates your license key against the license server — your content never leaves the device.',
   },
 ];
 
@@ -111,19 +109,19 @@ const faqs = [
   },
   {
     q: 'What happens to my notes and chats if I unsubscribe from PRO?',
-    a: 'Pulse is local-first. Your notes stay in the local SQLite database and your chats stay in the local log files. Removing the PRO license key only hides the gated features (multi-model hot-swap, code intelligence, voice input, web search). You do not lose any data, and the free features keep working exactly as before.',
+    a: 'Pulse is local-first. Your notes stay in the local database and your chats stay in the local log files. Removing the PRO license key only hides the gated features (multi-model switching, code-aware chat, voice input, web search). You do not lose any data, and the free features keep working exactly as before.',
   },
   {
     q: 'Do you offer refunds?',
-    a: 'Yes — 14-day money-back on any PRO purchase, no questions asked. Email the support address from your receipt and the refund goes through the same channel you paid with (Polar.sh handles the billing). After 14 days, annual plans can still be canceled but are not refunded for the unused months.',
+    a: 'Yes — 14-day money-back on any PRO purchase, no questions asked. Email the support address from your receipt and the refund goes through the same channel you paid with. After 14 days, annual plans can still be canceled but are not refunded for the unused months.',
   },
   {
     q: 'Is my data private?',
-    a: 'Yes. Notes, chats, voice transcriptions, and code-intel caches never leave your device. The PRO license check sends only an opaque key to the Pulse license server, and that key is not tied to any content. Pulse does not run an analytics SDK, an error reporter, or a "phone home" endpoint. The Apache 2.0 source is on GitHub so you can audit the network calls yourself.',
+    a: 'Yes. Notes, chats, voice transcriptions, and code-aware chat caches never leave your device. The PRO license check sends only an opaque key to the license server, and that key is not tied to any content. Pulse does not run an analytics SDK, an error reporter, or a "phone home" endpoint. The Apache 2.0 source is on GitHub so you can audit the network calls yourself.',
   },
   {
     q: 'Can I use Pulse offline?',
-    a: 'Yes. The desktop app, the local model (Ollama), the notes database, and the chat history all work without a network connection. PRO has a 14-day offline grace period: the app pings the license server once per day on cold start, and the license keeps validating locally for 14 days after the last successful ping. After that, gated features pause until the next online check.',
+    a: 'Yes. The desktop app, the local model, the notes database, and the chat history all work without a network connection. PRO has a 14-day offline grace period: the app pings the license server once per day on cold start, and the license keeps validating locally for 14 days after the last successful ping. After that, gated features pause until the next online check.',
   },
   {
     q: 'Will Pulse stay open source?',
@@ -131,11 +129,11 @@ const faqs = [
   },
   {
     q: 'How do I install Pulse?',
-    a: 'Go to <a href="/download/">/download/</a> and pick your platform. Pulse for Windows is a 12 MB Tauri v2 side-panel installer (NSIS or MSI). Pulse for Android is a 1.29 MB APK. Both are signed binaries with SHA-256 checksums published on the download page. No account, no email, no activation server roundtrip for the Free tier.',
+    a: 'Go to <a href="/download/">/download/</a> and pick your platform. Pulse for Windows is a 12 MB side-panel installer (NSIS or MSI). Pulse for Android is a 1.29 MB APK. Both are signed binaries with SHA-256 checksums published on the download page. No account, no email, no activation server roundtrip for the Free tier.',
   },
   {
     q: 'Do you offer student or education discounts?',
-    a: 'Not at launch. A 50% discount with a verified .edu email address is on the roadmap for PRO Monthly and PRO Annual, gated behind the same Polar.sh checkout. If you are a student who cannot wait, email the support address and we will work something out for the current term.',
+    a: 'Not at launch.',
   },
 ];
 ---
@@ -165,11 +163,7 @@ const faqs = [
         <span class="nav__brand-name">Pulse</span>
       </a>
       <ul class="nav__links" role="list">
-        <li><a class="nav__link" href="/#why">Why</a></li>
-        <li><a class="nav__link" href="/#new">What is new</a></li>
         <li><a class="nav__link" href="/download/">Download</a></li>
-        <li><a class="nav__link" href="/compare/">Compare</a></li>
-        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
         <li><a class="nav__link" href="/pricing/" aria-current="page">Pricing</a></li>
       </ul>
       <div class="nav__right">
@@ -187,11 +181,7 @@ const faqs = [
 
   <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
     <a class="nav-drawer__link" href="/">Home</a>
-    <a class="nav-drawer__link" href="/#why">Why Pulse</a>
-    <a class="nav-drawer__link" href="/#new">What is new</a>
     <a class="nav-drawer__link" href="/download/">Download</a>
-    <a class="nav-drawer__link" href="/compare/">Compare</a>
-    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
     <a class="nav-drawer__link" href="/pricing/" aria-current="page">Pricing</a>
     <a class="btn btn--primary nav-drawer__cta" href="/download/" rel="noopener noreferrer">Get Pulse ↓</a>
   </div>
@@ -387,7 +377,7 @@ const faqs = [
       <div class="container">
         <header class="pr-faq__head reveal">
           <span class="eyebrow">FAQ</span>
-          <h2>The questions we get most often.</h2>
+          <h2>Common questions.</h2>
         </header>
         <div class="pr-faq__list">
           {faqs.map((f, i) => (

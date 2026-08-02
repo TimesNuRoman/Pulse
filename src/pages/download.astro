@@ -3,13 +3,11 @@ import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/notes.css';
 
-// R116: Pulse for Windows bumped v0.6.5 to v0.6.7 (R100 build-infra fixes
-// + R115 R114-audit quick win #1, SPDX headers). Android stays on v0.6.6.
-// Build artifact is on the local disk; the /downloads/ paths below are the
-// canonical landing-site surface (404 until the artifact is mirrored to
-// public/, per the r116 brief). UA-based JS reorder: mobile → Android
-// first, desktop → Windows first. Same SHA-256 + "what is new" link per
-// platform.
+// R120 site simplify: download surface for the user-facing site.
+// Keeps the platform details (NSIS / MSI, SHA-256, size, min OS) — those
+// are required to verify a binary before running it. Strips round
+// numbers and implementation jargon. UA-based JS reorder: mobile →
+// Android first, desktop → Windows first.
 
 const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
 const APK_SIZE = '1.29 MB';
@@ -22,12 +20,6 @@ const APK_MIN_SDK = '24';
 const APK_TARGET_SDK = '36';
 
 const WIN_VERSION = '0.6.7';
-// TODO(R116): the v0.6.7 NSIS + MSI artifacts are on the local disk and
-// not yet mirrored to a public CDN. /downloads/ 404s until then. Roman
-// uploads pulse-desktop target/release/Pulse_0.6.7_x64-setup.exe and
-// the matching MSI to the public/downloads/ folder when the host is
-// ready. The SHA-256 + size below are the verified fingerprints from
-// the R115 build on feat/r115-v067-release-prep.
 const WIN_EXE = `/downloads/Pulse_${WIN_VERSION}_x64-setup.exe`;
 const WIN_MSI = `/downloads/Pulse_${WIN_VERSION}_x64_en-US.msi`;
 const WIN_SIZE_EXE = '12.27 MB';
@@ -36,10 +28,9 @@ const WIN_SHA_EXE = '08FD2FB2…3F8E65';
 const WIN_SHA_MSI = 'D246AFFC…2AD2982D';
 const WIN_MIN_OS = 'Windows 10 (build 17763)';
 const WIN_BUILD_TARGET = 'x86_64-pc-windows-msvc';
-const WIN_TAURI = 'Tauri 2.11.4';
 
-const PAGE_TITLE = 'Download Pulse — Windows desktop v0.6.7 + Android v0.6.6';
-const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS 12.27 MB / MSI 16.94 MB, v0.6.7, SHA-256 08FD2FB2…3F8E65) and Pulse for Android (markdown notes, 1.29 MB APK, v0.6.6, SHA-256 AD6E3302…45BAB5). Local-first, Apache 2.0, no cloud.';
+const PAGE_TITLE = 'Download Pulse — for Windows or Android';
+const PAGE_DESC = 'Pulse is free and open source. Download Pulse for Windows (NSIS or MSI installer) or Pulse for Android (APK). Both are local-first, Apache 2.0, no account or telemetry.';
 ---
 
 <Base
@@ -67,11 +58,7 @@ const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS 12.27 MB / MSI 1
         <span class="nav__brand-name">Pulse</span>
       </a>
       <ul class="nav__links" role="list">
-        <li><a class="nav__link" href="/#why">Why</a></li>
-        <li><a class="nav__link" href="/#new">What is new</a></li>
         <li><a class="nav__link" href="/download/" aria-current="page">Download</a></li>
-        <li><a class="nav__link" href="/compare/">Compare</a></li>
-        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
         <li><a class="nav__link" href="/pricing/">Pricing</a></li>
       </ul>
       <div class="nav__right">
@@ -89,11 +76,7 @@ const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS 12.27 MB / MSI 1
 
   <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
     <a class="nav-drawer__link" href="/">Home</a>
-    <a class="nav-drawer__link" href="/#why">Why Pulse</a>
-    <a class="nav-drawer__link" href="/#new">What is new</a>
     <a class="nav-drawer__link" href="/download/" aria-current="page">Download</a>
-    <a class="nav-drawer__link" href="/compare/">Compare</a>
-    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
     <a class="nav-drawer__link" href="/pricing/">Pricing</a>
     <a class="btn btn--primary nav-drawer__cta" href={APK_URL} rel="noopener noreferrer">Get Pulse ↓ {APK_SIZE}</a>
   </div>
@@ -146,11 +129,10 @@ const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS 12.27 MB / MSI 1
             One app.<br />Two devices. <span class="notes-hero__hl">Same Pulse.</span>
           </h1>
           <p class="dl-hero__sub">
-            Pulse for Windows is a Tauri&nbsp;v2 side panel that talks to local Ollama
-            — the desktop surface, NSIS or MSI installer. Pulse for Android is a
-            greenfield markdown editor with <code>[[wikilink]]</code>, tag autocomplete,
-            voice input, and an in-app update checker — the 1.29&nbsp;MB APK. Both are
-            Apache&nbsp;2.0. Both are local-first. Pick your platform and download.
+            Pulse for Windows is a desktop side panel that talks to a local
+            AI model on your machine. Pulse for Android is a markdown note
+            editor with backlinks, tags, and voice input. Both are
+            Apache&nbsp;2.0. Both are local-first. Pick your platform below.
           </p>
           <ul class="dl-hero__platforms" role="list" aria-label="Jump to platform">
             <li><a class="btn btn--ghost btn--lg" href="#windows">Pulse for Windows ↓</a></li>
@@ -172,17 +154,14 @@ const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS 12.27 MB / MSI 1
               v{WIN_VERSION}
             </span>
           </header>
-          <h2 class="dl-card__title">A Tauri v2 side panel for Windows.</h2>
+          <h2 class="dl-card__title">A side panel for your Windows desktop.</h2>
           <p class="dl-card__body">
-            Pulse for Windows sits in the system tray and opens with a global
-            hotkey. It talks to a local Ollama instance on
-            <code>127.0.0.1:11434</code> and keeps prompts, screenshots, and
-            voice on the device. The installer ships as NSIS (per-user) or
-            MSI (per-machine). The MSI is the one for IT departments; the
-            NSIS is the one for individual installs. v0.6.7 is the R115
-            retag of v0.6.5 — R100 build-infra fixes (prebuild-kill.ps1
-            kills orphan ollama.exe, Cargo.lock 0.6.5 sync) and the R115
-            R114-audit quick win #1 (Apache 2.0 SPDX headers).
+            Pulse for Windows sits in the system tray and opens with a
+            global hotkey. It talks to a local model that runs on your
+            machine. Prompts, screenshots, and voice stay on the device.
+            The installer ships as NSIS (per-user) or MSI (per-machine).
+            The MSI is the one for IT departments; the NSIS is the one for
+            individual installs.
           </p>
           <div class="dl-card__ctas">
             <a class="btn btn--primary btn--lg" href={WIN_EXE} rel="noopener noreferrer">
@@ -214,18 +193,13 @@ const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS 12.27 MB / MSI 1
               <dd><code class="dl-card__sha">{WIN_SHA_MSI}</code></dd>
             </div>
             <div class="dl-card__meta-row">
-              <dt>tauri</dt>
-              <dd>{WIN_TAURI}</dd>
-            </div>
-            <div class="dl-card__meta-row">
               <dt>license</dt>
               <dd>Apache 2.0</dd>
             </div>
           </dl>
           <p class="dl-card__more">
-            What is new in v{WIN_VERSION}? See the
-            <a href="/changelog/#v0.6.7">v{WIN_VERSION} release notes</a> (Windows desktop
-            retag 0.6.5 → 0.6.7, R115). Pulse for Android stays on v0.6.6.
+            Need the full version history? See the
+            <a href="/changelog/">changelog</a>.
           </p>
         </article>
 
@@ -237,22 +211,21 @@ const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS 12.27 MB / MSI 1
               v{APK_VERSION} · versionCode {APK_VERSION_CODE}
             </span>
           </header>
-          <h2 class="dl-card__title">A greenfield markdown editor for Android.</h2>
+          <h2 class="dl-card__title">A markdown editor for your Android phone.</h2>
           <p class="dl-card__body">
-            Pulse for Android is written from scratch on Svelte&nbsp;5 + TypeScript strict
-            with CodeMirror&nbsp;6, <code>[[wikilink]]</code> backlinks, tag autocomplete,
-            voice input, and an in-app update checker. The v0.6.6 release ships the
-            P1 trio: backup rules now exclude <code>app_webview/</code> from cloud
-            backup and device transfer, voice input is the 8th tool in the
-            NotesView toolbar, and the Settings view (Profile, Theme, About,
-            Actions) opens from a gear button.
+            Pulse for Android is a note editor with
+            <code>[[wikilink]]</code> backlinks, tag autocomplete, voice
+            input, and full-text search. Notes live on the device — the
+            app does not upload them. Backup rules keep the WebView cache
+            off cloud-backup and device-transfer. Settings (profile, theme,
+            about, actions) open from a gear button in the toolbar.
           </p>
           <div class="dl-card__ctas">
             <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
               Download APK ↓ {APK_SIZE}
             </a>
-            <a class="btn btn--ghost btn--lg" href="/changelog/#v0.6.6">
-              What is new in v{APK_VERSION}
+            <a class="btn btn--ghost btn--lg" href="/changelog/">
+              Full changelog
             </a>
           </div>
           <dl class="dl-card__meta">
@@ -282,40 +255,38 @@ const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS 12.27 MB / MSI 1
             </div>
             <div class="dl-card__meta-row">
               <dt>signing</dt>
-              <dd>R93b release.keystore · v2 + v3</dd>
+              <dd>Release keystore · v2 + v3</dd>
             </div>
           </dl>
           <p class="dl-card__more">
-            <a href="/changelog/#v0.6.6">Full v{APK_VERSION} release notes →</a> ·
             <a href="/privacy/">Privacy &amp; data model</a>
           </p>
         </article>
       </div>
     </section>
 
-    <!-- ─── One product, two surfaces (R104 unification) ── -->
+    <!-- ─── One product, two surfaces ── -->
     <section class="dl-unified">
       <div class="container dl-unified__inner reveal">
         <span class="eyebrow">One product · two surfaces</span>
-        <h2>Same code path on Windows and Android.</h2>
+        <h2>Same data model on Windows and Android.</h2>
         <p class="lede">
-          The Android v0.6.x line and the Windows v0.6.x line share the same
-          Smart Engine v3 router, the same Recall gate, the same local-first
-          data model, and the same Apache 2.0 license. They differ in input
-          modality and platform idioms — a tray icon and hotkey on Windows,
-          a bottom toolbar and share intent on Android. v0.7 is the planned
-          opt-in E2E sync release that ties the two surfaces together.
+          Pulse for Windows and Pulse for Android share the same local-first
+          data model and the same Apache 2.0 license. They differ in
+          input: a tray icon and global hotkey on Windows, a bottom
+          toolbar and share intent on Android. Notes and chats never
+          leave the device they were written on.
         </p>
         <div class="dl-unified__grid">
-          <a class="dl-unified__link glass" href="/compare/">
-            <span class="dl-unified__link-eyebrow">Compare</span>
-            <span class="dl-unified__link-title">Pulse vs Raycast AI, Notion AI, AnythingLLM, LM Studio, Ollama</span>
-            <span class="dl-unified__link-meta">10 features · 0 affiliate links</span>
-          </a>
           <a class="dl-unified__link glass" href="/pricing/">
             <span class="dl-unified__link-eyebrow">Pricing</span>
             <span class="dl-unified__link-title">Free, forever</span>
             <span class="dl-unified__link-meta">Apache 2.0 · no paid tier</span>
+          </a>
+          <a class="dl-unified__link glass" href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">
+            <span class="dl-unified__link-eyebrow">Source</span>
+            <span class="dl-unified__link-title">Read the code on GitHub</span>
+            <span class="dl-unified__link-meta">Audit the network calls · fork it</span>
           </a>
         </div>
       </div>
@@ -324,7 +295,7 @@ const PAGE_DESC = 'Pulse for Windows (Tauri v2 side panel, NSIS 12.27 MB / MSI 1
 
   <Footer license="Apache 2.0" version={`v${APK_VERSION} / v${WIN_VERSION}`} />
 
-  <!-- R104: UA-based reorder. mobile → Android first; desktop → Windows first.
+  <!-- UA-based reorder. mobile → Android first; desktop → Windows first.
        Uses CSS order: property with a UA class so screen-readers see a stable
        document order (Android article second) but the visual order swaps.
        No-JS fallback: Android first (matches the mobile-primary audience). -->

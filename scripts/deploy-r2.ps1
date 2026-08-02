@@ -10,7 +10,12 @@ $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $true
 
 $BUCKET = 'pulse-landing'
-$DIST = Join-Path $PSScriptRoot '..\dist'
+# R120: Resolve-Path fixes the bug where $DIST was relative and
+# $_.FullName was absolute, making Substring($DIST.Length) cut into
+# the path and the upload key became a deep nested path instead of
+# the expected 'pulse-landing/index.html'. With absolute $DIST, the
+# rel-key is just the file path under dist/.
+$DIST = (Resolve-Path (Join-Path $PSScriptRoot '..\dist')).Path
 
 if (-not (Test-Path $DIST)) {
   throw "dist/ not found at $DIST. Run 'npm run build' first."

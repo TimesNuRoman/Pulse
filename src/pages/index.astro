@@ -3,33 +3,33 @@ import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/notes.css';
 
-// R104: unified landing. One brand (Pulse), two platform surfaces
-// (Windows + Android), one download CTA → /download/.
+// R120: site simplified for users. Strip roadmap / changelog /
+// implementation detail. Two product names (Pulse for Windows,
+// Pulse for Android), one download CTA, three plain bullets.
 //
-// Platform constants are duplicated from /download/ so the home page
-// can render platform pickers without an Astro island.
+// Brand rule: no first-person ("we", "I"), no founder credit, no
+// "team" personal voice — use "Pulse" or no subject.
 
 const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
 const APK_SIZE = '1.29 MB';
-const APK_VERSION = '0.6.6';
-const APK_VERSION_CODE = '16';
-const APK_SHA = 'AD6E3302…45BAB5';
+const WIN_NSIS_URL = '/downloads/Pulse_0.6.7_x64-setup.exe';
+const WIN_MSI_URL = '/downloads/Pulse_0.6.7_x64_en-US.msi';
+const WIN_NSIS_SIZE = '12.27 MB';
+const WIN_MSI_SIZE = '16.94 MB';
 
-const WIN_VERSION = '0.6.5';
-const WIN_NSIS_URL = `https://github.com/TimesNuRoman/pulse/releases/download/v${WIN_VERSION}/Pulse_${WIN_VERSION}_x64-setup.exe`;
-const WIN_MSI_URL = `https://github.com/TimesNuRoman/pulse/releases/download/v${WIN_VERSION}/Pulse_${WIN_VERSION}_x64_en-US.msi`;
-const WIN_SIZE = '~6.4 MB';
+const PAGE_TITLE = 'Pulse — Free desktop and Android app that runs AI on your machine';
+const PAGE_DESC = 'Pulse is a free, open-source app that runs AI on your computer or phone. Notes, chat, and your model stay on the device. No account, no cloud, no telemetry. Apache 2.0.';
 ---
 
 <Base
-  title="Pulse — local-first AI workspace. One app, every device."
-  description="Pulse is a local-first AI workspace. Pulse for Windows is a Tauri v2 side panel that talks to local Ollama. Pulse for Android is a greenfield markdown editor with [[wikilink]], voice input, and an in-app update checker. Both are Apache 2.0, both run on-device, both ship free. Windows v0.6.5 NSIS+MSI, Android v0.6.6 APK 1.29 MB."
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
   ogImage="/og-home.png"
   ctaText="Get Pulse ↓"
   ctaHref="/download/"
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion={`v${APK_VERSION} / v${WIN_VERSION}`}
+  footerVersion=""
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -46,11 +46,7 @@ const WIN_SIZE = '~6.4 MB';
         <span class="nav__brand-name">Pulse</span>
       </a>
       <ul class="nav__links" role="list">
-        <li><a class="nav__link" href="#why">Why</a></li>
-        <li><a class="nav__link" href="#new">What is new</a></li>
         <li><a class="nav__link" href="/download/">Download</a></li>
-        <li><a class="nav__link" href="/compare/">Compare</a></li>
-        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
         <li><a class="nav__link" href="/pricing/">Pricing</a></li>
       </ul>
       <div class="nav__right">
@@ -68,11 +64,7 @@ const WIN_SIZE = '~6.4 MB';
 
   <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
     <a class="nav-drawer__link" href="/">Home</a>
-    <a class="nav-drawer__link" href="#why">Why Pulse</a>
-    <a class="nav-drawer__link" href="#new">What is new</a>
     <a class="nav-drawer__link" href="/download/">Download</a>
-    <a class="nav-drawer__link" href="/compare/">Compare</a>
-    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
     <a class="nav-drawer__link" href="/pricing/">Pricing</a>
     <a class="btn btn--primary nav-drawer__cta" href="/download/">Get Pulse ↓</a>
   </div>
@@ -129,399 +121,136 @@ const WIN_SIZE = '~6.4 MB';
       <div class="bg-glow"></div>
       <div class="container home-hero__grid">
         <div class="home-hero__copy reveal">
-          <div class="home-hero__badges">
-            <span class="notes-hero__eyebrow">Pulse · Windows + Android</span>
-            <span class="notes-hero__pill" aria-label="Latest versions">
-              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Windows v{WIN_VERSION} · Android v{APK_VERSION}
-            </span>
-          </div>
           <h1 class="home-hero__title">
-            Local-first AI workspace.<br /><span class="notes-hero__hl">One app, every device.</span>
+            AI on your machine.<br /><span class="home-hero__hl">Not in someone else's cloud.</span>
           </h1>
           <p class="home-hero__sub">
-            Pulse is a local-first AI workspace that ships as one product on
-            two surfaces: a Tauri&nbsp;v2 side panel for Windows that talks
-            to a local Ollama instance, and a greenfield markdown editor for
-            Android with <code>[[wikilink]]</code> backlinks, voice input,
-            and an in-app update checker. Both are Apache&nbsp;2.0. Both run
-            on-device. Both ship free.
+            Pulse is a free desktop and Android app that runs AI on your
+            own device. Notes, chat, and your model stay local. No account,
+            no telemetry, no upload.
           </p>
           <div class="home-hero__ctas">
-            <a class="btn btn--primary btn--lg" href="/download/">Get Pulse ↓</a>
-            <a class="btn btn--ghost btn--lg" href="/compare/">See how it compares →</a>
+            <a class="btn btn--primary btn--lg" id="hero-download" href="/download/" rel="noopener noreferrer">Get Pulse ↓</a>
+            <a class="btn btn--ghost btn--lg" href="#what">See what it does →</a>
           </div>
-          <ul class="home-hero__stats" role="list" aria-label="Pulse highlights">
-            <li class="home-hero__stat">
-              <span class="home-hero__stat-num">2</span>
-              <span class="home-hero__stat-label">surfaces</span>
-            </li>
-            <li class="home-hero__stat-sep" aria-hidden="true">·</li>
-            <li class="home-hero__stat">
-              <span class="home-hero__stat-num">1<span class="home-hero__stat-unit">.29&nbsp;MB</span></span>
-              <span class="home-hero__stat-label">Android APK</span>
-            </li>
-            <li class="home-hero__stat-sep" aria-hidden="true">·</li>
-            <li class="home-hero__stat">
-              <span class="home-hero__stat-num">~6<span class="home-hero__stat-unit">.4&nbsp;MB</span></span>
-              <span class="home-hero__stat-label">Windows installer</span>
-            </li>
-            <li class="home-hero__stat-sep" aria-hidden="true">·</li>
-            <li class="home-hero__stat">
-              <span class="home-hero__stat-num">0</span>
-              <span class="home-hero__stat-label">cloud, telemetry, accounts</span>
-            </li>
-          </ul>
+          <p class="home-hero__meta">Free · Apache 2.0 · Windows + Android</p>
         </div>
       </div>
     </section>
 
-    <!-- ─── Platform pickers (R104: split Windows + Android) ─ -->
-    <section class="home-pickers" id="download">
-      <div class="container home-pickers__inner">
-        <header class="home-pickers__head reveal">
-          <span class="eyebrow">Pick your device</span>
-          <h2>One product. Two platforms. Same Pulse.</h2>
-          <p class="lede">
-            Both surfaces share the Smart Engine v3 router, the local-first
-            data model, and the Apache 2.0 license. They differ in input
-            modality and platform idioms — a tray icon and hotkey on
-            Windows, a bottom toolbar and share intent on Android.
-          </p>
-        </header>
-        <div class="home-pickers__grid">
-          <article class="home-picker glass reveal" data-picker="windows">
-            <span class="home-picker__platform">Pulse for Windows</span>
-            <h3 class="home-picker__title">A side panel that talks to local Ollama.</h3>
-            <p class="home-picker__body">
-              Tauri&nbsp;v2 tray app on Windows 10/11. NSIS or MSI
-              installer. Prompts, screenshots, and voice stay on the
-              device. The model is yours to choose (Llama&nbsp;3,
-              Qwen&nbsp;2.5, Mistral, Gemma&nbsp;2, Phi-3, DeepSeek).
-            </p>
-            <ul class="home-picker__meta" role="list">
-              <li><span>v{WIN_VERSION}</span><span>NSIS · MSI</span></li>
-              <li><span>{WIN_SIZE}</span><span>per installer</span></li>
-              <li><span>Apache 2.0</span><span>no telemetry</span></li>
-            </ul>
-            <div class="home-picker__ctas">
-              <a class="btn btn--primary" href="/download/#windows">Get Pulse for Windows ↓</a>
-            </div>
-          </article>
-          <article class="home-picker glass reveal" data-picker="android">
-            <span class="home-picker__platform">Pulse for Android</span>
-            <h3 class="home-picker__title">A greenfield markdown editor, on the phone.</h3>
-            <p class="home-picker__body">
-              Svelte&nbsp;5 + TypeScript strict + CodeMirror&nbsp;6 with
-              <code>[[wikilink]]</code> backlinks, tag autocomplete, voice
-              input, and an in-app update checker. Notes live in a local
-              SQLite database, FTS5 search on the same file.
-            </p>
-            <ul class="home-picker__meta" role="list">
-              <li><span>v{APK_VERSION}</span><span>{APK_SIZE} APK</span></li>
-              <li><span>SHA-256</span><span><code class="home-picker__sha">{APK_SHA}</code></span></li>
-              <li><span>Apache 2.0</span><span>304/304 vitest</span></li>
-            </ul>
-            <div class="home-picker__ctas">
-              <a class="btn btn--primary" href="/download/#android">Get Pulse for Android ↓ {APK_SIZE}</a>
-            </div>
-          </article>
-        </div>
-        <p class="home-pickers__more reveal">
-          Full release notes live on
-          <a href="/changelog/">/changelog/</a> · pricing on
-          <a href="/pricing/">/pricing/</a> · side-by-side matrix on
-          <a href="/compare/">/compare/</a>
-        </p>
-      </div>
-    </section>
-
-    <!-- ─── Why Pulse ──────────────────────────────────── -->
-    <section class="why" id="why">
+    <!-- ─── What Pulse does ──────────────────────────── -->
+    <section class="home-what" id="what">
       <div class="container">
-        <header class="why__head reveal">
-          <span class="eyebrow">Why Pulse</span>
-          <h2>Three things. No roadmap.</h2>
-          <p class="lede">
-            Pulse does three things and does them on device — on Windows
-            and on Android — with no account, no telemetry, and no
-            network round-trip you did not trigger yourself.
-          </p>
+        <header class="home-what__head reveal">
+          <span class="eyebrow">What Pulse does</span>
+          <h2>Three things. On your device.</h2>
         </header>
-        <div class="why__grid">
-          <article class="why__card glass reveal">
-            <span class="why__card-label">Local-first</span>
-            <h3 class="why__card-title">Your data never leaves the device.</h3>
-            <p class="why__card-body">
-              On Windows, Pulse talks to a local Ollama instance on
-              <code>127.0.0.1:11434</code>. On Android, Pulse Notes
-              stores everything in a local SQLite database with FTS5
-              search on the same file. The recall step is the same
-              local model that runs chat. Nothing crosses the
-              network boundary.
+        <ul class="home-what__list" role="list">
+          <li class="home-what__item reveal">
+            <h3>Talk to your notes.</h3>
+            <p>
+              Write in plain markdown on Windows or Android. Ask Pulse to
+              summarize, search, or link them.
             </p>
-            <ul class="why__card-list" role="list">
-              <li>No accounts. No signup. No cloud.</li>
-              <li>Opt-in E2E sync planned for v0.7 — disabled by default.</li>
-              <li>The <code>notes.db</code> file is plain SQLite.</li>
-            </ul>
-          </article>
-          <article class="why__card glass reveal">
-            <span class="why__card-label">Smart</span>
-            <h3 class="why__card-title">Smart Engine v3 routes the right model for the query.</h3>
-            <p class="why__card-body">
-              v3 prefers the right model for the query 32&nbsp;percentage
-              points more often than the v2 baseline, and answers land
-              in roughly a seventh of the time. v0.6.0 ships with v3
-              as the default, threshold&nbsp;5, on both surfaces. The
-              harness logs every call to
-              <code>data/smart-engine-v3-ab-*.jsonl</code> for inspection.
+          </li>
+          <li class="home-what__item reveal">
+            <h3>Bring your own AI model.</h3>
+            <p>
+              Connect any local model that runs on your machine. Pulse does
+              not lock you to a provider.
             </p>
-            <ul class="why__card-list" role="list">
-              <li>Pass-rate +32&nbsp;pp vs v2 baseline (88% absolute).</li>
-              <li>p50 latency −1370&nbsp;ms vs v2 baseline.</li>
-              <li>Threshold&nbsp;5, default ON on both surfaces.</li>
-            </ul>
-          </article>
-          <article class="why__card glass reveal">
-            <span class="why__card-label">Open</span>
-            <h3 class="why__card-title">Apache 2.0 across both surfaces.</h3>
-            <p class="why__card-body">
-              Read the code, fork the build, ship a competing product.
-              The same Apache 2.0 license covers the Windows desktop
-              Tauri build, the Android Capacitor 8 + Svelte 5 build,
-              and this site. No "Pro" tier, no "Enterprise" SKU, no
-              premium model hidden behind a paywall.
+          </li>
+          <li class="home-what__item reveal">
+            <h3>Everything stays on your device.</h3>
+            <p>
+              Your notes, your chats, and your model never leave the
+              computer or phone you installed Pulse on.
             </p>
-            <ul class="why__card-list" role="list">
-              <li>1.29&nbsp;MB Android APK, versionCode {APK_VERSION_CODE}.</li>
-              <li>~6.4&nbsp;MB Windows NSIS installer.</li>
-              <li>0 emoji, dark only, no marketing copy.</li>
-            </ul>
-          </article>
-        </div>
+          </li>
+        </ul>
       </div>
     </section>
 
-    <!-- ─── What's new in v0.6.x (timeline) ────────────── -->
-    <section class="timeline" id="new">
+    <!-- ─── Get Pulse: two cards ─────────────────────── -->
+    <section class="home-get" id="get">
       <div class="container">
-        <header class="timeline__head reveal">
-          <span class="eyebrow">What is new in v0.6.x</span>
-          <h2>Six Android releases and the v0.6.5 Windows build.</h2>
+        <header class="home-get__head reveal">
+          <span class="eyebrow">Get Pulse</span>
+          <h2>Pick your device.</h2>
           <p class="lede">
-            v0.6.0 was the greenfield Android rewrite. v0.6.1 brought the
-            app icon and splash. v0.6.2 shipped the new onboarding. v0.6.3
-            revived the in-app UpdateChecker. v0.6.4 added the manifest
-            URL fallback chain. v0.6.5 grew the chain to 7 hosts and
-            shipped the v0.6.5 Windows desktop build. v0.6.6 closes the
-            Android P1 audit: backup rules, voice input, and Settings
-            view.
+            Both versions are the same Pulse. Different install, same data
+            model, same Apache 2.0 license.
           </p>
         </header>
-        <ol class="timeline__list" role="list">
-          <li class="timeline__item reveal" id="v066">
-            <div class="timeline__rail" aria-hidden="true">
-              <span class="timeline__dot"></span>
+        <div class="home-get__grid">
+          <article class="home-get__card glass reveal" data-pick="windows">
+            <span class="home-get__platform">Pulse for Windows</span>
+            <h3 class="home-get__title">A side panel for your desktop.</h3>
+            <p class="home-get__body">
+              Lives in the system tray, opens with a global hotkey, talks
+              to a local model on your machine. NSIS installer (per-user)
+              or MSI (per-machine). Runs on Windows 10 and 11.
+            </p>
+            <div class="home-get__ctas">
+              <a class="btn btn--primary" href={WIN_NSIS_URL} rel="noopener noreferrer">Download for Windows ↓ {WIN_NSIS_SIZE}</a>
+              <a class="btn btn--ghost" href="/download/#windows">All Windows downloads</a>
             </div>
-            <div class="timeline__body">
-              <time class="timeline__date" datetime="2026-08-02">2026-08-02</time>
-              <span class="timeline__tag">latest android</span>
-              <h3 class="timeline__title">v0.6.6 — P1 trio: backup rules, voice input, Settings view</h3>
-              <p class="timeline__copy">
-                The Android P1 audit (Roman, 2026-08-02) closes on three
-                fronts. Backup rules now exclude
-                <code>app_webview/</code> from both cloud backup and
-                device transfer. Voice input (SpeechRecognition) is the
-                8th tool in the NotesView toolbar. The Settings view
-                (Profile, Theme, About, Actions) opens from a gear
-                button in NotesView. 304/304 vitest, 1.29&nbsp;MB APK,
-                SHA-256 <code>{APK_SHA}</code>.
-              </p>
-              <ul class="timeline__bullets" role="list">
-                <li>Backup rules: <code>android:allowBackup="false"</code> for the WebView path; <code>android:dataExtractionRules</code> excludes <code>app_webview/</code> from both cloud-backup and device-transfer.</li>
-                <li>Voice input: webkitSpeechRecognition + Android SpeechRecognizer (Capacitor 8 plugin). 3-state visual (idle / listening / finalizing). Locale auto-detect; falls back to en-US.</li>
-                <li>Settings view: 4 sections — Profile, Theme, About, Actions. All read from the local store, zero network calls.</li>
-                <li>302/302 → 304/304 vitest. versionCode 15 → 16. APK 1.35 → 1.29&nbsp;MB.</li>
-                <li>SHA-256 <code>{APK_SHA}</code>. R93b release.keystore (CN=Pulse, O=Lesside, L=Brest, ST=Brest, C=BY). v1 disabled in R95a; v0.6.6 builds on the same v2+v3 path.</li>
-              </ul>
+          </article>
+          <article class="home-get__card glass reveal" data-pick="android">
+            <span class="home-get__platform">Pulse for Android</span>
+            <h3 class="home-get__title">A markdown editor for your phone.</h3>
+            <p class="home-get__body">
+              Write notes with backlinks, tags, and voice input. Find
+              anything with full-text search. Sideload the APK — no Play
+              Store account required.
+            </p>
+            <div class="home-get__ctas">
+              <a class="btn btn--primary" href={APK_URL} rel="noopener noreferrer">Download APK ↓ {APK_SIZE}</a>
+              <a class="btn btn--ghost" href="/download/#android">Android details</a>
             </div>
-          </li>
-          <li class="timeline__item reveal" id="v065">
-            <div class="timeline__rail" aria-hidden="true">
-              <span class="timeline__dot"></span>
-            </div>
-            <div class="timeline__body">
-              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
-              <span class="timeline__tag">windows</span>
-              <h3 class="timeline__title">v0.6.5 — Windows desktop build + manifest chain grown to 7</h3>
-              <p class="timeline__copy">
-                R100 shipped the v0.6.5 Windows desktop build (Tauri&nbsp;v2,
-                NSIS + MSI, ~6.4&nbsp;MB installer). On the Android side,
-                R93 grew <code>DEFAULT_MANIFEST_URLS</code> from 5 to 7
-                entries. R92 and R90 are added at the head, so v0.6.5+
-                devices can auto-update forward even if the older hosts
-                go down. v0.6.3 and v0.6.4 users need to side-load
-                v0.6.5 once.
-              </p>
-              <ul class="timeline__bullets" role="list">
-                <li>Windows: Tauri 2 NSIS + MSI installer. x86_64, release profile. R8 / cargo-tauri 2.11.4. Smart Engine v3 on by default.</li>
-                <li>Android <code>DEFAULT_MANIFEST_URLS</code>: 5 → 7 entries. New order: R92 → R90 → R88 → R87 → R85 → R81 → R78.</li>
-                <li>New <a href="/release-notes-v0.6.5/">/release-notes-v0.6.5/</a> page with 4-step side-load instructions and full SHA-256.</li>
-                <li>276/276 vitest (+24 for v0.6.5 path: chain head assertions, APP_VERSION bump, dedup + HTTPS guards).</li>
-                <li>KNOWN LIMITATION: v0.6.3 / v0.6.4 APKs are locked to chains that do not include R92 / R90.</li>
-              </ul>
-            </div>
-          </li>
-          <li class="timeline__item reveal" id="v064">
-            <div class="timeline__rail" aria-hidden="true">
-              <span class="timeline__dot"></span>
-            </div>
-            <div class="timeline__body">
-              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
-              <h3 class="timeline__title">v0.6.4 — manifest URL fallback chain (Android)</h3>
-              <p class="timeline__copy">
-                UpdateChecker now tries a chain of 5 known manifest hosts
-                instead of a single baked-in URL. Closes the
-                chicken-and-egg loop where every
-                <code>website_deploy</code> rotation orphaned the
-                previous APK's poll target. versionCode 13 → 14. APK
-                +408&nbsp;B. v0.6.3 users cannot auto-update — see the
-                <a href="/release-notes-v0.6.4/">v0.6.4 side-load page</a>.
-              </p>
-              <ul class="timeline__bullets" role="list">
-                <li>5-host chain in <code>DEFAULT_MANIFEST_URLS</code> (most-recent first), env override at head.</li>
-                <li><code>fetchManifestFromChain</code> try-each-URL with <code>attempts[]</code> log.</li>
-                <li><code>UpdateResult.manifestUrl</code> diagnostic field for triage.</li>
-                <li>252/252 vitest (16 new for chain + helper parity).</li>
-                <li>versionCode 13 → 14. APK 4.34 → 4.35&nbsp;MB.</li>
-              </ul>
-            </div>
-          </li>
-          <li class="timeline__item reveal" id="v063">
-            <div class="timeline__rail" aria-hidden="true">
-              <span class="timeline__dot"></span>
-            </div>
-            <div class="timeline__body">
-              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
-              <h3 class="timeline__title">v0.6.3 — In-app UpdateChecker revival (Android)</h3>
-              <p class="timeline__copy">
-                R52's in-app UpdateChecker was lost in R73 mavis-trash
-                and the R77 greenfield reset. v0.6.3 brings it back.
-                Polls a remote manifest, surfaces an M3 dialog with
-                force-update support, SHA-256 fingerprint, release-notes
-                link, and a 24h cache TTL. versionCode 12 → 13. APK
-                +1.1&nbsp;KB.
-              </p>
-              <ul class="timeline__bullets" role="list">
-                <li><code>UpdateChecker</code> core + <code>UpdateCheckerMount.svelte</code> + <code>UpdateDialog.svelte</code> (M3, 0 emoji).</li>
-                <li>Soft + force update modes, 24h cache, <code>@capacitor/browser</code> for APK installs.</li>
-                <li>SHA-256 verification against <code>latest_apk_sha256</code> in the manifest.</li>
-                <li>184/184 → 236/236 vitest (52 new for the chain + helpers).</li>
-                <li>versionCode 12 → 13. APK 4.34 → 4.34&nbsp;MB.</li>
-              </ul>
-            </div>
-          </li>
-          <li class="timeline__item reveal" id="v062">
-            <div class="timeline__rail" aria-hidden="true">
-              <span class="timeline__dot"></span>
-            </div>
-            <div class="timeline__body">
-              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
-              <h3 class="timeline__title">v0.6.2 — Onboarding v2 + 184/184 vitest</h3>
-              <p class="timeline__copy">
-                Four onboarding screens replace the single splash:
-                Welcome, Capture, Smart Engine, Local-first. M3
-                components only — no emoji, no celebratory copy, no
-                marketing banner. The 184 vitest cases cover the new
-                onboarding flow, the editor, the search, and the
-                capture intent. versionCode 11 → 12. APK +5&nbsp;KB.
-              </p>
-              <ul class="timeline__bullets" role="list">
-                <li>4 screens (Welcome / Capture / SmartEngine / LocalFirst), M3 only.</li>
-                <li>0 emoji, no marketing copy, dark theme only.</li>
-                <li>184/184 vitest (was 150/150 in v0.6.0 — +34 cases for onboarding + capture + search).</li>
-                <li>versionCode 11 → 12. APK 4.34 → 4.34&nbsp;MB.</li>
-              </ul>
-            </div>
-          </li>
-          <li class="timeline__item reveal" id="v061">
-            <div class="timeline__rail" aria-hidden="true">
-              <span class="timeline__dot"></span>
-            </div>
-            <div class="timeline__body">
-              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
-              <h3 class="timeline__title">v0.6.1 — Adaptive app icon + M3 splash</h3>
-              <p class="timeline__copy">
-                Tokyo Night adaptive icon (blue P + 4-point spark) with
-                monochrome variant for Android 13+ themed icons. M3
-                splash screen replaces the white flash on cold start.
-                versionCode 10 → 11. APK +12&nbsp;KB.
-              </p>
-              <ul class="timeline__bullets" role="list">
-                <li>Adaptive icon foreground: P (#7aa2f7) + 4-point spark (#bb9af7) on Tokyo Night bg.</li>
-                <li>Monochrome variant for Android 13+ themed icons.</li>
-                <li>AppTheme.NoActionBarLaunch now uses Theme.SplashScreen — no white flash.</li>
-                <li>versionCode 10 → 11. APK +12&nbsp;KB.</li>
-              </ul>
-            </div>
-          </li>
-          <li class="timeline__item reveal" id="v060">
-            <div class="timeline__rail" aria-hidden="true">
-              <span class="timeline__dot"></span>
-            </div>
-            <div class="timeline__body">
-              <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
-              <h3 class="timeline__title">v0.6.0 — GREENFIELD Android release</h3>
-              <p class="timeline__copy">
-                Written from scratch on Svelte 5 + TS strict + Vite.
-                CodeMirror 6 with split-pane (bottom-sheet on phone),
-                <code>[[wikilink]]</code> backlinks, tag autocomplete, M3
-                toolbar, 9 Capacitor plugins. 150/150 vitest,
-                4.32&nbsp;MB APK, versionCode 10, appId
-                <code>app.pulse.notes</code>, minSdk&nbsp;24,
-                targetSdk&nbsp;36. Smart Engine v3 default ON,
-                threshold&nbsp;5.
-              </p>
-              <ul class="timeline__bullets" role="list">
-                <li>Svelte 5 + TS strict + Vite + vitest + jsdom — not a port of v0.5.x desktop.</li>
-                <li>CodeMirror 6 with Lezer highlighting, line numbers, smart indent.</li>
-                <li>Split-pane editor + preview with drag-resize; bottom-sheet on phone.</li>
-                <li><code>[[wikilink]]</code> backlinks with fuzzy autocomplete.</li>
-                <li>#tag autocomplete ranked by usage frequency.</li>
-                <li>M3 toolbar with 7 formatting actions.</li>
-                <li>9 Capacitor plugins wired in.</li>
-                <li>4.32&nbsp;MB APK, 849&nbsp;KB JS bundle (306&nbsp;KB gzipped).</li>
-              </ul>
-            </div>
-          </li>
-        </ol>
+          </article>
+        </div>
       </div>
     </section>
 
-    <!-- ─── Download CTA ──────────────────────────────── -->
-    <section class="home-cta">
-      <div class="bg-glow"></div>
-      <div class="container home-cta__inner reveal">
-        <span class="eyebrow">v{APK_VERSION} Android · v{WIN_VERSION} Windows</span>
-        <h2 class="home-cta__title">Get Pulse.</h2>
-        <p class="home-cta__sub">
-          Free, forever. Apache 2.0. No account, no cloud, no telemetry.
+    <!-- ─── Free ──────────────────────────────────────── -->
+    <section class="home-free" id="free">
+      <div class="container home-free__inner reveal">
+        <span class="eyebrow">Free</span>
+        <h2>Free, forever. No premium lock on the basics.</h2>
+        <p>
+          Pulse is free for everything most people need: notes, chat with a
+          local model, full-text search, backlinks, voice input. Apache 2.0
+          source on GitHub. Runs offline once installed. The only paid tier
+          (PRO) adds multi-model switching and a few extras for daily
+          coding work.
         </p>
-        <div class="home-cta__row">
-          <a class="btn btn--primary btn--lg" href="/download/">See downloads ↓</a>
-          <a class="btn btn--ghost btn--lg" href="/pricing/">Why free, forever →</a>
+        <div class="home-free__row">
+          <a class="btn btn--primary btn--lg" href="/download/">Get Pulse ↓</a>
+          <a class="btn btn--ghost btn--lg" href="/pricing/">See pricing →</a>
         </div>
-        <p class="home-cta__more">
-          <a href="/changelog/">Full changelog →</a> ·
-          <a href="/compare/">Compare →</a> ·
-          <a href="/privacy/">Privacy →</a>
-        </p>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version={`v${APK_VERSION} / v${WIN_VERSION}`} />
+  <Footer license="Apache 2.0" version="" />
+
+  <script is:inline>
+    (() => {
+      // R120 site simplify: hero CTA picks the right artifact by UA.
+      // - Windows desktop → /download/ page (user picks NSIS or MSI).
+      // - Mobile / Android → direct APK download.
+      // - macOS / Linux / unknown → /download/ page.
+      const a = document.getElementById('hero-download');
+      if (!a) return;
+      const ua = (navigator.userAgent || '').toLowerCase();
+      const isAndroid = /android|mobile|iphone|ipad|ipod/.test(ua);
+      if (isAndroid) {
+        a.setAttribute('href', '/downloads/pulse-notes-0.6.6.apk');
+      }
+      // else leave as /download/ — Windows + macOS + Linux go to the picker
+    })();
+  </script>
 </Base>
 
 <style>
@@ -543,13 +272,6 @@ const WIN_SIZE = '~6.4 MB';
     gap: 1.25rem;
     max-width: 820px;
   }
-  .home-hero__badges {
-    display: inline-flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.75rem;
-    margin-bottom: -0.25rem;
-  }
   .home-hero__title {
     font-size: var(--fs-1);
     line-height: 1.05;
@@ -557,18 +279,17 @@ const WIN_SIZE = '~6.4 MB';
     color: var(--fg);
     letter-spacing: -0.02em;
   }
+  .home-hero__hl {
+    background: linear-gradient(120deg, var(--purple), var(--blue));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
   .home-hero__sub {
     color: var(--fg-dim);
     font-size: var(--fs-body);
     line-height: 1.65;
     max-width: 60ch;
-  }
-  .home-hero__sub code {
-    font-size: 0.9em;
-    color: var(--cyan);
-    background: var(--surface-2);
-    padding: 0.05em 0.35em;
-    border-radius: 4px;
   }
   .home-hero__ctas {
     display: flex;
@@ -576,332 +297,99 @@ const WIN_SIZE = '~6.4 MB';
     gap: 0.6rem;
     margin-top: 0.5rem;
   }
-  .home-hero__stats {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.4rem 0.6rem;
-    margin: 1.25rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .home-hero__stat {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.3rem;
-    color: var(--fg);
+  .home-hero__meta {
+    color: var(--muted);
     font-size: 0.92rem;
-  }
-  .home-hero__stat-num {
-    font-family: ui-monospace, "JetBrains Mono", monospace;
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--fg);
-  }
-  .home-hero__stat-unit {
-    color: var(--muted);
-    font-size: 0.78rem;
-    font-weight: 500;
-    margin-left: 0.05rem;
-  }
-  .home-hero__stat-label {
-    color: var(--muted);
-    font-size: 0.85rem;
-  }
-  .home-hero__stat-sep {
-    color: var(--border);
-    user-select: none;
+    margin: 0.25rem 0 0;
   }
 
-  /* ─── Platform pickers ────────────────────────────── */
-  .home-pickers { padding: 2rem 0 4rem; }
-  .home-pickers__inner { max-width: var(--max-w); margin: 0 auto; }
-  .home-pickers__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
-  .home-pickers__head .lede { margin: 0.5rem auto 0; }
-  .home-pickers__grid {
+  /* ─── What Pulse does ────────────────────────────── */
+  .home-what { padding: 4rem 0 4rem; }
+  .home-what__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
+  .home-what__head h2 { font-size: var(--fs-2); }
+  .home-what__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    max-width: 980px;
+    margin-inline: auto;
+  }
+  @media (min-width: 820px) {
+    .home-what__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .home-what__item {
+    padding: 1.5rem 1.5rem 1.75rem;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    border: 1px solid var(--border);
+  }
+  .home-what__item h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0 0 0.5rem;
+  }
+  .home-what__item p {
+    color: var(--fg-dim);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ─── Get Pulse cards ────────────────────────────── */
+  .home-get { padding: 3rem 0 4rem; }
+  .home-get__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
+  .home-get__head h2 { font-size: var(--fs-2); }
+  .home-get__head .lede { margin: 0.5rem auto 0; }
+  .home-get__grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.25rem;
   }
   @media (min-width: 920px) {
-    .home-pickers__grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .home-get__grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
   }
-  .home-picker {
-    padding: 1.5rem 1.5rem 1.75rem;
+  .home-get__card {
+    padding: 1.75rem 1.75rem 2rem;
     border-radius: var(--radius);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
-  .home-picker__platform {
+  .home-get__platform {
     font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: var(--purple);
   }
-  .home-picker__title {
-    font-size: 1.2rem;
+  .home-get__title {
+    font-size: 1.25rem;
     font-weight: 600;
     color: var(--fg);
     margin: 0;
     line-height: 1.3;
   }
-  .home-picker__body {
+  .home-get__body {
     color: var(--fg-dim);
     font-size: 0.95rem;
     line-height: 1.6;
     margin: 0;
   }
-  .home-picker__body code {
-    font-size: 0.88em;
-    color: var(--cyan);
-    background: var(--surface-2);
-    padding: 0.05em 0.3em;
-    border-radius: 4px;
-  }
-  .home-picker__meta {
-    list-style: none;
-    padding: 0.9rem 1rem;
-    margin: 0.25rem 0 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-  .home-picker__meta li {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-    font-size: 0.88rem;
-  }
-  .home-picker__meta li span:first-child {
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.7rem;
-    font-weight: 600;
-  }
-  .home-picker__meta li span:last-child {
-    color: var(--fg);
-    font-family: ui-monospace, "JetBrains Mono", monospace;
-    font-size: 0.85rem;
-  }
-  .home-picker__sha {
-    color: var(--cyan);
-    word-break: break-all;
-    text-align: right;
-  }
-  .home-picker__ctas {
+  .home-get__ctas {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
     margin-top: 0.5rem;
   }
-  .home-pickers__more {
-    text-align: center;
-    margin-top: 2rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-  .home-pickers__more a { color: var(--cyan); }
-  .home-pickers__more a:hover { color: var(--purple); }
 
-  /* ─── Why ──────────────────────────────────────────── */
-  .why { padding: 5rem 0 4rem; }
-  .why__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
-  .why__head .lede { margin: 0.5rem auto 0; }
-  .why__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.25rem;
-  }
-  @media (max-width: 920px) { .why__grid { grid-template-columns: 1fr; } }
-
-  .why__card {
-    padding: 1.5rem 1.5rem 1.75rem;
-    border-radius: var(--radius);
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .why__card-label {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--purple);
-    margin-bottom: 0.25rem;
-  }
-  .why__card-title {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: var(--fg);
-    margin: 0 0 0.5rem;
-    line-height: 1.35;
-  }
-  .why__card-body {
-    color: var(--fg-dim);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin: 0 0 0.5rem;
-  }
-  .why__card-list {
-    list-style: none;
-    padding: 0;
-    margin: 0.5rem 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-  .why__card-list li {
-    color: var(--fg-dim);
-    font-size: 0.9rem;
-    padding-left: 1rem;
-    position: relative;
-    line-height: 1.5;
-  }
-  .why__card-list li::before {
-    content: "—";
-    position: absolute;
-    left: 0;
-    color: var(--muted);
-  }
-  .why__card-list code {
-    font-size: 0.85em;
-    color: var(--cyan);
-    background: var(--surface-2);
-    padding: 0.05em 0.3em;
-    border-radius: 3px;
-  }
-
-  /* ─── Timeline ────────────────────────────────────── */
-  .timeline { padding: 4rem 0 5rem; }
-  .timeline__head { text-align: center; max-width: 700px; margin: 0 auto 3rem; }
-  .timeline__head .lede { margin: 0.5rem auto 0; }
-  .timeline__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    max-width: 760px;
-    margin-inline: auto;
-  }
-  .timeline__item {
-    display: grid;
-    grid-template-columns: 32px 1fr;
-    gap: 1rem;
-    align-items: start;
-  }
-  .timeline__rail {
-    position: relative;
-    width: 32px;
-    height: 100%;
-    min-height: 32px;
-  }
-  .timeline__rail::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: -1.5rem;
-    width: 1px;
-    background: var(--border);
-    transform: translateX(-50%);
-  }
-  .timeline__item:last-child .timeline__rail::before { display: none; }
-  .timeline__dot {
-    position: absolute;
-    left: 50%;
-    top: 0.3rem;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--purple);
-    border: 2px solid var(--bg);
-    transform: translateX(-50%);
-    z-index: 1;
-  }
-  .timeline__item#v062 .timeline__dot { background: var(--green); box-shadow: 0 0 0 4px rgba(158, 206, 106, 0.18); }
-  .timeline__body {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.1rem 1.35rem 1.35rem;
-  }
-  .timeline__date {
-    display: inline-block;
-    font-family: ui-monospace, "JetBrains Mono", monospace;
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-right: 0.5rem;
-  }
-  .timeline__tag {
-    display: inline-block;
-    font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--green);
-    border: 1px solid var(--green);
-    border-radius: 4px;
-    padding: 0.05rem 0.45rem;
-    margin-right: 0.5rem;
-    background: rgba(158, 206, 106, 0.08);
-    vertical-align: 0.12em;
-  }
-  .timeline__title {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: var(--fg);
-    margin: 0.4rem 0 0.5rem;
-    line-height: 1.3;
-  }
-  .timeline__copy {
-    color: var(--fg-dim);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin: 0 0 0.5rem;
-  }
-  .timeline__bullets {
-    list-style: none;
-    padding: 0;
-    margin: 0.5rem 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-  }
-  .timeline__bullets li {
-    color: var(--fg-dim);
-    font-size: 0.9rem;
-    padding-left: 1rem;
-    position: relative;
-    line-height: 1.5;
-  }
-  .timeline__bullets li::before {
-    content: "—";
-    position: absolute;
-    left: 0;
-    color: var(--muted);
-  }
-  .timeline__bullets code {
-    font-size: 0.88em;
-    color: var(--cyan);
-    background: var(--surface-2);
-    padding: 0.05em 0.3em;
-    border-radius: 3px;
-  }
-
-  /* ─── Bottom CTA ──────────────────────────────────── */
-  .home-cta { padding: 4rem 0 5rem; position: relative; }
-  .home-cta__inner {
-    max-width: 640px;
+  /* ─── Free ────────────────────────────────────────── */
+  .home-free { padding: 4rem 0 5rem; position: relative; }
+  .home-free__inner {
+    max-width: 720px;
     margin: 0 auto;
     text-align: center;
     display: flex;
@@ -909,30 +397,24 @@ const WIN_SIZE = '~6.4 MB';
     align-items: center;
     gap: 1rem;
   }
-  .home-cta__title {
-    font-size: var(--fs-1);
+  .home-free h2 {
+    font-size: var(--fs-2);
     font-weight: 700;
     color: var(--fg);
-    line-height: 1.1;
+    line-height: 1.2;
     margin: 0;
   }
-  .home-cta__sub {
+  .home-free p {
     color: var(--fg-dim);
     font-size: var(--fs-body);
-    line-height: 1.6;
+    line-height: 1.65;
+    max-width: 60ch;
   }
-  .home-cta__row {
+  .home-free__row {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
     justify-content: center;
     margin-top: 0.5rem;
   }
-  .home-cta__more {
-    color: var(--muted);
-    font-size: 0.88rem;
-    margin-top: 0.5rem;
-  }
-  .home-cta__more a { color: var(--cyan); }
-  .home-cta__more a:hover { color: var(--purple); }
 </style>
