@@ -3,25 +3,25 @@ import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/notes.css';
 
-const APK_URL = 'https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk';
-const APK_SIZE = '4.39 MB';
-const APK_SHA = 'AD81D03C…1D7607';
-const APK_VERSION = '0.6.5';
-const APK_VERSION_CODE = '15';
+const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
+const APK_SIZE = '1.29 MB';
+const APK_SHA = 'AD6E3302…45BAB5';
+const APK_VERSION = '0.6.6';
+const APK_VERSION_CODE = '16';
 const APK_MIN_SDK = '24';
 const APK_TARGET_SDK = '36';
 const APK_APP_ID = 'app.pulse.notes';
 ---
 
 <Base
-  title="Pulse Notes v0.6.5 — Greenfield markdown editor for Android"
-  description="Pulse Notes v0.6.5 — R93 bridge release: manifest URL fallback chain grown to 7 hosts (R92 + R90 added at the head) on top of the v0.6.0 GREENFIELD Android markdown editor. Svelte 5 + CodeMirror 6 + split-pane + [[wikilink]] + tag autocomplete. Local-first, 4.39MB APK, 276/276 vitest, Smart Engine v3."
+  title="Pulse Notes v0.6.6 — Greenfield markdown editor for Android"
+  description="Pulse Notes v0.6.6 — P1 trio: backup rules (app_webview excluded from cloud-backup and device-transfer), voice input (SpeechRecognition 8th tool in NotesView), and Settings view (Profile, Theme, About, Actions). Built on the v0.6.0 GREENFIELD Android markdown editor. Svelte 5 + CodeMirror 6 + split-pane + [[wikilink]] + tag autocomplete. Local-first, 1.29 MB APK, 304/304 vitest, Smart Engine v3."
   ogImage="/og-notes.png"
   ctaText={`Get Pulse Notes ↓ ${APK_SIZE}`}
   ctaHref={APK_URL}
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.5"
+  footerVersion="v0.6.6"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -129,7 +129,7 @@ const APK_APP_ID = 'app.pulse.notes';
             A markdown editor,<br />built for Android, <span class="notes-hero__hl">from scratch.</span>
           </h1>
           <p class="notes-hero__sub">
-            v0.6.5 is the current build (R93 bridge release: manifest URL fallback chain grown to 7 hosts — R92 + R90 added at the head — 276/276 vitest). v0.6.0 was the greenfield Android release: Svelte 5 + TypeScript strict + Vite, CodeMirror 6 with a drag-resize split-pane, <code>[[wikilink]]</code> backlinks, tag autocomplete, and a Material&nbsp;3 toolbar. 4.39&nbsp;MB APK, zero cloud, zero telemetry.
+            v0.6.6 is the current build. P1 trio lands: backup rules now exclude <code>app_webview/</code> from both cloud-backup and device-transfer (local-first promise holds); voice input via SpeechRecognition is the 8th tool in the NotesView toolbar; the Settings view (Profile, Theme, About, Actions) opens from a gear button in NotesView. 304/304 vitest. v0.6.0 was the greenfield Android release: Svelte 5 + TypeScript strict + Vite, CodeMirror 6 with a drag-resize split-pane, <code>[[wikilink]]</code> backlinks, tag autocomplete, and a Material&nbsp;3 toolbar. 1.29&nbsp;MB APK, zero cloud, zero telemetry.
           </p>
           <div class="notes-hero__ctas">
             <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">Download APK ↓ {APK_SIZE}</a>
@@ -138,7 +138,7 @@ const APK_APP_ID = 'app.pulse.notes';
           <ul class="notes-hero__trust" role="list" aria-label="Quick highlights">
             <li class="notes-hero__trust-item">Local-first</li>
             <li class="notes-hero__trust-sep" aria-hidden="true">·</li>
-            <li class="notes-hero__trust-item">4.39 MB APK</li>
+            <li class="notes-hero__trust-item">1.29 MB APK</li>
             <li class="notes-hero__trust-sep" aria-hidden="true">·</li>
             <li class="notes-hero__trust-item">Svelte 5 + TS strict</li>
             <li class="notes-hero__trust-sep" aria-hidden="true">·</li>
@@ -149,7 +149,7 @@ const APK_APP_ID = 'app.pulse.notes';
           <p class="notes-hero__sha">
             <span class="notes-hero__sha-label">SHA-256</span>
             <code class="notes-hero__sha-code">{APK_SHA}</code>
-            <a class="notes-hero__sha-link" href="/changelog/#v0.6.5">verify →</a>
+            <a class="notes-hero__sha-link" href="/changelog/#v0.6.6">verify →</a>
           </p>
         </div>
         <div class="notes-hero__composite reveal" aria-hidden="true">
@@ -496,12 +496,26 @@ const APK_APP_ID = 'app.pulse.notes';
           <span class="eyebrow">What changed</span>
           <h2>Pulse Notes — release notes.</h2>
           <p class="lede">
-            Nine shipped entries between v0.5.0 and v0.6.5. Dates are local
+            Ten shipped entries between v0.5.0 and v0.6.6. Dates are local
             (Asia/Bangkok). Full audit lives in the
-            <a href="/changelog/#v0.6.5">changelog</a>.
+            <a href="/changelog/#v0.6.6">changelog</a>.
           </p>
         </header>
         <ol class="changelog__list" role="list">
+          <li class="changelog__item reveal" id="v066-snapshot">
+            <time class="changelog__date" datetime="2026-08-02">2026-08-02</time>
+            <div class="changelog__body">
+              <h3 class="changelog__title">v0.6.6 · P1 trio — backup rules, voice input, Settings view</h3>
+              <p>
+                Backup rules exclude <code>app_webview/</code> from both
+                cloud-backup and device-transfer so the local-first promise
+                holds. Voice input via SpeechRecognition is the 8th tool in the
+                NotesView toolbar. The Settings view (Profile, Theme, About,
+                Actions) opens from a gear button in NotesView. 1.29&nbsp;MB APK,
+                R93b-signed (v2+v3, no v1). 302/302 → 304/304 vitest.
+              </p>
+            </div>
+          </li>
           <li class="changelog__item reveal" id="v065-snapshot">
             <time class="changelog__date" datetime="2026-08-01">2026-08-01</time>
             <div class="changelog__body">
@@ -511,7 +525,7 @@ const APK_APP_ID = 'app.pulse.notes';
                 (R92 + R90 added at the head). v0.6.5+ devices can
                 auto-update forward even if the older hosts go down.
                 v0.6.3 / v0.6.4 users need to side-load v0.6.5 once.
-                versionCode 14 → 15. APK 4.35 → 4.39&nbsp;MB.
+                versionCode 14 → 15. APK 1.35&nbsp;MB (R95a re-signed).
                 252/252 → 276/276 vitest (+24 for v0.6.5 path).
               </p>
             </div>
@@ -835,11 +849,11 @@ const APK_APP_ID = 'app.pulse.notes';
           </div>
         </div>
         <p class="ncta__more">
-          <a href="/changelog/#v0.6.5">Full v0.6.5 release notes →</a>
+          <a href="/changelog/#v0.6.6">Full v0.6.6 release notes →</a>
         </p>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.5" />
+  <Footer license="Apache 2.0" version="v0.6.6" />
 </Base>

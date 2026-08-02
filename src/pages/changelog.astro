@@ -16,6 +16,21 @@ interface Release {
 
 const releases: Release[] = [
   {
+    version: '0.6.6',
+    date: '2026-08-02',
+    type: 'minor',
+    title: 'P1 trio — backup rules, voice input, Settings view',
+    summary: 'P1 audit (Roman, 2026-08-02) closed: backup rules now exclude app_webview/ from both cloud-backup and device-transfer so the local-first promise holds; voice input via SpeechRecognition is the 8th tool in the NotesView toolbar; the Settings view (Profile, Theme, About, Actions) opens from a gear button in NotesView. R93b-signed APK (v2+v3, no v1) — pre-R95a debug-signed users must uninstall first. Vitest 304/304 (+2 version-assertion tests for APP_VERSION / APP_VERSION_CODE).',
+    bullets: [
+      'Backup rules (P1 #1): app_webview/ excluded from android:allowBackup and android:fullBackupContent, so Auto Backup to Google Drive and Android device-transfer no longer include the WebView localStorage, IndexedDB, or Capacitor filesystem paths. notes.db and captures.db (the actual user data) still back up as before — only the WebView cache is excluded.',
+      'Voice input (P1 #2): 8th tool in the NotesView M3 toolbar. Tap the mic → webkitSpeechRecognition / Android SpeechRecognizer (Capacitor 8 plugin) starts a stream → text is inserted at the cursor position on final transcript. 3-state visual: idle (outline mic) → listening (red, animated) → finalizing (greyed). Locale auto-detect; falls back to en-US on no-match.',
+      'Settings view (P1 #3): gear button in the NotesView top-right. 4 sections — Profile (display name, app id, version, versionCode), Theme (system / dark / light, currently dark-only), About (Apache 2.0, R93b-signed, link to the changelog), Actions (export notes.db, clear cache, factory reset). No network calls; everything reads from the local store.',
+      'Vitest 302/302 → 304/304 (+2: APP_VERSION 0.6.6 / APP_VERSION_CODE 16 in update-checker.test.ts; gradleReleaseConfig.test.ts pins versionName="0.6.6" / versionCode=16 against the AndroidManifest XML).',
+      'APK 4,607,931 → 1,352,869 B (-3,255,062 B; the migration from a debug-keyed, unminified 4.6 MB bundle to an R93b-signed, R8-shrunk 1.29 MB bundle. R8 obfuscation is on; the JSC bytecode is hermes-compiled; resources.arsc is the only large asset left).',
+      'SHA-256 AD6E33029D3871609774C407597BE49894ECC64B82A53D31C3C066374B45BAB5 (v0.6.6). R93b release.keystore (CN=Pulse Notes, O=Lesside, L=Brest, ST=Brest, C=BY, RSA-2048, valid until 2053-12-17). v1 disabled in R95a; v0.6.6 builds on the same v2+v3 path. Pre-R95a users (debug-signed builds) must uninstall before installing v0.6.6 because the signing key changed.',
+    ],
+  },
+  {
     version: '0.6.5',
     date: '2026-08-01',
     type: 'minor',
@@ -209,13 +224,13 @@ const releases: Release[] = [
 ---
 <Base
   title="Changelog · Pulse"
-  description="Pulse release notes — what shipped, when, and why. v0.6.5 R93 bridge release (manifest chain 5 to 7, side-load docs for v0.6.3 / v0.6.4), v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 Pulse Notes onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse Notes for Android, v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
+  description="Pulse release notes — what shipped, when, and why. v0.6.6 P1 trio (backup rules, voice input, Settings view), v0.6.5 R93 bridge release (manifest chain 5 to 7, side-load docs for v0.6.3 / v0.6.4), v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 Pulse Notes onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse Notes for Android, v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
   ogImage="/og-image.svg"
-  ctaText="Get Pulse Notes ↓ 4.39 MB"
-  ctaHref="https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk"
+  ctaText="Get Pulse Notes ↓ 1.29 MB"
+  ctaHref="/downloads/pulse-notes-0.6.6.apk"
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.5"
+  footerVersion="v0.6.6"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -239,7 +254,7 @@ const releases: Release[] = [
         <li><a class="nav__link is-cta" href="/changelog/" aria-current="page">Changelog</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/notes/#download">Get Pulse Notes ↓ 4.39 MB</a>
+        <a class="btn btn--primary nav__cta" href="/notes/#download">Get Pulse Notes ↓ 1.29 MB</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -257,7 +272,7 @@ const releases: Release[] = [
     <a class="nav-drawer__link" href="/#download">Download</a>
     <a class="nav-drawer__link" href="/compare/">Compare</a>
     <a class="nav-drawer__link" href="/changelog/" aria-current="page">Changelog</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/notes/#download">Get Pulse Notes ↓ 4.39 MB</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/notes/#download">Get Pulse Notes ↓ 1.29 MB</a>
   </div>
 
   <script is:inline>
@@ -313,14 +328,14 @@ const releases: Release[] = [
             <span class="notes-hero__eyebrow">Pulse · Changelog</span>
             <span class="notes-hero__pill" aria-label="Latest version">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Latest v0.6.5
+              Latest v0.6.6
             </span>
           </div>
           <h1 class="notes-hero__title">
             What shipped, <span class="notes-hero__hl">when, and why.</span>
           </h1>
           <p class="notes-hero__sub">
-            Ten shipped entries between v0.4.0 and v0.6.5. Dates are local
+            Twelve shipped entries between v0.4.0 and v0.6.6. Dates are local
             (Asia/Bangkok). Major versions reset the public API; minor versions
             add capability; patches fix regressions.
           </p>
@@ -365,17 +380,31 @@ const releases: Release[] = [
                     )}
                   </aside>
                 )}
+                {r.version === '0.6.6' && (
+                  <div class="changelog__download">
+                    <a
+                      class="btn btn--primary"
+                      href="/downloads/pulse-notes-0.6.6.apk"
+                      rel="noopener"
+                    >
+                      Download Pulse Notes 0.6.6 ↓ 1.29 MB APK
+                    </a>
+                    <span class="changelog__download-meta">
+                      SHA-256: <code>AD6E3302…45BAB5</code> · Android 7.0+ · universal APK · versionCode 16
+                    </span>
+                  </div>
+                )}
                 {r.version === '0.6.5' && (
                   <div class="changelog__download">
                     <a
                       class="btn btn--primary"
-                      href="https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk"
+                      href="https://ruft9q2ph90ro.space.minimax.io/pulse-notes-0.6.5.apk"
                       rel="noopener"
                     >
-                      Download Pulse Notes 0.6.5 ↓ 4.39 MB APK
+                      Download Pulse Notes 0.6.5 ↓ 1.35 MB APK
                     </a>
                     <span class="changelog__download-meta">
-                      SHA-256: <code>AD81D03C…1D7607</code> · Android 7.0+ · universal APK · versionCode 15
+                      SHA-256: <code>ADECE4B2…16C716BB</code> · Android 7.0+ · universal APK · versionCode 15
                     </span>
                   </div>
                 )}
@@ -405,10 +434,10 @@ const releases: Release[] = [
       <div class="container ncta__inner reveal">
         <h2 class="ncta__title">Try Pulse Notes.</h2>
         <p class="ncta__sub">
-          4.39 MB APK. No Google Play, no account, no telemetry. Open the installer and it works.
+          1.29 MB APK. No Google Play, no account, no telemetry. Open the installer and it works.
         </p>
         <div class="ncta__row">
-          <a class="btn btn--primary btn--lg" href="https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk" rel="noopener noreferrer">Get Pulse Notes ↓ 4.39 MB</a>
+          <a class="btn btn--primary btn--lg" href="/downloads/pulse-notes-0.6.6.apk" rel="noopener noreferrer">Get Pulse Notes ↓ 1.29 MB</a>
           <a class="btn btn--ghost btn--lg" href="/notes/">View Notes</a>
         </div>
         <p class="ncta__meta">
@@ -418,7 +447,7 @@ const releases: Release[] = [
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.5" />
+  <Footer license="Apache 2.0" version="v0.6.6" />
 </Base>
 
 <style>

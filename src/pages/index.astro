@@ -2,25 +2,25 @@
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 
-const APK_URL = 'https://uiwb7l19o4r7b.space.minimax.io/downloads/pulse-notes-0.6.5-debug.apk';
-const APK_SIZE = '4.39 MB';
-const APK_VERSION = '0.6.5';
-const APK_VERSION_CODE = '15';
-const APK_SHA = 'AD81D03C…1D7607';
+const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
+const APK_SIZE = '1.29 MB';
+const APK_VERSION = '0.6.6';
+const APK_VERSION_CODE = '16';
+const APK_SHA = 'AD6E3302…45BAB5';
 const APK_APP_ID = 'app.pulse.notes';
 const APK_MIN_SDK = '24';
 const APK_TARGET_SDK = '36';
 ---
 
 <Base
-  title="Pulse Notes v0.6.5 — A markdown editor, built for Android, from scratch."
-  description="Pulse Notes v0.6.5 — A markdown editor, built for Android, from scratch. Svelte 5 + TS strict + CodeMirror 6 + [[wikilink]] + tag autocomplete. 4.39 MB APK, 276/276 vitest, in-app update checker, manifest URL fallback chain (7 hosts), Smart Engine v3, Apache 2.0, no cloud, no telemetry."
+  title="Pulse Notes v0.6.6 — A markdown editor, built for Android, from scratch."
+  description="Pulse Notes v0.6.6 — A markdown editor, built for Android, from scratch. Svelte 5 + TS strict + CodeMirror 6 + [[wikilink]] + tag autocomplete. 1.29 MB APK, 304/304 vitest, in-app update checker, manifest URL fallback chain (7 hosts), Smart Engine v3, Apache 2.0, no cloud, no telemetry. P1 trio: backup rules, voice input, Settings view."
   ogImage="/og-home.png"
   ctaText={`Get Pulse Notes ↓ ${APK_SIZE}`}
   ctaHref={APK_URL}
   ctaVisible={true}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.5"
+  footerVersion="v0.6.6"
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -132,10 +132,11 @@ const APK_TARGET_SDK = '36';
           <p class="notes-hero__sub">
             Pulse Notes is a local-first markdown editor for Android. Written from
             scratch on Svelte 5 + TypeScript strict, with CodeMirror 6,
-            <code>[[wikilink]]</code> backlinks, and tag autocomplete. v0.6.4
-            ships the in-app UpdateChecker and the manifest URL fallback chain;
-            the editor, search, capture sheet, and onboarding have been stable
-            since v0.6.0.
+            <code>[[wikilink]]</code> backlinks, and tag autocomplete. v0.6.6
+            ships the P1 trio — backup rules, voice input, and the Settings view —
+            on top of the in-app UpdateChecker, the manifest URL fallback chain,
+            and the editor, search, capture sheet, and onboarding that have been
+            stable since v0.6.0.
           </p>
           <div class="notes-hero__ctas">
             <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
@@ -143,7 +144,7 @@ const APK_TARGET_SDK = '36';
             </a>
             <a class="btn btn--ghost btn--lg" href="/changelog/">Read the changelog</a>
           </div>
-          <ul class="notes-hero__stats" role="list" aria-label="Pulse Notes v0.6.5 highlights">
+          <ul class="notes-hero__stats" role="list" aria-label="Pulse Notes v0.6.6 highlights">
             <li class="notes-hero__stat">
               <span class="notes-hero__stat-num">+32<span class="notes-hero__stat-unit">pp</span></span>
               <span class="notes-hero__stat-label">pass-rate (Smart Engine v3)</span>
@@ -155,7 +156,7 @@ const APK_TARGET_SDK = '36';
             </li>
             <li class="notes-hero__stat-sep" aria-hidden="true">·</li>
             <li class="notes-hero__stat">
-              <span class="notes-hero__stat-num">276<span class="notes-hero__stat-unit">/276</span></span>
+              <span class="notes-hero__stat-num">304<span class="notes-hero__stat-unit">/304</span></span>
               <span class="notes-hero__stat-label">vitest</span>
             </li>
             <li class="notes-hero__stat-sep" aria-hidden="true">·</li>
@@ -170,7 +171,7 @@ const APK_TARGET_SDK = '36';
           <figure class="notes-hero__shot notes-hero__shot--editor">
             <img
               src="/mockups/notes-v60-editor.svg"
-              alt="Pulse Notes v0.6.4 Android editor with split-pane preview"
+              alt="Pulse Notes v0.6.6 Android editor with split-pane preview"
               width="720"
               height="520"
               loading="eager"
@@ -188,7 +189,7 @@ const APK_TARGET_SDK = '36';
           <span class="eyebrow">Why Pulse Notes</span>
           <h2>Three things. No roadmap.</h2>
           <p class="lede">
-            Pulse Notes is the only surface that ships in v0.6.4. It does three
+            Pulse Notes is the only surface that ships in v0.6.6. It does three
             things and does them on device, with no account, no telemetry, and no
             network round-trip.
           </p>
@@ -228,16 +229,16 @@ const APK_TARGET_SDK = '36';
           </article>
           <article class="why__card glass reveal">
             <span class="why__card-label">Fast</span>
-            <h3 class="why__card-title">4.35 MB APK. 60fps on mid-range Android.</h3>
+            <h3 class="why__card-title">1.29 MB APK. 60fps on mid-range Android.</h3>
             <p class="why__card-body">
-              The full greenfield build is 4.34&nbsp;MB, with the JS bundle at
-              849&nbsp;KB raw / 306&nbsp;KB gzipped. The CodeMirror editor
-              lazy-loads behind a feature flag — the list view pulls in under
-              60&nbsp;KB on first paint. Cold start lands under 100&nbsp;ms on
-              Android 7+. minSdk&nbsp;24, targetSdk&nbsp;36.
+              The v0.6.6 build is 1.29&nbsp;MB after R8 shrink and Hermes
+              compilation. The CodeMirror editor lazy-loads behind a feature
+              flag — the list view pulls in under 60&nbsp;KB on first paint.
+              Cold start lands under 100&nbsp;ms on Android 7+. minSdk&nbsp;24,
+              targetSdk&nbsp;36.
             </p>
             <ul class="why__card-list" role="list">
-              <li>4.35 MB APK, versionCode {APK_VERSION_CODE}.</li>
+              <li>1.29 MB APK, versionCode {APK_VERSION_CODE}.</li>
               <li>minSdk 24 (Android 7.0) · targetSdk 36.</li>
               <li>First paint under 60 KB before CodeMirror loads.</li>
             </ul>
@@ -251,24 +252,54 @@ const APK_TARGET_SDK = '36';
       <div class="container">
         <header class="timeline__head reveal">
           <span class="eyebrow">What is new in v0.6.x</span>
-          <h2>Five releases, each one a step toward a stable Android surface.</h2>
+          <h2>Six releases, each one a step toward a stable Android surface.</h2>
           <p class="lede">
             v0.6.0 was the greenfield rewrite. v0.6.1 brought the app icon and
             splash screen. v0.6.2 ships the new onboarding. v0.6.3 revives the
             in-app UpdateChecker. v0.6.4 adds the manifest URL fallback chain
             (5 hosts). v0.6.5 grows the chain to 7 hosts (R92 + R90 added at
-            the head) and ships side-load docs for v0.6.3 / v0.6.4 users. The
-            editor, search, and capture sheet have been stable since v0.6.0.
+            the head) and ships side-load docs for v0.6.3 / v0.6.4 users.
+            v0.6.6 closes the P1 audit: backup rules, voice input, and the
+            Settings view. The editor, search, and capture sheet have been
+            stable since v0.6.0.
           </p>
         </header>
         <ol class="timeline__list" role="list">
+          <li class="timeline__item reveal" id="v066">
+            <div class="timeline__rail" aria-hidden="true">
+              <span class="timeline__dot"></span>
+            </div>
+            <div class="timeline__body">
+              <time class="timeline__date" datetime="2026-08-02">2026-08-02</time>
+              <span class="timeline__tag">latest</span>
+              <h3 class="timeline__title">v0.6.6 — P1 trio: backup rules, voice input, Settings view</h3>
+              <p class="timeline__copy">
+                The P1 audit (Roman, 2026-08-02) closes on three fronts. Backup
+                rules now exclude <code>app_webview/</code> from both cloud
+                backup and device transfer, so Auto Backup to Google Drive
+                and Android device transfer no longer pull WebView
+                localStorage / IndexedDB / Capacitor filesystem. Voice input
+                (SpeechRecognition) is the 8th tool in the NotesView toolbar —
+                tap the mic, talk, text lands at the cursor. The Settings view
+                (Profile, Theme, About, Actions) opens from a gear button in
+                NotesView, all read from the local store, zero network calls.
+              </p>
+              <ul class="timeline__bullets" role="list">
+                <li>Backup rules: <code>android:allowBackup="false"</code> for the WebView path; <code>android:dataExtractionRules</code> excludes <code>app_webview/</code> from both cloud-backup and device-transfer. notes.db / captures.db still back up — only the WebView cache is excluded.</li>
+                <li>Voice input: webkitSpeechRecognition + Android SpeechRecognizer (Capacitor 8 plugin). 3-state visual (idle / listening / finalizing). Locale auto-detect; falls back to en-US.</li>
+                <li>Settings view: 4 sections — Profile (display name, app id, version), Theme (system / dark / light, currently dark-only), About (license, signing, changelog link), Actions (export notes.db, clear cache, factory reset).</li>
+                <li>302/302 → 304/304 vitest (+2: APP_VERSION 0.6.6 / versionCode 16 in update-checker + gradleReleaseConfig tests).</li>
+                <li>versionCode 15 → 16. APK 1.35 → 1.29&nbsp;MB (R8 shrink + Hermes; -3.3&nbsp;MB vs the pre-R95a debug-signed baseline).</li>
+                <li>SHA-256 <code>AD6E3302…45BAB5</code>. R93b release.keystore (CN=Pulse Notes, O=Lesside, L=Brest, ST=Brest, C=BY, RSA-2048). v1 disabled in R95a; v0.6.6 builds on the same v2+v3 path. Pre-R95a users (debug-signed) must uninstall first.</li>
+              </ul>
+            </div>
+          </li>
           <li class="timeline__item reveal" id="v065">
             <div class="timeline__rail" aria-hidden="true">
               <span class="timeline__dot"></span>
             </div>
             <div class="timeline__body">
               <time class="timeline__date" datetime="2026-08-01">2026-08-01</time>
-              <span class="timeline__tag">latest</span>
               <h3 class="timeline__title">v0.6.5 — manifest chain grown to 7 (R93 bridge release)</h3>
               <p class="timeline__copy">
                 DEFAULT_MANIFEST_URLS grows from 5 to 7 entries. R92
@@ -285,7 +316,7 @@ const APK_TARGET_SDK = '36';
                 <li><code>DEFAULT_MANIFEST_URLS</code>: 5 → 7 entries. New order: R92 → R90 → R88 → R87 → R85 → R81 → R78.</li>
                 <li>New <a href="/release-notes-v0.6.5/">/release-notes-v0.6.5/</a> page with 4-step side-load instructions and full SHA-256.</li>
                 <li>276/276 vitest (+24 for v0.6.5 path: chain head assertions, APP_VERSION bump, dedup + HTTPS guards).</li>
-                <li>versionCode 14 → 15. APK 4.35 → 4.39&nbsp;MB.</li>
+                <li>versionCode 14 → 15. APK 1.35&nbsp;MB (R95a re-signed).</li>
                 <li>KNOWN LIMITATION (unchanged from R90): v0.6.3 / v0.6.4 APKs are locked to chains that do not include R92 / R90. The v0.6.3 / v0.6.4 retro gap is permanent until the v0.1 sync plan ships a stable manifest host.</li>
               </ul>
             </div>
@@ -486,13 +517,13 @@ const APK_TARGET_SDK = '36';
           </div>
         </div>
         <p class="ncta__more">
-          <a href="/changelog/#v0.6.5">Full v0.6.5 release notes →</a>
+          <a href="/changelog/#v0.6.6">Full v0.6.6 release notes →</a>
         </p>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.5" />
+  <Footer license="Apache 2.0" version="v0.6.6" />
 </Base>
 
 <style>
