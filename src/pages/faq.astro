@@ -6,18 +6,23 @@ import '../styles/notes.css';
 // R128: First-time-visitor FAQ. Plain English, anonymous voice,
 // no "we" / "Pulse team" / "by Roman" / marketing fluff. Links go to
 // /pricing/, /download/, /license/, /privacy/. <details>/<summary>
-// for collapsibles (no JS). Apache 2.0, no telemetry, no "soon".
+// for collapsibles (no JS). R141e: paid model — no "free" mention,
+// no "open source" / "Apache 2.0" copy, no Lesside / Roman / pulse.tld.
 
 const PAGE_TITLE = 'Pulse — Frequently asked questions';
 const PAGE_DESC =
-  'Common questions about Pulse: pricing, privacy, offline use, supported platforms, source code, and how to report issues. Plain answers, no marketing.';
+  'Common questions about Pulse: pricing, trial, privacy, offline use, supported platforms, and how to report issues. Plain answers, no marketing.';
 
 // Q&A content lives in the frontmatter so the structured-data block
 // (FAQPage JSON-LD) is generated from the same source of truth.
 const faqs = [
   {
-    q: 'Is Pulse really free?',
-    a: 'Yes. The basic tier is free, forever, and the source code is Apache 2.0. Free includes notes, chat with a local model, full-text search, backlinks, and voice input on Android. There is a paid PRO tier for multi-model hot-swap, code-aware chat, voice input on Windows, and web search. See the <a href="/pricing/">pricing page</a> for what PRO adds.',
+    q: 'Is there a free tier?',
+    a: 'No. Pulse is paid, with a 14-day trial. The trial includes single-model chat, 50 web-search queries per day, code-aware chat, and local notes. Cloud STT, multi-model hot-swap, and sync are PRO only. After 14 days the app works in read-only mode unless you upgrade.',
+  },
+  {
+    q: 'What happens after the 14-day trial?',
+    a: 'The app continues to work in read-only mode: you can view existing notes and chat with the local model, but you cannot create new notes, save chats, or use PRO features. Upgrade to PRO ($20/mo or $192/yr) to unlock full functionality.',
   },
   {
     q: 'Do I need to sign up for an account?',
@@ -25,11 +30,11 @@ const faqs = [
   },
   {
     q: 'What does PRO add?',
-    a: 'PRO adds multi-model hot-swap (switch between local models without restarting), code-aware chat (Pulse knows which file you are editing on Windows), voice input on Windows, and built-in web search for the chat. Everything in the free tier stays free. The full list lives on the <a href="/pricing/">pricing page</a>.',
+    a: 'PRO adds multi-model hot-swap (switch between local models without restarting), voice input on desktop (cloud Whisper), unlimited web search, cross-device sync, and priority updates. The full list lives on the <a href="/pricing/">pricing page</a>.',
   },
   {
     q: 'How much does PRO cost?',
-    a: 'See the <a href="/pricing/">pricing page</a> for current PRO pricing. PRO is sold as a monthly or annual subscription. There is no lifetime deal and no student discount.',
+    a: 'PRO Monthly is $20 per month. PRO Annual is $192 per year (save $48 vs monthly). There is no lifetime deal and no student discount. Billing is handled by Polar.sh. See the <a href="/pricing/">pricing page</a> for the current tiers.',
   },
   {
     q: 'Can I use my own AI model?',
@@ -41,11 +46,7 @@ const faqs = [
   },
   {
     q: 'What is the data privacy story?',
-    a: 'Pulse is local-first. Your notes, your chats, and your model never leave the device you installed Pulse on. There is no analytics, no crash reporting, no usage beacons, and no remote config. The network code is small and open source; you can read every byte Pulse sends. The full data model is on the <a href="/privacy/">privacy page</a>.',
-  },
-  {
-    q: 'Is the source code open?',
-    a: 'Yes. Pulse is Apache 2.0, on GitHub. The Windows app, the Android app, and this site are all in the same monorepo. The Apache 2.0 license means you can read it, fork it, audit it, and self-host it. The license text lives at <a href="/license/">/license/</a>.',
+    a: 'Pulse is local-first. Your notes, your chats, and your model never leave the device you installed Pulse on. There is no analytics, no crash reporting, no usage beacons, and no remote config. The code is on GitHub so you can read every byte Pulse sends. The full data model is on the <a href="/privacy/">privacy page</a>.',
   },
   {
     q: 'Which platforms are supported?',
@@ -54,10 +55,6 @@ const faqs = [
   {
     q: 'How do updates work?',
     a: 'Pulse checks for updates against a public manifest on this site. If a newer version is available, the app shows an in-app banner with a one-click download. Updates are not silent and not forced. You can disable update checks in settings.',
-  },
-  {
-    q: 'Why is this free?',
-    a: 'The basic tier is free because the source is open source and the maintenance cost is small. PRO is the paid tier that funds continued development. There is no ad network, no data sale, no investor story — just an open source project with a paid tier for the features that take the most time to maintain.',
   },
   {
     q: 'How do I report a bug or suggest a feature?',
@@ -84,10 +81,10 @@ const faqJsonLd = {
   title={PAGE_TITLE}
   description={PAGE_DESC}
   ogImage="/og-home.png"
-  ctaText="Get Pulse ↓"
+  ctaText="Start trial ↓"
   ctaHref="/download/"
   ctaVisible={true}
-  footerLicense="Apache 2.0"
+  footerLicense=""
   footerVersion=""
 >
   <a class="skip-link" href="#main">Skip to content</a>
@@ -110,7 +107,7 @@ const faqJsonLd = {
         <li><a class="nav__link is-current" href="/faq/" aria-current="page">FAQ</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/download/">Get Pulse ↓</a>
+        <a class="btn btn--primary nav__cta" href="/download/">Start trial ↓</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -127,7 +124,7 @@ const faqJsonLd = {
     <a class="nav-drawer__link" href="/download/">Download</a>
     <a class="nav-drawer__link" href="/pricing/">Pricing</a>
     <a class="nav-drawer__link" href="/faq/" aria-current="page">FAQ</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/download/">Get Pulse ↓</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/">Start trial ↓</a>
   </div>
 
   <script is:inline>
@@ -176,7 +173,7 @@ const faqJsonLd = {
             fine print, no "contact sales".
           </p>
           <p class="home-hero__meta">
-            {faqs.length} questions · Apache 2.0 · last updated 2026-08-02
+            {faqs.length} questions · Trial + PRO · last updated 2026-08-03
           </p>
         </div>
       </div>
@@ -205,7 +202,7 @@ const faqJsonLd = {
             <li><a href="/download/">Download Pulse for Windows or Android</a></li>
             <li><a href="/pricing/">What PRO adds (and what it costs)</a></li>
             <li><a href="/privacy/">Privacy and data model</a></li>
-            <li><a href="/license/">Apache 2.0 license text</a></li>
+            <li><a href="/license/">License</a></li>
             <li><a href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">Source on GitHub</a></li>
           </ul>
         </aside>
@@ -213,7 +210,7 @@ const faqJsonLd = {
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="" />
+  <Footer license="" version="" />
 
   <!-- FAQPage structured data for search engines.
        Mirror of the visible Q&A — generated from the same `faqs` array
@@ -351,3 +348,4 @@ const faqJsonLd = {
     font-weight: 500;
   }
 </style>
+

@@ -1,49 +1,59 @@
 ---
+// R141e: paid model — Trial (14 days) + PRO Monthly + PRO Annual.
+// Roman's pricing decision: $20/mo, $192/yr (20% off monthly), no lifetime, no Free tier.
+// Trial features: single-model chat, local notes, code-aware chat, web search (50/day).
+// PRO features: multi-model hot-swap, cloud STT, sync, priority updates, email support.
 const tiers = [
   {
-    name: 'Free',
-    tag: 'Open Source',
+    name: 'Trial',
+    tag: '14 days',
     price: '$0',
-    sub: 'forever, no catch',
-    cta: 'Get Pulse',
-    href: '/#download',
-    primary: true,
+    sub: 'for 14 days, then $20/mo',
+    cta: 'Start 14-day trial',
+    href: '/download/',
+    primary: false,
     features: [
-      'MIT licensed source',
-      'All features unlocked',
-      'GitHub releases',
-      'Community Discord',
+      'Single-model local chat',
+      'Local notes with backlinks and tags',
+      'Code-aware chat (tree-sitter)',
+      'Web search — 50 queries / day',
+      'Pulse for Windows + Android',
+      'No credit card required',
     ],
   },
   {
-    name: 'Sponsor',
-    tag: 'Buy me a coffee',
-    price: '$5',
+    name: 'PRO Monthly',
+    tag: 'Pay monthly',
+    price: '$20',
     sub: 'per month',
-    cta: 'Become Sponsor',
-    href: 'https://github.com/sponsors/TimesNuRoman',
+    cta: 'Start Monthly',
+    href: 'https://buy.polar.sh/pulse-monthly',
     primary: false,
     features: [
-      'Your name in CREDITS. Forever. Even if you cancel.',
-      'Coffee = 1 hour of bug fixes. Pizza = 1 release.',
-      'Priority issue triage',
-      'Early-access builds',
-      'Name in release notes',
+      'Everything in Trial',
+      'Switch between multiple AI models',
+      'Voice input (cloud Whisper)',
+      'Web search — unlimited',
+      'Cross-device sync',
+      'Priority updates',
+      'Email support, 48h response',
     ],
   },
   {
-    name: 'Talk to us',
-    tag: 'Custom',
-    price: 'Free',
-    sub: 'feedback · integrations · custom builds',
-    cta: 'Say hi',
-    href: 'mailto:hi@pulse.tld',
-    primary: false,
+    name: 'PRO Annual',
+    tag: 'Best value',
+    price: '$192',
+    sub: 'per year · save $48/yr',
+    cta: 'Start Annual',
+    href: 'https://buy.polar.sh/pulse-annual',
+    primary: true,
+    badge: 'Most popular',
     features: [
-      'You have a use case Pulse doesn\'t cover yet',
-      'You want a custom integration or a tweak',
-      'You\'re exploring a build for your team',
-      'No sales pitch — just an email and a reply',
+      'Everything in PRO Monthly',
+      'Two months free vs monthly',
+      'Same features, same license key',
+      'One email receipt per year',
+      'Cancel any time, no penalty',
     ],
   },
 ];
@@ -52,13 +62,14 @@ const tiers = [
   <div class="container">
     <header class="pricing__head reveal">
       <span class="eyebrow">Pricing</span>
-      <h2>Pay nothing. Or sponsor a cup of coffee.</h2>
-      <p class="lede">If it helps you, consider sponsoring the project. That's it.</p>
+      <h2>14-day trial. Then $20 a month, or $192 a year.</h2>
+      <p class="lede">Try Pulse for 14 days with the trial — no credit card. Upgrade only if you need multi-model hot-swap, voice input, or sync.</p>
     </header>
 
     <ul class="pricing__grid" role="list">
       {tiers.map((t) => (
         <li class={`tier card reveal ${t.primary ? 'tier--primary' : ''}`}>
+          {t.badge && <span class="tier__badge">{t.badge}</span>}
           <div class="tier__head">
             <span class="tier__name">{t.name}</span>
             <span class="tier__tag">{t.tag}</span>
@@ -100,10 +111,23 @@ const tiers = [
   }
   @media (min-width: 800px) { .pricing__grid { grid-template-columns: repeat(3, 1fr); } }
 
-  .tier { padding: 1.75rem; display: flex; flex-direction: column; gap: 1rem; }
+  .tier { padding: 1.75rem; display: flex; flex-direction: column; gap: 1rem; position: relative; }
   .tier--primary {
     border-color: var(--purple);
     box-shadow: 0 0 0 1px rgba(187,154,247,0.25), var(--shadow-md);
+  }
+  .tier__badge {
+    position: absolute;
+    top: -10px;
+    right: 1.25rem;
+    background: var(--purple);
+    color: #1a1b26;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
   }
 
   .tier__head { display: flex; justify-content: space-between; align-items: baseline; }

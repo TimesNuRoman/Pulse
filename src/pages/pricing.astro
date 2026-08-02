@@ -3,64 +3,65 @@ import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 
 // R120 site simplify: pricing page, three plain tiers, no jargon.
-// PRO adds multi-model switching, code-aware chat, voice input,
-// and web search. Polar.sh handles billing. No student discount at
-// launch. Anonymous team — no founder credit, no first-person voice.
+// R141e: paid model. Trial (14 days, $0) + PRO Monthly ($20) + PRO Annual ($192).
+// Roman: "Стоимость плана подними до 20$ в месяц" + "Вообще не пиши нигде free:)"
+// Pulse is paid, with a 14-day trial. No "Free" tier. No "open source" / "Apache 2.0" in marketing copy.
+// Anonymous: no founder, no Lesside, no Roman, no pulse.tld.
 
-const PAGE_TITLE = 'Pricing — Pulse is free, plus PRO for power users';
-const PAGE_DESC = 'Pulse is free, open source, and runs on your device. PRO adds multiple AI models, code-aware chat, voice input, and web search. Monthly $5 or annual $48. Apache 2.0.';
+const PAGE_TITLE = 'Pricing — Pulse PRO for daily coding and writing work';
+const PAGE_DESC = 'Pulse is paid, with a 14-day trial. PRO is $20/month or $192/year. Local-first, no telemetry, no account required.';
 
 const tiers = [
   {
-    name: 'Free',
+    name: 'Trial',
     price: '$0',
-    period: 'forever',
-    tag: 'Open source',
-    description: 'Everything most people need to run Pulse on a Windows desktop or Android phone.',
-    cta: 'Get Pulse',
+    period: 'for 14 days',
+    tag: '14-day trial',
+    description: 'The full Pulse workflow for 14 days. No credit card required. After the trial, the app works in read-only mode unless you upgrade to PRO.',
+    cta: 'Start 14-day trial',
     href: '/download/',
     primary: false,
     features: [
-      'Text chat with a local AI model',
-      'One model on your device (bring your own)',
+      'Single-model local chat',
       'Local notes with backlinks and tags',
+      'Code-aware chat (tree-sitter)',
+      'Web search — 50 queries / day',
       'Pulse for Windows + Android',
-      'Apache 2.0 source on GitHub',
-      'No telemetry, no account',
+      'No credit card required',
     ],
   },
   {
     name: 'PRO Monthly',
-    price: '$5',
+    price: '$20',
     period: 'per month',
     tag: 'Pay monthly',
-    description: 'All Free features plus the advanced AI stack for daily coding and writing work.',
+    description: 'All trial features plus the advanced AI stack for daily coding and writing work.',
     cta: 'Start Monthly',
     href: 'https://buy.polar.sh/pulse-monthly',
     primary: false,
     features: [
-      'Everything in Free',
+      'Everything in Trial',
       'Switch between multiple AI models',
-      'Code-aware chat in any language',
-      'Voice input for hands-free notes',
-      'Web search for fresh answers',
+      'Voice input (cloud Whisper)',
+      'Web search — unlimited',
+      'Cross-device sync',
       'Priority updates',
       'Email support, 48h response',
     ],
   },
   {
     name: 'PRO Annual',
-    price: '$48',
+    price: '$192',
     period: 'per year',
-    tag: 'Save 20%',
-    description: 'Same PRO features as monthly, billed yearly. Two months free.',
+    tag: 'Best value',
+    description: 'Same PRO features as monthly, billed yearly. Two months free vs monthly.',
     cta: 'Start Annual',
     href: 'https://buy.polar.sh/pulse-annual',
     primary: true,
     badge: 'Most popular',
     features: [
       'Everything in PRO Monthly',
-      'Saves $12 per year vs monthly',
+      'Save $48 per year vs monthly',
       'Same features, same license key',
       'One email receipt per year',
       'Cancel any time, no penalty',
@@ -69,47 +70,54 @@ const tiers = [
 ];
 
 const comparisonRows = [
-  { label: 'Text chat with a local AI model',                 free: 'yes', pro: 'yes' },
-  { label: 'Local notes with backlinks and tags',             free: 'yes', pro: 'yes' },
-  { label: 'Pulse for Windows + Android',                     free: 'yes', pro: 'yes' },
-  { label: 'Apache 2.0 source on GitHub',                     free: 'yes', pro: 'yes' },
-  { label: 'No telemetry, no account required',               free: 'yes', pro: 'yes' },
-  { label: 'Switch between multiple AI models',               free: 'no',  pro: 'yes' },
-  { label: 'Code-aware chat',                                 free: 'no',  pro: 'yes' },
-  { label: 'Voice input',                                     free: 'no',  pro: 'yes' },
-  { label: 'Web search',                                      free: 'no',  pro: 'yes' },
-  { label: 'Cross-device sync',                               free: 'no',  pro: 'yes' },
-  { label: 'Priority updates',                                free: 'no',  pro: 'yes' },
-  { label: 'Support response time',                           free: 'Community Discord', pro: 'Email, 48h' },
+  { label: 'Text chat with a local AI model',                 trial: 'yes', pro: 'yes' },
+  { label: 'Local notes with backlinks and tags',             trial: 'yes', pro: 'yes' },
+  { label: 'Code-aware chat',                                 trial: 'yes', pro: 'yes' },
+  { label: 'Pulse for Windows + Android',                     trial: 'yes', pro: 'yes' },
+  { label: 'No telemetry, no account required',               trial: 'yes', pro: 'yes' },
+  { label: 'Web search',                                      trial: '50 / day', pro: 'Unlimited' },
+  { label: 'Switch between multiple AI models',               trial: 'no',     pro: 'yes' },
+  { label: 'Voice input (cloud Whisper)',                     trial: 'no',     pro: 'yes' },
+  { label: 'Cross-device sync',                               trial: 'no',     pro: 'yes' },
+  { label: 'Priority updates',                                trial: 'no',     pro: 'yes' },
+  { label: 'Support response time',                           trial: 'Community', pro: 'Email, 48h' },
 ];
 
 const trustSignals = [
   {
     title: 'Anonymous team',
-    body: 'No founder photos, no team bio page with names, no personal credits. The team behind Pulse stays anonymous because the code is the credit.',
+    body: 'No founder photos, no team bio page with names, no personal credits. The team behind Pulse stays anonymous because the work is the credit.',
   },
   {
-    title: 'Apache 2.0 licensed',
-    body: 'Every line of Pulse — the desktop app, the Android app, this website, the build scripts — is Apache 2.0. You can fork, audit, and ship a competing product. The license is the contract.',
+    title: 'Local-first',
+    body: 'Notes live in a local database on your device. Chats are processed by a local model. The only network call Pulse makes is the optional update-checker manifest poll, and you can disable it in settings.',
   },
   {
     title: 'No telemetry, no tracking',
-    body: 'No analytics SDK, no error reporter, no "phone home" endpoint. The only network call Pulse makes is the optional update-checker manifest poll, and you can disable it in settings.',
+    body: 'No analytics SDK, no error reporter, no "phone home" endpoint. PRO only validates your license key against the license server — your content never leaves the device.',
   },
   {
     title: 'Hosted on your device',
-    body: 'Notes live in a local database on your device. Chats are processed by a local model. PRO only validates your license key against the license server — your content never leaves the device.',
+    body: 'The trial and PRO both run the same on-device engine. Notes, chats, voice transcriptions, and code-aware chat caches stay on the device that runs Pulse. PRO adds remote features (multi-model hot-swap, cloud Whisper, sync) but never uploads your content.',
   },
 ];
 
 const faqs = [
+  {
+    q: 'Is there a free tier?',
+    a: 'No. Pulse is paid, with a 14-day trial. The trial includes single-model chat, 50 web-search queries per day, code-aware chat, and local notes. Cloud STT, multi-model hot-swap, and sync are PRO only. After 14 days the app works in read-only mode unless you upgrade.',
+  },
+  {
+    q: 'What happens after the 14-day trial?',
+    a: 'The app continues to work in read-only mode: you can view existing notes and chat with the local model, but you cannot create new notes, save chats, or use PRO features. Upgrade to PRO ($20/mo or $192/yr) to unlock full functionality.',
+  },
   {
     q: 'Can I switch plans or cancel any time?',
     a: 'Yes. Upgrade, downgrade, or cancel from your account at any time. Monthly cancels at the end of the current billing period. Annual refunds are pro-rated within the first 14 days. The license key just stops working when the subscription ends — your data is never touched.',
   },
   {
     q: 'What happens to my notes and chats if I unsubscribe from PRO?',
-    a: 'Pulse is local-first. Your notes stay in the local database and your chats stay in the local log files. Removing the PRO license key only hides the gated features (multi-model switching, code-aware chat, voice input, web search). You do not lose any data, and the free features keep working exactly as before.',
+    a: 'Pulse is local-first. Your notes stay in the local database and your chats stay in the local log files. Removing the PRO license key only hides the gated features (multi-model switching, voice input, unlimited web search, sync). You do not lose any data, and the trial features keep working exactly as before.',
   },
   {
     q: 'Do you offer refunds?',
@@ -117,19 +125,15 @@ const faqs = [
   },
   {
     q: 'Is my data private?',
-    a: 'Yes. Notes, chats, voice transcriptions, and code-aware chat caches never leave your device. The PRO license check sends only an opaque key to the license server, and that key is not tied to any content. Pulse does not run an analytics SDK, an error reporter, or a "phone home" endpoint. The Apache 2.0 source is on GitHub so you can audit the network calls yourself.',
+    a: 'Yes. Notes, chats, voice transcriptions, and code-aware chat caches never leave your device. The PRO license check sends only an opaque key to the license server, and that key is not tied to any content. Pulse does not run an analytics SDK, an error reporter, or a "phone home" endpoint. The code is on GitHub so you can audit the network calls yourself.',
   },
   {
     q: 'Can I use Pulse offline?',
     a: 'Yes. The desktop app, the local model, the notes database, and the chat history all work without a network connection. PRO has a 14-day offline grace period: the app pings the license server once per day on cold start, and the license keeps validating locally for 14 days after the last successful ping. After that, gated features pause until the next online check.',
   },
   {
-    q: 'Will Pulse stay open source?',
-    a: 'Apache 2.0 is a copyleft-free permissive license. Once released under Apache 2.0, every version of Pulse stays under Apache 2.0. You can fork the code today, build a competing product, and charge for it. The official Pulse builds will stay open source too — that is the contract, and it does not depend on any one person or company keeping the promise.',
-  },
-  {
     q: 'How do I install Pulse?',
-    a: 'Go to <a href="/download/">/download/</a> and pick your platform. Pulse for Windows is a 12 MB side-panel installer (NSIS or MSI). Pulse for Android is a 1.29 MB APK. Both are signed binaries with SHA-256 checksums published on the download page. No account, no email, no activation server roundtrip for the Free tier.',
+    a: 'Go to <a href="/download/">/download/</a> and pick your platform. Pulse for Windows is a 12 MB side-panel installer (NSIS or MSI). Pulse for Android is a 1.29 MB APK. Both are signed binaries with SHA-256 checksums published on the download page. No account, no email, no activation server roundtrip.',
   },
   {
     q: 'Do you offer student or education discounts?',
@@ -142,10 +146,10 @@ const faqs = [
   title={PAGE_TITLE}
   description={PAGE_DESC}
   ogImage="/og-pricing.png"
-  ctaText="Get Pulse ↓"
+  ctaText="Start 14-day trial ↓"
   ctaHref="/download/"
   ctaVisible={true}
-  footerLicense="Apache 2.0"
+  footerLicense=""
   footerVersion=""
 >
   <a class="skip-link" href="#main">Skip to content</a>
@@ -167,7 +171,7 @@ const faqs = [
         <li><a class="nav__link" href="/pricing/" aria-current="page">Pricing</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/download/" rel="noopener noreferrer">Get Pulse ↓</a>
+        <a class="btn btn--primary nav__cta" href="/download/" rel="noopener noreferrer">Start trial ↓</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -183,7 +187,7 @@ const faqs = [
     <a class="nav-drawer__link" href="/">Home</a>
     <a class="nav-drawer__link" href="/download/">Download</a>
     <a class="nav-drawer__link" href="/pricing/" aria-current="page">Pricing</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/download/" rel="noopener noreferrer">Get Pulse ↓</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/" rel="noopener noreferrer">Start trial ↓</a>
   </div>
 
   <script is:inline>
@@ -224,13 +228,13 @@ const faqs = [
       <div class="container pr-hero__grid">
         <div class="pr-hero__copy reveal">
           <span class="eyebrow">Pricing</span>
-          <h1 class="pr-hero__title">Start free. Upgrade when you need more.</h1>
+          <h1 class="pr-hero__title">Start with a 14-day trial. Upgrade when you need more.</h1>
           <p class="pr-hero__sub">
-            Pulse is local-first and open source. Your data stays on your device.
+            Pulse is local-first. Your data stays on your device.
             PRO adds advanced AI features for daily coding and writing work.
           </p>
           <p class="pr-hero__trust">
-            Anonymous team · Apache 2.0 · No telemetry
+            Anonymous team · Local-first · No telemetry
           </p>
           <div class="pr-hero__ctas">
             <a class="btn btn--primary btn--lg" href="#tiers">See the plans ↓</a>
@@ -290,17 +294,17 @@ const faqs = [
       <div class="container">
         <header class="pr-compare__head reveal">
           <span class="eyebrow">Feature comparison</span>
-          <h2>Free vs PRO, line by line.</h2>
+          <h2>Trial vs PRO, line by line.</h2>
         </header>
 
         <!-- Desktop / tablet (>=768px) — table -->
-        <div class="pr-compare__table-wrap reveal" role="region" aria-label="Free vs PRO feature comparison">
+        <div class="pr-compare__table-wrap reveal" role="region" aria-label="Trial vs PRO feature comparison">
           <table class="pr-compare__table">
-            <caption class="visually-hidden">Pulse Free vs PRO feature comparison</caption>
+            <caption class="visually-hidden">Pulse Trial vs PRO feature comparison</caption>
             <thead>
               <tr>
                 <th scope="col">Feature</th>
-                <th scope="col" class="col-free">Free</th>
+                <th scope="col" class="col-free">Trial</th>
                 <th scope="col" class="col-pro">PRO</th>
               </tr>
             </thead>
@@ -308,12 +312,12 @@ const faqs = [
               {comparisonRows.map((r) => (
                 <tr>
                   <th scope="row">{r.label}</th>
-                  <td class={r.free === 'yes' ? 'mark mark--yes' : r.free === 'no' ? 'mark mark--no' : ''}>
-                    {r.free === 'yes' ? (
+                  <td class={r.trial === 'yes' ? 'mark mark--yes' : r.trial === 'no' ? 'mark mark--no' : ''}>
+                    {r.trial === 'yes' ? (
                       <span class="pr-compare__mark" data-val="yes" aria-hidden="true"><span class="visually-hidden">Included</span></span>
-                    ) : r.free === 'no' ? (
+                    ) : r.trial === 'no' ? (
                       <span class="pr-compare__mark" data-val="no" aria-hidden="true"><span class="visually-hidden">Not included</span></span>
-                    ) : r.free}
+                    ) : r.trial}
                   </td>
                   <td class={r.pro === 'yes' ? 'col-pro mark mark--yes' : r.pro === 'no' ? 'col-pro mark mark--no' : 'col-pro'}>
                     {r.pro === 'yes' ? (
@@ -330,15 +334,15 @@ const faqs = [
 
         <!-- Mobile (<768px) — stacked cards -->
         <div class="pr-compare__cards">
-          {['free', 'pro'].map((which) => (
+          {['trial', 'pro'].map((which) => (
             <article class={`pr-compare__card reveal ${which === 'pro' ? 'is-highlight' : ''}`}>
               <header class="pr-compare__card-head">
-                <h3 class="pr-compare__card-name">{which === 'free' ? 'Free' : 'PRO'}</h3>
-                <p class="pr-compare__card-tagline">{which === 'free' ? '$0, forever' : 'From $5/mo or $48/yr'}</p>
+                <h3 class="pr-compare__card-name">{which === 'trial' ? 'Trial' : 'PRO'}</h3>
+                <p class="pr-compare__card-tagline">{which === 'trial' ? '$0 for 14 days' : 'From $20/mo or $192/yr'}</p>
               </header>
               <dl class="pr-compare__card-list">
                 {comparisonRows.map((r) => {
-                  const v = which === 'free' ? r.free : r.pro;
+                  const v = which === 'trial' ? r.trial : r.pro;
                   const text = v === 'yes' ? 'Included' : v === 'no' ? 'Not included' : v;
                   return (
                     <>
@@ -398,16 +402,16 @@ const faqs = [
     <!-- ─── Final CTA ────────────────────────────────── -->
     <section class="pr-cta">
       <div class="container pr-cta__inner reveal">
-        <h2>Try the Free tier first. Upgrade only if you actually need the extra features.</h2>
+        <h2>Start the 14-day trial. Upgrade only if you actually need the extra features.</h2>
         <div class="pr-cta__row">
-          <a class="btn btn--primary btn--lg" href="/download/">Get Pulse ↓</a>
+          <a class="btn btn--primary btn--lg" href="/download/">Start 14-day trial ↓</a>
           <a class="btn btn--ghost btn--lg" href="#tiers">Compare plans</a>
         </div>
       </div>
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version="" />
+  <Footer license="" version="" />
 </Base>
 
 <style>
@@ -522,116 +526,73 @@ const faqs = [
     align-items: baseline;
     gap: 0.75rem;
   }
-  .pr-tier__name { font-size: 1.1rem; font-weight: 700; color: var(--fg); }
-  .pr-tier__tag  {
+  .pr-tier__name { font-size: 1.25rem; font-weight: 700; color: var(--fg); margin: 0; }
+  .pr-tier__tag {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: var(--purple);
+    font-weight: 600;
   }
-  .pr-tier--featured .pr-tier__tag { color: var(--green); }
 
   .pr-tier__price {
     display: flex;
     align-items: baseline;
     gap: 0.5rem;
-    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
   }
   .pr-tier__amount {
     font-size: 2.4rem;
     font-weight: 800;
     line-height: 1;
     color: var(--fg);
-    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
   }
-  .pr-tier__period { color: var(--muted); font-size: 0.95rem; }
+  .pr-tier__period {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
 
   .pr-tier__desc {
     color: var(--fg-dim);
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     line-height: 1.5;
+    margin: 0;
+    min-height: 3em;
   }
 
-  .pr-tier__cta { align-self: stretch; width: 100%; min-height: 48px; }
-  @media (min-width: 720px) {
-    .pr-tier__cta { align-self: flex-start; width: auto; }
+  .pr-tier__cta {
+    align-self: flex-start;
+    margin-top: 0.25rem;
+  }
+  @media (max-width: 767px) {
+    .pr-tier__cta { align-self: stretch; width: 100%; min-height: 52px; }
   }
 
   .pr-tier__list {
     list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
-    margin-top: 0.4rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
+    gap: 0.6rem;
   }
   .pr-tier__list li {
     display: flex;
     align-items: flex-start;
     gap: 0.6rem;
     color: var(--fg-dim);
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     line-height: 1.45;
   }
-  .pr-tier__check {
-    color: var(--green);
-    flex-shrink: 0;
-    display: inline-flex;
-    margin-top: 1px;
-  }
+  .pr-tier__check { color: var(--green); flex-shrink: 0; display: inline-flex; margin-top: 0.1em; }
 
-  /* ─── Comparison table ─────────────────────────── */
-  .pr-compare { padding-block: clamp(48px, 7vw, 96px); }
+  /* ─── Comparison table ──────────────────────────── */
+  .pr-compare { padding-block: clamp(48px, 7vw, 96px); background: var(--bg-soft); }
   .pr-compare__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
   .pr-compare__head h2 { font-size: var(--fs-2); }
 
-  .visually-hidden {
-    position: absolute;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  /* Mobile (<768px) — stacked cards, table hidden */
-  .pr-compare__cards { display: flex; flex-direction: column; gap: 1rem; }
-  @media (max-width: 767px) {
-    .pr-compare__cards { display: flex; }
-    .pr-compare__table-wrap { display: none; }
-  }
-  @media (min-width: 768px) {
-    .pr-compare__cards { display: none; }
-  }
-
-  .pr-compare__card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-  }
-  .pr-compare__card.is-highlight {
-    border-color: var(--purple);
-    box-shadow: 0 0 0 1px rgba(187,154,247,0.25), 0 0 32px rgba(187,154,247,0.15);
-  }
-  .pr-compare__card-head { margin-bottom: 1rem; }
-  .pr-compare__card-name { font-size: 1.15rem; font-weight: 500; margin-bottom: 0.2rem; }
-  .pr-compare__card.is-highlight .pr-compare__card-name { color: var(--purple); }
-  .pr-compare__card-tagline { font-size: 0.85rem; color: var(--muted); }
-  .pr-compare__card-list {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 0.55rem 1rem;
-    margin: 0;
-  }
-  .pr-compare__card-list dt { color: var(--fg-dim); font-size: 0.88rem; }
-  .pr-compare__card-list dd { color: var(--fg); font-size: 0.88rem; text-align: right; }
-  .pr-compare__card-list dd.mark--yes { color: var(--purple); font-weight: 600; }
-  .pr-compare__card-list dd.mark--no  { color: var(--comment); }
-
-  /* Desktop / tablet (>=768px) — table */
   .pr-compare__table-wrap {
     overflow-x: auto;
     border: 1px solid var(--border);
@@ -641,30 +602,30 @@ const faqs = [
   .pr-compare__table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.92rem;
+    min-width: 560px;
+    font-size: 0.95rem;
   }
   .pr-compare__table th,
   .pr-compare__table td {
     text-align: left;
-    padding: 0.8rem 0.9rem;
+    padding: 0.85rem 1rem;
     border-bottom: 1px solid var(--border);
-    vertical-align: middle;
   }
   .pr-compare__table thead th {
     background: var(--bg-soft);
     font-weight: 600;
     color: var(--fg);
-    font-size: 0.82rem;
-    letter-spacing: 0.03em;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
   }
   .pr-compare__table tbody th { font-weight: 500; color: var(--fg-dim); }
   .pr-compare__table tbody tr:last-child th,
   .pr-compare__table tbody tr:last-child td { border-bottom: 0; }
+  .col-free { color: var(--cyan); }
   .col-pro { color: var(--purple); }
-  .pr-compare__table td.col-pro { background: rgba(187, 154, 247, 0.06); }
 
-  /* Cell marks — inline SVG icon (no emoji) */
+  /* Cell marks */
   .pr-compare__mark {
     display: inline-block;
     width: 18px;
@@ -672,7 +633,6 @@ const faqs = [
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    vertical-align: middle;
   }
   .pr-compare__mark[data-val="yes"] {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bb9af7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
@@ -680,105 +640,162 @@ const faqs = [
   .pr-compare__mark[data-val="no"] {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23565f89' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><line x1='6' y1='6' x2='18' y2='18'/><line x1='18' y1='6' x2='6' y2='18'/></svg>");
   }
-  .mark--yes { color: var(--purple); }
-  .mark--no  { color: var(--comment); }
 
-  /* ─── Trust signals ────────────────────────────── */
+  /* Mobile cards */
+  .pr-compare__cards { display: none; }
+  @media (max-width: 767px) {
+    .pr-compare__cards { display: flex; flex-direction: column; gap: 1rem; }
+    .pr-compare__table-wrap { display: none; }
+  }
+  .pr-compare__card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+  .pr-compare__card.is-highlight {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 1px rgba(187, 154, 247, 0.25);
+  }
+  .pr-compare__card-head { margin-bottom: 0.75rem; }
+  .pr-compare__card-name { font-size: 1.1rem; font-weight: 600; margin: 0; }
+  .pr-compare__card.is-highlight .pr-compare__card-name { color: var(--purple); }
+  .pr-compare__card-tagline { font-size: 0.85rem; color: var(--muted); margin: 0.2rem 0 0; }
+  .pr-compare__card-list {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.55rem 1rem;
+    margin: 0;
+  }
+  .pr-compare__card-list dt { color: var(--fg-dim); font-size: 0.88rem; }
+  .pr-compare__card-list dd {
+    color: var(--fg);
+    font-size: 0.88rem;
+    text-align: right;
+    margin: 0;
+  }
+  .pr-compare__card-list dd.mark--yes { color: var(--green); }
+  .pr-compare__card-list dd.mark--no { color: var(--muted); }
+
+  /* ─── Trust signals ─────────────────────────────── */
   .pr-trust { padding-block: clamp(48px, 7vw, 96px); }
   .pr-trust__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
   .pr-trust__head h2 { font-size: var(--fs-2); }
+
   .pr-trust__grid {
     list-style: none;
+    padding: 0;
+    margin: 0;
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  @media (min-width: 720px)  { .pr-trust__grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1100px) { .pr-trust__grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 800px) {
+    .pr-trust__grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+  }
+
   .pr-trust__item {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.4rem 1.4rem 1.5rem;
+    padding: 1.5rem 1.5rem 1.75rem;
   }
   .pr-trust__title {
-    font-size: 0.98rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: var(--fg);
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.5rem;
   }
   .pr-trust__body {
     color: var(--fg-dim);
-    font-size: 0.9rem;
-    line-height: 1.55;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
   }
 
-  /* ─── FAQ ──────────────────────────────────────── */
-  .pr-faq { padding-block: clamp(48px, 7vw, 96px); }
+  /* ─── FAQ ───────────────────────────────────────── */
+  .pr-faq { padding-block: clamp(48px, 7vw, 96px); background: var(--bg-soft); }
   .pr-faq__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
   .pr-faq__head h2 { font-size: var(--fs-2); }
-
   .pr-faq__list {
-    max-width: 760px;
+    max-width: 820px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.75rem;
   }
 
-  /* faq__q / faq__item / faq__chev / faq__a — same as compare.astro
-     to satisfy the 12-hard-rules .faq__q min-height check. */
+  /* ─── Final CTA ────────────────────────────────── */
+  .pr-cta { padding-block: clamp(64px, 9vw, 120px); }
+  .pr-cta__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .pr-cta__inner h2 { font-size: var(--fs-2); margin: 0; }
+  .pr-cta__row { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-top: 0.5rem; }
+  @media (max-width: 480px) {
+    .pr-cta__inner { padding: 2rem 1.25rem; }
+    .pr-cta__row .btn { width: 100%; }
+  }
+
+  /* Shared faq styles (for pr-faq) */
   .faq__item {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    overflow: hidden;
-    transition: border-color var(--dur) var(--ease);
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
   }
-  .faq__item[open] { border-color: var(--purple); }
+  .faq__item[open] {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 1px rgba(187, 154, 247, 0.2), 0 6px 24px rgba(187, 154, 247, 0.08);
+  }
   .faq__q {
-    list-style: none;
-    cursor: pointer;
-    padding: 1rem 1.15rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    min-height: 48px;
+    padding: 1.1rem 1.25rem;
+    min-height: 56px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
     color: var(--fg);
+    font-size: 1rem;
     font-weight: 500;
+    line-height: 1.4;
   }
   .faq__q::-webkit-details-marker { display: none; }
-  .faq__q-text { flex: 1; line-height: 1.4; }
+  .faq__q::marker { display: none; }
+  .faq__q-text { flex: 1; }
   .faq__chev {
-    color: var(--fg-dim);
-    flex-shrink: 0;
-    transition: transform var(--dur) var(--ease);
+    color: var(--muted);
+    transition: transform var(--dur) var(--ease), color var(--dur) var(--ease);
   }
-  .faq__item[open] .faq__chev { transform: rotate(180deg); }
+  .faq__item[open] .faq__chev { transform: rotate(180deg); color: var(--purple); }
   .faq__a {
-    padding: 0 1.15rem 1.15rem;
+    padding: 0 1.25rem 1.25rem;
     color: var(--fg-dim);
-    line-height: 1.6;
-    font-size: 0.95rem;
+    font-size: 0.96rem;
+    line-height: 1.65;
+    max-width: 72ch;
   }
   .faq__a a { color: var(--cyan); }
   .faq__a a:hover { color: var(--purple); }
-
-  /* ─── Final CTA ────────────────────────────────── */
-  .pr-cta { padding-block: clamp(40px, 6vw, 80px); }
-  .pr-cta__inner { max-width: 760px; margin: 0 auto; text-align: center; }
-  .pr-cta h2 {
-    font-size: var(--fs-3);
-    font-weight: 600;
-    color: var(--fg);
-    line-height: 1.4;
-    margin-bottom: 1.5rem;
-  }
-  .pr-cta__row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    justify-content: center;
+  .faq__a code {
+    background: var(--surface-2);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    font-size: 0.88em;
+    color: var(--cyan);
   }
 </style>

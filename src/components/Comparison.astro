@@ -1,18 +1,19 @@
 ---
 // R85: replaced emoji yes/no marks with semantic values 'yes' | 'no' | 'partial'.
 // Render layer maps them to inline SVG icons + accessible labels.
+// R141e: removed "Open source" row (Roman: "Никакого опенсорс").
+// R141e: tagline updated "12MB. Local. Open source." → "12MB. Local. Yours to use."
 const rows = [
   { label: 'Installer size', pulse: '12MB',     chatgpt: '150MB+', raycast: 'n/a (ext.)', noi: '80MB',     pulseWin: true  },
   { label: 'Local AI (Ollama)', pulse: 'yes',  chatgpt: 'no',    raycast: 'no',         noi: 'yes',      pulseWin: true  },
   { label: 'Vision (gemma3:4b)', pulse: 'yes', chatgpt: 'no',    raycast: 'no',         noi: 'no',       pulseWin: true  },
   { label: 'Smart Engine (active app)', pulse: 'yes', chatgpt: 'no', raycast: 'partial', noi: 'no',       pulseWin: true  },
-  { label: 'Open source (MIT)', pulse: 'yes',  chatgpt: 'no',    raycast: 'no',         noi: 'yes',      pulseWin: false },
   { label: 'Cross-platform',    pulse: 'Windows', chatgpt: 'Win/macOS', raycast: 'macOS only', noi: 'macOS only', pulseWin: false },
 ];
 
 // P0-4: card-stack view for mobile (one card per competitor)
 const competitors = [
-  { key: 'pulse',   name: 'Pulse',           tagline: '12MB. Local. Open source.', highlight: true  },
+  { key: 'pulse',   name: 'Pulse',           tagline: '12MB. Local. Yours to use.', highlight: true  },
   { key: 'chatgpt', name: 'ChatGPT Desktop', tagline: 'Cloud-tied. 150MB+.' },
   { key: 'raycast', name: 'Raycast AI',      tagline: 'macOS only. Paid extension.' },
   { key: 'noi',     name: 'Noi',             tagline: 'Local but 80MB. macOS only.' },

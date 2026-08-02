@@ -30,7 +30,7 @@ const WIN_MIN_OS = 'Windows 10 (build 17763)';
 const WIN_BUILD_TARGET = 'x86_64-pc-windows-msvc';
 
 const PAGE_TITLE = 'Download Pulse — for Windows or Android';
-const PAGE_DESC = 'Pulse is free and open source. Download Pulse for Windows (NSIS or MSI installer) or Pulse for Android (APK). Both are local-first, Apache 2.0, no account or telemetry.';
+const PAGE_DESC = 'Download Pulse for Windows (NSIS or MSI installer) or Pulse for Android (APK). 14-day trial included. Local-first, no account, no telemetry.';
 
 // R128 SEO polish: JSON-LD for the two apps on this page.
 // One SoftwareApplication per platform so search engines can surface
@@ -75,10 +75,10 @@ const softwareAppsJsonLd = [
   title={PAGE_TITLE}
   description={PAGE_DESC}
   ogImage="/og-download.png"
-  ctaText={`Get Pulse for Android ↓ ${APK_SIZE}`}
+  ctaText={`Start trial for Android ↓ ${APK_SIZE}`}
   ctaHref={APK_URL}
   ctaVisible={true}
-  footerLicense="Apache 2.0"
+  footerLicense=""
   footerVersion={`v${APK_VERSION} / v${WIN_VERSION}`}
   canonical="https://ownlocalml.com/download/"
 >
@@ -101,7 +101,7 @@ const softwareAppsJsonLd = [
         <li><a class="nav__link" href="/pricing/">Pricing</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href={APK_URL} rel="noopener noreferrer">Get Pulse ↓ {APK_SIZE}</a>
+        <a class="btn btn--primary nav__cta" href={APK_URL} rel="noopener noreferrer">Start trial ↓ {APK_SIZE}</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -117,7 +117,7 @@ const softwareAppsJsonLd = [
     <a class="nav-drawer__link" href="/">Home</a>
     <a class="nav-drawer__link" href="/download/" aria-current="page">Download</a>
     <a class="nav-drawer__link" href="/pricing/">Pricing</a>
-    <a class="btn btn--primary nav-drawer__cta" href={APK_URL} rel="noopener noreferrer">Get Pulse ↓ {APK_SIZE}</a>
+    <a class="btn btn--primary nav-drawer__cta" href={APK_URL} rel="noopener noreferrer">Start trial ↓ {APK_SIZE}</a>
   </div>
 
   <script is:inline>
@@ -233,7 +233,7 @@ const softwareAppsJsonLd = [
             </div>
             <div class="dl-card__meta-row">
               <dt>license</dt>
-              <dd>Apache 2.0</dd>
+              <dd>Proprietary</dd>
             </div>
           </dl>
           <p class="dl-card__more">
@@ -311,16 +311,15 @@ const softwareAppsJsonLd = [
         <h2>Same data model on Windows and Android.</h2>
         <p class="lede">
           Pulse for Windows and Pulse for Android share the same local-first
-          data model and the same Apache 2.0 license. They differ in
-          input: a tray icon and global hotkey on Windows, a bottom
-          toolbar and share intent on Android. Notes and chats never
-          leave the device they were written on.
+          data model. They differ in input: a tray icon and global hotkey
+          on Windows, a bottom toolbar and share intent on Android. Notes
+          and chats never leave the device they were written on.
         </p>
         <div class="dl-unified__grid">
           <a class="dl-unified__link glass" href="/pricing/">
             <span class="dl-unified__link-eyebrow">Pricing</span>
-            <span class="dl-unified__link-title">Free, forever</span>
-            <span class="dl-unified__link-meta">Apache 2.0 · no paid tier</span>
+            <span class="dl-unified__link-title">14-day trial, then $20/mo</span>
+            <span class="dl-unified__link-meta">No credit card to start</span>
           </a>
           <a class="dl-unified__link glass" href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">
             <span class="dl-unified__link-eyebrow">Source</span>
@@ -332,7 +331,7 @@ const softwareAppsJsonLd = [
     </section>
   </main>
 
-  <Footer license="Apache 2.0" version={`v${APK_VERSION} / v${WIN_VERSION}`} />
+  <Footer license="" version={`v${APK_VERSION} / v${WIN_VERSION}`} />
 
   <!-- R128 SEO polish: one SoftwareApplication per platform so search
        engines can surface each installer / APK independently. -->
@@ -574,3 +573,4 @@ const softwareAppsJsonLd = [
     font-size: 0.82rem;
   }
 </style>
+

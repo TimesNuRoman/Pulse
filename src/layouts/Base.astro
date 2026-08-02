@@ -26,11 +26,13 @@ const {
   title = "Pulse — AI that doesn't get to leave the room",
   description = "Pulse is a 12MB Tauri v2 side panel that talks to local Ollama. Local. Private. No Electron, no cloud.",
   ogImage: ogImageProp,
-  ctaText = 'Get Pulse ↓ 12 MB',
+  ctaText = 'Start trial ↓ 12 MB',
   ctaHref = '/#download',
   ctaVisible = true,
-  // R94a: default footer license is 'Apache 2.0' (was 'MIT' — pre-R93 relic).
-  footerLicense = 'Apache 2.0',
+  // R141e: default footer license is '' (Roman: "Никакого опенсорс"). Pages can override
+  // by passing `footerLicense="Apache 2.0"` if they need to surface the Apache label
+  // (e.g. the /license/ page). Marketing pages stay neutral.
+  footerLicense = '',
   footerVersion = 'v0.3.0',
 } = Astro.props;
 
@@ -186,3 +188,4 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ownlocalml
     )}
   </body>
 </html>
+
