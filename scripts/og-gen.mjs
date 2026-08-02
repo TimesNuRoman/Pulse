@@ -3,20 +3,22 @@
 // Pure Node + @resvg/resvg-js — no canvas, no headless browser.
 //
 // Usage:  node scripts/og-gen.mjs
-// Output: public/og-home.png, public/og-notes.png,
-//         public/og-install.png, public/og-pricing.png
+// Output: public/og-home.png, public/og-download.png,
+//         public/og-compare.png, public/og-pricing.png
 //
 // Run `npm run og:gen` (alias for this script).
 //
 // Design rules: 12-point hard rules (DARK only, Tokyo Night palette,
 // no emoji, no marketing copy, descriptive text only).
 //
-// r101: rewrote variants to match the actual product (Pulse Notes,
-// Android markdown editor) — the previous copy ("Local-first AI side
-// panel", "macOS / Windows / Linux", "pulse.tld") was left over from
-// the pre-R87 Pulse AI desktop side panel. Site host is now read from
-// astro.config.mjs (the canonical source of truth) with PULSE_SITE
-// env override and a hardcoded fallback for safety.
+// r104: unified brand. The "Pulse Notes" standalone brand is gone —
+// the 4 variants now read "Pulse" (one product) with platform context
+// (Windows + Android, download, compare, pricing). The /notes/ variant
+// is dropped (it now redirects to /download/#android). r101's install
+// variant is renamed to download to match the r104 /download/ page.
+// Site host still falls through PULSE_SITE > astro.config.site >
+// hardcoded canonical so the OG never reverts to 'pulse.tld' /
+// 'pulse.local' even on a build with no site config.
 
 import { writeFile, mkdir } from 'node:fs/promises';
 import { Resvg } from '@resvg/resvg-js';
@@ -24,9 +26,10 @@ import astroConfig from '../astro.config.mjs';
 
 // --- Site host --------------------------------------------------------------
 // Priority: PULSE_SITE env > astro.config.site > hardcoded canonical.
-// Keeping the hardcoded fallback (ebjklgbf0qvnp.space.minimax.io) means
-// the OG never shows "pulse.tld" again, even if astro.config drifts back
-// to a placeholder during in-flight rewrites (e.g. R97-HOTFIX).
+// The hardcoded fallback is the r104 deploy host placeholder. If
+// astro.config drifts back to a placeholder during an in-flight rewrite
+// (which has happened twice in the r100-r103 range), this keeps the
+// OG pill on a real space.minimax.io host instead of "pulse.tld".
 //
 // Pill display: drop the protocol (https://) so the host fits in the
 // 280px-wide pill at 20pt monospace. The full URL is still in the page
@@ -34,41 +37,40 @@ import astroConfig from '../astro.config.mjs';
 
 const SITE_HOST = process.env.PULSE_SITE
   || astroConfig.site
-  || 'https://ebjklgbf0qvnp.space.minimax.io';
+  || 'https://ncfosklh79sxf.space.minimax.io';
 const SITE_DISPLAY = SITE_HOST.replace(/^https?:\/\//, '').replace(/\/$/, '');
 const site = (suffix) => suffix ? `${SITE_DISPLAY}/${suffix}` : SITE_DISPLAY;
 
 // --- Variants ---------------------------------------------------------------
-// r101: all 4 kept for now — install/pricing have no matching pages, but
-// the PNGs are useful as "what would the install / pricing OG look like"
-// artifacts. Roman's call: drop later if no /install/ or /pricing/ page
-// is on the roadmap. The site pill uses the canonical host (no more
-// "pulse.tld" placeholder) so all 4 are at least visually correct.
+// r104: 4 variants — home (Pulse brand, two surfaces), download
+// (Windows + Android CTA), compare (matrix against 5 alternatives),
+// pricing (Free, forever). The historical /notes/ OG is dropped (page
+// now redirects to /download/#android).
 
 const variants = [
   {
     name: 'home',
-    title: 'Pulse Notes',
-    subtitle: 'Local-first markdown notes',
+    title: 'Pulse',
+    subtitle: 'Local-first AI workspace',
     site: site('')  // bare canonical URL — no suffix
   },
   {
-    name: 'notes',
-    title: 'Pulse Notes',
-    subtitle: 'Markdown editor for Android',
-    site: site('notes')
+    name: 'download',
+    title: 'Get Pulse',
+    subtitle: 'Windows + Android · Apache 2.0',
+    site: site('download')
   },
   {
-    name: 'install',
-    title: 'Install Pulse Notes',
-    subtitle: 'Android APK · Apache 2.0',
-    site: site('downloads')
+    name: 'compare',
+    title: 'Pulse vs alternatives',
+    subtitle: '10 features · 0 affiliate links',
+    site: site('compare')
   },
   {
     name: 'pricing',
-    title: 'Always Free',
+    title: 'Free, forever',
     subtitle: 'Apache 2.0 license',
-    site: site('license')
+    site: site('pricing')
   }
 ];
 

@@ -224,10 +224,10 @@ const releases: Release[] = [
 ---
 <Base
   title="Changelog · Pulse"
-  description="Pulse release notes — what shipped, when, and why. v0.6.6 P1 trio (backup rules, voice input, Settings view), v0.6.5 R93 bridge release (manifest chain 5 to 7, side-load docs for v0.6.3 / v0.6.4), v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 Pulse Notes onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse Notes for Android, v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
+  description="Pulse release notes — what shipped, when, and why. v0.6.6 P1 trio (backup rules, voice input, Settings view), v0.6.5 R93 bridge release (manifest chain 5 to 7, side-load docs for v0.6.3 / v0.6.4), v0.6.4 manifest URL fallback chain on Android, v0.6.3 in-app UpdateChecker revival, v0.6.2 onboarding v2, v0.6.1 icon refresh, v0.6.0 GREENFIELD Pulse for Android (historically Pulse Notes), v0.5.2 split-pane persistence, v0.5.0 SQLite + FTS5 desktop beta."
   ogImage="/og-image.svg"
-  ctaText="Get Pulse Notes ↓ 1.29 MB"
-  ctaHref="/downloads/pulse-notes-0.6.6.apk"
+  ctaText="Get Pulse ↓ 1.29 MB"
+  ctaHref="/download/"
   ctaVisible={true}
   footerLicense="Apache 2.0"
   footerVersion="v0.6.6"
@@ -247,14 +247,14 @@ const releases: Release[] = [
         <span class="nav__brand-name">Pulse</span>
       </a>
       <ul class="nav__links" role="list">
-        <li><a class="nav__link" href="/#features">Features</a></li>
-        <li><a class="nav__link" href="/notes/">Notes</a></li>
-        <li><a class="nav__link" href="/#download">Download</a></li>
+        <li><a class="nav__link" href="/#why">Why</a></li>
+        <li><a class="nav__link" href="/download/">Download</a></li>
         <li><a class="nav__link" href="/compare/">Compare</a></li>
         <li><a class="nav__link is-cta" href="/changelog/" aria-current="page">Changelog</a></li>
+        <li><a class="nav__link" href="/pricing/">Pricing</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/notes/#download">Get Pulse Notes ↓ 1.29 MB</a>
+        <a class="btn btn--primary nav__cta" href="/download/">Get Pulse ↓ 1.29 MB</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -267,12 +267,13 @@ const releases: Release[] = [
   </nav>
 
   <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
-    <a class="nav-drawer__link" href="/#features">Features</a>
-    <a class="nav-drawer__link" href="/notes/">Notes</a>
-    <a class="nav-drawer__link" href="/#download">Download</a>
+    <a class="nav-drawer__link" href="/">Home</a>
+    <a class="nav-drawer__link" href="/#why">Why Pulse</a>
+    <a class="nav-drawer__link" href="/download/">Download</a>
     <a class="nav-drawer__link" href="/compare/">Compare</a>
     <a class="nav-drawer__link" href="/changelog/" aria-current="page">Changelog</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/notes/#download">Get Pulse Notes ↓ 1.29 MB</a>
+    <a class="nav-drawer__link" href="/pricing/">Pricing</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/">Get Pulse ↓ 1.29 MB</a>
   </div>
 
   <script is:inline>
@@ -432,13 +433,13 @@ const releases: Release[] = [
     <section class="ncta" id="download">
       <div class="bg-glow"></div>
       <div class="container ncta__inner reveal">
-        <h2 class="ncta__title">Try Pulse Notes.</h2>
+        <h2 class="ncta__title">Try Pulse.</h2>
         <p class="ncta__sub">
-          1.29 MB APK. No Google Play, no account, no telemetry. Open the installer and it works.
+          1.29&nbsp;MB Android APK · no Google Play · no account · no telemetry. Windows NSIS+MSI also available.
         </p>
         <div class="ncta__row">
-          <a class="btn btn--primary btn--lg" href="/downloads/pulse-notes-0.6.6.apk" rel="noopener noreferrer">Get Pulse Notes ↓ 1.29 MB</a>
-          <a class="btn btn--ghost btn--lg" href="/notes/">View Notes</a>
+          <a class="btn btn--primary btn--lg" href="/download/" rel="noopener noreferrer">Get Pulse ↓ 1.29 MB</a>
+          <a class="btn btn--ghost btn--lg" href="/compare/">See how it compares</a>
         </div>
         <p class="ncta__meta">
           Android 7.0+ · universal APK · Apache 2.0

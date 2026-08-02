@@ -30,11 +30,12 @@ const {
 } = Astro.props;
 
 const ogImage = ogImageProp ?? '/og-image.svg';
-// r102: fallback to the canonical R97-HOTFIX deploy host. Matches
-// astro.config.mjs so og:url never ships the 'pulse.local' placeholder
-// even if Astro.site is undefined (e.g. build with PULSE_SITE= overriding
-// the config at runtime).
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ebjklgbf0qvnp.space.minimax.io';
+// r104: fallback to the canonical R104 deploy host. Matches
+// astro.config.mjs so og:url never ships a placeholder ('pulse.local' /
+// 'pulse.tld') even if Astro.site is undefined (e.g. build with
+// PULSE_SITE= overriding the config at runtime). The actual URL on
+// deploy is whatever website_deploy returns — this is just the floor.
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ncfosklh79sxf.space.minimax.io';
 ---
 <!doctype html>
 <html lang="en">

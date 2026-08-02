@@ -1,0 +1,359 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+
+// R104: /pricing/ — replaces the r101b stub. Free, forever. No paid tier.
+// Local-first means there is nothing to bill against: the model runs on
+// the device, the notes live in a local SQLite database, the only
+// network call is the optional update-checker manifest poll, and the
+// source is Apache 2.0.
+
+const PAGE_TITLE = 'Pricing — Pulse is free, forever';
+const PAGE_DESC = 'Pulse is free on Windows and Android, today and forever. Apache 2.0 source, no paid tier, no premium model, no enterprise SKU. Local-first means there is nothing to bill against.';
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-pricing.png"
+  ctaText="Get Pulse ↓"
+  ctaHref="/download/"
+  ctaVisible={true}
+  footerLicense="Apache 2.0"
+  footerVersion=""
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/#why">Why</a></li>
+        <li><a class="nav__link" href="/#new">What is new</a></li>
+        <li><a class="nav__link" href="/download/">Download</a></li>
+        <li><a class="nav__link" href="/compare/">Compare</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+        <li><a class="nav__link" href="/pricing/" aria-current="page">Pricing</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/download/" rel="noopener noreferrer">Get Pulse ↓</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/">Home</a>
+    <a class="nav-drawer__link" href="/#why">Why Pulse</a>
+    <a class="nav-drawer__link" href="/#new">What is new</a>
+    <a class="nav-drawer__link" href="/download/">Download</a>
+    <a class="nav-drawer__link" href="/compare/">Compare</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="nav-drawer__link" href="/pricing/" aria-current="page">Pricing</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/" rel="noopener noreferrer">Get Pulse ↓</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => {
+          const isOpen = drawer.classList.contains('is-open');
+          setOpen(!isOpen);
+        });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main">
+    <section class="pr-hero">
+      <div class="bg-glow"></div>
+      <div class="container pr-hero__grid">
+        <div class="pr-hero__copy reveal">
+          <span class="eyebrow">Pricing</span>
+          <h1 class="pr-hero__title">
+            Free, forever.
+          </h1>
+          <p class="pr-hero__sub">
+            Pulse is local-first. The model runs on your device, the notes
+            live in a local SQLite database, and the only network call is
+            the optional update-checker manifest poll. There is nothing to
+            bill against, so there is no paid tier.
+          </p>
+          <div class="pr-hero__ctas">
+            <a class="btn btn--primary btn--lg" href="/download/">Download Pulse ↓</a>
+            <a class="btn btn--ghost btn--lg" href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">View source on GitHub →</a>
+          </div>
+        </div>
+        <aside class="pr-hero__card glass reveal" aria-label="What Pulse costs">
+          <h2 class="pr-hero__card-title">What Pulse costs.</h2>
+          <ul class="pr-hero__list" role="list">
+            <li>
+              <span class="pr-hero__num">$0</span>
+              <span class="pr-hero__label">today, on Windows</span>
+            </li>
+            <li>
+              <span class="pr-hero__num">$0</span>
+              <span class="pr-hero__label">today, on Android</span>
+            </li>
+            <li>
+              <span class="pr-hero__num">$0</span>
+              <span class="pr-hero__label">in v0.7, in v1.0, in v2.0</span>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="pr-faq" id="faq">
+      <div class="container">
+        <header class="pr-faq__head reveal">
+          <span class="eyebrow">The honest FAQ</span>
+          <h2>No paid tier, no premium model, no enterprise SKU.</h2>
+        </header>
+        <dl class="pr-faq__list">
+          <div class="pr-faq__q reveal">
+            <dt>Is there a Pro tier?</dt>
+            <dd>
+              No. Pulse is Apache&nbsp;2.0 across both surfaces. There is no
+              "Pro" tier, no "Enterprise" SKU, no "Team" plan. The same
+              code is the same code. The
+              <a href="/license/">Apache 2.0 license</a> is the contract.
+            </dd>
+          </div>
+          <div class="pr-faq__q reveal">
+            <dt>Will Pulse ever cost money?</dt>
+            <dd>
+              The source is Apache 2.0. Anyone can fork it, ship a
+              competing product, and charge for it. The official Pulse
+              builds will stay free. The planned v0.7 E2E sync is opt-in
+              and free; the server is a small static manifest plus
+              standard S3-style blob storage, billed at the host's actual
+              bandwidth — not a per-user subscription.
+            </dd>
+          </div>
+          <div class="pr-faq__q reveal">
+            <dt>What does "local-first" buy me?</dt>
+            <dd>
+              You do not pay a per-token bill. You do not pay a monthly
+              subscription. You do not lose access to your notes if a
+              company shuts down. The trade-off is that a 4-8B local
+              model is less capable than GPT-4 on hard reasoning tasks.
+              If you need frontier capability, pair Pulse with a cloud
+              tool. If you need a fast, private, always-available
+              assistant for daily work, Pulse is the right tool.
+            </dd>
+          </div>
+          <div class="pr-faq__q reveal">
+            <dt>What about the model itself?</dt>
+            <dd>
+              The model is not part of Pulse. Pulse for Windows talks to
+              a local Ollama instance — you bring your own model
+              (Llama&nbsp;3, Qwen&nbsp;2.5, Mistral, Gemma&nbsp;2,
+              Phi-3, DeepSeek, any other GGUF). The 4-8B range hits the
+              best latency / quality balance on a 16&nbsp;GB laptop. On
+              Android, Pulse Notes uses its on-device model for the
+              recall step. The model files are downloaded once, then run
+              fully offline.
+            </dd>
+          </div>
+          <div class="pr-faq__q reveal">
+            <dt>Are there hidden costs?</dt>
+            <dd>
+              No analytics SDK, no error reporter, no "phone home"
+              endpoint, no per-token bill, no in-app purchases, no
+              premium model hidden behind a paywall. The only network
+              call Pulse makes is the optional manifest poll for
+              updates, and you can disable it in settings. The Apache
+              2.0 source is on GitHub.
+            </dd>
+          </div>
+          <div class="pr-faq__q reveal">
+            <dt>How is Pulse funded?</dt>
+            <dd>
+              One person (Roman) builds Pulse in his own time. There is
+              no VC, no accelerator, no investor. There is a
+              <a href="https://github.com/sponsors/TimesNuRoman" rel="noopener noreferrer">GitHub Sponsors</a>
+              page if you want to chip in. Sponsorship is not required,
+              has no perks, and changes nothing about the build. The
+              download is the same with or without it.
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="pr-cta">
+      <div class="container pr-cta__inner reveal">
+        <h2>Try it. If it is not the right tool, the other tools are listed on
+          <a href="/compare/">/compare/</a>.</h2>
+        <div class="pr-cta__row">
+          <a class="btn btn--primary btn--lg" href="/download/">Download Pulse ↓</a>
+          <a class="btn btn--ghost btn--lg" href="/compare/">See how Pulse compares →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer license="Apache 2.0" version="" />
+</Base>
+
+<style>
+  /* ─── Hero ──────────────────────────────────────────── */
+  .pr-hero {
+    padding-top: clamp(112px, 14vw, 160px);
+    padding-bottom: clamp(72px, 10vw, 120px);
+    overflow: hidden;
+  }
+  .pr-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(40px, 5vw, 64px);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .pr-hero__grid { grid-template-columns: 1.2fr 1fr; }
+  }
+  .pr-hero__copy { display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+  .pr-hero__title {
+    font-size: var(--fs-1);
+    line-height: 1.05;
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: -0.02em;
+  }
+  .pr-hero__sub {
+    color: var(--fg-dim);
+    font-size: var(--fs-body);
+    line-height: 1.65;
+    max-width: 56ch;
+  }
+  .pr-hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+  .pr-hero__card {
+    padding: 1.75rem 1.75rem 2rem;
+    border-radius: var(--radius);
+  }
+  .pr-hero__card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin-bottom: 1.25rem;
+  }
+  .pr-hero__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .pr-hero__list li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .pr-hero__list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .pr-hero__num {
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .pr-hero__label {
+    color: var(--fg-dim);
+    font-size: 0.95rem;
+    text-align: right;
+  }
+
+  /* ─── FAQ ───────────────────────────────────────────── */
+  .pr-faq { padding: 4rem 0 5rem; }
+  .pr-faq__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
+  .pr-faq__list {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .pr-faq__q {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.35rem 1.3rem;
+  }
+  .pr-faq__q dt {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin-bottom: 0.5rem;
+  }
+  .pr-faq__q dd {
+    margin: 0;
+    color: var(--fg-dim);
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+  .pr-faq__q dd a { color: var(--cyan); }
+  .pr-faq__q dd a:hover { color: var(--purple); }
+
+  /* ─── CTA ───────────────────────────────────────────── */
+  .pr-cta { padding: 2rem 0 5rem; }
+  .pr-cta__inner { max-width: 760px; margin: 0 auto; text-align: center; }
+  .pr-cta h2 {
+    font-size: var(--fs-3);
+    font-weight: 600;
+    color: var(--fg);
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+  }
+  .pr-cta h2 a { color: var(--cyan); }
+  .pr-cta h2 a:hover { color: var(--purple); }
+  .pr-cta__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+  }
+</style>

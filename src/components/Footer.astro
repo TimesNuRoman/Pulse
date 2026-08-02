@@ -9,19 +9,23 @@ export interface Props {
 const { license = 'Apache 2.0', version = 'v0.3.0' } = Astro.props;
 const showVersion = version.trim().length > 0;
 
+// R104: unified footer. /notes/ is gone (→ /download/#android via meta
+// refresh); /download/ is the canonical download surface; /pricing/ is
+// new ("Free, forever").
 const columns = [
   {
     title: 'Product',
     links: [
-      { label: 'Download', href: '/#download' },
-      { label: 'Releases', href: 'https://github.com/TimesNuRoman/pulse/releases' },
-      { label: 'Roadmap', href: 'https://github.com/TimesNuRoman/pulse/projects' },
+      { label: 'Download', href: '/download/' },
+      { label: 'Pricing', href: '/pricing/' },
+      { label: 'Compare', href: '/compare/' },
     ],
   },
   {
     title: 'Resources',
     links: [
-      { label: 'Docs', href: 'https://github.com/TimesNuRoman/pulse/wiki' },
+      { label: 'Changelog', href: '/changelog/' },
+      { label: 'Releases', href: 'https://github.com/TimesNuRoman/pulse/releases' },
       { label: 'GitHub', href: 'https://github.com/TimesNuRoman/pulse' },
       { label: 'Discord', href: 'https://discord.gg/join-pulse' },
     ],
@@ -29,7 +33,7 @@ const columns = [
   {
     title: 'Legal',
     links: [
-      { label: `${license} License`, href: 'https://github.com/TimesNuRoman/pulse/blob/main/LICENSE' },
+      { label: `${license} License`, href: '/license/' },
       { label: 'Privacy', href: '/privacy' },
       { label: 'Code of Conduct', href: '/code-of-conduct' },
     ],

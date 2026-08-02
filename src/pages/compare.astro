@@ -71,20 +71,20 @@ const whenNot = [
   'You need frontier-scale AI (1M+ token context, latest GPT-4 / Claude). Pulse runs 4-70B local models. Use the cloud tools.',
   'You live in Raycast on macOS and are happy paying $8/mo for the prompt bar. Raycast AI is fine for that workflow.',
   'You do not have at least 8 GB of free RAM for a 7B model. Use a cloud tool or wait for a smaller distilled model.',
-  'You need a multi-user wiki with comments, mentions, and shared workspaces. Notion AI is the right tool. Pulse Notes is single-user.',
+  'You need a multi-user wiki with comments, mentions, and shared workspaces. Notion AI is the right tool. Pulse for Android is single-user.',
   'You want a polished desktop chat UI with image generation out of the box. LM Studio plus a chat front-end is a better fit than Pulse.',
   'You want a fully GUI-driven local RAG pipeline. AnythingLLM is the closest match and the config is honest about it.',
 ];
 
 const faqs = [
   { q: 'Does Pulse work offline?', a: 'Yes. Desktop Pulse talks to a local Ollama instance. Android Pulse runs on-device. The only network call is the optional update-checker manifest poll, which you can disable in settings. Voice input on Android uses the on-device speech recognizer; on desktop it uses Whisper.cpp running locally.' },
-  { q: 'Which AI models does Pulse support?', a: 'Anything Ollama serves on desktop: Llama 3, Qwen 2.5, Mistral, Gemma 2, Phi-3, DeepSeek, and any other GGUF model. The 4-8B range (Qwen 2.5 7B, Llama 3.1 8B, Mistral Nemo 12B) hits the best latency / quality balance on a 16 GB laptop. On Android, Pulse Notes uses its on-device model for the recall step and ships the Smart Engine v3 router.' },
-  { q: 'Can I sync notes between Android and desktop?', a: 'Not yet in v0.6.x. Pulse Notes v0.7 is the planned E2E sync release, opt-in and disabled by default. Today, the on-device SQLite file is plain and portable — copy notes.db off the device with any file manager, restore the same way. No proprietary export format.' },
+  { q: 'Which AI models does Pulse support?', a: 'Anything Ollama serves on desktop: Llama 3, Qwen 2.5, Mistral, Gemma 2, Phi-3, DeepSeek, and any other GGUF model. The 4-8B range (Qwen 2.5 7B, Llama 3.1 8B, Mistral Nemo 12B) hits the best latency / quality balance on a 16 GB laptop. On Android, Pulse for Android uses its on-device model for the recall step and ships the Smart Engine v3 router.' },
+  { q: 'Can I sync notes between Android and desktop?', a: 'Not yet in v0.6.x. Pulse for Android v0.7 is the planned E2E sync release, opt-in and disabled by default. Today, the on-device SQLite file is plain and portable — copy notes.db off the device with any file manager, restore the same way. No proprietary export format.' },
   { q: 'Does Pulse work on Linux or iOS?', a: 'Linux desktop is not in v0.6.x. The desktop binary is Windows (Tauri 2). iOS is not planned for the Notes surface. Android is minSdk 24 (Android 7.0) with targetSdk 36.' },
-  { q: 'Is there a paid tier or Pro version?', a: 'No. Pulse is Apache 2.0 across all three surfaces. There is no Pro tier, no premium model, no "Enterprise" SKU. The same code is the same code.' },
+  { q: 'Is there a paid tier or Pro version?', a: 'No. Pulse is Apache 2.0 across both surfaces. There is no Pro tier, no premium model, no "Enterprise" SKU. The same code is the same code.' },
   { q: 'Can I self-host Pulse?', a: 'There is nothing to host. Pulse is local-first. The desktop app talks to your local Ollama; the Android app runs on-device. The site is a static Astro build. The only network endpoint is the manifest poll for updates, and the chain of hosts is public.' },
-  { q: 'How is Pulse different from ChatGPT or Claude?', a: 'Privacy, cost, and offline use. ChatGPT and Claude route every prompt through their cloud, log it, and charge per token. Pulse runs the model on your hardware, costs nothing per query, and works on a plane. The trade-off: a 7B local model is not as capable as GPT-4 on hard reasoning tasks. If you need frontier capability, use a frontier tool. If you need a fast, private, always-available AI for daily work, Pulse is the better fit.' },
-  { q: 'What about voice input on Android?', a: 'Pulse Notes v0.6.x uses Android’s on-device speech recognizer (free, accurate, no network round-trip). Desktop Pulse uses Whisper.cpp running locally on the device — the same model that powers the OpenAI Whisper API, but offline. There is no cloud STT in either surface.' },
+  { q: 'How is Pulse different from ChatGPT or Claude?', a: 'Privacy, cost, and offline use. ChatGPT and Claude route every prompt through their cloud, log it, and charge per token. Pulse runs the model on your hardware, costs nothing per query, and works on a plane. The trade-off: a 7B local model is not as capable than GPT-4 on hard reasoning tasks. If you need frontier capability, use a frontier tool. If you need a fast, private, always-available AI for daily work, Pulse is the better fit.' },
+  { q: 'What about voice input on Android?', a: 'Pulse for Android v0.6.x uses Android’s on-device speech recognizer (free, accurate, no network round-trip). Desktop Pulse uses Whisper.cpp running locally on the device — the same model that powers the OpenAI Whisper API, but offline. There is no cloud STT in either surface.' },
 ];
 
 /* JSON-LD FAQPage schema (for Google Rich Results). Roman's 12/12 hard rules: validate before ship. */
@@ -105,7 +105,7 @@ const faqJsonLd = {
   title={PAGE_TITLE}
   description={PAGE_DESC}
   ogImage="/og/compare.svg"
-  ctaText={`Get Pulse Notes ↓ ${APK_SIZE}`}
+  ctaText={`Get Pulse ↓ ${APK_SIZE}`}
   ctaHref={APK_URL}
   ctaVisible={true}
   footerLicense="Apache 2.0"
@@ -127,12 +127,13 @@ const faqJsonLd = {
       </a>
       <ul class="nav__links" role="list">
         <li><a class="nav__link" href="/#why">Why</a></li>
-        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/download/">Download</a></li>
         <li><a class="nav__link" href="/compare/" aria-current="page">Compare</a></li>
         <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+        <li><a class="nav__link" href="/pricing/">Pricing</a></li>
       </ul>
       <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href={APK_URL} rel="noopener noreferrer">Get Pulse Notes ↓ {APK_SIZE}</a>
+        <a class="btn btn--primary nav__cta" href="/download/" rel="noopener noreferrer">Get Pulse ↓ {APK_SIZE}</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -147,10 +148,11 @@ const faqJsonLd = {
   <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
     <a class="nav-drawer__link" href="/">Home</a>
     <a class="nav-drawer__link" href="/#why">Why Pulse</a>
-    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/download/">Download</a>
     <a class="nav-drawer__link" href="/compare/" aria-current="page">Compare</a>
     <a class="nav-drawer__link" href="/changelog/">Changelog</a>
-    <a class="btn btn--primary nav-drawer__cta" href={APK_URL} rel="noopener noreferrer">Get Pulse Notes ↓ {APK_SIZE}</a>
+    <a class="nav-drawer__link" href="/pricing/">Pricing</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/" rel="noopener noreferrer">Get Pulse ↓ {APK_SIZE}</a>
   </div>
 
   <script is:inline>
@@ -219,7 +221,7 @@ const faqJsonLd = {
           </p>
           <div class="compare-hero__ctas">
             <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
-              Get Pulse Notes ↓ {APK_SIZE}
+              Get Pulse ↓ {APK_SIZE}
             </a>
             <a class="btn btn--ghost btn--lg" href="#matrix">See the matrix</a>
           </div>
@@ -354,11 +356,11 @@ const faqJsonLd = {
         <div class="cta-final__card glass reveal">
           <h2 class="cta-final__title">Try Pulse. Both surfaces. Apache 2.0.</h2>
           <p class="cta-final__sub">
-            Pulse Notes for Android is a 4.39&nbsp;MB APK, no Play Store, side-load from the link below. Pulse Desktop for Windows is a 12&nbsp;MB Tauri 2 binary, also from this site. Both are open source, both work offline, both are the same Apache 2.0 source tree.
+            Pulse for Android is a 1.29&nbsp;MB APK, no Play Store, side-load from the link below. Pulse for Windows is a ~6.4&nbsp;MB Tauri 2 NSIS/MSI installer, also from this site. Both are open source, both work offline, both are the same Apache 2.0 source tree.
           </p>
           <div class="cta-final__ctas">
             <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
-              Get Pulse Notes for Android ↓ {APK_SIZE}
+              Get Pulse for Android ↓ {APK_SIZE}
             </a>
             <a class="btn btn--ghost btn--lg" href="/notes/">Read the Notes page</a>
           </div>
