@@ -1,9 +1,13 @@
 ---
+// SPDX-License-Identifier: Apache-2.0
 /**
  * R94b: CompareTable.astro
+ * R124: widened to 9 products (Pulse Free, Pulse PRO, Raycast AI,
+ *       Notion AI, GitHub Copilot, Claude Pro, AnythingLLM,
+ *       LM Studio, Ollama) and 14 rows.
  *
  * Reusable comparison table + mobile card-stack.
- * Renders 6 columns: Pulse + 5 competitors. 10 rows.
+ * Renders N columns (caller-controlled) and N rows.
  * Mobile (<768px): collapses to one card per product, dl/dt/dd list.
  *
  * Mark values:
@@ -36,7 +40,7 @@ const isMark = (v: string): boolean => v === 'yes' || v === 'no' || v === 'parti
 ---
 <div class="compare__table-wrap reveal" role="region" aria-label="Comparison table">
   <table class="compare__table">
-    <caption class="visually-hidden">Pulse compared to Raycast AI, Notion AI, AnythingLLM, LM Studio, and Ollama</caption>
+    <caption class="visually-hidden">Pulse (Free and PRO) compared to Raycast AI, Notion AI, GitHub Copilot, Claude Pro, AnythingLLM, LM Studio, and Ollama</caption>
     <thead>
       <tr>
         <th scope="col">Feature</th>
@@ -159,7 +163,7 @@ const isMark = (v: string): boolean => v === 'yes' || v === 'no' || v === 'parti
   .compare__table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 760px;
+    min-width: 1080px;
     font-size: 0.92rem;
   }
   .compare__table th,
@@ -215,6 +219,6 @@ const isMark = (v: string): boolean => v === 'yes' || v === 'no' || v === 'parti
     .compare__table th, .compare__table td { padding: 0.7rem 0.6rem; font-size: 0.85rem; }
   }
   @media (max-width: 899px) {
-    .compare__table { min-width: 680px; }
+    .compare__table { min-width: 960px; }
   }
 </style>

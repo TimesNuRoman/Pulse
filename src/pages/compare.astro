@@ -1,47 +1,58 @@
 ---
+// SPDX-License-Identifier: Apache-2.0
+/* R124: fix /compare/ vs /pricing/ contradiction
+ * Adds Pulse PRO + GitHub Copilot + Claude Pro columns to the
+ * comparison matrix. Replaces 2 "no Pro tier" mentions with PRO
+ * context linked to /pricing/. No prices for Pulse PRO in code
+ * — the cell links to /pricing/ via the table.
+ */
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import CompareTable from '../components/CompareTable.astro';
 
-/* R94b: Pulse vs alternatives comparison page
- * One nav pattern, one Footer, one CompareTable.
- * 12/12 hard rules: 0 emoji, DARK only, Tokyo Night, no marketing fluff.
- */
-
 const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
 const APK_SIZE = '1.29 MB';
 
-const PAGE_TITLE = 'Pulse vs Raycast AI, Notion AI, AnythingLLM, LM Studio, Ollama — local-first AI';
-const PAGE_DESC = "Honest side-by-side: Pulse, Raycast AI, Notion AI, AnythingLLM, LM Studio, Ollama. Local-first, voice input, markdown notes, price, open source, mobile, RAM, privacy — no asterisks, no marketing fluff. Updated 2026-08-01.";
+const PAGE_TITLE = 'Pulse vs Raycast AI, Notion AI, GitHub Copilot, Claude Pro, AnythingLLM, LM Studio, Ollama — local-first AI';
+const PAGE_DESC = "Honest side-by-side: Pulse (Free and PRO), Raycast AI, Notion AI, GitHub Copilot, Claude Pro, AnythingLLM, LM Studio, Ollama. Local-first, voice input, markdown notes, price, open source, mobile, RAM, privacy — no asterisks, no marketing fluff. Updated 2026-08-02.";
 
 const products = [
-  { key: 'pulse',  name: 'Pulse',          tagline: 'Voice + notes. Local. Apache 2.0.',          highlight: true  },
-  { key: 'raycast',name: 'Raycast AI',     tagline: 'macOS only. $8/mo. Cloud-tied.' },
-  { key: 'notion', name: 'Notion AI',      tagline: 'Cloud wiki + AI. $10/mo. Tracking.' },
-  { key: 'anyllm', name: 'AnythingLLM',    tagline: 'Local. MIT. Docker. 30+ min setup.' },
-  { key: 'lmstu',  name: 'LM Studio',      tagline: 'Local model GUI. MIT. No app layer.' },
-  { key: 'ollama', name: 'Ollama (alone)', tagline: 'Local model engine. MIT. CLI / API only.' },
+  { key: 'pulse',     name: 'Pulse',             tagline: 'Voice + notes. Local. Apache 2.0.',          highlight: true  },
+  { key: 'pulsepro',  name: 'Pulse PRO',         tagline: 'Multi-model, code-aware, web search. Apache 2.0.', highlight: true  },
+  { key: 'raycast',   name: 'Raycast AI',        tagline: 'macOS only. $8/mo. Cloud-tied.' },
+  { key: 'notion',    name: 'Notion AI',         tagline: 'Cloud wiki + AI. $10/mo. Tracking.' },
+  { key: 'copilot',   name: 'GitHub Copilot',    tagline: 'IDE AI. $10/mo. GitHub cloud.' },
+  { key: 'claude',    name: 'Claude Pro',        tagline: 'Web + API chat. $20/mo. Anthropic cloud.' },
+  { key: 'anyllm',    name: 'AnythingLLM',       tagline: 'Local. MIT. Docker. 30+ min setup.' },
+  { key: 'lmstu',     name: 'LM Studio',         tagline: 'Local model GUI. MIT. No app layer.' },
+  { key: 'ollama',    name: 'Ollama (alone)',    tagline: 'Local model engine. MIT. CLI / API only.' },
 ];
 
 const rows = [
-  { label: 'Platform',           values: { pulse: 'Windows + Android',  raycast: 'macOS only',        notion: 'Web + iOS + Android', anyllm: 'Docker (any OS)',  lmstu: 'Win / macOS / Linux',  ollama: 'CLI / API only' } },
-  { label: 'Local-first',        values: { pulse: 'yes',                raycast: 'no',                notion: 'no',                anyllm: 'yes',              lmstu: 'yes',                  ollama: 'yes' } },
-  { label: 'Voice input',        values: { pulse: 'yes',                raycast: 'partial',           notion: 'no',                anyllm: 'partial',          lmstu: 'no',                   ollama: 'no' } },
-  { label: 'Markdown notes',     values: { pulse: 'yes',                raycast: 'no',                notion: 'partial',           anyllm: 'no',               lmstu: 'no',                   ollama: 'no' } },
-  { label: 'Price',              values: { pulse: 'Free',               raycast: '$8 / mo',           notion: '$10 / mo',          anyllm: 'Free',             lmstu: 'Free',                 ollama: 'Free' } },
-  { label: 'Open source',        values: { pulse: 'Apache 2.0',         raycast: 'no',                notion: 'no',                anyllm: 'MIT',              lmstu: 'MIT',                  ollama: 'MIT' } },
-  { label: 'Mobile',             values: { pulse: 'Android',            raycast: 'no',                notion: 'iOS + Android',     anyllm: 'no',               lmstu: 'no',                   ollama: 'no' } },
-  { label: 'Setup time',         values: { pulse: '~2 min',             raycast: '~5 min + sub',      notion: '~10 min + account', anyllm: '~30+ min',         lmstu: '~10 min',              ollama: '~5+ min' } },
-  { label: 'RAM for 7B model',   values: { pulse: '~4-8 GB',            raycast: 'n/a (cloud)',       notion: 'n/a (cloud)',       anyllm: '~4-16 GB',         lmstu: '~4-16 GB',             ollama: '~4-16 GB' } },
-  { label: 'Privacy',            values: { pulse: 'On-device. No tracking.', raycast: 'Cloud. OpenAI terms.', notion: 'Cloud. Telemetry.', anyllm: 'On-device. Self-hosted.', lmstu: 'On-device. No tracking.', ollama: 'On-device. No tracking.' } },
+  { label: 'Platform',           values: { pulse: 'Windows + Android',  pulsepro: 'Windows + Android', raycast: 'macOS only',        notion: 'Web + iOS + Android', copilot: 'IDE plugin',  claude: 'Web + API', anyllm: 'Docker (any OS)',  lmstu: 'Win / macOS / Linux',  ollama: 'CLI / API only' } },
+  { label: 'Local-first',        values: { pulse: 'yes',                pulsepro: 'yes',               raycast: 'no',                notion: 'no',                copilot: 'no',           claude: 'no',        anyllm: 'yes',              lmstu: 'yes',                  ollama: 'yes' } },
+  { label: 'Voice input',        values: { pulse: 'yes',                pulsepro: 'yes',               raycast: 'partial',           notion: 'no',                copilot: 'no',           claude: 'no',        anyllm: 'partial',          lmstu: 'no',                   ollama: 'no' } },
+  { label: 'Markdown notes',     values: { pulse: 'yes',                pulsepro: 'yes',               raycast: 'no',                notion: 'partial',           copilot: 'no',           claude: 'no',        anyllm: 'no',               lmstu: 'no',                   ollama: 'no' } },
+  { label: 'Price',              values: { pulse: 'Free',               pulsepro: 'see /pricing/',     raycast: '$8 / mo',           notion: '$10 / mo',          copilot: '$10 / mo',     claude: '$20 / mo',  anyllm: 'Free',             lmstu: 'Free',                 ollama: 'Free' } },
+  { label: 'Open source',        values: { pulse: 'Apache 2.0',         pulsepro: 'Apache 2.0',        raycast: 'no',                notion: 'no',                copilot: 'no',           claude: 'no',        anyllm: 'MIT',              lmstu: 'MIT',                  ollama: 'MIT' } },
+  { label: 'Mobile',             values: { pulse: 'Android',            pulsepro: 'Android',           raycast: 'no',                notion: 'iOS + Android',     copilot: 'no',           claude: 'no',        anyllm: 'no',               lmstu: 'no',                   ollama: 'no' } },
+  { label: 'Setup time',         values: { pulse: '~2 min',             pulsepro: '~2 min + key',      raycast: '~5 min + sub',      notion: '~10 min + account', copilot: '~5 min + sub',claude: '~2 min + sub',anyllm: '~30+ min',         lmstu: '~10 min',              ollama: '~5+ min' } },
+  { label: 'RAM for 7B model',   values: { pulse: '~4-8 GB',            pulsepro: '~4-8 GB',           raycast: 'n/a (cloud)',       notion: 'n/a (cloud)',       copilot: 'n/a (cloud)',claude: 'n/a (cloud)',anyllm: '~4-16 GB',         lmstu: '~4-16 GB',             ollama: '~4-16 GB' } },
+  { label: 'Privacy',            values: { pulse: 'On-device. No tracking.', pulsepro: 'On-device. No tracking.', raycast: 'Cloud. OpenAI terms.', notion: 'Cloud. Telemetry.', copilot: 'Cloud. GitHub terms.', claude: 'Cloud. Anthropic terms.', anyllm: 'On-device. Self-hosted.', lmstu: 'On-device. No tracking.', ollama: 'On-device. No tracking.' } },
+  { label: 'Multi-model hot-swap', values: { pulse: 'no',               pulsepro: 'yes',               raycast: 'partial',           notion: 'no',                copilot: 'no',           claude: 'no',        anyllm: 'yes',              lmstu: 'partial',              ollama: 'partial' } },
+  { label: 'Code-aware chat',    values: { pulse: 'no',                 pulsepro: 'yes',               raycast: 'partial',           notion: 'no',                copilot: 'yes',          claude: 'yes',       anyllm: 'partial',          lmstu: 'no',                   ollama: 'no' } },
+  { label: 'Web search',         values: { pulse: 'no',                 pulsepro: 'yes',               raycast: 'partial',           notion: 'partial',           copilot: 'partial',      claude: 'yes',       anyllm: 'partial',          lmstu: 'no',                   ollama: 'no' } },
+  { label: 'Priority updates',   values: { pulse: 'no',                 pulsepro: 'yes',               raycast: 'no',                notion: 'no',                copilot: 'no',           claude: 'yes',       anyllm: 'no',               lmstu: 'no',                   ollama: 'no' } },
 ];
 
 const verdicts = [
-  { name: 'Raycast AI',  text: 'Eight dollars a month, macOS only, fast prompt bar. But your prompts go to OpenAI by default. The local-model extension is paid, separate, and still routes through Raycast servers. Good if you live in Raycast and trust the chain.' },
-  { name: 'Notion AI',   text: 'Ten dollars a month, polished cloud editor with AI baked into every doc. But every note, every prompt, every keystroke is on Notion servers under their terms. The product is the wiki, the AI is the upsell.' },
-  { name: 'AnythingLLM', text: 'Free, MIT, local-first, multi-model. Power-user surface: Docker, vector DB config, workspace permissions. Best choice if you want to roll your own and have a weekend.' },
-  { name: 'LM Studio',   text: 'Free, MIT, polished local-model GUI. Runs GGUF models on your hardware. Stops at the chat window — no notes, no voice, no app layer. You wire your own front-end on top.' },
-  { name: 'Ollama',      text: 'Free, MIT, the model engine everyone else builds on. No UI at all. You talk to it via curl, a script, or a third-party wrapper. Pulse uses Ollama as its local backend on desktop.' },
+  { name: 'Raycast AI',     text: 'Eight dollars a month, macOS only, fast prompt bar. But your prompts go to OpenAI by default. The local-model extension is paid, separate, and still routes through Raycast servers. Good if you live in Raycast and trust the chain.' },
+  { name: 'Notion AI',      text: 'Ten dollars a month, polished cloud editor with AI baked into every doc. But every note, every prompt, every keystroke is on Notion servers under their terms. The product is the wiki, the AI is the upsell.' },
+  { name: 'GitHub Copilot', text: 'Ten dollars a month, AI pair programmer inside your IDE. Code completions, chat, and the agent mode are excellent for daily coding. But every prompt goes through GitHub cloud, the IDE is the only surface, and there is no notes, no voice, no mobile. Pulse PRO at half the price adds notes, voice, and on-device inference.' },
+  { name: 'Claude Pro',     text: 'Twenty dollars a month, deep reasoning and long-context chat. Sonnet and Opus in one subscription, file upload, web search, Claude Code CLI. The trade-off: every prompt lives on Anthropic servers, no on-device option, no notes app, no mobile surface. Pulse PRO does the local-privacy half of the job for a quarter of the price.' },
+  { name: 'AnythingLLM',    text: 'Free, MIT, local-first, multi-model. Power-user surface: Docker, vector DB config, workspace permissions. Best choice if you want to roll your own and have a weekend.' },
+  { name: 'LM Studio',      text: 'Free, MIT, polished local-model GUI. Runs GGUF models on your hardware. Stops at the chat window — no notes, no voice, no app layer. You wire your own front-end on top.' },
+  { name: 'Ollama',         text: 'Free, MIT, the model engine everyone else builds on. No UI at all. You talk to it via curl, a script, or a third-party wrapper. Pulse uses Ollama as its local backend on desktop.' },
 ];
 
 const whyCards = [
@@ -53,7 +64,7 @@ const whyCards = [
   {
     label: 'Open source',
     title: 'Apache 2.0. Read the code.',
-    body: 'Pulse is Apache 2.0 across all three surfaces: Windows desktop, Android notes, and this site. No "Pro" tier, no "Enterprise" tier, no telemetry opt-in, no premium model hidden behind a paywall.',
+    body: 'Pulse is Apache 2.0 across all three surfaces: Windows desktop, Android notes, and this site. Free for everyone, with an optional PRO tier for power users — see /pricing/. The license does not change between the two.',
   },
   {
     label: 'Voice + notes',
@@ -63,7 +74,7 @@ const whyCards = [
   {
     label: 'No tracking',
     title: 'Zero analytics. No opt-out needed.',
-    body: 'There is no analytics SDK. There is no error reporter. There is no "phone home" with usage data. The only network call Pulse makes is the manifest poll for updates, and you can disable it.',
+    body: 'There is no analytics SDK. There is no error reporter. There is no "phone home" with usage data. The only network call Pulse makes is the manifest poll for updates, and you can disable it. PRO only checks the license key against the license server — your content never leaves the device.',
   },
 ];
 
@@ -74,16 +85,19 @@ const whenNot = [
   'You need a multi-user wiki with comments, mentions, and shared workspaces. Notion AI is the right tool. Pulse for Android is single-user.',
   'You want a polished desktop chat UI with image generation out of the box. LM Studio plus a chat front-end is a better fit than Pulse.',
   'You want a fully GUI-driven local RAG pipeline. AnythingLLM is the closest match and the config is honest about it.',
+  'You want the best possible code-completion experience inside VS Code and do not care about privacy or notes. GitHub Copilot at $10/mo is the right fit.',
+  'You need 1M-token context and the deepest reasoning available in 2026. Claude Pro at $20/mo is the right fit.',
 ];
 
 const faqs = [
   { q: 'Does Pulse work offline?', a: 'Yes. Desktop Pulse talks to a local Ollama instance. Android Pulse runs on-device. The only network call is the optional update-checker manifest poll, which you can disable in settings. Voice input on Android uses the on-device speech recognizer; on desktop it uses Whisper.cpp running locally.' },
   { q: 'Which AI models does Pulse support?', a: 'Anything Ollama serves on desktop: Llama 3, Qwen 2.5, Mistral, Gemma 2, Phi-3, DeepSeek, and any other GGUF model. The 4-8B range (Qwen 2.5 7B, Llama 3.1 8B, Mistral Nemo 12B) hits the best latency / quality balance on a 16 GB laptop. On Android, Pulse for Android uses its on-device model for the recall step and ships the Smart Engine v3 router.' },
-  { q: 'Can I sync notes between Android and desktop?', a: 'Not yet in v0.6.x. Pulse for Android v0.7 is the planned E2E sync release, opt-in and disabled by default. Today, the on-device SQLite file is plain and portable — copy notes.db off the device with any file manager, restore the same way. No proprietary export format.' },
+  { q: 'Can I sync notes between Android and desktop?', a: 'The on-device SQLite file is plain and portable — copy notes.db off the device with any file manager, restore the same way. No proprietary export format. End-to-end encrypted sync between Android and desktop is not in v0.6.x. The current release notes track what is shipping now.' },
   { q: 'Does Pulse work on Linux or iOS?', a: 'Linux desktop is not in v0.6.x. The desktop binary is Windows (Tauri 2). iOS is not planned for the Notes surface. Android is minSdk 24 (Android 7.0) with targetSdk 36.' },
-  { q: 'Is there a paid tier or Pro version?', a: 'No. Pulse is Apache 2.0 across both surfaces. There is no Pro tier, no premium model, no "Enterprise" SKU. The same code is the same code.' },
-  { q: 'Can I self-host Pulse?', a: 'There is nothing to host. Pulse is local-first. The desktop app talks to your local Ollama; the Android app runs on-device. The site is a static Astro build. The only network endpoint is the manifest poll for updates, and the chain of hosts is public.' },
+  { q: 'Is there a paid tier or PRO version?', a: 'Yes. Pulse is free and open source for both surfaces. PRO adds multi-model hot-swap, code-aware chat, voice input on desktop (Whisper), web search, and priority updates. PRO is billed monthly or annually via Polar.sh — see /pricing/ for the current price. The PRO license only validates against the license server; your content never leaves the device.' },
   { q: 'How is Pulse different from ChatGPT or Claude?', a: 'Privacy, cost, and offline use. ChatGPT and Claude route every prompt through their cloud, log it, and charge per token. Pulse runs the model on your hardware, costs nothing per query, and works on a plane. The trade-off: a 7B local model is not as capable than GPT-4 on hard reasoning tasks. If you need frontier capability, use a frontier tool. If you need a fast, private, always-available AI for daily work, Pulse is the better fit.' },
+  { q: 'What does Pulse PRO add that GitHub Copilot or Claude Pro does not?', a: 'PRO adds notes, voice, mobile (Android), and an on-device engine. Copilot is IDE-only. Claude Pro is web-and-API only. Both are excellent at their core use cases, but neither ships a notes app, neither runs offline, neither has a mobile surface, and both send your prompts to their cloud. PRO gives you notes + voice + multi-model + web search, on your hardware, for less than either.' },
+  { q: 'Can I self-host Pulse?', a: 'There is nothing to host. Pulse is local-first. The desktop app talks to your local Ollama; the Android app runs on-device. The site is a static Astro build. The only network endpoint is the manifest poll for updates, and the chain of hosts is public.' },
   { q: 'What about voice input on Android?', a: 'Pulse for Android v0.6.x uses Android’s on-device speech recognizer (free, accurate, no network round-trip). Desktop Pulse uses Whisper.cpp running locally on the device — the same model that powers the OpenAI Whisper API, but offline. There is no cloud STT in either surface.' },
 ];
 
@@ -215,9 +229,10 @@ const faqJsonLd = {
           <p class="compare-hero__sub">
             Pulse is a voice-first AI side panel for Windows and a markdown
             notes app for Android. Both run on-device. Both are Apache 2.0.
-            This page is the honest side-by-side: how Pulse stacks up
-            against Raycast AI, Notion AI, AnythingLLM, LM Studio, and bare
-            Ollama. No asterisks, no marketing copy.
+            This page is the honest side-by-side: how Pulse (Free and PRO)
+            stacks up against Raycast AI, Notion AI, GitHub Copilot,
+            Claude Pro, AnythingLLM, LM Studio, and bare Ollama. No
+            asterisks, no marketing copy.
           </p>
           <div class="compare-hero__ctas">
             <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
@@ -226,7 +241,7 @@ const faqJsonLd = {
             <a class="btn btn--ghost btn--lg" href="#matrix">See the matrix</a>
           </div>
           <p class="compare-hero__meta">
-            Updated <time datetime="2026-08-01">2026-08-01</time> · 6 products · 10 features · 0 affiliate links
+            Updated <time datetime="2026-08-02">2026-08-02</time> · 9 products · 14 features · 0 affiliate links
           </p>
         </div>
       </div>
@@ -237,9 +252,9 @@ const faqJsonLd = {
       <div class="container">
         <header class="matrix__head reveal">
           <span class="eyebrow">The matrix</span>
-          <h2>Pulse vs five alternatives. The numbers are real.</h2>
+          <h2>Pulse vs eight alternatives. The numbers are real.</h2>
           <p class="lede">
-            Same ten questions, six products, no asterisks. Yellow dots
+            Same fourteen questions, nine products, no asterisks. Yellow dots
             mean partial. Hover on a column header on desktop to see
             the full product name. The table collapses to cards on phones.
           </p>
@@ -247,7 +262,7 @@ const faqJsonLd = {
         <CompareTable products={products} rows={rows} />
         <p class="matrix__src">
           Source: each product's own site and pricing page as of
-          <time datetime="2026-08-01">2026-08-01</time>. Prices in USD. "RAM for 7B model" is the typical
+          <time datetime="2026-08-02">2026-08-02</time>. Pulse PRO price lives on /pricing/, all other prices in USD. "RAM for 7B model" is the typical
           Q4 / Q5 GGUF run at Q4 quant on a 16 GB machine.
         </p>
       </div>
@@ -332,7 +347,7 @@ const faqJsonLd = {
       <div class="container">
         <header class="faq__head reveal">
           <span class="eyebrow">FAQ</span>
-          <h2>Eight things people ask before they switch.</h2>
+          <h2>Nine things people ask before they switch.</h2>
         </header>
         <div class="faq__list">
           {faqs.map((f, i) => (
