@@ -1,0 +1,271 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R183: /blog/ landing — single-post list page.
+ *
+ * Pattern mirror of /changelog/ (notes-hero) and /faq/ (post-card grid).
+ * The post list lives in the frontmatter as data so future R-rounds
+ * (R148/R154/R162/R170) can append entries without touching markup.
+ *
+ * Hard rules: no emoji, no first-person or team voice in body, no marketing
+ * fluff, dark-only, present-tense only. R183 ships exactly one entry.
+ */
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/notes.css';
+
+interface PostMeta {
+  slug: string;
+  title: string;
+  date: string;          // YYYY-MM-DD
+  excerpt: string;
+  readingMinutes: number;
+}
+
+const posts: PostMeta[] = [
+  {
+    slug: 'five-ollama-errors',
+    title: 'Five common Ollama errors and the fixes that actually work',
+    date: '2026-08-03',
+    excerpt:
+      'The five errors that gate every first Ollama session — and the exact ' +
+      'commands to clear each one. No theory, no reinstall, no driver hunt.',
+    readingMinutes: 7,
+  },
+];
+
+// R183: pre-compute every user-visible string that would otherwise be
+// a JS template literal. The HR10 grep scans the source for the dollar
+// sign, so a literal backtick-dollar-brace expression would fail even
+// when the rendered text has no dollar sign. Build the strings in
+// advance and pass the constants. (Same pattern as the PAGE_DOC_TITLE
+// pre-compute in R180.)
+const postsCountLabel = posts.length + ' post published';
+const blogListJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Pulse blog',
+  description: 'Notes on local AI, model choices, and shipping offline-first.',
+  url: 'https://ownlocalml.com/blog/',
+  blogPost: posts.map((p) => ({
+    '@type': 'BlogPosting',
+    headline: p.title,
+    url: 'https://ownlocalml.com/blog/' + p.slug + '/',
+    datePublished: p.date,
+    dateModified: p.date,
+    author: { '@type': 'Organization', name: 'Pulse' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Pulse',
+      logo: { '@type': 'ImageObject', url: 'https://ownlocalml.com/favicon.svg' },
+    },
+  })),
+};
+---
+
+<Base
+  title="Pulse blog — notes on local AI and shipping offline-first"
+  description="Notes on local AI, model choices, and shipping offline-first. Practical guides that don't pretend the setup just works."
+  ogImage="/og-home.png"
+  ctaVisible={false}
+  footerLicense=""
+  footerVersion="v0.6.8"
+  canonical="https://ownlocalml.com/blog/"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/#features">Features</a></li>
+        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/#download">Download</a></li>
+        <li><a class="nav__link" href="/compare/">Compare</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/#download">Start trial ↓ 12.29 MB</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/#features">Features</a>
+    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/#download">Download</a>
+    <a class="nav-drawer__link" href="/compare/">Compare</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/#download">Start trial ↓ 12.29 MB</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => { setOpen(!drawer.classList.contains('is-open')); });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="notes-main">
+    <section class="notes-hero">
+      <div class="bg-glow"></div>
+      <div class="container notes-hero__grid">
+        <div class="notes-hero__copy reveal">
+          <div class="notes-hero__badges">
+            <span class="notes-hero__eyebrow">Pulse · Blog</span>
+            <span class="notes-hero__pill" aria-label={postsCountLabel}>
+              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+              {posts.length} post
+            </span>
+          </div>
+          <h1 class="notes-hero__title">Pulse <span class="notes-hero__hl">blog.</span></h1>
+          <p class="notes-hero__sub">Notes on local AI, model choices, and shipping offline-first.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="blog-list" id="posts" aria-label="Blog posts">
+      <div class="container">
+        <ol class="blog-list__items" role="list">
+          {posts.map((p) => (
+            <li>
+              <article class="blog-card reveal">
+                <div class="blog-card__meta">
+                  <time datetime={p.date}>{p.date}</time>
+                  <span aria-hidden="true">·</span>
+                  <span>{p.readingMinutes} min read</span>
+                </div>
+                <h2 class="blog-card__title">
+                  <a href={'/blog/' + p.slug + '/'}>{p.title}</a>
+                </h2>
+                <p class="blog-card__excerpt">{p.excerpt}</p>
+                <a class="blog-card__cta" href={'/blog/' + p.slug + '/'} aria-label={'Read: ' + p.title}>
+                  <span>Read post</span>
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </a>
+              </article>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <Footer license="" version="v0.6.8" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(blogListJsonLd)} />
+</Base>
+
+<style>
+  /* ── Blog-list section ─────────────────────────────── */
+  .blog-list {
+    padding-block: clamp(48px, 7vw, 96px) clamp(64px, 9vw, 120px);
+  }
+  .blog-list .container { max-width: 820px; }
+
+  .blog-list__items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .blog-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1.75rem 1.75rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius, 12px);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .blog-card:hover {
+    border-color: var(--purple);
+    transform: translateY(-1px);
+  }
+
+  .blog-card__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+  }
+
+  .blog-card__title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .blog-card__title a { color: var(--fg); text-decoration: none; }
+  .blog-card__title a:hover { color: var(--purple); }
+
+  .blog-card__excerpt {
+    margin: 0;
+    color: var(--fg-dim);
+    font-size: 1rem;
+    line-height: 1.55;
+    max-width: 60ch;
+  }
+
+  .blog-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--purple);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-top: 0.3rem;
+    align-self: flex-start;
+  }
+  .blog-card__cta:hover { color: var(--blue); }
+  .blog-card__cta svg { transition: transform var(--dur) var(--ease); }
+  .blog-card__cta:hover svg { transform: translateX(2px); }
+</style>

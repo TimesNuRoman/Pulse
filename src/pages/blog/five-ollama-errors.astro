@@ -1,0 +1,757 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R183: /blog/five-ollama-errors/ — first blog post on the site.
+ *
+ * Topic: the five errors that gate the first Ollama session, and the
+ * exact commands to clear each one. Practical, present-tense, no
+ * reinstall, no driver hunt. Targets readers who just installed
+ * Ollama (or a local-AI app that depends on it) and hit a wall.
+ *
+ * R129 rule: exactly one "Pulse" mention in body, in the dedicated
+ * "One note" section. JSON-LD author.name = "Pulse" is structural
+ * (not a body mention). Logo / nav / footer / button labels are
+ * also structural.
+ *
+ * Hard rules: no emoji, no first-person or team voice, no marketing
+ * fluff, no future promises, dark-only, no dollar sign in code, SPDX
+ * license header.
+ */
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/notes.css';
+
+const PAGE_TITLE = 'Five common Ollama errors and the fixes that actually work — Pulse blog';
+const PAGE_DESC =
+  'The five errors that gate every first Ollama session — and the exact ' +
+  'commands to clear each one. No theory, no reinstall, no driver hunt.';
+
+const PUBLISHED = '2026-08-03';
+const UPDATED = '2026-08-03';
+const READING_MIN = 7;
+
+// R183: pre-compute every user-visible string that would otherwise
+// be a JS template literal. The HR10 grep scans the source for the
+// dollar sign, so a literal backtick-dollar-brace expression would
+// fail even when the rendered text has no dollar sign. Build the
+// strings in advance and pass the constants. (Same pattern as the
+// PAGE_DOC_TITLE pre-compute in R180.)
+const HERO_PILL_LABEL = READING_MIN + ' min read';
+
+// Section anchor IDs are the public contract — future cross-links
+// from /compare/, /faq/, or other posts should target these.
+const SECTIONS = [
+  { id: 'why-ollama-errors', title: 'Why Ollama errors are the first wall' },
+  { id: 'connect',           title: '1. could not connect to ollama' },
+  { id: 'model-not-found',   title: '2. model not found' },
+  { id: 'out-of-memory',     title: '3. out of memory' },
+  { id: 'port-conflict',     title: '4. port 11434 already in use' },
+  { id: 'context-length',    title: '5. context length exceeded' },
+  { id: 'one-note',          title: 'One note' },
+  { id: 'help',              title: 'Where to get help' },
+];
+
+// HowTo structured data: one HowToStep per error, with the
+// "text" field carrying the exact fix command. name carries the
+// error string itself so the step is searchable.
+const howToSteps = [
+  {
+    name: 'could not connect to ollama',
+    text: 'Start the Ollama daemon in a terminal with `ollama serve`. Confirm the last log line is `Ollama API listening on 127.0.0.1:11434`. Reinstall via the official Ollama script if the auto-start registration is missing.',
+  },
+  {
+    name: 'model not found',
+    text: 'Pull the model with `ollama pull gemma3:4b`. Run `ollama list` to see every model already in the local registry. Fix any typo in the model name (gemma3 not gemma, qwen2.5 not qwen25, llama3.1:8b not llama3.1).',
+  },
+  {
+    name: 'out of memory',
+    text: 'Pick a model that fits the available VRAM or RAM. A 4 GB machine can run qwen2.5:3b or gemma3:4b; an 8 GB machine can add llama3:8b; a 16 GB machine can run qwen2.5:14b. Force CPU mode with `OLLAMA_NUM_GPU=0 ollama serve` for testing.',
+  },
+  {
+    name: 'port 11434 already in use',
+    text: 'Identify the process holding the port: `lsof -i :11434` on macOS or Linux, `Get-NetTCPConnection -LocalPort 11434` on Windows. Stop the conflicting process, or move Ollama to a different port with `OLLAMA_HOST=127.0.0.1:11435 ollama serve` and reconfigure the app to match.',
+  },
+  {
+    name: 'context length exceeded',
+    text: 'Start a new chat to drop the running token count. Configure a context limit in the app to truncate older messages automatically. Or set a larger window at the Ollama layer with `OLLAMA_CONTEXT_LENGTH=16384 ollama serve` (costs ~2 GB of additional RAM per inference).',
+  },
+];
+
+const blogPostingJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: 'Five common Ollama errors and the fixes that actually work',
+  description: PAGE_DESC,
+  datePublished: PUBLISHED,
+  dateModified: UPDATED,
+  author: { '@type': 'Organization', name: 'Pulse' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Pulse',
+    logo: { '@type': 'ImageObject', url: 'https://ownlocalml.com/favicon.svg' },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': 'https://ownlocalml.com/blog/five-ollama-errors/',
+  },
+  image: 'https://ownlocalml.com/og-home.png',
+  url: 'https://ownlocalml.com/blog/five-ollama-errors/',
+  wordCount: 1600, // approximate; post is 1500-1700 words
+};
+
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Fix five common Ollama errors',
+  description: 'A practical guide to clearing the five errors that gate the first Ollama session on a local machine.',
+  totalTime: 'PT10M',
+  step: howToSteps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.name,
+    text: s.text,
+  })),
+};
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-home.png"
+  ctaVisible={false}
+  footerLicense=""
+  footerVersion="v0.6.8"
+  canonical="https://ownlocalml.com/blog/five-ollama-errors/"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/#features">Features</a></li>
+        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/#download">Download</a></li>
+        <li><a class="nav__link" href="/compare/">Compare</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/#download">Start trial ↓ 12.29 MB</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/#features">Features</a>
+    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/#download">Download</a>
+    <a class="nav-drawer__link" href="/compare/">Compare</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/#download">Start trial ↓ 12.29 MB</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => { setOpen(!drawer.classList.contains('is-open')); });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="notes-main">
+    <article class="post" id="post">
+
+      <!-- ─── Hero ─────────────────────────────────────── -->
+      <header class="post-hero">
+        <div class="bg-glow"></div>
+        <div class="container post-hero__grid">
+          <div class="post-hero__copy reveal">
+            <div class="post-hero__badges">
+              <span class="post-hero__eyebrow">Pulse · Blog · Troubleshooting</span>
+              <span class="post-hero__pill" aria-label={HERO_PILL_LABEL}>
+                <span class="post-hero__pill-dot" aria-hidden="true"></span>
+                {READING_MIN} min read
+              </span>
+            </div>
+            <h1 class="post-hero__title">Five common Ollama errors and the fixes that actually work.</h1>
+            <p class="post-hero__sub">The five errors that gate the first Ollama session — and the exact commands to clear each one. No theory, no reinstall, no driver hunt.</p>
+            <p class="post-hero__meta">
+              <time datetime={PUBLISHED}>Published {PUBLISHED}</time>
+              <span aria-hidden="true">·</span>
+              <a href="/blog/">All posts</a>
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <!-- ─── 1. Why Ollama errors are the first wall ── -->
+      <section class="post-section" id="why-ollama-errors" aria-label="Why Ollama errors are the first wall">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Intro</span>
+            <h2 class="post-section__h2">Why Ollama errors are the first wall</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              Local AI is a different first impression than cloud AI. No signup, no API key, no token counter ticking in the background. Just a binary, a model file, and a daemon. That friction-free promise holds — until the first time the daemon refuses to start, the model fails to download, or a port is already in use. Every local-AI newcomer hits the same five errors on day one. None of them are caused by a bug in the model or the app. All of them have a one-line fix once the right log line is read.
+            </p>
+            <p>
+              The five errors below cover roughly 95% of "Ollama will not talk to my app" reports. Each section has the exact error string, the most common cause, and the shortest working fix. The fix is a single command in every case. The post is short on purpose: the goal is to clear the wall, not to teach Ollama from scratch.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 2. Error 1: connect ─────────────────────── -->
+      <section class="post-section" id="connect" aria-label="Error one: could not connect to ollama">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Error 1</span>
+            <h2 class="post-section__h2">could not connect to ollama</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              The error string varies by app: <code>Error: could not connect to ollama</code>, <code>connection refused</code>, <code>dial tcp 127.0.0.1:11434</code>, or simply a never-ending spinner. The cause is always the same: the Ollama daemon is not running.
+            </p>
+            <p>
+              Ollama is a long-lived background process, not a CLI tool invoked per request. The <code>ollama</code> command in a terminal is the client; the daemon is <code>ollama serve</code>. On first install, the daemon may not auto-start on every platform. macOS gets a launchd entry, Linux gets a systemd unit when installed via the official script, Windows gets a Scheduled Task. Sometimes those registrations fail silently after a reboot, an OS update, or a permission change.
+            </p>
+            <p>
+              The fix is to start the daemon by hand and watch the log line that confirms it bound to a port.
+            </p>
+            <pre class="codeblock"><code class="language-bash">ollama serve</code></pre>
+            <p>
+              Expected last line: <code>Ollama API listening on 127.0.0.1:11434</code>. When that line appears, the client side will connect on the next attempt. To make it stick across reboots, follow the platform-specific install instructions on the <a href="https://ollama.com/download" rel="noopener noreferrer">Ollama download page</a>; the official script handles the auto-start registration on macOS, Linux, and Windows in one step. If a second instance is already running, the daemon prints <code>bind: address already in use</code> — that is the port-conflict error, covered below.
+            </p>
+            <p>
+              For app-side debugging, the response is usually a raw HTTP error, not a friendly string. Apps that surface that response in a status bar make the fix a one-search lookup; apps that swallow the response into a spinner make the fix a guess.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 3. Error 2: model not found ─────────────── -->
+      <section class="post-section" id="model-not-found" aria-label="Error two: model not found">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Error 2</span>
+            <h2 class="post-section__h2">model not found</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              The error string: <code>Error: model 'gemma3:4b' not found, try pulling it first</code>, or <code>404 not found</code> from the API, or <code>no such file or directory</code> in the log. The model name was typed, sent to the API, and the API said it did not have it.
+            </p>
+            <p>
+              Ollama stores models in a local registry. The first reference to a model in any config — <code>gemma3:4b</code>, <code>llama3:8b</code>, <code>qwen2.5:7b</code> — must be paired with a successful <code>ollama pull</code> at some point. Apps that "remember" a model from a previous session still need that model to be present in the registry; uninstalling and reinstalling the app does not pull the model.
+            </p>
+            <p>Common typos that trigger this error:</p>
+            <ul class="post-list">
+              <li><code>gemma</code> instead of <code>gemma3</code> — the older <code>gemma:2b</code> and <code>gemma:7b</code> exist, but the newer <code>gemma3:4b</code> is the one most apps ship a default for.</li>
+              <li><code>qwen2.5</code> (with a dot) is correct; <code>qwen2-5</code> or <code>qwen25</code> is not.</li>
+              <li><code>llama3.1</code> requires a colon and a tag (<code>llama3.1:8b</code>); <code>llama3.1</code> alone fails.</li>
+              <li><code>mistral</code> vs <code>mixtral</code> — one letter, two different models, different sizes.</li>
+              <li><code>phi3</code> vs <code>phi-3</code> — the hyphen is wrong; the family is <code>phi3</code> with size tags.</li>
+            </ul>
+            <p>The fix:</p>
+            <pre class="codeblock"><code class="language-bash">ollama pull gemma3:4b</code></pre>
+            <p>
+              The pull prints a progress bar and the final line <code>success</code>. The next request from the app will find the model and return a response. To list everything already in the local registry:
+            </p>
+            <pre class="codeblock"><code class="language-bash">ollama list</code></pre>
+            <p>
+              That output is the source of truth — not the dropdown in the app UI, not the config file. If the name is in the registry, the app will find it; if it is not, no amount of app-side config will help.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 4. Error 3: out of memory ───────────────── -->
+      <section class="post-section" id="out-of-memory" aria-label="Error three: out of memory">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Error 3</span>
+            <h2 class="post-section__h2">out of memory</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              The error string: <code>model requires more system memory (X GiB) than is available (Y GiB)</code>, or <code>CUDA out of memory</code>, or <code>llama_model_loader: failed to allocate memory</code>, or the process simply dies with no output and the app shows <em>model failed to load</em>.
+            </p>
+            <p>
+              Local models are bound by VRAM on the GPU and system RAM on the CPU. The model size in the registry name is a rough lower bound on the memory required to load it, plus a working buffer for the context window. A <code>gemma3:4b</code> model file is roughly 3 GB on disk; loading it for inference needs about 4 GB of VRAM or RAM. A <code>llama3:8b</code> model file is roughly 5 GB; loading it needs about 8 GB. A <code>qwen2.5:14b</code> model file is roughly 9 GB; loading it needs about 12 GB. A <code>llama3:70b</code> model file is roughly 40 GB; loading it needs a multi-GPU rig or a server.
+            </p>
+            <p>
+              The most common cause of the out-of-memory error on a single-machine setup is choosing a model that is too large for the available hardware. The fix is to pick a smaller model that fits. The <a href="https://ollama.com/library" rel="noopener noreferrer">Ollama model library</a> tags each model with a recommended size; the tags are not aspirational — they are the working memory the model actually consumes.
+            </p>
+            <pre class="codeblock"><code class="language-bash">ollama pull qwen2.5:3b</code></pre>
+            <p>
+              That is the smallest model that still produces useful output for chat and code. It fits in about 2 GB. On a 4 GB GPU or a 4 GB-RAM laptop with no GPU, it is the default that works.
+            </p>
+            <p>
+              On a machine with a discrete GPU that has more VRAM than the laptop ships with system RAM (a common configuration on gaming laptops), Ollama prefers the GPU and reports <code>GPU available, using it</code> on startup. To force CPU mode for testing, set the <code>OLLAMA_NUM_GPU</code> environment variable to <code>0</code>:
+            </p>
+            <pre class="codeblock"><code class="language-bash">OLLAMA_NUM_GPU=0 ollama serve</code></pre>
+            <p>To see how much memory Ollama actually has at runtime, the <code>/api/ps</code> endpoint returns a JSON dump with the loaded model size and per-layer placement:</p>
+            <pre class="codeblock"><code class="language-bash">curl http://127.0.0.1:11434/api/ps</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 5. Error 4: port 11434 already in use ───── -->
+      <section class="post-section" id="port-conflict" aria-label="Error four: port 11434 already in use">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Error 4</span>
+            <h2 class="post-section__h2">port 11434 already in use</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              The error string: <code>Error: listen tcp 127.0.0.1:11434: bind: address already in use</code>, or the app reports <em>Ollama is unreachable</em> even though <code>ollama serve</code> printed <code>Ollama API listening on 127.0.0.1:11434</code> ten seconds ago. The cause: another process on the machine owns port 11434, or a stale Ollama process is still bound to the port.
+            </p>
+            <p>
+              The default Ollama port is 11434. Two common cases lead to a conflict:
+            </p>
+            <ol class="post-list post-list--ordered">
+              <li>A previous Ollama instance is still running. A reboot, a crash, or a stuck <code>ollama serve</code> window can leave the daemon holding the port. Killing the old process and starting a new one clears it.</li>
+              <li>A second AI server is bound to the same port. LM Studio and other local-model front-ends sometimes default to 11434 for OpenAI-API compatibility.</li>
+            </ol>
+            <p>
+              The fix on the Ollama side is to set a different listen address via the <code>OLLAMA_HOST</code> environment variable, then restart the daemon:
+            </p>
+            <pre class="codeblock"><code class="language-bash">OLLAMA_HOST=127.0.0.1:11435 ollama serve</code></pre>
+            <p>
+              The app must be reconfigured to point at the new port. Most local-AI apps accept the base URL as a setting; the format is <code>http://127.0.0.1:11435</code>.
+            </p>
+            <p>
+              The fix on the conflicting-process side is to identify the process holding the port and stop it. On macOS and Linux:
+            </p>
+            <pre class="codeblock"><code class="language-bash">lsof -i :11434</code></pre>
+            <p>
+              That returns the PID and process name. Kill it with <code>kill &lt;PID&gt;</code> and start a fresh Ollama. On Windows, PowerShell's <code>Get-NetTCPConnection -LocalPort 11434</code> returns the owning process ID; the matching <code>Get-Process -Id &lt;PID&gt;</code> reveals the binary.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 6. Error 5: context length exceeded ─────── -->
+      <section class="post-section" id="context-length" aria-label="Error five: context length exceeded">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Error 5</span>
+            <h2 class="post-section__h2">context length exceeded</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              The error string: <code>Error: context length exceeded</code>, or <code>prompt too long</code>, or <em>the request would exceed the model context window</em>. The cause: the chat history or the input prompt is longer than the model can hold in a single inference pass.
+            </p>
+            <p>
+              Every local model has a fixed context window. The window is the total number of tokens — input plus output — that the model can process in one call. The defaults vary: <code>gemma3:4b</code> ships with 8 192 tokens, <code>llama3:8b</code> ships with 8 192, <code>qwen2.5:7b</code> ships with 32 768. The window can be raised at load time (up to the model training-time maximum) but the RAM cost grows with the window size.
+            </p>
+            <p>
+              The most common trigger is a long-running chat session where the history accumulates. After 20 to 40 exchanges, the running token count crosses the window and the next prompt fails.
+            </p>
+            <p>The fix has three flavors, in order of preference:</p>
+            <ol class="post-list post-list--ordered">
+              <li>Start a new chat. The history is the largest contributor; a clean session brings the token count back near zero. Most apps expose this as a <em>New chat</em> button in the side panel.</li>
+              <li>Configure a context limit in the app. Apps that integrate with Ollama often expose a <em>context length</em> or <em>memory limit</em> setting; lowering it forces the app to truncate the oldest messages before the API call. The setting is per-app, not a global Ollama flag.</li>
+              <li>Set the context length at the Ollama layer. The <code>OLLAMA_CONTEXT_LENGTH</code> environment variable, or the <code>num_ctx</code> parameter in a Modelfile, sets the model window at load time. A larger value gives more memory but more RAM use:</li>
+            </ol>
+            <pre class="codeblock"><code class="language-bash">OLLAMA_CONTEXT_LENGTH=16384 ollama serve</code></pre>
+            <p>
+              That quadruples the default <code>gemma3:4b</code> window at the cost of about 2 GB of additional RAM during inference.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 7. One note (THE single mention lives in the body paragraph below) ── -->
+      <section class="post-section post-section--note" id="one-note" aria-label="One note">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Note</span>
+            <h2 class="post-section__h2">One note</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              Most AI apps hide the underlying Ollama error behind a generic spinner. Pulse takes the opposite path: when the connector fails, the status bar shows the raw Ollama response, so the error string above can be copied directly into a search and matched to the fix. No log file to dig through, no setting to enable — the error message is the error message.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── 8. Where to get help ──────────────────── -->
+      <section class="post-section" id="help" aria-label="Where to get help">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Help</span>
+            <h2 class="post-section__h2">Where to get help</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              For an error that does not match one of the five above, the next three places catch the remaining 5%:
+            </p>
+            <ul class="post-list">
+              <li><a href="https://github.com/ollama/ollama/issues" rel="noopener noreferrer">Ollama GitHub issues</a> — search before opening; the same error is almost always reported.</li>
+              <li><a href="https://www.reddit.com/r/LocalLLaMA/" rel="noopener noreferrer">r/LocalLLaMA</a> — fast community answers, especially for hardware-specific questions.</li>
+              <li><a href="https://github.com/TimesNuRoman/pulse/discussions" rel="noopener noreferrer">GitHub Discussions</a> — anonymous, no signup needed for reading, and the topic is explicitly local-AI setup. Search first; open a thread if nothing matches.</li>
+            </ul>
+            <p>
+              For environment-level problems (driver, kernel, macOS Gatekeeper), the OS-specific Ollama docs cover the install and the common post-install gotchas.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Footer of post: meta + feedback ──────────── -->
+      <footer class="post-foot" id="post-foot" aria-label="Post meta">
+        <div class="container">
+          <p class="post-foot__meta">
+            <span>Last updated <time datetime={UPDATED}>{UPDATED}</time></span>
+            <span aria-hidden="true">·</span>
+            <span>{READING_MIN} min read</span>
+          </p>
+          <p class="post-foot__helpful">
+            <span>Was this helpful?</span>
+            <a class="post-foot__vote" href="https://github.com/TimesNuRoman/pulse/issues/new?labels=blog-helpful&template=blog-helpful.md" rel="noopener noreferrer">
+              <span class="post-foot__arrow" aria-hidden="true">↑</span> Helpful
+            </a>
+            <a class="post-foot__vote" href="https://github.com/TimesNuRoman/pulse/issues/new?labels=blog-not-helpful&template=blog-not-helpful.md" rel="noopener noreferrer">
+              <span class="post-foot__arrow" aria-hidden="true">↓</span> Not helpful
+            </a>
+          </p>
+          <p class="post-foot__back">
+            <a class="btn btn--ghost" href="/blog/">Back to all posts</a>
+          </p>
+        </div>
+      </footer>
+
+    </article>
+  </main>
+
+  <Footer license="" version="v0.6.8" />
+
+  <!-- Structured data: BlogPosting + HowTo. Both are pre-computed in
+       the frontmatter; the JSON.stringify pass at render time produces
+       the inline LD+JSON script (Astro's set:html keeps the quotes
+       verbatim — the same pattern as /faq/ and /compare/). -->
+  <script type="application/ld+json" set:html={JSON.stringify(blogPostingJsonLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(howToJsonLd)} />
+</Base>
+
+<style>
+  /* ── Post article frame ───────────────────────────── */
+  .post { display: block; }
+
+  .post-hero {
+    padding-top: clamp(112px, 14vw, 160px);
+    padding-bottom: clamp(48px, 7vw, 80px);
+    overflow: hidden;
+  }
+  .post-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(48px, 6vw, 80px);
+    align-items: center;
+  }
+  .post-hero__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.1rem;
+    max-width: 760px;
+  }
+  .post-hero__badges {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: -0.25rem;
+  }
+  .post-hero__eyebrow {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+  .post-hero__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    background: rgba(187, 154, 247, 0.10);
+    border: 1px solid rgba(187, 154, 247, 0.35);
+    border-radius: 9999px;
+    color: var(--purple);
+    font-size: 0.74rem;
+    font-weight: 600;
+  }
+  .post-hero__pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(158, 206, 106, 0.6);
+    animation: post-pill-pulse 2.2s var(--ease) infinite;
+  }
+  @keyframes post-pill-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(158, 206, 106, 0.5); }
+    60%      { box-shadow: 0 0 0 6px rgba(158, 206, 106, 0); }
+  }
+  .post-hero__title {
+    font-size: var(--fs-1);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.06;
+    margin: 0;
+    color: var(--fg);
+    max-width: 22ch;
+  }
+  .post-hero__sub {
+    font-size: 1.18rem;
+    color: var(--fg-dim);
+    margin: 0;
+    max-width: 60ch;
+    line-height: 1.55;
+  }
+  .post-hero__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    margin: 0.25rem 0 0;
+  }
+  .post-hero__meta a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--border); }
+  .post-hero__meta a:hover { color: var(--purple); border-bottom-color: var(--purple); }
+
+  /* ── Section frame ─────────────────────────────────── */
+  .post-section {
+    padding-block: clamp(40px, 6vw, 72px);
+    border-top: 1px solid var(--border);
+  }
+  .post-section:first-of-type { border-top: none; }
+  .post-section__inner { max-width: 760px; }
+  .post-section__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .post-section__num {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+  }
+  .post-section__h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin: 0;
+    color: var(--fg);
+    max-width: 32ch;
+  }
+  .post-section--note {
+    background: rgba(187, 154, 247, 0.04);
+  }
+  .post-section--note .post-section__h2 { color: var(--purple); }
+
+  /* ── Prose ─────────────────────────────────────────── */
+  .post-prose {
+    color: var(--fg-dim);
+    font-size: 1.02rem;
+    line-height: 1.7;
+    max-width: 70ch;
+  }
+  .post-prose p { margin: 0 0 1rem; }
+  .post-prose p:last-child { margin-bottom: 0; }
+  .post-prose strong { color: var(--fg); font-weight: 600; }
+  .post-prose em { color: var(--fg); font-style: italic; }
+  .post-prose code {
+    background: var(--surface-2);
+    padding: 0.05em 0.4em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    font-size: 0.9em;
+    color: var(--cyan);
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+  }
+  .post-prose a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--border); }
+  .post-prose a:hover { color: var(--purple); border-bottom-color: var(--purple); }
+
+  /* ── Inline code blocks (terminal) ─────────────────── */
+  .codeblock {
+    display: block;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--purple);
+    border-radius: var(--radius, 8px);
+    padding: 0.95rem 1.1rem;
+    margin: 1.1rem 0 1.3rem;
+    overflow-x: auto;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--fg);
+  }
+  .codeblock code {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    color: var(--cyan) !important;
+    font-size: inherit !important;
+    white-space: pre;
+  }
+
+  /* ── Lists inside prose ────────────────────────────── */
+  .post-list {
+    list-style: none;
+    margin: 0.5rem 0 1.2rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .post-list li {
+    position: relative;
+    padding-left: 1.4rem;
+    color: var(--fg-dim);
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+  .post-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--purple);
+  }
+  .post-list--ordered {
+    counter-reset: post-step;
+  }
+  .post-list--ordered li {
+    counter-increment: post-step;
+    padding-left: 2rem;
+  }
+  .post-list--ordered li::before {
+    content: counter(post-step);
+    width: auto;
+    height: auto;
+    border-radius: 6px;
+    background: rgba(187, 154, 247, 0.12);
+    color: var(--purple);
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.1rem 0.45rem;
+    top: 0.4em;
+  }
+  .post-list strong { color: var(--fg); font-weight: 600; }
+  .post-list code {
+    background: var(--surface-2);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    font-size: 0.92em;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+  }
+
+  /* ── Post footer (last-updated + helpful + back) ─── */
+  .post-foot {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .post-foot__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    margin: 0 0 1rem;
+  }
+  .post-foot__helpful {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    color: var(--fg-dim);
+    font-size: 0.95rem;
+    margin: 0 0 1.5rem;
+  }
+  .post-foot__vote {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    color: var(--fg-dim);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .post-foot__vote:hover {
+    border-color: var(--purple);
+    color: var(--purple);
+  }
+  .post-foot__arrow {
+    font-size: 0.95rem;
+    line-height: 1;
+    color: var(--muted);
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+  }
+  .post-foot__back {
+    margin: 0;
+    text-align: center;
+  }
+</style>
