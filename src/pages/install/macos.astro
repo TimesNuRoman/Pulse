@@ -1,0 +1,654 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R195: /install/macos/ — build Pulse desktop from source on macOS.
+ *
+ * 6 main sections (H2):
+ *   1. Prerequisites          Xcode CLT, Node, Rust, Homebrew, git
+ *   2. Tauri dependencies     Cocoa is built-in — no extra system packages
+ *   3. Clone the repo         github.com/TimesNuRoman/pulse (URL is a real path,
+ *                              not a brand reference)
+ *   4. Install npm deps       npm install
+ *   5. Run dev                tauri dev (3-5 min first build)
+ *   6. Build production       tauri build → .app and .dmg
+ * Plus: Apple Silicon vs Intel, Troubleshooting, Known limitations, Get help, Next steps.
+ *
+ * Hard rules: no emoji, anonymous brand, no marketing fluff, no future
+ * promises, dark-only, Apache 2.0, 56dp touch targets, focus-visible,
+ * skip-link. JSON-LD `HowTo` with 5 HowToSteps + ISO 8601 durations.
+ */
+
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/notes.css';
+
+const PAGE_TITLE = 'Install Pulse on macOS — build from source';
+const PAGE_DESC =
+  'Build Pulse for macOS from source. There is no official macOS build ' +
+  'today — the community has ported the source to Apple Silicon and ' +
+  'Intel. Six steps from Xcode Command Line Tools to a .dmg on your ' +
+  'machine.';
+
+const GITHUB_REPO = 'https://github.com/TimesNuRoman/pulse';
+const GITHUB_DESKTOP = GITHUB_REPO + '/tree/main/pulse-desktop';
+const GITHUB_ISSUES = GITHUB_REPO + '/issues';
+const HOMEBREW_URL = 'https://brew.sh';
+const RUSTUP_URL = 'https://rustup.rs';
+const APPLE_DEVELOPER_URL = 'https://developer.apple.com/account';
+
+// JSON-LD `HowTo` (R195 SEO) — six HowToSteps mirroring the page body.
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Build Pulse desktop from source on macOS',
+  description:
+    'Compile Pulse for macOS by installing Xcode Command Line Tools, ' +
+    'Node 20, Rust 1.75, cloning the source repository, and running ' +
+    '`npm run tauri build` to produce a .app and a .dmg.',
+  totalTime: 'PT30M',
+  estimatedCost: {
+    '@type': 'MonetaryAmount',
+    currency: 'USD',
+    value: '0',
+  },
+  step: [
+    {
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'Install prerequisites',
+      text:
+        'Install the Xcode Command Line Tools, Node.js 20 or newer, ' +
+        'Rust 1.75 or newer via rustup, Homebrew, and git. Cocoa and ' +
+        'WebKit are built into macOS — no extra system packages needed.',
+      url: 'https://ownlocalml.com/install/macos/#prerequisites',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'Confirm Tauri dependencies',
+      text:
+        'On macOS the Tauri toolchain relies on the system frameworks ' +
+        'and the Xcode Command Line Tools. No Homebrew packages are ' +
+        'required for the build itself.',
+      url: 'https://ownlocalml.com/install/macos/#tauri-deps',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'Clone the repository',
+      text:
+        'Clone the GitHub repository and change into the pulse-desktop ' +
+        'subdirectory that contains the Tauri app.',
+      url: 'https://ownlocalml.com/install/macos/#clone',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 4,
+      name: 'Install npm dependencies',
+      text:
+        'Run `npm install` in the pulse-desktop directory. The first ' +
+        'run pulls the JavaScript dependencies and Tauri CLI.',
+      url: 'https://ownlocalml.com/install/macos/#npm-install',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 5,
+      name: 'Run the dev build',
+      text:
+        'Run `npm run tauri dev` to compile the Rust backend and open ' +
+        'the dev window. The first build takes 3-5 minutes on a modern ' +
+        'laptop; later runs are incremental.',
+      url: 'https://ownlocalml.com/install/macos/#run-dev',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 6,
+      name: 'Build the production artifacts',
+      text:
+        'Run `npm run tauri build` to produce a .app bundle and a .dmg ' +
+        'installer in src-tauri/target/release/bundle/. The .dmg is ' +
+        'unsigned — Gatekeeper warns on first run.',
+      url: 'https://ownlocalml.com/install/macos/#build-prod',
+    },
+  ],
+};
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-image.svg"
+  canonical="https://ownlocalml.com/install/macos/"
+  ctaVisible={false}
+  footerLicense=""
+  footerVersion="v0.6.7"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/#features">Features</a></li>
+        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/download/">Download</a></li>
+        <li><a class="nav__link is-cta" href="/install/macos/" aria-current="page">Install</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/download/" rel="noopener noreferrer">Get Pulse for Windows ↓</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/#features">Features</a>
+    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/download/">Download</a>
+    <a class="nav-drawer__link" href="/install/macos/" aria-current="page">Install</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/" rel="noopener noreferrer">Get Pulse for Windows ↓</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => { setOpen(!drawer.classList.contains('is-open')); });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="notes-main install">
+    <!-- ─── Hero ────────────────────────────────────────── -->
+    <section class="notes-hero install__hero">
+      <div class="bg-glow"></div>
+      <div class="container notes-hero__grid">
+        <div class="notes-hero__copy reveal">
+          <div class="notes-hero__badges">
+            <span class="notes-hero__eyebrow">Pulse · macOS · build from source</span>
+            <span class="notes-hero__pill" aria-label="Source build">
+              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+              v0.6.7 · source
+            </span>
+          </div>
+          <h1 class="notes-hero__title">Install Pulse on macOS</h1>
+          <p class="notes-hero__sub">Build from source · 6 steps · no official build today</p>
+          <p class="install__intro">
+            Run Pulse on macOS by building it from source. There is no official macOS build today. Pulse is developed and tested primarily on Windows, and the community has ported the source to Apple Silicon and Intel. Expect rough edges; if a step fails, open a GitHub issue and include the error output.
+          </p>
+          <p class="install__intro">
+            Two artifacts at the end: a <code>.app</code> bundle that runs from the Finder, and a <code>.dmg</code> that drags the same bundle into <code>/Applications</code>. Both are unsigned — Gatekeeper warns on first run, and the bundle has to be opened via the right-click &ldquo;Open&rdquo; menu the first time.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Apple Silicon vs Intel ──────────────────────── -->
+    <section class="ig" id="arch" aria-label="Apple Silicon vs Intel">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Before you start</span>
+          <h2>Apple Silicon or Intel</h2>
+          <p class="lede">Pulse builds natively on M1, M2, and M3. Intel works the same way; Rosetta 2 is not required for the build itself.</p>
+        </header>
+
+        <div class="ig__arch reveal">
+          <article class="ig__arch-card glass">
+            <h3 class="ig__arch-name">Apple Silicon (M1 / M2 / M3 / M4)</h3>
+            <p class="ig__arch-tag">arm64-apple-darwin</p>
+            <p class="ig__arch-body">
+              Native <code>aarch64-apple-darwin</code> build. The Rust toolchain and Tauri both target the host architecture automatically. The output <code>.app</code> is a universal-or-arm64-only bundle; check with <code>file pulse-desktop.app/Contents/MacOS/pulse-desktop</code> after the build.
+            </p>
+            <p class="ig__arch-meta">
+              Verify the host with <code>uname -m</code> &mdash; expect <code>arm64</code> on Apple Silicon.
+            </p>
+          </article>
+          <article class="ig__arch-card glass">
+            <h3 class="ig__arch-name">Intel (x86_64)</h3>
+            <p class="ig__arch-tag">x86_64-apple-darwin</p>
+            <p class="ig__arch-body">
+              Native <code>x86_64-apple-darwin</code> build. No Rosetta required &mdash; the Rust toolchain and Tauri both produce a real x86_64 binary. The build is slower on Intel hardware (no Apple Silicon accelerators) but the artifact runs the same way.
+            </p>
+            <p class="ig__arch-meta">
+              Intel Macs that need to run Pulse on an Apple Silicon host via Universal build: cross-compile with <code>cargo build --target aarch64-apple-darwin</code> after <code>rustup target add aarch64-apple-darwin</code>. Universal binary packaging is not part of the default <code>tauri build</code> flow.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 1. Prerequisites ────────────────────────────── -->
+    <section class="ig" id="prerequisites" aria-label="Prerequisites">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 1</span>
+          <h2>Prerequisites</h2>
+          <p class="lede">Five toolchain pieces. Versions are minimums &mdash; newer is fine.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <ul class="ig__list" role="list">
+            <li>
+              <strong>Xcode Command Line Tools.</strong>
+              Cocoa and the macOS SDK live behind the CLT install. Run <code>xcode-select --install</code> in Terminal and accept the dialog. The install is about 700 MB and finishes in a few minutes on a modern Mac. Verify with <code>xcode-select -p</code> &mdash; expect <code>/Library/Developer/CommandLineTools</code>.
+            </li>
+            <li>
+              <strong>Node.js 20 or newer.</strong>
+              The frontend is plain TypeScript on Vite. Install via
+              <a href="https://nodejs.org/" rel="noopener noreferrer">nodejs.org</a>
+              (the macOS pkg installer is the simplest path) or via Homebrew (<code>brew install node@20</code>). Check with <code>node --version</code>.
+            </li>
+            <li>
+              <strong>Rust 1.75 or newer.</strong>
+              Tauri 2 needs the 1.75 toolchain. Install via
+              <a href={RUSTUP_URL} rel="noopener noreferrer">rustup.rs</a>:
+              <code>curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh</code>.
+              Check with <code>rustc --version</code>.
+            </li>
+            <li>
+              <strong>Homebrew</strong> (optional but useful for <code>git</code>, <code>pkg-config</code>, and other utilities).
+              Install from
+              <a href={HOMEBREW_URL} rel="noopener noreferrer">brew.sh</a>:
+              <code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code>.
+              macOS 13+ ships git in the CLT, so Homebrew is not strictly required.
+            </li>
+            <li>
+              <strong>git</strong> for cloning the repository. Bundled with the Xcode Command Line Tools on macOS 13 and newer. On older macOS, install via Homebrew (<code>brew install git</code>) or Apple's developer tools.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 2. Tauri dependencies ───────────────────────── -->
+    <section class="ig" id="tauri-deps" aria-label="Tauri system dependencies">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 2</span>
+          <h2>Tauri system dependencies</h2>
+          <p class="lede">No extra system packages &mdash; Cocoa and WebKit ship with macOS, and the Xcode Command Line Tools cover the rest.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <p>
+            On macOS the Tauri toolchain relies on the system frameworks that ship with the OS: Cocoa, WebKit, and CoreFoundation. The build links against the macOS SDK that the Xcode Command Line Tools install. There is no <code>apt</code>-equivalent step here &mdash; no <code>brew install</code> of system packages is required.
+          </p>
+          <p>
+            One environment variable to know: <code>MACOSX_DEPLOYMENT_TARGET</code>. The repo pins it via <code>Cargo.toml</code> and the <code>tauri.conf.json</code> <code>minimumSystemVersion</code> field. If a downstream toolchain disagrees (an older Xcode CLT, for example), set it explicitly in the shell before running <code>tauri build</code>:
+          </p>
+          <pre class="ig__code" aria-label="MACOSX_DEPLOYMENT_TARGET override for older toolchains"><code>export MACOSX_DEPLOYMENT_TARGET=11.0
+npm run tauri build</code></pre>
+          <p>
+            The default target matches the macOS Big Sur baseline (11.0). Big Sur and newer are supported; older macOS releases fall outside the build matrix.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 3. Clone the repo ───────────────────────────── -->
+    <section class="ig" id="clone" aria-label="Clone the repository">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 3</span>
+          <h2>Clone the repository</h2>
+          <p class="lede">The macOS build lives in the <code>pulse-desktop</code> subdirectory of the main repo.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <pre class="ig__code" aria-label="git clone command for the Pulse repository"><code>git clone {GITHUB_REPO}.git
+cd pulse/pulse-desktop</code></pre>
+          <p>
+            The monorepo holds Pulse for Windows, the Android app, and the shared data model. The Tauri app is in <code>pulse-desktop</code>. The rest of this guide assumes the working directory is that folder.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 4. Install npm deps ─────────────────────────── -->
+    <section class="ig" id="npm-install" aria-label="Install npm dependencies">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 4</span>
+          <h2>Install npm dependencies</h2>
+          <p class="lede">JavaScript dependencies and the Tauri CLI. First run takes 30 to 90 seconds on a fast connection.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <pre class="ig__code" aria-label="npm install command"><code>npm install</code></pre>
+          <p>
+            The install pulls the Vite frontend, the Tauri 2 JavaScript bindings, and the Ollama client. The Rust toolchain handles the backend on the first <code>tauri dev</code> run, not during <code>npm install</code>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 5. Run dev ──────────────────────────────────── -->
+    <section class="ig" id="run-dev" aria-label="Run the dev build">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 5</span>
+          <h2>Run the dev build</h2>
+          <p class="lede">Compiles the Rust backend and opens the dev window. First build is 3 to 5 minutes; later runs are incremental.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <pre class="ig__code" aria-label="tauri dev command to launch the Pulse development window"><code>npm run tauri dev</code></pre>
+          <p>
+            The first run downloads and compiles every Tauri dependency &mdash; the Rust crates that bind to Cocoa, WebKit, and the Vite plugins. Build output streams to the terminal; the Pulse window appears once the compile finishes.
+          </p>
+          <p>
+            Edits to TypeScript files hot-reload. Edits to Rust files trigger an incremental rebuild of the affected crate. The dev window uses the same Ollama runtime as production, so any local model that works on Windows works here too.
+          </p>
+          <p>
+            On first launch macOS asks whether to allow Pulse to access the network (Ollama on <code>localhost:11434</code>). Click <strong>Allow</strong>. The same dialog reappears for the microphone when voice input is enabled in Settings.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 6. Build production ─────────────────────────── -->
+    <section class="ig" id="build-prod" aria-label="Build the production artifacts">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 6</span>
+          <h2>Build the production artifacts</h2>
+          <p class="lede">Two outputs in <code>src-tauri/target/release/bundle/</code>: a <code>.app</code> bundle and a <code>.dmg</code> installer.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <pre class="ig__code" aria-label="tauri build command to produce macOS installers"><code>npm run tauri build</code></pre>
+          <p>
+            The build pipeline produces a <code>.app</code> bundle and a <code>.dmg</code> that drags the same bundle into <code>/Applications</code>. The full output tree:
+          </p>
+          <ul class="ig__list" role="list">
+            <li><strong>App bundle</strong> &mdash; <code>src-tauri/target/release/bundle/macos/Pulse.app</code></li>
+            <li><strong>DMG installer</strong> &mdash; <code>src-tauri/target/release/bundle/dmg/Pulse_0.6.7_aarch64.dmg</code> (or <code>x64</code> on Intel)</li>
+            <li><strong>Raw binary</strong> &mdash; <code>src-tauri/target/release/pulse-desktop</code> (run directly, no bundle)</li>
+          </ul>
+          <p>
+            The <code>.dmg</code> opens in Finder and shows a window with the <code>Pulse.app</code> and an alias to <code>/Applications</code>. Drag the bundle into Applications to install. The <code>.app</code> itself is a directory that can be copied anywhere and double-clicked to run.
+          </p>
+          <p>
+            Neither artifact is signed. Gatekeeper warns on first run. The right-click &ldquo;Open&rdquo; menu is the documented workaround; subsequent launches go through normally once the binary is on the system&rsquo;s approved list.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Troubleshooting ─────────────────────────────── -->
+    <section class="ig" id="troubleshooting" aria-label="Troubleshooting">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Troubleshooting</span>
+          <h2>Things that go wrong</h2>
+          <p class="lede">Four issues that come up most often, and the fix for each.</p>
+        </header>
+
+        <ul class="ig__bullets reveal" role="list">
+          <li>
+            <strong>Build fails with <code>xcrun: error: invalid active developer path</code>.</strong>
+            The Xcode Command Line Tools are missing or misconfigured. Run <code>xcode-select --install</code> and re-open the Terminal so the new PATH is picked up. If the error persists: <code>sudo xcode-select --reset</code>.
+          </li>
+          <li>
+            <strong>Cargo errors with <code>failed to run custom build command for ring</code> or other C deps.</strong>
+            The C compiler is missing or stale. <code>xcode-select --install</code> fixes it. On older macOS (10.15 Catalina) the bundled <code>clang</code> may be too old; the supported minimum is macOS 11 (Big Sur) with the latest Xcode CLT.
+          </li>
+          <li>
+            <strong>Rust version too old: <code>error: package `tauri v2.x` requires Rust 1.77.2</code>.</strong>
+            The repo's <code>rust-toolchain.toml</code> pins the minimum Rust. Update via <code>rustup update</code>, or accept the toolchain prompt and let rustup download it. A Homebrew-installed <code>rustc</code> (<code>brew install rust</code>) is a separate toolchain from rustup; use rustup to avoid version mismatches.
+          </li>
+          <li>
+            <strong>Apple Silicon Mac produces an Intel-only <code>.app</code>.</strong>
+            <code>rustup target list --installed</code> shows the active targets. If only <code>x86_64-apple-darwin</code> is listed, add the host arch with <code>rustup target add aarch64-apple-darwin</code> and re-run <code>npm run tauri build</code>. The default Tauri 2 config inherits the host triple, so this is only a problem on misconfigured CI or manually-edited <code>~/.cargo/config.toml</code>.
+          </li>
+          <li>
+            <strong>Ollama fails to start inside the app.</strong>
+            The bundled Ollama runtime ships only on the Windows installer. On macOS, install Ollama via Homebrew (<code>brew install ollama</code>) or the
+            <a href="https://ollama.com/download/mac" rel="noopener noreferrer">macOS download</a>
+            and verify it with <code>ollama --version</code> before launching Pulse.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── Known limitations ───────────────────────────── -->
+    <section class="ig" id="limitations" aria-label="Known limitations">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Honest note</span>
+          <h2>Known limitations</h2>
+          <p class="lede">The macOS port is a community build. Some things on Windows do not work here yet.</p>
+        </header>
+
+        <ul class="ig__bullets reveal" role="list">
+          <li>
+            <strong>No code signing.</strong> The <code>.app</code> and <code>.dmg</code> are unsigned. Gatekeeper warns on first run with <em>&ldquo;Pulse.app&rdquo; cannot be opened because the developer cannot be verified</em>. The fix is documented in the Troubleshooting section above (right-click &rarr; Open). An Apple Developer ID certificate is required for notarization, and that path is not part of this build.
+          </li>
+          <li>
+            <strong>No notarization.</strong> Notarization requires an Apple Developer team and a signed upload to <code>notarytool</code>. The repo does not include a notarization step. Users on the latest macOS may need to override Gatekeeper via System Settings &rarr; Privacy &amp; Security.
+          </li>
+          <li>
+            <strong>No auto-update.</strong> Pulse for Windows uses a signed update manifest under <code>/updates/desktop.json</code>. The macOS build does not have an update channel &mdash; re-run <code>npm run tauri build</code> and reinstall to upgrade.
+          </li>
+          <li>
+            <strong>Voice input is Windows-only.</strong> The panel's mic button uses the Windows SpeechRecognition API. On macOS, the button is disabled.
+          </li>
+          <li>
+            <strong>Universal binary is not part of <code>tauri build</code>.</strong> The default build produces a single-architecture <code>.app</code> matching the host triple. A true universal binary (arm64 + x86_64) needs <code>cargo lipo</code> and a manual merge step; this is left to the fork-and-PR flow.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── Get help ────────────────────────────────────── -->
+    <section class="ig" id="help" aria-label="Get help">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Get help</span>
+          <h2>Get help</h2>
+          <p class="lede">One channel: GitHub Issues. Include the error output and the macOS version.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <p>
+            Open an issue on the
+            <a href={GITHUB_ISSUES} rel="noopener noreferrer">pulse issue tracker</a>
+            and tag it <code>macos</code>. The minimum reproduction set is: macOS version (output of <code>sw_vers</code>), Mac model (M1 / M2 / M3 / Intel), Node version, Rust version, the failing <code>tauri dev</code> or <code>tauri build</code> output, and the contents of <code>~/.cargo/registry/cache/</code> if the build failed on a specific crate.
+          </p>
+          <p>
+            For Gatekeeper / signing questions, the
+            <a href={APPLE_DEVELOPER_URL} rel="noopener noreferrer">Apple Developer account</a>
+            docs cover Developer ID and notarization prerequisites. The Pulse build does not bundle signing identities, so a clean Apple Developer enrollment is a prerequisite for a self-distributed signed build.
+          </p>
+          <p>
+            Source patches go through the standard fork-and-pull-request flow on the
+            <a href={GITHUB_DESKTOP} rel="noopener noreferrer">pulse-desktop tree</a>. CI runs on the latest macOS and an Intel runner; a patch that breaks either gets flagged before merge.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Next steps ──────────────────────────────────── -->
+    <section class="ig ig--next" id="next" aria-label="Next steps">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Next</span>
+          <h2>Where to go from here</h2>
+          <p class="lede">Two follow-up paths: switch to the Windows build for the supported experience, or read the source on GitHub.</p>
+        </header>
+
+        <ul class="ig__next reveal" role="list">
+          <li>
+            <a class="ig__next-link" href="/download/">
+              <span class="ig__next-label">Download Pulse for Windows</span>
+              <span class="ig__next-meta">The supported build. NSIS installer, signed, with auto-update.</span>
+            </a>
+          </li>
+          <li>
+            <a class="ig__next-link" href={GITHUB_DESKTOP} rel="noopener noreferrer">
+              <span class="ig__next-label">Read the source</span>
+              <span class="ig__next-meta">pulse-desktop tree on GitHub. Audit the network calls, fork it.</span>
+            </a>
+          </li>
+          <li>
+            <a class="ig__next-link" href={GITHUB_ISSUES} rel="noopener noreferrer">
+              <span class="ig__next-label">Open an issue</span>
+              <span class="ig__next-meta">Tag <code>macos</code>. Include the error output and the macOS version.</span>
+            </a>
+          </li>
+        </ul>
+
+        <p class="ig__back">
+          <a class="btn btn--ghost" href="/">Back to home</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer license="" version="v0.6.7" />
+
+  <!-- R195 SEO: `HowTo` JSON-LD for the build-from-source path. -->
+  <script type="application/ld+json" set:html={JSON.stringify(howToJsonLd)} />
+</Base>
+
+<style>
+  /* ── Install-guide section styles (scoped to this page) ─────── */
+  .install__hero { padding-bottom: clamp(48px, 8vw, 96px); }
+  .install__intro {
+    font-size: 1.05rem;
+    color: var(--fg-dim);
+    max-width: 64ch;
+    margin-top: 0.5rem;
+    line-height: 1.6;
+  }
+  .install__intro code { color: var(--cyan); }
+
+  .ig {
+    background: radial-gradient(800px 400px at 80% 0%, rgba(187,154,247,0.05), transparent 65%),
+                radial-gradient(700px 400px at 10% 100%, rgba(122,162,247,0.06), transparent 65%);
+  }
+  .ig__head {
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    max-width: 64ch;
+  }
+  .ig__head h2 { max-width: 22ch; margin: 0; }
+  .ig__head .lede { margin: 0.5rem 0 0; }
+
+  .ig__prose { max-width: 70ch; color: var(--fg-dim); }
+  .ig__prose p { margin: 0 0 1rem; line-height: 1.65; }
+  .ig__prose p:last-child { margin-bottom: 0; }
+  .ig__prose code,
+  .ig__prose a code { color: var(--cyan); background: var(--surface-2); padding: 0.05em 0.35em; border-radius: 3px; border: 1px solid var(--border); font-size: 0.92em; }
+  .ig__prose a { color: var(--blue); }
+  .ig__prose a:hover { color: var(--purple); }
+
+  .ig__list { padding: 0 0 0 1.1rem; margin: 0 0 1.25rem; display: flex; flex-direction: column; gap: 0.7rem; }
+  .ig__list li { line-height: 1.6; }
+  .ig__list strong { color: var(--fg); }
+  .ig__list code { color: var(--cyan); background: var(--surface-2); padding: 0.05em 0.35em; border-radius: 3px; border: 1px solid var(--border); font-size: 0.9em; word-break: break-word; }
+
+  .ig__bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.9rem; max-width: 70ch; }
+  .ig__bullets li { padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%); line-height: 1.6; }
+  .ig__bullets strong { color: var(--fg); }
+  .ig__bullets code { color: var(--cyan); background: var(--surface-2); padding: 0.05em 0.35em; border-radius: 3px; border: 1px solid var(--border); font-size: 0.88em; word-break: break-word; }
+
+  /* ── Architecture cards (Apple Silicon / Intel) ────────────── */
+  .ig__arch {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin: 0 0 1.5rem;
+  }
+  @media (min-width: 760px) { .ig__arch { grid-template-columns: 1fr 1fr; } }
+  .ig__arch-card { padding: 1.25rem 1.25rem 1.4rem; display: flex; flex-direction: column; gap: 0.6rem; }
+  .ig__arch-name { font-size: 1rem; font-weight: 600; margin: 0; color: var(--fg); letter-spacing: -0.005em; }
+  .ig__arch-tag { margin: 0; color: var(--purple); font-size: 0.82rem; font-family: ui-monospace, "JetBrains Mono", monospace; }
+  .ig__arch-body { margin: 0; color: var(--fg-dim); font-size: 0.95rem; line-height: 1.6; }
+  .ig__arch-body code { color: var(--cyan); background: var(--surface-2); padding: 0.05em 0.3em; border-radius: 3px; border: 1px solid var(--border); font-size: 0.88em; }
+  .ig__arch-meta { margin: 0; color: var(--muted); font-size: 0.85rem; line-height: 1.5; }
+  .ig__arch-meta code { color: var(--cyan); background: var(--surface-2); padding: 0.05em 0.3em; border-radius: 3px; border: 1px solid var(--border); font-size: 0.9em; }
+
+  /* ── Code blocks ─────────────────────────────────────────────── */
+  .ig__code {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    margin: 0 0 1rem;
+    overflow-x: auto;
+    font-family: ui-monospace, "JetBrains Mono", "Cascadia Code", "Fira Code", monospace;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .ig__code code { color: var(--fg); background: transparent; border: 0; padding: 0; font-size: inherit; white-space: pre; }
+  .ig__prose .ig__code { margin: 0 0 1.1rem; }
+
+  .ig__note { color: var(--muted); font-size: 0.88rem; margin: 1rem 0 0; max-width: 70ch; }
+  .ig__note code { color: var(--cyan); background: var(--surface-2); padding: 0.05em 0.35em; border-radius: 3px; border: 1px solid var(--border); font-size: 0.92em; }
+  .ig__note a { color: var(--blue); }
+  .ig__note a:hover { color: var(--purple); }
+
+  /* ── Next steps ──────────────────────────────────────────────── */
+  .ig__next { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; max-width: 720px; }
+  .ig__next-link {
+    display: flex; flex-direction: column; gap: 0.2rem;
+    padding: 0.9rem 1.1rem; min-height: 56px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    color: var(--fg); text-decoration: none;
+    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .ig__next-link:hover, .ig__next-link:focus-visible {
+    border-color: var(--purple); color: var(--fg); transform: translateY(-1px);
+  }
+  .ig__next-label { font-weight: 600; font-size: 1rem; }
+  .ig__next-meta { color: var(--fg-dim); font-size: 0.88rem; }
+  .ig__next-meta code { color: var(--cyan); }
+
+  .ig__back { margin-top: 1.5rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ig__next-link { transition: none; }
+    .ig__next-link:hover, .ig__next-link:focus-visible { transform: none; }
+  }
+</style>

@@ -49,6 +49,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://ownlocalml.com/install/linux/</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://ownlocalml.com/install/macos/</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://ownlocalml.com/release-notes-v0.6.4/</loc>
     <lastmod>2026-08-02</lastmod>
     <changefreq>monthly</changefreq>
