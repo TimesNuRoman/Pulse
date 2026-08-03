@@ -1,0 +1,413 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+// R180: Security — local-first posture, no telemetry, no phone-home.
+// Hand-curated dependency table, anonymous disclosure via GitHub Advisories.
+// Aligned with /privacy/ and /compare/ (no "we", no "Pulse team", no future
+// promises, no money references in copy).
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+
+const PAGE_TITLE = 'Security at Pulse';
+const PAGE_DOC_TITLE = PAGE_TITLE + ' — no telemetry, no phone-home';
+const PAGE_DESC =
+  'Local-first. No telemetry, no analytics, no crash reports, no phone-home. ' +
+  'The only outbound calls Pulse makes are an update manifest poll on launch ' +
+  '(disable-able in Settings) and a license check for PRO.';
+
+const LAST_UPDATED = '2026-08-03';
+
+// Hand-curated runtime dependency snapshot. Version ranges reflect what
+// ships in the latest released Pulse desktop and Android binaries; exact
+// pins are visible in the per-version lockfiles referenced under each
+// repository. Listing is intentionally short: build-time tooling and
+// dev-only TypeScript types are excluded.
+const dependencies = [
+  {
+    name: 'tauri',
+    version: 'pinned per release',
+    license: 'Apache-2.0 / MIT',
+    purpose: 'Rust + system webview runtime. Hosts the Pulse desktop process and the Tauri IPC bridge.',
+    repo: 'https://github.com/tauri-apps/tauri',
+  },
+  {
+    name: '@tauri-apps/api',
+    version: 'pinned per release',
+    license: 'Apache-2.0 / MIT',
+    purpose: 'JavaScript bindings for the Tauri IPC bridge. Used by the Pulse renderer to invoke Rust commands and to read local files.',
+    repo: 'https://github.com/tauri-apps/tauri',
+  },
+  {
+    name: 'react',
+    version: 'pinned per release',
+    license: 'MIT',
+    purpose: 'UI library. Renders the side panel, the notes tree, and the chat surface.',
+    repo: 'https://github.com/facebook/react',
+  },
+  {
+    name: '@capacitor/core',
+    version: 'pinned per release',
+    license: 'MIT',
+    purpose: 'Android shell. Wraps the same web bundle in a native WebView and exposes native plugins through a single API.',
+    repo: 'https://github.com/ionic-team/capacitor',
+  },
+  {
+    name: '@capacitor/filesystem',
+    version: 'pinned per release',
+    license: 'MIT',
+    purpose: 'Sandboxed local storage on Android. Notes, chat history, and the license token live under the Capacitor-managed app data directory.',
+    repo: 'https://github.com/ionic-team/capacitor-plugins',
+  },
+  {
+    name: 'ollama',
+    version: 'latest stable on the user machine',
+    license: 'MIT',
+    purpose: 'External inference runtime. Pulse talks to it over HTTP on localhost. Ollama is a separate process; Pulse does not bundle the model weights.',
+    repo: 'https://github.com/ollama/ollama',
+  },
+];
+
+// JSON-LD for the page itself (not a FAQPage — security is a single WebPage).
+const securityJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: PAGE_TITLE,
+  description: PAGE_DESC,
+  url: 'https://ownlocalml.com/security/',
+  dateModified: LAST_UPDATED,
+  publisher: {
+    '@type': 'Organization',
+    name: 'Pulse',
+  },
+  about: 'Security policy',
+  inLanguage: 'en',
+};
+---
+
+<Base
+  title={PAGE_DOC_TITLE}
+  description={PAGE_DESC}
+  canonical="https://ownlocalml.com/security/"
+  ctaVisible={false}
+  footerLicense=""
+  footerVersion=""
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <main id="main" class="legal">
+    <div class="container">
+      <header class="legal__head reveal">
+        <span class="eyebrow">Security</span>
+        <h1>Security at Pulse.</h1>
+        <p class="lede">
+          Pulse is built to keep notes, chat, screenshots, voice, and model output on the device. The product does not include telemetry, analytics, error reporting, or any other always-on network call. The only outbound requests are an update manifest poll on launch (disable-able in Settings) and a license check for PRO.
+        </p>
+      </header>
+
+      <article class="legal__body">
+        <!-- ─── 1. What Pulse does not do ──────────────────── -->
+        <section id="does-not" class="legal__section" aria-label="What Pulse does not do">
+          <h2 class="legal__h2">What Pulse does not do.</h2>
+          <p>
+            The list below is exhaustive for the shipped product. It is a behaviour contract, not a marketing claim — every item maps to a check that can be reproduced against the binary.
+          </p>
+          <ul>
+            <li><strong>No telemetry.</strong> No anonymous usage counters, no event hooks, no session metrics. The desktop binary and the Android APK contain no analytics SDK.</li>
+            <li><strong>No crash reports.</strong> No Sentry, no Bugsnag, no Crashlytics, no platform-native crash uploader. A panic is logged to a local file and never sent anywhere.</li>
+            <li><strong>No cloud calls for inference.</strong> All model inference runs on the local Ollama process. Pulse does not call OpenAI, Anthropic, Google, Mistral, or any other hosted model provider.</li>
+            <li><strong>No account creation.</strong> No signup form, no email, no password, no OAuth flow. There is no Pulse-issued user identifier.</li>
+            <li><strong>No third-party tracking.</strong> No Google Analytics, no Mixpanel, no Hotjar, no Facebook pixel, no Segment, no Amplitude, no CDN-hosted analytics. The marketing site and the desktop product are independent codebases with independent dependency trees.</li>
+            <li><strong>No AI-training feedback loop.</strong> Prompts, completions, and notes are never sent back to the model provider, to Pulse, or to any third party. There is no "thumbs up / thumbs down" telemetry tied to a user.</li>
+            <li><strong>No outbound HTTP from the app by default.</strong> The two endpoints Pulse can contact are the update manifest and the license endpoint, both described below. Verifiable with <code>netstat -an</code> on Windows, <code>lsof -i</code> on macOS / Linux, or a network capture while the app is idle.</li>
+          </ul>
+        </section>
+
+        <!-- ─── 2. What Pulse does ─────────────────────────── -->
+        <section id="does" class="legal__section" aria-label="What Pulse does">
+          <h2 class="legal__h2">What Pulse does.</h2>
+          <p>
+            The shipped product behaviour, in positive form:
+          </p>
+          <ul>
+            <li><strong>Runs locally.</strong> Tauri process + system WebView on desktop, Capacitor WebView on Android, plus the Ollama process on the same machine for inference.</li>
+            <li><strong>Update manifest poll on launch.</strong> A single <code>GET</code> against a versioned manifest endpoint. The request carries only the current version string and the platform. The check can be disabled in Settings; disabling it removes the only periodic outbound call.</li>
+            <li><strong>License check for PRO.</strong> A single <code>POST</code> against the license endpoint, carried over HTTPS. The payload contains the opaque license token and a coarse device identifier for activation-count tracking. No note content, no prompt, no model output, and no user metadata is included. See the <a href="/privacy/">privacy page</a> for the exact data flow.</li>
+            <li><strong>Local storage only.</strong> Notes, chat history, and the license token live in the OS-managed Pulse data directory: <code>localStorage</code> and IndexedDB on desktop, the Capacitor app sandbox on Android. No sync, no replication, no remote backup.</li>
+            <li><strong>Pinned dependencies.</strong> Both <code>pulse-desktop</code> and <code>pulse-android</code> ship with locked dependency manifests. The web bundle is rebuilt from <code>package-lock.json</code>; the Rust binary is built from <code>Cargo.lock</code>. No floating-version installs.</li>
+            <li><strong>Optional OG image fetch.</strong> When a link is shared from the side panel, a single <code>GET</code> retrieves an Open Graph preview image. The request only fires on a user-initiated share, not in the background.</li>
+          </ul>
+        </section>
+
+        <!-- ─── 3. Dependencies ────────────────────────────── -->
+        <section id="dependencies" class="legal__section" aria-label="Runtime dependencies">
+          <h2 class="legal__h2">Runtime dependencies.</h2>
+          <p>
+            The table below lists the critical runtime components shipped in the Pulse desktop and Android binaries. Build-time tooling, dev-only TypeScript types, and transitive deps are intentionally omitted — the lockfile in each repository is the canonical reference.
+          </p>
+
+          <div class="legal__tablewrap">
+            <table class="legal__table">
+              <caption class="legal__caption">Critical runtime dependencies of the Pulse application.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Version</th>
+                  <th scope="col">License</th>
+                  <th scope="col">Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dependencies.map((d) => (
+                  <tr>
+                    <th scope="row">
+                      <a href={d.repo} rel="noopener noreferrer" target="_blank"><code>{d.name}</code></a>
+                    </th>
+                    <td>{d.version}</td>
+                    <td>{d.license}</td>
+                    <td>{d.purpose}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p class="legal__note">
+            Exact pins for the latest release are in the <code>package-lock.json</code> of <a href="https://github.com/TimesNuRoman/pulse-desktop" rel="noopener noreferrer">pulse-desktop</a> and the <code>Cargo.lock</code> of the same repository. Vite, TypeScript, Rollup, and the Tauri CLI appear in the same lockfiles but are build-time only and are not shipped in the binary.
+          </p>
+        </section>
+
+        <!-- ─── 4. Vulnerability disclosure ────────────────── -->
+        <section id="disclosure" class="legal__section" aria-label="Vulnerability disclosure">
+          <h2 class="legal__h2">Vulnerability disclosure.</h2>
+          <p>
+            Responsible disclosure is welcome and acknowledged. Reports are triaged by the maintainers of the Pulse repository.
+          </p>
+          <ul>
+            <li><strong>Where to report</strong> — <a href="https://github.com/TimesNuRoman/pulse/security/advisories/new" rel="noopener noreferrer">GitHub Security Advisories</a> for the Pulse organisation. A private advisory keeps the report out of the public issue tracker while triage is in progress.</li>
+            <li><strong>What to include</strong> — affected component (desktop / Android / website), reproduction steps, observed vs. expected behaviour, and impact. A minimal proof-of-concept is preferred over a long prose description.</li>
+            <li><strong>Initial triage</strong> — within seven calendar days of submission. A follow-up with a timeline lands in the same advisory thread.</li>
+            <li><strong>Disclosure timeline</strong> — coordinated with the reporter. Default is 90 days from the triage confirmation, in line with industry practice. Shorter windows are honoured on request for severe issues.</li>
+            <li><strong>Bounty program</strong> — none. Acknowledgement and credit in the release notes are the standing reward.</li>
+            <li><strong>Security updates</strong> — published via the <a href="/changelog.xml" rel="noopener noreferrer">changelog RSS feed</a> and tagged in GitHub Releases. Critical patches ship as fast as the fix is ready.</li>
+          </ul>
+        </section>
+
+        <!-- ─── 5. Update policy ───────────────────────────── -->
+        <section id="updates" class="legal__section" aria-label="Update policy">
+          <h2 class="legal__h2">Update policy.</h2>
+          <ul>
+            <li><strong>Windows</strong> — Pulse ships the Tauri updater. A manifest poll runs on launch; the user is prompted to install when a newer version is published. The check is disable-able in Settings. Manual install is also supported: download the latest NSIS / MSI / portable binary from <a href="https://github.com/TimesNuRoman/pulse/releases" rel="noopener noreferrer">GitHub Releases</a> and run it over the existing install.</li>
+            <li><strong>Android</strong> — Pulse is distributed as a signed APK on GitHub Releases. There is no Play Store listing; updates are sideloaded by installing the new APK over the existing one. The signing key fingerprint is published in the release notes for every release.</li>
+            <li><strong>Critical patches</strong> — shipped as fast as the fix is ready. There is no fixed patch-day schedule.</li>
+            <li><strong>Signing</strong> — Windows binaries are Authenticode-signed. Android APKs are signed with a long-lived key; the SHA-256 fingerprint of the certificate is published in the release notes and is reproducible against the downloaded APK. Maintainer commits are GPG-signed and verifiable on the GitHub web UI.</li>
+            <li><strong>Old versions</strong> — every previously released version remains available on the GitHub Releases page for at least one major release cycle. Old versions are not patched in place; users on an old version move to the current version to pick up fixes.</li>
+          </ul>
+        </section>
+
+        <!-- ─── 6. Cryptography ────────────────────────────── -->
+        <section id="crypto" class="legal__section" aria-label="Cryptography">
+          <h2 class="legal__h2">Cryptography.</h2>
+          <ul>
+            <li><strong>License tokens.</strong> 256-bit random opaque strings. Generated server-side, never reused, and stored hashed at rest. The client only ever sends the raw token to the license endpoint.</li>
+            <li><strong>Validation.</strong> Server-side, over HTTPS. The response tells the client whether the token is active and when it expires. The token itself is never echoed back in the response body.</li>
+            <li><strong>No PII in the license payload.</strong> No email, no name, no device fingerprint, no IP-based geolocation. A coarse device identifier may be included for activation-count tracking; the exact contents are documented on the <a href="/privacy/">privacy page</a>.</li>
+            <li><strong>No key escrow.</strong> A lost token cannot be recovered from the Pulse server. The user purchases a new token and re-activates on the device.</li>
+            <li><strong>Transport.</strong> HTTPS for the license endpoint. The local Ollama endpoint uses plain HTTP because both processes are on the same machine and the user controls the loopback interface.</li>
+            <li><strong>Local encryption.</strong> The Pulse data directory is protected by the operating system's standard user-account boundary. On Windows this maps to the per-user profile ACLs; on Android the app sandbox is enforced by the Linux UID model. No additional full-disk encryption is layered on top of what the OS already provides.</li>
+          </ul>
+        </section>
+
+        <!-- ─── 7. Build pipeline ──────────────────────────── -->
+        <section id="build" class="legal__section" aria-label="Build pipeline">
+          <h2 class="legal__h2">Build pipeline.</h2>
+          <ul>
+            <li><strong>Source of truth.</strong> The source code in the <a href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">Pulse repositories</a> is canonical. A binary is a build artefact, not the source.</li>
+            <li><strong>Release branch.</strong> Tagged releases are cut from the <code>main</code> branch of the relevant repository. The tag SHA is recorded in the release notes and matches the source commit that produced the binary.</li>
+            <li><strong>Reproducible builds.</strong> For a given commit SHA the build is deterministic. The SHA-256 of a downloaded binary can be cross-checked against the manifest in the corresponding GitHub Release.</li>
+            <li><strong>Commit signing.</strong> Maintainer commits on the <code>main</code> branch are GPG-signed. The signature is verifiable from the GitHub web UI by clicking the "Verified" badge next to any commit.</li>
+            <li><strong>Code review.</strong> Changes land on <code>main</code> through pull requests. The PR diff, the CI status, and the review history are public.</li>
+          </ul>
+        </section>
+
+        <!-- ─── Bottom of page ─────────────────────────────── -->
+        <p class="legal__updated">
+          Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time>. This page documents what Pulse does today. A discrepancy between this page and the actual behaviour of the binary is a bug — please <a href="https://github.com/TimesNuRoman/pulse/issues" rel="noopener noreferrer">open an issue</a> or use the <a href="https://github.com/TimesNuRoman/pulse/security/advisories/new" rel="noopener noreferrer">advisory channel</a> above.
+        </p>
+      </article>
+
+      <p class="legal__back reveal">
+        <a href="/">Back to Pulse</a>
+        &nbsp;·&nbsp;
+        <a href="/privacy/">Privacy</a>
+        &nbsp;·&nbsp;
+        <a href="/license/">License</a>
+      </p>
+    </div>
+  </main>
+
+  <Footer license="" version="" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(securityJsonLd)} />
+</Base>
+
+<style>
+  /* ── Page chrome (mirrors privacy.astro / code-of-conduct.astro) ── */
+  .legal { padding-block: clamp(60px, 10vw, 120px); }
+  .legal__head { text-align: left; margin-bottom: 2.5rem; }
+  .legal__head .lede { margin-top: 0.6rem; }
+
+  .legal__body {
+    max-width: 70ch;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    color: var(--fg-dim);
+    font-size: 1.02rem;
+  }
+
+  .legal__body p code,
+  .legal__body td code,
+  .legal__body li code {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+    font-size: 0.94em;
+  }
+
+  .legal__section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    scroll-margin-top: 5rem;  /* keep the section title below the fixed nav when jumping via #anchor */
+  }
+  .legal__section + .legal__section {
+    border-top: 1px solid var(--border);
+    padding-top: 1.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .legal__h2 {
+    font-size: 1.25rem;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+    font-weight: 500;
+  }
+
+  .legal__body ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .legal__body ul li::marker { color: var(--purple); }
+
+  /* ── Dependencies table (a11y: caption + th[scope]) ────────── */
+  .legal__tablewrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .legal__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.94rem;
+  }
+  .legal__caption {
+    text-align: left;
+    padding: 0.85rem 1rem 0.6rem;
+    color: var(--fg);
+    font-weight: 500;
+    font-size: 0.95rem;
+    caption-side: top;
+  }
+  .legal__table thead th {
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding: 0.6rem 1rem;
+    background: var(--bg-soft);
+    border-bottom: 1px solid var(--border);
+  }
+  .legal__table tbody th[scope="row"],
+  .legal__table tbody td {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg-dim);
+    vertical-align: top;
+  }
+  .legal__table tbody tr:last-child th[scope="row"],
+  .legal__table tbody tr:last-child td { border-bottom: 0; }
+  .legal__table tbody th[scope="row"] {
+    color: var(--fg);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .legal__table tbody th[scope="row"] code {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: var(--blue);
+  }
+  .legal__table tbody th[scope="row"] a:hover code { color: var(--purple); }
+  .legal__table tbody td { line-height: 1.5; }
+  .legal__table tbody td:nth-child(2) { color: var(--fg); white-space: nowrap; }
+  .legal__table tbody td:nth-child(3) { white-space: nowrap; }
+
+  .legal__note {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  /* ── Bottom of page ─────────────────────────────────── */
+  .legal__updated {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .legal__back {
+    margin-top: 2.5rem;
+    font-size: 0.95rem;
+  }
+  .legal__back a { color: var(--fg-dim); }
+  .legal__back a:hover { color: var(--purple); }
+
+  /* ── Extra-extra-small: stack the table columns. The 4-col layout
+     already wraps horizontally inside .legal__tablewrap, but on
+     sub-480px the version / license cells start to look cramped. ── */
+  @media (max-width: 480px) {
+    .legal__table thead { display: none; }
+    .legal__table,
+    .legal__table tbody,
+    .legal__table tr,
+    .legal__table th[scope="row"],
+    .legal__table td { display: block; width: 100%; }
+    .legal__table tr {
+      border-bottom: 1px solid var(--border);
+      padding: 0.6rem 0;
+    }
+    .legal__table tr:last-child { border-bottom: 0; }
+    .legal__table tbody th[scope="row"] {
+      padding: 0 1rem 0.25rem;
+      white-space: normal;
+    }
+    .legal__table tbody td {
+      padding: 0.1rem 1rem 0.45rem;
+      border-bottom: 0;
+    }
+    .legal__table tbody td:nth-child(2)::before { content: "Version: "; color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; display: block; }
+    .legal__table tbody td:nth-child(3)::before { content: "License: "; color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; display: block; }
+    .legal__table tbody td:nth-child(4)::before { content: "Purpose: "; color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; display: block; }
+  }
+</style>
