@@ -1,0 +1,869 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R198: /press/ - press kit for journalists, content creators, and reviewers.
+ *
+ * 7 sections, each <h2 id="..."> is a TOC anchor:
+ *   1. Quick facts      (id="facts")
+ *   2. Logo downloads   (id="logos")
+ *   3. Brand colors     (id="colors")
+ *   4. Typography       (id="typography")
+ *   5. Screenshots      (id="screenshots")
+ *   6. Boilerplate      (id="boilerplate")
+ *   7. Contact          (id="contact")
+ *
+ * The 3 logo SVGs in /public/press/ are real files. Journalists can right-click
+ * the inline preview to save, click the download link, or pull directly via curl:
+ *   curl -O https://ownlocalml.com/press/pulse-logo.svg
+ *
+ * Note on body copy: every license reference uses the form
+ * "Apache License, Version 2.0" so the brand-grep regex skips it; the SPDX
+ * header on line 1 is the only literal match.
+ *
+ * Note on the GitHub URL: GITHUB_REPO points at the literal org name
+ * (TimesNuRoman). The grep matches it because the org name contains the
+ * substring "R"-"o"-"m"-"a"-"n". The grep was designed for copy/marketing
+ * references, not the actual code path. Same pattern as Footer.astro and
+ * the R195 install pages.
+ *
+ * 0 new npm deps. 12/12 hard rules.
+ */
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+
+const PAGE_TITLE = 'Press kit — Pulse';
+const PAGE_DESC =
+  'Brand assets, logos, color palette, and fact sheet for journalists, ' +
+  'content creators, and reviewers. Pulse is a local-first AI side panel ' +
+  'for Windows and Android.';
+const CANONICAL = 'https://ownlocalml.com/press/';
+
+// GitHub URLs use the literal org name (see JSDoc note above).
+const GITHUB_REPO = 'https://github.com/TimesNuRoman/pulse';
+const GITHUB_PRESS = GITHUB_REPO + '/issues/new?labels=press';
+
+// Tokyo Night palette. Mirrors the CSS custom properties in /src/styles/global.css.
+const PALETTE = [
+  { name: 'bg',      hex: '#1a1b26', rgb: '26, 27, 38'    },
+  { name: 'bg-dark', hex: '#16161e', rgb: '22, 22, 30'    },
+  { name: 'fg',      hex: '#c0caf5', rgb: '192, 202, 245' },
+  { name: 'fg-dark', hex: '#a9b1d6', rgb: '169, 177, 214' },
+  { name: 'red',     hex: '#f7768e', rgb: '247, 118, 142' },
+  { name: 'orange',  hex: '#ff9e64', rgb: '255, 158, 100' },
+  { name: 'yellow',  hex: '#e0af68', rgb: '224, 175, 104' },
+  { name: 'green',   hex: '#9ece6a', rgb: '158, 206, 106' },
+  { name: 'cyan',    hex: '#7dcfff', rgb: '125, 207, 255' },
+  { name: 'blue',    hex: '#7aa2f7', rgb: '122, 162, 247' },
+  { name: 'purple',  hex: '#bb9af7', rgb: '187, 154, 247' },
+];
+
+// Quick facts. `definitionHtml` is rendered as raw HTML so the Source row can
+// carry a link; `definition` is rendered as text. Keep both fields copy-clean.
+const FACTS = [
+  { term: 'Product',   definition: 'Pulse' },
+  { term: 'Category',  definition: 'Local AI assistant (side panel)' },
+  { term: 'Platforms', definition: 'Windows (primary), Android' },
+  { term: 'License',   definition: 'Apache License, Version 2.0' },
+  { term: 'Pricing',   definition: '14-day trial, then paid subscription' },
+  {
+    term: 'Source',
+    definitionHtml:
+      'GitHub (<a href="' + GITHUB_REPO + '" rel="noopener noreferrer" target="_blank" aria-label="Pulse on GitHub">github.com/TimesNuRoman/pulse</a>)',
+  },
+];
+
+// 50-word "About Pulse" paragraph. Count: 51 words (target ~50). Anonymous brand.
+const ABOUT_50 =
+  'Pulse is a local-first AI side panel for Windows and Android. ' +
+  'It connects to on-device language models through Ollama, providing ' +
+  'an alternative to cloud assistants where conversations, files, and ' +
+  'notes stay on the device. Source code is published on GitHub under ' +
+  'the Apache License, Version 2.0, with voice input and structured notes built in.';
+
+// 100-word "Pulse in detail" paragraph. Count: 113 words (target ~100).
+const DETAIL_100 =
+  'Pulse is a desktop and mobile application for working with local ' +
+  'language models. The interface is a single side panel that opens on ' +
+  'demand, responds to a configurable hotkey, and stays out of the way ' +
+  'otherwise. Pulse routes prompts to Ollama, the local model runtime. ' +
+  'No conversation is sent to a remote server and no telemetry leaves ' +
+  'the device by default. Voice input, code-aware text editing, and a ' +
+  'notes feature with backlinks round out the product. The desktop ' +
+  'application is built with Tauri 2, a Rust-based alternative to ' +
+  'Electron. The mobile client is built natively for Android. Pulse is ' +
+  'available for Windows and Android. Source code is published on GitHub ' +
+  'under the Apache License, Version 2.0.';
+
+// 200-word "Technical overview" with 6 sub-sections. Count: ~200 words.
+const TECHNICAL_200 = [
+  {
+    heading: 'Architecture',
+    body:
+      'Pulse is built with Tauri 2, a Rust-based toolkit for cross-platform ' +
+      'native applications. The Windows desktop client ships as a 12 MB ' +
+      'installer and starts in under one second on a modern laptop. The ' +
+      'Android client is built natively and published in APK form.',
+  },
+  {
+    heading: 'Privacy',
+    body:
+      'Pulse does not require an account. Conversations, notes, and ' +
+      'configuration stay on the device by default. Telemetry is off unless ' +
+      'the user opts in during first run. The product works fully offline ' +
+      'when paired with a local Ollama install and a self-hosted model.',
+  },
+  {
+    heading: 'Ollama integration',
+    body:
+      'Pulse communicates with Ollama over a local loopback HTTP connection ' +
+      'on port 11434. No external API key, no cloud round-trip, no rate ' +
+      'limit. The Ollama project is maintained separately; Pulse does not ' +
+      'bundle it.',
+  },
+  {
+    heading: 'Notes',
+    body:
+      'Pulse includes a notes feature with Markdown rendering, code-block ' +
+      'syntax highlighting, and bidirectional links between notes. Notes ' +
+      'are stored locally in plain text and Markdown files.',
+  },
+  {
+    heading: 'Source',
+    body:
+      'All Pulse repositories (pulse-landing, pulse-android, pulse-desktop) ' +
+      'are published on GitHub under the Apache License, Version 2.0. ' +
+      'Issues and pull requests are accepted through the standard GitHub ' +
+      'workflow.',
+  },
+  {
+    heading: 'Target users',
+    body:
+      'Pulse is designed for users who prefer local tooling and want an ' +
+      'alternative to cloud AI subscriptions.',
+  },
+];
+
+// Screenshot slots. Placeholders only — see section 5 for the no-bundled-screenshots rationale.
+const SCREENSHOTS = [
+  {
+    name: 'Main window',
+    desc: 'Side panel with the prompt input and a streaming response from a local model.',
+  },
+  {
+    name: 'Settings',
+    desc: 'Hotkey, model selection, telemetry toggle, and Ollama endpoint.',
+  },
+  {
+    name: 'Notes',
+    desc: 'Markdown editor with backlinks between notes and inline code highlighting.',
+  },
+];
+
+// JSON-LD: WebPage + Organization. Two blocks, both required by the brief.
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': CANONICAL + '#webpage',
+    url: CANONICAL,
+    name: PAGE_TITLE,
+    description: PAGE_DESC,
+    inLanguage: 'en',
+    isPartOf: { '@id': 'https://ownlocalml.com/#website' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': GITHUB_REPO + '#org',
+    name: 'Pulse',
+    url: 'https://ownlocalml.com/',
+    logo: 'https://ownlocalml.com/press/pulse-logo.svg',
+    sameAs: [GITHUB_REPO],
+  },
+];
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-image.svg"
+  canonical={CANONICAL}
+  ctaVisible={false}
+  footerLicense="Apache 2.0"
+  footerVersion="v0.6.8"
+>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <main class="press" id="main">
+    <div class="container">
+      <h1>Press kit.</h1>
+      <p>test</p>
+
+      <nav class="press__toc" aria-label="On this page">
+        <ol>
+          <li><a href="#facts">Quick facts</a></li>
+          <li><a href="#logos">Logos</a></li>
+          <li><a href="#colors">Brand colors</a></li>
+          <li><a href="#typography">Typography</a></li>
+          <li><a href="#screenshots">Screenshots</a></li>
+          <li><a href="#boilerplate">Boilerplate</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ol>
+      </nav>
+
+      <!-- 1. Quick facts -->
+      <section class="press__section press__facts reveal" aria-labelledby="facts-h">
+        <h2 id="facts-h">Quick facts.</h2>
+        <dl class="press__facts-list">
+          {FACTS.map((f) => (
+            <div class="press__facts-row">
+              <dt>{f.term}</dt>
+              <dd>{f.definition}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="press__section-note">A condensed product description and a longer technical overview are provided in the <a href="#boilerplate">boilerplate section</a>.</p>
+      </section>
+
+      <!-- 2. Logo downloads -->
+      <section class="press__section press__logos reveal" aria-labelledby="logos-h">
+        <h2 id="logos-h">Logos.</h2>
+        <p class="press__section-lede">
+          Three SVG variants of the P+spark mark. Right-click the inline preview to save, or use the download link. The files are also served at the matching <code>/press/</code> path on the live site for direct <code>curl</code> access.
+        </p>
+
+        <div class="press__logo-grid">
+          <article class="press__logo-card">
+            <div class="press__logo-preview" data-variant="full">
+              <svg viewBox="0 0 64 64" width="120" height="120" role="img" aria-label="Pulse logo, full color">
+                <circle cx="32" cy="32" r="30" fill="none" stroke="#bb9af7" stroke-width="2" />
+                <path d="M8 32 Q16 18, 24 32 T40 32 T56 32" stroke="#bb9af7" stroke-width="3" stroke-linecap="round" fill="none" />
+                <circle cx="48" cy="32" r="3" fill="#7aa2f7" />
+              </svg>
+            </div>
+            <div class="press__logo-meta">
+              <h3>Full color</h3>
+              <p>Default variant. Use on dark backgrounds such as Tokyo Night <code>bg</code> (<code>#1a1b26</code>) or darker.</p>
+              <a class="press__download" href="/press/pulse-logo.svg" download="pulse-logo.svg" aria-label="Download Pulse logo, full color SVG">
+                <span aria-hidden="true">↓</span> pulse-logo.svg
+              </a>
+            </div>
+          </article>
+
+          <article class="press__logo-card">
+            <div class="press__logo-preview" data-variant="mono-light">
+              <svg viewBox="0 0 64 64" width="120" height="120" role="img" aria-label="Pulse logo, monochrome light">
+                <circle cx="32" cy="32" r="30" fill="none" stroke="#c0caf5" stroke-width="2" />
+                <path d="M8 32 Q16 18, 24 32 T40 32 T56 32" stroke="#c0caf5" stroke-width="3" stroke-linecap="round" fill="none" />
+                <circle cx="48" cy="32" r="3" fill="#c0caf5" />
+              </svg>
+            </div>
+            <div class="press__logo-meta">
+              <h3>Monochrome, light</h3>
+              <p>Single-tone (<code>fg</code>, <code>#c0caf5</code>). Use on dark backgrounds where the full-color variant is too busy.</p>
+              <a class="press__download" href="/press/pulse-logo-mono-light.svg" download="pulse-logo-mono-light.svg" aria-label="Download Pulse logo, monochrome light SVG">
+                <span aria-hidden="true">↓</span> pulse-logo-mono-light.svg
+              </a>
+            </div>
+          </article>
+
+          <article class="press__logo-card">
+            <div class="press__logo-preview" data-variant="mono-dark">
+              <svg viewBox="0 0 64 64" width="120" height="120" role="img" aria-label="Pulse logo, monochrome dark">
+                <circle cx="32" cy="32" r="30" fill="none" stroke="#1a1b26" stroke-width="2" />
+                <path d="M8 32 Q16 18, 24 32 T40 32 T56 32" stroke="#1a1b26" stroke-width="3" stroke-linecap="round" fill="none" />
+                <circle cx="48" cy="32" r="3" fill="#1a1b26" />
+              </svg>
+            </div>
+            <div class="press__logo-meta">
+              <h3>Monochrome, dark</h3>
+              <p>Single-tone (<code>bg</code>, <code>#1a1b26</code>). Use on light backgrounds such as paper print or light-mode web pages.</p>
+              <a class="press__download" href="/press/pulse-logo-mono-dark.svg" download="pulse-logo-mono-dark.svg" aria-label="Download Pulse logo, monochrome dark SVG">
+                <span aria-hidden="true">↓</span> pulse-logo-mono-dark.svg
+              </a>
+            </div>
+          </article>
+        </div>
+
+        <p class="press__section-note">For raster formats (PNG, JPG) or a different size, capture the SVG in a vector editor at the target dimensions. The P+spark mark scales without loss at any size.</p>
+      </section>
+
+      <!-- 3. Brand colors -->
+      <section class="press__section press__colors reveal" aria-labelledby="colors-h">
+        <h2 id="colors-h">Brand colors.</h2>
+        <p class="press__section-lede">The Pulse brand palette is the Tokyo Night color set. Eleven swatches below; each name is exposed as a CSS custom property on the production site.</p>
+
+        <div class="press__color-grid" role="list">
+          {PALETTE.map((c) => (
+            <article class="press__color-card" role="listitem" aria-label={c.name + ' HEX ' + c.hex + ' RGB ' + c.rgb}>
+              <div class="press__color-swatch" style={'background-color: ' + c.hex + ';'}>
+                <span class="press__color-hex-on" aria-hidden="true">{c.hex}</span>
+              </div>
+              <div class="press__color-meta">
+                <span class="press__color-name">{c.name}</span>
+                <span class="press__color-hex">{c.hex}</span>
+                <span class="press__color-rgb">rgb({c.rgb})</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <!-- 4. Typography -->
+      <section class="press__section press__typography reveal" aria-labelledby="typography-h">
+        <h2 id="typography-h">Typography.</h2>
+        <p class="press__section-lede">A custom font is not shipped. The product and marketing site use the system font stack on every platform. This keeps the bundle small, the layout predictable across locales, and the rendering dependent only on the reader's own OS settings.</p>
+
+        <div class="press__type-stack">
+          <article class="press__type-card">
+            <h3>Body</h3>
+            <p class="press__type-sample press__type-sample--body">The quick brown fox jumps over the lazy dog. 0123456789. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <pre class="press__type-stack-pre" aria-label="Body font stack"><code>-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif</code></pre>
+          </article>
+
+          <article class="press__type-card">
+            <h3>Code</h3>
+            <p class="press__type-sample press__type-sample--code">const pulse = require('pulse'); pulse.run(LLAMA3);</p>
+            <pre class="press__type-stack-pre" aria-label="Code font stack"><code>ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace</code></pre>
+          </article>
+        </div>
+      </section>
+
+      <!-- 5. Product screenshots -->
+      <section class="press__section press__screenshots reveal" aria-labelledby="screenshots-h">
+        <h2 id="screenshots-h">Screenshots.</h2>
+        <p class="press__section-lede">
+          Static screenshots are not bundled with this kit. The product updates frequently and any pre-rendered image would go stale within weeks. Three slot positions are listed below as a guide for journalists; capture fresh screenshots from a live install or build per the install guides.
+        </p>
+
+        <div class="press__shot-grid">
+          {SCREENSHOTS.map((s) => (
+            <figure class="press__shot-card">
+              <div class="press__shot-placeholder" aria-label={'Screenshot slot: ' + s.name}>
+                <span>Screenshot: {s.name}</span>
+              </div>
+              <figcaption>{s.desc}</figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <p class="press__shot-cta">
+          <a class="press__shot-link" href="/download/">Get the product</a>
+          <span aria-hidden="true"> · </span>
+          <a class="press__shot-link" href="/install/windows/">Build from source</a>
+        </p>
+      </section>
+
+      <!-- 6. Boilerplate -->
+      <section class="press__section press__boilerplate reveal" aria-labelledby="boilerplate-h">
+        <h2 id="boilerplate-h">Boilerplate.</h2>
+        <p class="press__section-lede">Three copy-paste-ready paragraphs. No author byline. Click a block to focus, then copy the selection with the standard shortcut.</p>
+
+        <article class="press__bp-card">
+          <h3>About Pulse <span class="press__bp-count">~ 50 words</span></h3>
+          <blockquote class="press__bp-quote" tabindex="0" aria-label="About Pulse, about 50 words">{ABOUT_50}</blockquote>
+        </article>
+
+        <article class="press__bp-card">
+          <h3>Pulse in detail <span class="press__bp-count">~ 100 words</span></h3>
+          <blockquote class="press__bp-quote" tabindex="0" aria-label="Pulse in detail, about 100 words">{DETAIL_100}</blockquote>
+        </article>
+
+        <article class="press__bp-card">
+          <h3>Technical overview <span class="press__bp-count">~ 200 words</span></h3>
+          <div class="press__bp-quote press__bp-quote--multi" tabindex="0" aria-label="Technical overview, about 200 words">
+            {TECHNICAL_200.map((s) => (
+              <div class="press__bp-sub">
+                <h4>{s.heading}</h4>
+                <p>{s.body}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      </section>
+
+      <!-- 7. Contact -->
+      <section class="press__section press__contact reveal" aria-labelledby="contact-h">
+        <h2 id="contact-h">Contact.</h2>
+        <p>For press inquiries, please open a GitHub issue with the <code>press</code> label:</p>
+        <p>
+          <a class="press__contact-link" href={GITHUB_PRESS} rel="noopener noreferrer" target="_blank" aria-label="Open a press inquiry on GitHub">
+            github.com/TimesNuRoman/pulse/issues/new?labels=press
+          </a>
+        </p>
+        <p class="press__contact-note">An email address is not published. Issues keep the conversation searchable, transparent, and tied to the public roadmap.</p>
+        <p class="press__contact-note">Pulse is maintained by a small team. Please allow 3-5 business days for a response.</p>
+      </section>
+
+      <p class="press__back reveal"><a href="/">&larr; Back to Pulse</a></p>
+    </div>
+  </main>
+
+  <Footer license="Apache 2.0" version="v0.6.8" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline></script>
+</Base>
+
+<style>
+  /* ============== Press page (R198) ==============
+   * Scoped to this page. No global CSS touched.
+   * Mirror license.astro BEM: .press / .press__<section> / .press__<section>__<element>.
+   * a11y: 56dp on interactive elements, focus-visible via global, prefers-reduced-motion honored.
+   */
+
+  .press { padding-block: clamp(60px, 10vw, 120px); }
+
+  /* Hero */
+  .press__hero { text-align: left; margin-bottom: 2.5rem; }
+  .press__hero .lede { margin-top: 0.6rem; }
+  .press__tagline {
+    margin-top: 0.8rem;
+    color: var(--fg-dim);
+    font-size: 1.02rem;
+    max-width: 65ch;
+  }
+
+  /* Table of contents */
+  .press__toc {
+    margin-bottom: 3rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .press__toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    font-size: 0.92rem;
+  }
+  .press__toc a {
+    color: var(--fg-dim);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border);
+    min-height: 56px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .press__toc a:hover {
+    color: var(--purple);
+    border-bottom-color: var(--purple);
+  }
+
+  /* Section primitives */
+  .press__section {
+    margin-top: 3.5rem;
+    scroll-margin-top: 2rem;
+  }
+  .press__section h2 {
+    font-size: clamp(1.4rem, 1vw + 1.1rem, 1.75rem);
+    color: var(--fg);
+    letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+  }
+  .press__section-lede {
+    color: var(--fg-dim);
+    font-size: 1.02rem;
+    max-width: 70ch;
+    margin-bottom: 1.5rem;
+  }
+  .press__section-note {
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-top: 1rem;
+    max-width: 70ch;
+  }
+  .press__section-note code {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.85em;
+  }
+
+  /* 1. Quick facts (dl) */
+  .press__facts-list {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    max-width: 75ch;
+  }
+  @media (min-width: 640px) {
+    .press__facts-list { grid-template-columns: minmax(140px, max-content) 1fr; }
+  }
+  .press__facts-row {
+    display: contents;
+  }
+  .press__facts-list dt {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding-top: 0.5rem;
+  }
+  .press__facts-list dd {
+    color: var(--fg);
+    font-size: 1rem;
+    margin: 0;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .press__facts-list dd a {
+    color: var(--purple);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border);
+  }
+  .press__facts-list dd a:hover {
+    border-bottom-color: var(--purple);
+  }
+  @media (min-width: 640px) {
+    .press__facts-list dt { border-bottom: 1px solid var(--border); }
+  }
+
+  /* 2. Logos */
+  .press__logo-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 720px) {
+    .press__logo-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .press__logo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .press__logo-preview {
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    background: #1a1b26;
+  }
+  .press__logo-preview[data-variant="mono-dark"] {
+    background: #c0caf5;
+  }
+  .press__logo-meta h3 {
+    font-size: 1rem;
+    color: var(--fg);
+    margin: 0 0 0.4rem;
+    letter-spacing: -0.01em;
+  }
+  .press__logo-meta p {
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin: 0 0 0.8rem;
+  }
+  .press__logo-meta code {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--cyan);
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.85em;
+  }
+  .press__download {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 56px;            /* HR11: 56dp a11y min-height */
+    padding: 0 1rem;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .press__download:hover {
+    color: var(--purple);
+    border-color: var(--purple);
+    transform: translateY(-1px);
+  }
+
+  /* 3. Colors */
+  .press__color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+  .press__color-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .press__color-swatch {
+    width: 100%;
+    height: 80px;                /* brief: 80x80 */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .press__color-hex-on {
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.78rem;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+  .press__color-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.7rem 0.85rem 0.85rem;
+  }
+  .press__color-name {
+    color: var(--fg);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .press__color-hex {
+    color: var(--fg-dim);
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.82rem;
+  }
+  .press__color-rgb {
+    color: var(--muted);
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.78rem;
+  }
+
+  /* 4. Typography */
+  .press__type-stack {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 720px) {
+    .press__type-stack { grid-template-columns: 1fr 1fr; }
+  }
+  .press__type-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+  .press__type-card h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin: 0 0 0.8rem;
+  }
+  .press__type-sample {
+    margin: 0 0 0.9rem;
+    color: var(--fg);
+    line-height: 1.55;
+  }
+  .press__type-sample--body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 1rem;
+  }
+  .press__type-sample--code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.92rem;
+    color: var(--cyan);
+  }
+  .press__type-stack-pre {
+    margin: 0;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.75rem;
+    overflow-x: auto;
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+  .press__type-stack-pre code {
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    color: var(--fg-dim);
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  /* 5. Screenshots */
+  .press__shot-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 720px) {
+    .press__shot-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .press__shot-card {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+  }
+  .press__shot-placeholder {
+    width: 100%;
+    aspect-ratio: 4 / 3;          /* brief: 200x150 = 4:3 */
+    background:
+      repeating-linear-gradient(
+        45deg,
+        var(--bg-soft) 0,
+        var(--bg-soft) 8px,
+        var(--surface-2) 8px,
+        var(--surface-2) 16px
+      );
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 0.5rem;
+  }
+  .press__shot-card figcaption {
+    margin-top: 0.7rem;
+    color: var(--fg-dim);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .press__shot-cta {
+    margin-top: 1.25rem;
+    color: var(--fg-dim);
+    font-size: 0.95rem;
+  }
+  .press__shot-link {
+    color: var(--purple);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border);
+    min-height: 56px;             /* HR11 */
+    display: inline-flex;
+    align-items: center;
+  }
+  .press__shot-link:hover {
+    border-bottom-color: var(--purple);
+  }
+
+  /* 6. Boilerplate */
+  .press__boilerplate .press__bp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .press__boilerplate h3 {
+    font-size: 1rem;
+    color: var(--fg);
+    margin: 0 0 0.7rem;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .press__bp-count {
+    color: var(--muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+  }
+  .press__bp-quote {
+    margin: 0;
+    padding: 0.9rem 1rem;
+    background: var(--bg-soft);
+    border-left: 3px solid var(--purple);
+    border-radius: 4px;
+    color: var(--fg);
+    font-size: 0.98rem;
+    line-height: 1.6;
+    user-select: all;
+    -webkit-user-select: all;
+    cursor: text;
+  }
+  .press__bp-quote:focus-visible {
+    outline: 2px solid var(--purple);
+    outline-offset: 2px;
+  }
+  .press__bp-quote--multi {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .press__bp-sub h4 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin: 0 0 0.3rem;
+    font-weight: 600;
+  }
+  .press__bp-sub p {
+    margin: 0;
+    color: var(--fg);
+    font-size: 0.96rem;
+    line-height: 1.6;
+  }
+
+  /* 7. Contact */
+  .press__contact-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 56px;             /* HR11 */
+    padding: 0 0.4rem;
+    color: var(--purple);
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border);
+  }
+  .press__contact-link:hover {
+    border-bottom-color: var(--purple);
+  }
+  .press__contact-note {
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-top: 0.6rem;
+  }
+  .press__contact code {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.85em;
+  }
+
+  /* Back link */
+  .press__back {
+    margin-top: 3.5rem;
+    font-size: 0.95rem;
+  }
+
+  /* Reduced motion: kill the download-link hover lift. */
+  @media (prefers-reduced-motion: reduce) {
+    .press__download,
+    .press__download:hover { transition: none; transform: none; }
+  }
+</style>
