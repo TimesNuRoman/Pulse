@@ -8,6 +8,13 @@ import '../styles/notes.css';
 // are required to verify a binary before running it. Strips round
 // numbers and implementation jargon. UA-based JS reorder: mobile →
 // Android first, desktop → Windows first.
+//
+// R184: smart download CTA — server-renders a Windows-flavoured CTA at
+// the top, upgrades to the visitor's platform via the inline IIFE that
+// mirrors `src/lib/platformDetect.ts`. The existing hero + platform
+// cards move into a `<details id="other-platforms">` disclosure, opened
+// by the "Pick a different platform" button. macOS / Linux / iOS all
+// render an honest "no build yet" message with a fork-on-GitHub link.
 
 const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
 const APK_SIZE = '1.29 MB';
@@ -28,6 +35,9 @@ const WIN_SHA_EXE = '08FD2FB2…3F8E65';
 const WIN_SHA_MSI = 'D246AFFC…2AD2982D';
 const WIN_MIN_OS = 'Windows 10 (build 17763)';
 const WIN_BUILD_TARGET = 'x86_64-pc-windows-msvc';
+
+// R184: GitHub repo URL for the "no build yet" CTA on macOS / Linux / iOS.
+const GITHUB_URL = 'https://github.com/TimesNuRoman/pulse';
 
 const PAGE_TITLE = 'Download Pulse — for Windows or Android';
 const PAGE_DESC = 'Download Pulse for Windows (NSIS or MSI installer) or Pulse for Android (APK). 14-day trial included. Local-first, no account, no telemetry.';
@@ -152,157 +162,204 @@ const softwareAppsJsonLd = [
   </script>
 
   <main id="main" class="notes-main">
-    <!-- ─── Hero ──────────────────────────────────────── -->
-    <section class="dl-hero">
+    <!-- ─── R184: Smart download CTA ────────────────────
+         Server-renders the Windows-flavoured CTA. The inline IIFE
+         below detects the visitor's platform and swaps the CTA in
+         place. The pure function is in src/lib/platformDetect.ts;
+         this IIFE MUST mirror its logic. -->
+    <section class="dl-smart" id="smart">
       <div class="bg-glow"></div>
-      <div class="container dl-hero__grid">
-        <div class="dl-hero__copy reveal">
-          <div class="dl-hero__badges">
-            <span class="notes-hero__eyebrow">Pulse · download</span>
-            <span class="notes-hero__pill" aria-label="Latest versions">
-              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Windows v{WIN_VERSION} · Android v{APK_VERSION}
-            </span>
-          </div>
-          <h1 class="dl-hero__title">
-            One app.<br />Two devices. <span class="notes-hero__hl">Same Pulse.</span>
-          </h1>
-          <p class="dl-hero__sub">
-            Pulse for Windows is a desktop side panel that talks to a local
-            AI model on your machine. Pulse for Android is a markdown note
-            editor with backlinks, tags, and voice input. Both are
-            Apache&nbsp;2.0. Both are local-first. Pick your platform below.
+      <div class="container dl-smart__inner glass">
+        <div class="dl-smart__cta" data-smart-state="ready" data-smart-platform="windows">
+          <span class="dl-smart__eyebrow">
+            Detected: <span class="dl-smart__os" aria-live="polite" data-smart-os>Windows</span>
+          </span>
+          <h2 class="dl-smart__title" data-smart-title>One click. That's it.</h2>
+          <p class="dl-smart__sub" data-smart-sub>
+            Local-first, no account, 14-day trial included. We'll send you the right installer for <span data-smart-os-tail>Windows</span>.
           </p>
-          <ul class="dl-hero__platforms" role="list" aria-label="Jump to platform">
-            <li><a class="btn btn--ghost btn--lg" href="#windows">Pulse for Windows ↓</a></li>
-            <li><a class="btn btn--ghost btn--lg" href="#android">Pulse for Android ↓ {APK_SIZE}</a></li>
-          </ul>
+          <a class="btn dl-smart__btn"
+             data-smart-href
+             data-smart-btn-class="btn--primary"
+             href={WIN_EXE}
+             rel="noopener noreferrer"
+             download>
+            <span data-smart-filename>Download Pulse for Windows</span>
+            <span class="dl-smart__size" data-smart-size>· {WIN_SIZE_EXE}</span>
+          </a>
+          <button class="dl-smart__pick"
+                  data-smart-pick
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="other-platforms">
+            Pick a different platform <span aria-hidden="true">↓</span>
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- ─── Platform sections (UA-reordered) ─────────── -->
-    <section class="dl-platforms" id="platforms" data-dl-reorder>
-      <div class="container dl-platforms__grid">
+    <!-- ─── R184: "Other platforms" disclosure ────────────
+         Wraps the R120 hero + platform cards. Default closed.
+         The "Pick a different platform" button above opens this. -->
+    <details id="other-platforms" class="dl-other">
+      <summary class="dl-other__summary">
+        <span class="dl-other__summary-label">Other platforms</span>
+        <span class="dl-other__summary-sub">Windows, Android, or build from source</span>
+        <span class="dl-other__summary-caret" aria-hidden="true">+</span>
+      </summary>
 
-        <article class="dl-card glass reveal" id="windows" data-dl-platform="windows">
-          <header class="dl-card__head">
-            <span class="dl-card__platform">Pulse for Windows</span>
-            <span class="notes-hero__pill" aria-label="Latest version">
-              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              v{WIN_VERSION}
-            </span>
-          </header>
-          <h2 class="dl-card__title">A side panel for your Windows desktop.</h2>
-          <p class="dl-card__body">
-            Pulse for Windows sits in the system tray and opens with a
-            global hotkey. It talks to a local model that runs on your
-            machine. Prompts, screenshots, and voice stay on the device.
-            The installer ships as NSIS (per-user) or MSI (per-machine).
-            The MSI is the one for IT departments; the NSIS is the one for
-            individual installs.
-          </p>
-          <div class="dl-card__ctas">
-            <a class="btn btn--primary btn--lg" href={WIN_EXE} rel="noopener noreferrer">
-              Download NSIS ↓ {WIN_SIZE_EXE}
-            </a>
-            <a class="btn btn--ghost btn--lg" href={WIN_MSI} rel="noopener noreferrer">
-              Download MSI ↓ {WIN_SIZE_MSI}
-            </a>
+      <!-- ─── Hero ──────────────────────────────────────── -->
+      <section class="dl-hero">
+        <div class="bg-glow"></div>
+        <div class="container dl-hero__grid">
+          <div class="dl-hero__copy reveal">
+            <div class="dl-hero__badges">
+              <span class="notes-hero__eyebrow">Pulse · download</span>
+              <span class="notes-hero__pill" aria-label="Latest versions">
+                <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+                Windows v{WIN_VERSION} · Android v{APK_VERSION}
+              </span>
+            </div>
+            <h2 class="dl-hero__title">
+              Other ways<br />to install. <span class="notes-hero__hl">Same Pulse.</span>
+            </h2>
+            <p class="dl-hero__sub">
+              Pick an installer below or jump to the source on GitHub.
+              Both builds are local-first. The Windows installer is NSIS
+              (per-user) or MSI (per-machine); the Android build is a
+              signed APK.
+            </p>
+            <ul class="dl-hero__platforms" role="list" aria-label="Jump to platform">
+              <li><a class="btn btn--ghost btn--lg" href="#windows">Pulse for Windows ↓</a></li>
+              <li><a class="btn btn--ghost btn--lg" href="#android">Pulse for Android ↓ {APK_SIZE}</a></li>
+            </ul>
           </div>
-          <dl class="dl-card__meta">
-            <div class="dl-card__meta-row">
-              <dt>version</dt>
-              <dd>v{WIN_VERSION}</dd>
-            </div>
-            <div class="dl-card__meta-row">
-              <dt>build</dt>
-              <dd>release · {WIN_BUILD_TARGET}</dd>
-            </div>
-            <div class="dl-card__meta-row">
-              <dt>min OS</dt>
-              <dd>{WIN_MIN_OS}</dd>
-            </div>
-            <div class="dl-card__meta-row">
-              <dt>NSIS SHA-256</dt>
-              <dd><code class="dl-card__sha">{WIN_SHA_EXE}</code></dd>
-            </div>
-            <div class="dl-card__meta-row">
-              <dt>MSI SHA-256</dt>
-              <dd><code class="dl-card__sha">{WIN_SHA_MSI}</code></dd>
-            </div>
-            <div class="dl-card__meta-row">
-              <dt>license</dt>
-              <dd>Proprietary</dd>
-            </div>
-          </dl>
-          <p class="dl-card__more">
-            Need the full version history? See the
-            <a href="/changelog/">changelog</a>.
-          </p>
-        </article>
+        </div>
+      </section>
 
-        <article class="dl-card glass reveal" id="android" data-dl-platform="android">
-          <header class="dl-card__head">
-            <span class="dl-card__platform">Pulse for Android</span>
-            <span class="notes-hero__pill" aria-label="Latest version">
-              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              v{APK_VERSION} · versionCode {APK_VERSION_CODE}
-            </span>
-          </header>
-          <h2 class="dl-card__title">A markdown editor for your Android phone.</h2>
-          <p class="dl-card__body">
-            Pulse for Android is a note editor with
-            <code>[[wikilink]]</code> backlinks, tag autocomplete, voice
-            input, and full-text search. Notes live on the device — the
-            app does not upload them. Backup rules keep the WebView cache
-            off cloud-backup and device-transfer. Settings (profile, theme,
-            about, actions) open from a gear button in the toolbar.
-          </p>
-          <div class="dl-card__ctas">
-            <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
-              Download APK ↓ {APK_SIZE}
-            </a>
-            <a class="btn btn--ghost btn--lg" href="/changelog/">
-              Full changelog
-            </a>
-          </div>
-          <dl class="dl-card__meta">
-            <div class="dl-card__meta-row">
-              <dt>versionName</dt>
-              <dd>v{APK_VERSION}</dd>
+      <!-- ─── Platform sections (UA-reordered) ─────────── -->
+      <section class="dl-platforms" id="platforms" data-dl-reorder>
+        <div class="container dl-platforms__grid">
+
+          <article class="dl-card glass reveal" id="windows" data-dl-platform="windows">
+            <header class="dl-card__head">
+              <span class="dl-card__platform">Pulse for Windows</span>
+              <span class="notes-hero__pill" aria-label="Latest version">
+                <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+                v{WIN_VERSION}
+              </span>
+            </header>
+            <h3 class="dl-card__title">A side panel for your Windows desktop.</h3>
+            <p class="dl-card__body">
+              Pulse for Windows sits in the system tray and opens with a
+              global hotkey. It talks to a local model that runs on your
+              machine. Prompts, screenshots, and voice stay on the device.
+              The installer ships as NSIS (per-user) or MSI (per-machine).
+              The MSI is the one for IT departments; the NSIS is the one for
+              individual installs.
+            </p>
+            <div class="dl-card__ctas">
+              <a class="btn btn--primary btn--lg" href={WIN_EXE} rel="noopener noreferrer">
+                Download NSIS ↓ {WIN_SIZE_EXE}
+              </a>
+              <a class="btn btn--ghost btn--lg" href={WIN_MSI} rel="noopener noreferrer">
+                Download MSI ↓ {WIN_SIZE_MSI}
+              </a>
             </div>
-            <div class="dl-card__meta-row">
-              <dt>versionCode</dt>
-              <dd>{APK_VERSION_CODE}</dd>
+            <dl class="dl-card__meta">
+              <div class="dl-card__meta-row">
+                <dt>version</dt>
+                <dd>v{WIN_VERSION}</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>build</dt>
+                <dd>release · {WIN_BUILD_TARGET}</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>min OS</dt>
+                <dd>{WIN_MIN_OS}</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>NSIS SHA-256</dt>
+                <dd><code class="dl-card__sha">{WIN_SHA_EXE}</code></dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>MSI SHA-256</dt>
+                <dd><code class="dl-card__sha">{WIN_SHA_MSI}</code></dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>license</dt>
+                <dd>Proprietary</dd>
+              </div>
+            </dl>
+            <p class="dl-card__more">
+              Need the full version history? See the
+              <a href="/changelog/">changelog</a>.
+            </p>
+          </article>
+
+          <article class="dl-card glass reveal" id="android" data-dl-platform="android">
+            <header class="dl-card__head">
+              <span class="dl-card__platform">Pulse for Android</span>
+              <span class="notes-hero__pill" aria-label="Latest version">
+                <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+                v{APK_VERSION} · versionCode {APK_VERSION_CODE}
+              </span>
+            </header>
+            <h3 class="dl-card__title">A markdown editor for your Android phone.</h3>
+            <p class="dl-card__body">
+              Pulse for Android is a note editor with
+              <code>[[wikilink]]</code> backlinks, tag autocomplete, voice
+              input, and full-text search. Notes live on the device — the
+              app does not upload them. Backup rules keep the WebView cache
+              off cloud-backup and device-transfer. Settings (profile, theme,
+              about, actions) open from a gear button in the toolbar.
+            </p>
+            <div class="dl-card__ctas">
+              <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
+                Download APK ↓ {APK_SIZE}
+              </a>
+              <a class="btn btn--ghost btn--lg" href="/changelog/">
+                Full changelog
+              </a>
             </div>
-            <div class="dl-card__meta-row">
-              <dt>appId</dt>
-              <dd><code>{APK_APP_ID}</code></dd>
-            </div>
-            <div class="dl-card__meta-row">
-              <dt>minSdk · targetSdk</dt>
-              <dd>{APK_MIN_SDK} · {APK_TARGET_SDK}</dd>
-            </div>
-            <div class="dl-card__meta-row">
-              <dt>SHA-256</dt>
-              <dd><code class="dl-card__sha">{APK_SHA}</code></dd>
-            </div>
-            <div class="dl-card__meta-row">
-              <dt>size</dt>
-              <dd>{APK_SIZE} ({APK_SIZE_BYTES.toLocaleString('en-US')} B)</dd>
-            </div>
-            <div class="dl-card__meta-row">
-              <dt>signing</dt>
-              <dd>Release keystore · v2 + v3</dd>
-            </div>
-          </dl>
-          <p class="dl-card__more">
-            <a href="/privacy/">Privacy &amp; data model</a>
-          </p>
-        </article>
-      </div>
-    </section>
+            <dl class="dl-card__meta">
+              <div class="dl-card__meta-row">
+                <dt>versionName</dt>
+                <dd>v{APK_VERSION}</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>versionCode</dt>
+                <dd>{APK_VERSION_CODE}</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>appId</dt>
+                <dd><code>{APK_APP_ID}</code></dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>minSdk · targetSdk</dt>
+                <dd>{APK_MIN_SDK} · {APK_TARGET_SDK}</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>SHA-256</dt>
+                <dd><code class="dl-card__sha">{APK_SHA}</code></dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>size</dt>
+                <dd>{APK_SIZE} ({APK_SIZE_BYTES.toLocaleString('en-US')} B)</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>signing</dt>
+                <dd>Release keystore · v2 + v3</dd>
+              </div>
+            </dl>
+            <p class="dl-card__more">
+              <a href="/privacy/">Privacy &amp; data model</a>
+            </p>
+          </article>
+        </div>
+      </section>
+    </details>
 
     <!-- ─── One product, two surfaces ── -->
     <section class="dl-unified">
@@ -321,7 +378,7 @@ const softwareAppsJsonLd = [
             <span class="dl-unified__link-title">14-day trial, then $20/mo</span>
             <span class="dl-unified__link-meta">No credit card to start</span>
           </a>
-          <a class="dl-unified__link glass" href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">
+          <a class="dl-unified__link glass" href={GITHUB_URL} rel="noopener noreferrer">
             <span class="dl-unified__link-eyebrow">Source</span>
             <span class="dl-unified__link-title">Read the code on GitHub</span>
             <span class="dl-unified__link-meta">Audit the network calls · fork it</span>
@@ -355,13 +412,395 @@ const softwareAppsJsonLd = [
       }
     })();
   </script>
+
+  <!-- R184: Smart CTA detection + content swap. Inline IIFE mirror of
+       `src/lib/platformDetect.ts` (pure module). MUST stay in sync —
+       if you edit one, edit the other. Browser-only context. -->
+  <script is:inline>
+    (() => {
+      // ─── Inline mirror of src/lib/platformDetect.ts ─────────────
+      function detectPlatform(input) {
+        var uadPlatform = input.userAgentData && input.userAgentData.platform;
+        if (uadPlatform) {
+          if (uadPlatform === 'Windows')  return { platform: 'windows', confidence: 'high', source: 'userAgentData' };
+          if (uadPlatform === 'macOS')   return { platform: 'macos',  confidence: 'high', source: 'userAgentData' };
+          if (uadPlatform === 'Linux')   return { platform: 'linux',  confidence: 'high', source: 'userAgentData' };
+          if (uadPlatform === 'Android') return { platform: 'android', confidence: 'high', source: 'userAgentData' };
+          if (uadPlatform === 'iOS')     return { platform: 'ios',    confidence: 'high', source: 'userAgentData' };
+          if (uadPlatform === 'Chrome OS') return { platform: 'linux', confidence: 'medium', source: 'userAgentData' };
+        }
+        var ua = input.userAgent || '';
+        if (/\bWindows NT\b/i.test(ua))       return { platform: 'windows', confidence: 'high',   source: 'navigatorUA' };
+        if (/\b(iPhone|iPad|iPod)\b/i.test(ua)) return { platform: 'ios',  confidence: 'high',   source: 'navigatorUA' };
+        if (/\bAndroid\b/i.test(ua))          return { platform: 'android', confidence: 'high',  source: 'navigatorUA' };
+        if (/\b(Mac OS X|Macintosh)\b/i.test(ua)) return { platform: 'macos', confidence: 'high', source: 'navigatorUA' };
+        if (/\bLinux|X11\b/i.test(ua))        return { platform: 'linux',  confidence: 'medium', source: 'navigatorUA' };
+        var narrow = typeof input.viewportWidth === 'number' && input.viewportWidth < 600;
+        if (narrow && input.isTouch) {
+          return { platform: 'unknown', confidence: 'low', source: 'viewport' };
+        }
+        return { platform: 'unknown', confidence: 'low', source: 'navigatorUA' };
+      }
+      // ─── End mirror ─────────────────────────────────────────────
+
+      // Server-side rendered defaults — these must match the values in
+      // src/pages/download.astro's <dl-smart__cta> block.
+      var GITHUB = 'https://github.com/TimesNuRoman/pulse';
+      var WIN_EXE_PATH = '/downloads/Pulse_0.6.7_x64-setup.exe';
+      var APK_PATH     = '/downloads/pulse-notes-0.6.6.apk';
+      var WIN_SIZE = '12.27 MB';
+      var APK_SIZE = '1.29 MB';
+
+      var VARIANTS = {
+        windows: {
+          eyebrow: 'Detected: Windows',
+          os:      'Windows',
+          osTail:  'Windows',
+          title:   "One click. That's it.",
+          sub:     "Local-first, no account, 14-day trial included. We'll send you the right installer for Windows.",
+          filename:'Download Pulse for Windows',
+          size:    '\u00b7 ' + WIN_SIZE,
+          href:    WIN_EXE_PATH,
+          btnClass:'btn--primary',
+          download:true
+        },
+        android: {
+          eyebrow: 'Detected: Android',
+          os:      'Android',
+          osTail:  'Android',
+          title:   "One click. That's it.",
+          sub:     "Local-first, no account, 14-day trial included. We'll send you the right APK for Android.",
+          filename:'Download Pulse for Android',
+          size:    '\u00b7 ' + APK_SIZE,
+          href:    APK_PATH,
+          btnClass:'btn--primary',
+          download:true
+        },
+        macos: {
+          eyebrow: 'Detected: macOS',
+          os:      'macOS',
+          osTail:  'macOS',
+          title:   'macOS build is not published yet',
+          sub:     'Pulse is built for Windows and Android today. The source is on GitHub if you want a native binary.',
+          filename:'Read the source on GitHub',
+          size:    '',
+          href:    GITHUB,
+          btnClass:'btn--ghost',
+          download:false
+        },
+        linux: {
+          eyebrow: 'Detected: Linux',
+          os:      'Linux',
+          osTail:  'Linux',
+          title:   'Linux build is not published yet',
+          sub:     'Pulse is built for Windows and Android today. The source is on GitHub if you want to package it yourself.',
+          filename:'Read the source on GitHub',
+          size:    '',
+          href:    GITHUB,
+          btnClass:'btn--ghost',
+          download:false
+        },
+        ios: {
+          eyebrow: 'Detected: iOS',
+          os:      'iOS',
+          osTail:  'iOS',
+          title:   'No iOS build',
+          sub:     'Pulse is not on the App Store. The Android APK can be sideloaded on a tablet if you want to try it.',
+          filename:'Read the source on GitHub',
+          size:    '',
+          href:    GITHUB,
+          btnClass:'btn--ghost',
+          download:false
+        },
+        unknown: {
+          eyebrow: 'Could not detect your device',
+          os:      '',
+          osTail:  '',
+          title:   'Pick your platform',
+          sub:     'Open the section below and choose Windows, Android, or build from source.',
+          filename:'',
+          size:    '',
+          href:    '',
+          btnClass:'btn--primary',
+          download:false,
+          hideBtn: true
+        }
+      };
+
+      var cta = document.querySelector('.dl-smart__cta');
+      if (!cta) return;
+
+      // Read UA-CH with a Promise wrapper; on older browsers it is undefined.
+      var uadPromise = null;
+      try {
+        if (navigator.userAgentData && typeof navigator.userAgentData.getHighEntropyValues === 'function') {
+          uadPromise = navigator.userAgentData.getHighEntropyValues(['platform']);
+        }
+      } catch (e) { /* ignore */ }
+
+      function runDetection(uad) {
+        var isTouch = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+        return detectPlatform({
+          userAgent: navigator.userAgent,
+          userAgentData: uad || (navigator.userAgentData ? { platform: navigator.userAgentData.platform, mobile: navigator.userAgentData.mobile } : undefined),
+          viewportWidth: window.innerWidth,
+          isTouch: isTouch
+        });
+      }
+
+      function applyVariant(v) {
+        if (v === 'windows') return; // server-rendered default; nothing to swap
+        var data = VARIANTS[v];
+        if (!data) return;
+        cta.setAttribute('data-smart-platform', v);
+        var eyebrowEl = cta.querySelector('[data-smart-eyebrow]') || cta.querySelector('.dl-smart__eyebrow');
+        var osEl   = cta.querySelector('[data-smart-os]');
+        var titleEl= cta.querySelector('[data-smart-title]');
+        var subEl  = cta.querySelector('[data-smart-sub]');
+        var btnEl  = cta.querySelector('[data-smart-href]');
+        var fnEl   = cta.querySelector('[data-smart-filename]');
+        var sizeEl = cta.querySelector('[data-smart-size]');
+        var tailEl = cta.querySelector('[data-smart-os-tail]');
+        if (eyebrowEl) {
+          if (data.os) {
+            eyebrowEl.innerHTML = 'Detected: <span class="dl-smart__os" aria-live="polite" data-smart-os>' + data.os + '</span>';
+          } else {
+            eyebrowEl.textContent = data.eyebrow;
+          }
+        }
+        if (osEl)   osEl.textContent   = data.os;
+        if (titleEl)titleEl.textContent = data.title;
+        if (subEl)  subEl.textContent  = data.sub;
+        if (tailEl) tailEl.textContent = data.osTail;
+        if (btnEl) {
+          btnEl.setAttribute('href', data.href);
+          btnEl.classList.remove('btn--primary', 'btn--ghost');
+          btnEl.classList.add(data.btnClass);
+          if (data.download) {
+            btnEl.setAttribute('download', '');
+          } else {
+            btnEl.removeAttribute('download');
+          }
+        }
+        if (fnEl)   fnEl.textContent   = data.filename;
+        if (sizeEl) sizeEl.textContent = data.size;
+        if (data.hideBtn && btnEl) {
+          btnEl.style.display = 'none';
+        } else if (btnEl) {
+          btnEl.style.display = '';
+        }
+      }
+
+      // UA-CH path: when the high-entropy promise resolves, re-detect and swap.
+      // The first synchronous detection uses the basic UA-CH object (if any),
+      // so the user sees the right CTA within the first paint.
+      var initial = runDetection(uadPromise ? null : null);
+      // initial.userAgentData is undefined above — fall back to basic UA-CH.
+      if (navigator.userAgentData && !uadPromise) {
+        initial = detectPlatform({
+          userAgent: navigator.userAgent,
+          userAgentData: { platform: navigator.userAgentData.platform, mobile: navigator.userAgentData.mobile },
+          viewportWidth: window.innerWidth,
+          isTouch: !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)
+        });
+      }
+      applyVariant(initial.platform);
+
+      if (uadPromise && typeof uadPromise.then === 'function') {
+        uadPromise.then(function (uad) {
+          var upgraded = detectPlatform({
+            userAgent: navigator.userAgent,
+            userAgentData: { platform: uad.platform, mobile: navigator.userAgentData && navigator.userAgentData.mobile },
+            viewportWidth: window.innerWidth,
+            isTouch: !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)
+          });
+          if (upgraded.platform !== initial.platform) {
+            applyVariant(upgraded.platform);
+          }
+        }).catch(function () { /* ignore — initial detection stands */ });
+      }
+
+      // "Pick a different platform" toggle.
+      var pickBtn = cta.querySelector('[data-smart-pick]');
+      var other   = document.getElementById('other-platforms');
+      if (pickBtn && other) {
+        pickBtn.addEventListener('click', function () {
+          other.open = !other.open;
+          pickBtn.setAttribute('aria-expanded', String(other.open));
+          if (other.open) {
+            // Move focus into the disclosure for keyboard users.
+            var firstLink = other.querySelector('a, button');
+            if (firstLink) {
+              // Defer so the <details> open transition can finish.
+              setTimeout(function () { firstLink.focus({ preventScroll: false }); }, 60);
+            }
+          }
+        });
+        other.addEventListener('toggle', function () {
+          pickBtn.setAttribute('aria-expanded', String(other.open));
+        });
+      }
+    })();
+  </script>
 </Base>
 
 <style>
-  /* ─── Hero ──────────────────────────────────────────── */
+  /* ─── R184: Smart download CTA ──────────────────────── */
+  .dl-smart {
+    padding-top: clamp(112px, 14vw, 152px);
+    padding-bottom: clamp(28px, 4vw, 56px);
+    position: relative;
+    overflow: hidden;
+  }
+  .dl-smart__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(28px, 4vw, 48px) clamp(24px, 4vw, 48px);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+  }
+  .dl-smart__inner::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--purple) 0%, var(--blue) 50%, var(--cyan) 100%);
+    opacity: 0.7;
+    border-top-left-radius: var(--radius);
+    border-top-right-radius: var(--radius);
+  }
+  .dl-smart__eyebrow {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+  .dl-smart__os { color: var(--fg); }
+  .dl-smart__title {
+    font-size: clamp(1.65rem, 2.4vw + 0.6rem, 2.4rem);
+    font-weight: 500;
+    letter-spacing: -0.018em;
+    line-height: 1.1;
+    margin: 0;
+    color: var(--fg);
+  }
+  .dl-smart__sub {
+    color: var(--fg-dim);
+    font-size: 1.02rem;
+    line-height: 1.55;
+    margin: 0;
+    max-width: 56ch;
+  }
+  .dl-smart__btn {
+    margin-top: 0.5rem;
+    width: 100%;
+    min-height: 56px;   /* hard rule 11: 56dp touch target on smart CTA */
+    font-size: 1.05rem;
+    padding-block: 0.95em;
+  }
+  .dl-smart__btn[style*="display: none"] { display: none !important; }
+  .dl-smart__size {
+    color: inherit;
+    opacity: 0.85;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+  .dl-smart__pick {
+    align-self: center;
+    background: none;
+    border: 0;
+    padding: 0.5rem 0.75rem;
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(187, 154, 247, 0.35);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .dl-smart__pick:hover,
+  .dl-smart__pick:focus-visible {
+    color: var(--blue);
+    border-bottom-color: var(--blue);
+  }
+  .dl-smart__pick[aria-expanded="true"] {
+    color: var(--purple);
+    border-bottom-color: var(--purple);
+  }
+
+  /* ─── R184: "Other platforms" disclosure ────────────── */
+  .dl-other {
+    margin: 1.5rem 0 0;
+  }
+  .dl-other > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.85rem;
+    padding: 1rem 1.25rem;
+    margin: 0 auto;
+    max-width: 720px;
+    min-height: 52px;
+    border-radius: 9999px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-size: 0.96rem;
+    font-weight: 500;
+    text-align: center;
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .dl-other > summary::-webkit-details-marker { display: none; }
+  .dl-other > summary::marker { display: none; }
+  .dl-other > summary:hover,
+  .dl-other > summary:focus-visible {
+    border-color: var(--purple);
+    background: var(--bg-soft);
+  }
+  .dl-other[open] > summary {
+    border-color: var(--purple);
+  }
+  .dl-other__summary-label { color: var(--fg); }
+  .dl-other__summary-sub {
+    color: var(--fg-dim);
+    font-size: 0.88rem;
+    font-weight: 400;
+  }
+  .dl-other__summary-caret {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.4em;
+    height: 1.4em;
+    border-radius: 50%;
+    background: rgba(187, 154, 247, 0.12);
+    color: var(--purple);
+    font-weight: 700;
+    transition: transform var(--dur) var(--ease);
+  }
+  .dl-other[open] > summary .dl-other__summary-caret {
+    transform: rotate(45deg);
+  }
+
+  @media (max-width: 639px) {
+    .dl-smart__title { font-size: clamp(1.5rem, 7vw, 2rem); }
+    .dl-smart__sub { font-size: 0.98rem; }
+    .dl-smart__btn { min-height: 52px; font-size: 1rem; }
+    .dl-other > summary { padding: 0.85rem 1rem; font-size: 0.92rem; }
+  }
+
+  /* ─── Hero (reframed as "Other ways to install") ──── */
   .dl-hero {
-    padding-top: clamp(112px, 14vw, 160px);
-    padding-bottom: clamp(48px, 7vw, 72px);
+    padding-top: clamp(64px, 9vw, 112px);
+    padding-bottom: clamp(36px, 5vw, 56px);
     overflow: hidden;
   }
   .dl-hero__grid {
@@ -573,4 +1012,3 @@ const softwareAppsJsonLd = [
     font-size: 0.82rem;
   }
 </style>
-
