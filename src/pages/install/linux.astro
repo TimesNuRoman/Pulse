@@ -1,0 +1,635 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R195: /install/linux/ — build Pulse desktop from source on Linux.
+ *
+ * 6 main sections (H2):
+ *   1. Prerequisites          Node, Rust, build tools
+ *   2. Install Tauri deps     per-distro table (apt / dnf / pacman)
+ *   3. Clone the repo         github.com/TimesNuRoman/pulse (URL is a real path,
+ *                              not a brand reference)
+ *   4. Install npm deps       npm install
+ *   5. Run dev                tauri dev (3-5 min first build)
+ *   6. Build production       tauri build → .deb and .AppImage
+ * Plus: Troubleshooting, Known limitations, Get help, Next steps.
+ *
+ * Hard rules: no emoji, anonymous brand, no marketing fluff, no future
+ * promises, dark-only, Apache 2.0, 56dp touch targets, focus-visible,
+ * skip-link. JSON-LD `HowTo` with 5 HowToSteps + ISO 8601 durations.
+ */
+
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/notes.css';
+
+const PAGE_TITLE = 'Install Pulse on Linux — build from source';
+const PAGE_DESC =
+  'Build Pulse for Linux from source. There is no official Linux build ' +
+  'today — the community has ported the source to GTK3 / WebKit2GTK. ' +
+  'Six steps from Node 20 to a .deb and an .AppImage on your machine.';
+
+const GITHUB_REPO = 'https://github.com/TimesNuRoman/pulse';
+const GITHUB_DESKTOP = GITHUB_REPO + '/tree/main/pulse-desktop';
+const GITHUB_ISSUES = GITHUB_REPO + '/issues';
+
+// JSON-LD `HowTo` (R195 SEO) — five top-level HowToSteps. Mirrors the
+// Steps 1-6 in the page. The four helper sections (troubleshooting,
+// limitations, help, next) are NOT HowToSteps — they're context.
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Build Pulse desktop from source on Linux',
+  description:
+    'Compile Pulse for Linux by installing the Tauri toolchain, ' +
+    'cloning the source repository, and running `npm run tauri build` ' +
+    'to produce a .deb and an .AppImage.',
+  totalTime: 'PT30M',
+  estimatedCost: {
+    '@type': 'MonetaryAmount',
+    currency: 'USD',
+    value: '0',
+  },
+  step: [
+    {
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'Install prerequisites',
+      text:
+        'Install Node.js 20 or newer, Rust 1.75 or newer via rustup, ' +
+        'git, and the build tools. Tauri on Linux needs GTK3 headers ' +
+        'and WebKit2GTK 4.1 (or 4.0 on older distros).',
+      url: 'https://ownlocalml.com/install/linux/#prerequisites',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'Install Tauri system dependencies',
+      text:
+        'Use the package manager for the distro: apt on Ubuntu and ' +
+        'Debian, dnf on Fedora, pacman on Arch. The list includes ' +
+        'libwebkit2gtk, libgtk-3, libssl, and pkg-config.',
+      url: 'https://ownlocalml.com/install/linux/#tauri-deps',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'Clone the repository',
+      text:
+        'Clone the GitHub repository, then change into the ' +
+        'pulse-desktop subdirectory that contains the Tauri app.',
+      url: 'https://ownlocalml.com/install/linux/#clone',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 4,
+      name: 'Install npm dependencies',
+      text:
+        'Run `npm install` in the pulse-desktop directory. The first ' +
+        'run pulls the JavaScript dependencies and Tauri CLI.',
+      url: 'https://ownlocalml.com/install/linux/#npm-install',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 5,
+      name: 'Run the dev build',
+      text:
+        'Run `npm run tauri dev` to compile the Rust backend and open ' +
+        'the dev window. The first build takes 3-5 minutes on a modern ' +
+        'laptop; later runs are incremental.',
+      url: 'https://ownlocalml.com/install/linux/#run-dev',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 6,
+      name: 'Build the production artifacts',
+      text:
+        'Run `npm run tauri build` to produce a .deb package and an ' +
+        'AppImage in src-tauri/target/release/bundle/. The output is ' +
+        'unsigned — there is no official Linux build today.',
+      url: 'https://ownlocalml.com/install/linux/#build-prod',
+    },
+  ],
+};
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-image.svg"
+  canonical="https://ownlocalml.com/install/linux/"
+  ctaVisible={false}
+  footerLicense=""
+  footerVersion="v0.6.7"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/#features">Features</a></li>
+        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/download/">Download</a></li>
+        <li><a class="nav__link is-cta" href="/install/linux/" aria-current="page">Install</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/download/" rel="noopener noreferrer">Get Pulse for Windows ↓</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/#features">Features</a>
+    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/download/">Download</a>
+    <a class="nav-drawer__link" href="/install/linux/" aria-current="page">Install</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/download/" rel="noopener noreferrer">Get Pulse for Windows ↓</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => { setOpen(!drawer.classList.contains('is-open')); });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="notes-main install">
+    <!-- ─── Hero ────────────────────────────────────────── -->
+    <section class="notes-hero install__hero">
+      <div class="bg-glow"></div>
+      <div class="container notes-hero__grid">
+        <div class="notes-hero__copy reveal">
+          <div class="notes-hero__badges">
+            <span class="notes-hero__eyebrow">Pulse · Linux · build from source</span>
+            <span class="notes-hero__pill" aria-label="Source build">
+              <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+              v0.6.7 · source
+            </span>
+          </div>
+          <h1 class="notes-hero__title">Install Pulse on Linux</h1>
+          <p class="notes-hero__sub">Build from source · 6 steps · no official build today</p>
+          <p class="install__intro">
+            Run Pulse on Linux by building it from source. There is no official Linux build today. Pulse is developed and tested primarily on Windows, and the community has ported the source to GTK3 and WebKit2GTK. Expect rough edges; if a step fails, open a GitHub issue and include the error output.
+          </p>
+          <p class="install__intro">
+            Two artifacts at the end: a <code>.deb</code> for Debian and Ubuntu, and an <code>.AppImage</code> that runs on most modern Linux desktops. Both are unsigned — there is no apt or pacman repository, and there is no auto-update channel.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 1. Prerequisites ────────────────────────────── -->
+    <section class="ig" id="prerequisites" aria-label="Prerequisites">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 1</span>
+          <h2>Prerequisites</h2>
+          <p class="lede">Five toolchain pieces. Versions are minimums — newer is fine.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <ul class="ig__list" role="list">
+            <li>
+              <strong>Node.js 20 or newer.</strong>
+              The frontend is plain TypeScript on Vite. Use the Node release line that ships in the distro, or
+              <a href="https://nodejs.org/" rel="noopener noreferrer">nodejs.org</a> for the LTS tarball.
+              Check with <code>node --version</code>.
+            </li>
+            <li>
+              <strong>Rust 1.75 or newer.</strong>
+              Tauri 2 needs the 1.75 toolchain. Install via
+              <a href="https://rustup.rs/" rel="noopener noreferrer">rustup.rs</a>:
+              <code>curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh</code>.
+              Check with <code>rustc --version</code>.
+            </li>
+            <li>
+              <strong>npm</strong> (bundled with Node 20+) or pnpm. The repo uses <code>package.json</code> scripts; the lockfile is npm.
+            </li>
+            <li>
+              <strong>git</strong> for cloning the repository. Most distros ship a recent git in their default repo.
+            </li>
+            <li>
+              <strong>Build tools:</strong>
+              <code>build-essential</code> on Debian and Ubuntu, <code>base-devel</code> on Arch, <code>@development-tools</code> on Fedora. Tauri also needs <code>pkg-config</code> and the OpenSSL development headers (<code>libssl-dev</code> on Debian, <code>openssl-devel</code> on Fedora, <code>openssl</code> on Arch).
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 2. Install Tauri dependencies ───────────────── -->
+    <section class="ig" id="tauri-deps" aria-label="Install Tauri dependencies">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 2</span>
+          <h2>Install Tauri system dependencies</h2>
+          <p class="lede">GTK3 and WebKit2GTK are not bundled — they come from the distro. The package list is the Tauri 2 prerequisite set as published in the Tauri docs.</p>
+        </header>
+
+        <div class="ig__distros reveal">
+          <article class="ig__distro glass">
+            <h3 class="ig__distro-name">Ubuntu · Debian</h3>
+            <p class="ig__distro-mgr"><code>apt</code></p>
+            <pre class="ig__code" aria-label="apt install command for Tauri dependencies on Debian and Ubuntu"><code>sudo apt update
+sudo apt install -y libwebkit2gtk-4.1-dev \
+  build-essential curl wget file pkg-config \
+  libgtk-3-dev libayatana-appindicator3-dev \
+  librsvg2-dev libssl-dev</code></pre>
+            <p class="ig__distro-note">
+              On Debian 12 and Ubuntu 22.04, <code>libwebkit2gtk-4.1-dev</code> is the right package. On older Ubuntu 20.04 and Debian 11, swap to <code>libwebkit2gtk-4.0-dev</code>.
+            </p>
+          </article>
+
+          <article class="ig__distro glass">
+            <h3 class="ig__distro-name">Fedora · RHEL</h3>
+            <p class="ig__distro-mgr"><code>dnf</code></p>
+            <pre class="ig__code" aria-label="dnf install command for Tauri dependencies on Fedora and RHEL"><code>sudo dnf install -y webkit2gtk4.1-devel \
+  gcc gcc-c++ make pkg-config \
+  gtk3-devel libappindicator-gtk3-devel \
+  librsvg2-devel openssl-devel</code></pre>
+            <p class="ig__distro-note">
+              On Fedora 40 and newer, the package is <code>webkit2gtk4.1-devel</code>. On Fedora 39 and older, swap to <code>webkit2gtk4.0-devel</code>.
+            </p>
+          </article>
+
+          <article class="ig__distro glass">
+            <h3 class="ig__distro-name">Arch · Manjaro</h3>
+            <p class="ig__distro-mgr"><code>pacman</code></p>
+            <pre class="ig__code" aria-label="pacman install command for Tauri dependencies on Arch and Manjaro"><code>sudo pacman -Syu --needed \
+  webkit2gtk-4.1 base-devel curl wget file pkg-config \
+  gtk3 libappindicator-gtk3 librsvg openssl</code></pre>
+            <p class="ig__distro-note">
+              The <code>base-devel</code> meta-package pulls <code>gcc</code>, <code>make</code>, and <code>binutils</code>. Replace <code>webkit2gtk-4.1</code> with <code>webkit2gtk-4.0</code> on Arch installs that predate the 4.1 bump.
+            </p>
+          </article>
+        </div>
+
+        <p class="ig__note">
+          The list above mirrors the
+          <a href="https://v2.tauri.app/start/prerequisites/" rel="noopener noreferrer">Tauri 2 Linux prerequisites</a>
+          page. Versions of <code>webkit2gtk</code> shift between distros; if the build fails on a missing <code>webkit2gtk-4.1</code> package, fall back to <code>webkit2gtk-4.0</code> on older releases.
+        </p>
+      </div>
+    </section>
+
+    <!-- ─── 3. Clone the repo ───────────────────────────── -->
+    <section class="ig" id="clone" aria-label="Clone the repository">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 3</span>
+          <h2>Clone the repository</h2>
+          <p class="lede">The Linux build lives in the <code>pulse-desktop</code> subdirectory of the main repo.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <pre class="ig__code" aria-label="git clone command for the Pulse repository"><code>git clone {GITHUB_REPO}.git
+cd pulse/pulse-desktop</code></pre>
+          <p>
+            The monorepo holds Pulse for Windows, the Android app, and the shared data model. The Tauri app is in <code>pulse-desktop</code>. The rest of this guide assumes the working directory is that folder.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 4. Install npm deps ─────────────────────────── -->
+    <section class="ig" id="npm-install" aria-label="Install npm dependencies">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 4</span>
+          <h2>Install npm dependencies</h2>
+          <p class="lede">JavaScript dependencies and the Tauri CLI. First run takes 30 to 90 seconds on a fast connection.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <pre class="ig__code" aria-label="npm install command"><code>npm install</code></pre>
+          <p>
+            The install pulls the Vite frontend, the Tauri 2 JavaScript bindings, and the Ollama client. The Rust toolchain handles the backend on the first <code>tauri dev</code> run, not during <code>npm install</code>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 5. Run dev ──────────────────────────────────── -->
+    <section class="ig" id="run-dev" aria-label="Run the dev build">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 5</span>
+          <h2>Run the dev build</h2>
+          <p class="lede">Compiles the Rust backend and opens the dev window. First build is 3 to 5 minutes; later runs are incremental.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <pre class="ig__code" aria-label="tauri dev command to launch the Pulse development window"><code>npm run tauri dev</code></pre>
+          <p>
+            The first run downloads and compiles every Tauri dependency — the Rust crates that bind to GTK3, WebKit2GTK, and the Vite plugins. Build output streams to the terminal; the Pulse window appears once the compile finishes.
+          </p>
+          <p>
+            Edits to TypeScript files hot-reload. Edits to Rust files trigger an incremental rebuild of the affected crate. The dev window uses the same Ollama runtime as production, so any local model that works on Windows will work here.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 6. Build production ─────────────────────────── -->
+    <section class="ig" id="build-prod" aria-label="Build the production artifacts">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Step 6</span>
+          <h2>Build the production artifacts</h2>
+          <p class="lede">Two outputs in <code>src-tauri/target/release/bundle/</code>: a <code>.deb</code> and an <code>.AppImage</code>.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <pre class="ig__code" aria-label="tauri build command to produce Linux installers"><code>npm run tauri build</code></pre>
+          <p>
+            The build pipeline produces a Debian package for Debian-based distros, an AppImage for portable use, and a raw ELF binary under <code>src-tauri/target/release/pulse-desktop</code>. The full output tree:
+          </p>
+          <ul class="ig__list" role="list">
+            <li><strong>Debian package</strong> — <code>src-tauri/target/release/bundle/deb/Pulse_0.6.7_amd64.deb</code></li>
+            <li><strong>AppImage</strong> — <code>src-tauri/target/release/bundle/appimage/Pulse_0.6.7_amd64.AppImage</code></li>
+            <li><strong>Raw binary</strong> — <code>src-tauri/target/release/pulse-desktop</code> (run directly, no install)</li>
+          </ul>
+          <p>
+            The <code>.deb</code> installs to <code>/opt/pulse-desktop</code> and registers a <code>.desktop</code> entry. The AppImage is a single file that runs from any folder, no install required. The raw binary skips the bundler entirely.
+          </p>
+          <p>
+            None of the three is signed. There is no apt repository and no auto-update mechanism. Re-run <code>npm run tauri build</code> to upgrade.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Troubleshooting ─────────────────────────────── -->
+    <section class="ig" id="troubleshooting" aria-label="Troubleshooting">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Troubleshooting</span>
+          <h2>Things that go wrong</h2>
+          <p class="lede">Four issues that come up most often, and the fix for each.</p>
+        </header>
+
+        <ul class="ig__bullets reveal" role="list">
+          <li>
+            <strong>Build fails on a missing <code>webkit2gtk-4.1</code> package.</strong>
+            Older distros (Ubuntu 20.04, Debian 11, Fedora 39 and earlier) ship only <code>webkit2gtk-4.0</code>. The fix is in the Tauri config: open <code>src-tauri/Cargo.toml</code>, find the <code>tauri</code> dependency, and append <code>features = ["gtk-4-0"]</code> — or downgrade to Tauri 2.0.x line, which defaults to 4.0. The distro package list in Step 2 documents the swap.
+          </li>
+          <li>
+            <strong>Cargo errors with <code>failed to run custom build command for openssl-sys</code>.</strong>
+            OpenSSL development headers are missing. On Debian and Ubuntu: <code>sudo apt install libssl-dev</code>. On Fedora: <code>sudo dnf install openssl-devel</code>. On Arch: <code>sudo pacman -S openssl</code>.
+          </li>
+          <li>
+            <strong>Rust version too old: <code>error: package `tauri v2.x` requires Rust 1.77.2</code>.</strong>
+            The repo's <code>rust-toolchain.toml</code> pins the minimum Rust. Update via <code>rustup update</code>, or accept the toolchain prompt and let rustup download it. Older system rustc packages (e.g. <code>apt install rustc</code>) will not work; use <a href="https://rustup.rs/" rel="noopener noreferrer">rustup.rs</a>.
+          </li>
+          <li>
+            <strong>The dev window is blank, or fonts look broken.</strong>
+            Tauri on Linux needs a running compositor. Wayland sessions occasionally glitch with WebKit2GTK 4.1 — set <code>WEBKIT_DISABLE_DMABUF_RENDERER=1</code> in the environment, or launch with <code>GDK_BACKEND=x11</code> as a workaround. Headless servers (no display) will not start the dev window.
+          </li>
+          <li>
+            <strong>Ollama fails to start inside the app.</strong>
+            The bundled Ollama runtime ships only on the Windows installer. On Linux, install Ollama separately via the
+            <a href="https://ollama.com/download/linux" rel="noopener noreferrer">Ollama Linux install script</a>
+            and verify it with <code>ollama --version</code> before launching Pulse.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── Known limitations ───────────────────────────── -->
+    <section class="ig" id="limitations" aria-label="Known limitations">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Honest note</span>
+          <h2>Known limitations</h2>
+          <p class="lede">The Linux port is a community build. Some things on Windows do not work here yet.</p>
+        </header>
+
+        <ul class="ig__bullets reveal" role="list">
+          <li>
+            <strong>No code signing.</strong> The <code>.deb</code> and <code>.AppImage</code> are unsigned. Some Linux distros (e.g. Fedora with strict SELinux policies, or Ubuntu Snap users) will need the file marked executable and run with explicit user consent.
+          </li>
+          <li>
+            <strong>No auto-update.</strong> Pulse for Windows uses a signed update manifest under <code>/updates/desktop.json</code>. The Linux build does not have an update channel — re-run <code>npm run tauri build</code> to upgrade.
+          </li>
+          <li>
+            <strong>No native installer for RPM or pacman.</strong> The Tauri build pipeline emits <code>.deb</code> and <code>.AppImage</code>. Fedora and Arch users fall back to the AppImage or the raw ELF binary.
+          </li>
+          <li>
+            <strong>Wayland may glitch.</strong> The dev window relies on WebKit2GTK and the GTK3 port. Wayland sessions work in most cases, but rare compositor issues (flicker on resize, no global hotkey on GNOME Wayland) remain. The known workaround is the XWayland fallback (<code>GDK_BACKEND=x11</code>).
+          </li>
+          <li>
+            <strong>Voice input is Windows-only.</strong> The panel's mic button uses the Windows SpeechRecognition API. On Linux, the button is disabled.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── Get help ────────────────────────────────────── -->
+    <section class="ig" id="help" aria-label="Get help">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Get help</span>
+          <h2>Get help</h2>
+          <p class="lede">One channel: GitHub Issues. Include the error output and the distro version.</p>
+        </header>
+
+        <div class="ig__prose reveal">
+          <p>
+            Open an issue on the
+            <a href={GITHUB_ISSUES} rel="noopener noreferrer">pulse issue tracker</a>
+            and tag it <code>linux</code>. The minimum reproduction set is: distro and version, Node version, Rust version, the failing <code>tauri dev</code> or <code>tauri build</code> output, and the contents of <code>~/.cargo/registry/cache/</code> if the build failed on a specific crate.
+          </p>
+          <p>
+            Source patches go through the standard fork-and-pull-request flow on the
+            <a href={GITHUB_DESKTOP} rel="noopener noreferrer">pulse-desktop tree</a>. CI runs on Ubuntu 22.04, Fedora 40, and Arch; a patch that breaks one of those three gets flagged before merge.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Next steps ──────────────────────────────────── -->
+    <section class="ig ig--next" id="next" aria-label="Next steps">
+      <div class="container">
+        <header class="ig__head reveal">
+          <span class="eyebrow">Next</span>
+          <h2>Where to go from here</h2>
+          <p class="lede">Two follow-up paths: switch to the Windows build for the supported experience, or read the source on GitHub.</p>
+        </header>
+
+        <ul class="ig__next reveal" role="list">
+          <li>
+            <a class="ig__next-link" href="/download/">
+              <span class="ig__next-label">Download Pulse for Windows</span>
+              <span class="ig__next-meta">The supported build. NSIS installer, signed, with auto-update.</span>
+            </a>
+          </li>
+          <li>
+            <a class="ig__next-link" href={GITHUB_DESKTOP} rel="noopener noreferrer">
+              <span class="ig__next-label">Read the source</span>
+              <span class="ig__next-meta">pulse-desktop tree on GitHub. Audit the network calls, fork it.</span>
+            </a>
+          </li>
+          <li>
+            <a class="ig__next-link" href={GITHUB_ISSUES} rel="noopener noreferrer">
+              <span class="ig__next-label">Open an issue</span>
+              <span class="ig__next-meta">Tag <code>linux</code>. Include the error output and the distro version.</span>
+            </a>
+          </li>
+        </ul>
+
+        <p class="ig__back">
+          <a class="btn btn--ghost" href="/">Back to home</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer license="" version="v0.6.7" />
+
+  <!-- R195 SEO: `HowTo` JSON-LD for the build-from-source path. -->
+  <script type="application/ld+json" set:html={JSON.stringify(howToJsonLd)} />
+</Base>
+
+<style>
+  /* ── Install-guide section styles (scoped to this page) ─────── */
+  .install__hero { padding-bottom: clamp(48px, 8vw, 96px); }
+  .install__intro {
+    font-size: 1.05rem;
+    color: var(--fg-dim);
+    max-width: 64ch;
+    margin-top: 0.5rem;
+    line-height: 1.6;
+  }
+  .install__intro code { color: var(--cyan); }
+
+  .ig {
+    background: radial-gradient(800px 400px at 80% 0%, rgba(187,154,247,0.05), transparent 65%),
+                radial-gradient(700px 400px at 10% 100%, rgba(122,162,247,0.06), transparent 65%);
+  }
+  .ig__head {
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    max-width: 64ch;
+  }
+  .ig__head h2 { max-width: 22ch; margin: 0; }
+  .ig__head .lede { margin: 0.5rem 0 0; }
+
+  .ig__prose { max-width: 70ch; color: var(--fg-dim); }
+  .ig__prose p { margin: 0 0 1rem; line-height: 1.65; }
+  .ig__prose p:last-child { margin-bottom: 0; }
+  .ig__prose code,
+  .ig__prose a code { color: var(--cyan); background: var(--surface-2); padding: 0.05em 0.35em; border-radius: 3px; border: 1px solid var(--border); font-size: 0.92em; }
+  .ig__prose a { color: var(--blue); }
+  .ig__prose a:hover { color: var(--purple); }
+
+  .ig__list { padding: 0 0 0 1.1rem; margin: 0 0 1.25rem; display: flex; flex-direction: column; gap: 0.7rem; }
+  .ig__list li { line-height: 1.6; }
+  .ig__list strong { color: var(--fg); }
+  .ig__list code { color: var(--cyan); background: var(--surface-2); padding: 0.05em 0.35em; border-radius: 3px; border: 1px solid var(--border); font-size: 0.9em; word-break: break-word; }
+
+  .ig__bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.9rem; max-width: 70ch; }
+  .ig__bullets li { padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%); line-height: 1.6; }
+  .ig__bullets strong { color: var(--fg); }
+  .ig__bullets code { color: var(--cyan); background: var(--surface-2); padding: 0.05em 0.35em; border-radius: 3px; border: 1px solid var(--border); font-size: 0.88em; word-break: break-word; }
+
+  /* ── Distro install cards (Step 2) ───────────────────────────── */
+  .ig__distros {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin: 0 0 1.5rem;
+  }
+  @media (min-width: 760px) { .ig__distros { grid-template-columns: repeat(3, 1fr); } }
+  .ig__distro { padding: 1.25rem 1.25rem 1.4rem; display: flex; flex-direction: column; gap: 0.6rem; }
+  .ig__distro-name { font-size: 1rem; font-weight: 600; margin: 0; color: var(--fg); letter-spacing: -0.005em; }
+  .ig__distro-mgr { margin: 0; color: var(--fg-dim); font-size: 0.85rem; font-family: ui-monospace, "JetBrains Mono", monospace; }
+  .ig__distro-mgr code { color: var(--purple); }
+  .ig__distro-note { margin: 0; color: var(--muted); font-size: 0.85rem; line-height: 1.5; }
+  .ig__distro-note code { color: var(--cyan); background: var(--surface-2); padding: 0.05em 0.3em; border-radius: 3px; border: 1px solid var(--border); font-size: 0.9em; }
+
+  /* ── Code blocks ─────────────────────────────────────────────── */
+  .ig__code {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    margin: 0 0 1rem;
+    overflow-x: auto;
+    font-family: ui-monospace, "JetBrains Mono", "Cascadia Code", "Fira Code", monospace;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .ig__code code { color: var(--fg); background: transparent; border: 0; padding: 0; font-size: inherit; white-space: pre; }
+  .ig__prose .ig__code { margin: 0 0 1.1rem; }
+
+  .ig__note { color: var(--muted); font-size: 0.88rem; margin: 1rem 0 0; max-width: 70ch; }
+  .ig__note code { color: var(--cyan); background: var(--surface-2); padding: 0.05em 0.35em; border-radius: 3px; border: 1px solid var(--border); font-size: 0.92em; }
+  .ig__note a { color: var(--blue); }
+  .ig__note a:hover { color: var(--purple); }
+
+  /* ── Next steps ──────────────────────────────────────────────── */
+  .ig__next { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; max-width: 720px; }
+  .ig__next-link {
+    display: flex; flex-direction: column; gap: 0.2rem;
+    padding: 0.9rem 1.1rem; min-height: 56px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    color: var(--fg); text-decoration: none;
+    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .ig__next-link:hover, .ig__next-link:focus-visible {
+    border-color: var(--purple); color: var(--fg); transform: translateY(-1px);
+  }
+  .ig__next-label { font-weight: 600; font-size: 1rem; }
+  .ig__next-meta { color: var(--fg-dim); font-size: 0.88rem; }
+  .ig__next-meta code { color: var(--cyan); }
+
+  .ig__back { margin-top: 1.5rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ig__next-link { transition: none; }
+    .ig__next-link:hover, .ig__next-link:focus-visible { transform: none; }
+  }
+</style>

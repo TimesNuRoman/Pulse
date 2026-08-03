@@ -357,6 +357,138 @@ const softwareAppsJsonLd = [
               <a href="/privacy/">Privacy &amp; data model</a>
             </p>
           </article>
+
+          <!-- ─── R195: macOS / Linux / iOS cards ───────────
+               macOS and Linux: "no official build today" + link
+               to the /install/{platform}/ build-from-source guide.
+               iOS: no sideloading path on Apple hardware, link
+               to the Android APK as a tablet fallback. -->
+          <article class="dl-card glass reveal" id="macos" data-dl-platform="macos">
+            <header class="dl-card__head">
+              <span class="dl-card__platform">Pulse for macOS</span>
+              <span class="notes-hero__pill" aria-label="Build from source">
+                <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+                source build
+              </span>
+            </header>
+            <h3 class="dl-card__title">Build Pulse for macOS from source.</h3>
+            <p class="dl-card__body">
+              There is no official macOS build today. The community has ported
+              the source to Apple Silicon and Intel. The build produces an
+              unsigned <code>.app</code> bundle and a <code>.dmg</code> that
+              drags into <code>/Applications</code>. Gatekeeper warns on first
+              run; the right-click &ldquo;Open&rdquo; menu clears it.
+            </p>
+            <div class="dl-card__ctas">
+              <a class="btn btn--primary btn--lg" href="/install/macos/">
+                Build from source on Mac ↓
+              </a>
+              <a class="btn btn--ghost btn--lg" href={GITHUB_URL} rel="noopener noreferrer">
+                Read the source on GitHub
+              </a>
+            </div>
+            <dl class="dl-card__meta">
+              <div class="dl-card__meta-row">
+                <dt>artifact</dt>
+                <dd><code>.app</code> · <code>.dmg</code></dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>min OS</dt>
+                <dd>macOS 11 (Big Sur)</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>arch</dt>
+                <dd>arm64 · x86_64</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>signing</dt>
+                <dd>Unsigned · Gatekeeper warns</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="dl-card glass reveal" id="linux" data-dl-platform="linux">
+            <header class="dl-card__head">
+              <span class="dl-card__platform">Pulse for Linux</span>
+              <span class="notes-hero__pill" aria-label="Build from source">
+                <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+                source build
+              </span>
+            </header>
+            <h3 class="dl-card__title">Build Pulse for Linux from source.</h3>
+            <p class="dl-card__body">
+              There is no official Linux build today. The community has ported
+              the source to GTK3 and WebKit2GTK. The build produces an
+              unsigned <code>.deb</code> for Debian-based distros and a
+              portable <code>.AppImage</code> for everything else. Expect
+              rough edges on Wayland.
+            </p>
+            <div class="dl-card__ctas">
+              <a class="btn btn--primary btn--lg" href="/install/linux/">
+                Build from source on Linux ↓
+              </a>
+              <a class="btn btn--ghost btn--lg" href={GITHUB_URL} rel="noopener noreferrer">
+                Read the source on GitHub
+              </a>
+            </div>
+            <dl class="dl-card__meta">
+              <div class="dl-card__meta-row">
+                <dt>artifact</dt>
+                <dd><code>.deb</code> · <code>.AppImage</code></dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>distros</dt>
+                <dd>Ubuntu · Debian · Fedora · Arch</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>arch</dt>
+                <dd>x86_64</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>signing</dt>
+                <dd>Unsigned · no apt or pacman repo</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="dl-card glass reveal" id="ios" data-dl-platform="ios">
+            <header class="dl-card__head">
+              <span class="dl-card__platform">Pulse for iOS</span>
+              <span class="notes-hero__pill" aria-label="Not available">
+                <span class="notes-hero__pill-dot" aria-hidden="true"></span>
+                not available
+              </span>
+            </header>
+            <h3 class="dl-card__title">No iOS build today.</h3>
+            <p class="dl-card__body">
+              Pulse is not on the App Store. Apple&rsquo;s rules do not allow
+              sideloading an unsigned build on iPhone or iPad. The Android
+              APK can be sideloaded on a tablet if a markdown editor is
+              the goal &mdash; it shares the same data model.
+            </p>
+            <div class="dl-card__ctas">
+              <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
+                Download Android APK ↓ {APK_SIZE}
+              </a>
+              <a class="btn btn--ghost btn--lg" href={GITHUB_URL} rel="noopener noreferrer">
+                Read the source on GitHub
+              </a>
+            </div>
+            <dl class="dl-card__meta">
+              <div class="dl-card__meta-row">
+                <dt>artifact</dt>
+                <dd>None</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>reason</dt>
+                <dd>App Store policy</dd>
+              </div>
+              <div class="dl-card__meta-row">
+                <dt>fallback</dt>
+                <dd><a href={APK_URL}>Android APK</a> on tablet</dd>
+              </div>
+            </dl>
+          </article>
         </div>
       </section>
     </details>
