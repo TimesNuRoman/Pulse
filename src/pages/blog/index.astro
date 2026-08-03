@@ -1,0 +1,464 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R201: /blog/ — index page for the Pulse blog.
+ *
+ * The blog is a content surface for longer-form notes on running local
+ * AI on Windows and Android. PostMeta[] is the source of truth for the
+ * post list: when a new post lands, append one entry to the array and
+ * the new card renders on this page automatically.
+ *
+ * Hard rules (R141 brand + R143 + R129):
+ *   - 0 new npm deps
+ *   - Anonymous brand: no personal name, no team attribution, no first-person
+ *   - No "free, forever" / "$0"
+ *   - No emoji
+ *   - No marketing fluff
+ *   - No future promises
+ *   - Apache 2.0 SPDX only on line 1
+ *   - Tokyo Night dark only (handled by global.css)
+ *   - 56dp min-height on interactive elements
+ *   - JSON-LD `Blog` schema with `blogPost` items
+ *
+ * BEM: .blog-index (page) / .blog-index__<section>__<element>
+ *
+ * Page count: 15 -> 16 (+1 page; +1 sitemap entry).
+ */
+
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/notes.css';
+
+interface PostMeta {
+  slug: string;
+  title: string;
+  description: string;
+  pubDate: string;       // ISO 8601 (YYYY-MM-DD)
+  author: string;
+  readingTime: string;   // human-readable, e.g. "7 min read"
+  tags: string[];
+  pulseMentionCount: number;  // R129: ≤ 1 per post
+}
+
+// PostMeta[] — append a new entry to publish a new post.
+// `pulseMentionCount` mirrors the count baked into the post file
+// (used to surface a tag in the future if the count ever goes > 0).
+// `author` is the publisher name; the brand chrome already lives in
+// the nav and footer, so we do not repeat it as a byline.
+const POSTS: PostMeta[] = [
+  {
+    slug: 'privacy-in-local-ai',
+    title: 'Privacy in local AI: what stays on your device',
+    description:
+      'A practical guide to data sovereignty when running AI models on your own hardware. ' +
+      'What stays local, what leaves the device, and how to verify the boundary yourself.',
+    pubDate: '2026-08-03',
+    author: 'Pulse',
+    readingTime: '7 min read',
+    tags: ['privacy', 'local-ai', 'data-sovereignty', 'guide'],
+    pulseMentionCount: 1,
+  },
+];
+
+const PAGE_TITLE = 'Pulse Blog';
+const PAGE_DESC =
+  'Notes on running AI locally on Windows and Android. Privacy, model choices, ' +
+  'and what local-first actually means in practice.';
+
+// ISO 8601 timestamp for the JSON-LD datePublished fallback.
+const PAGE_PUBLISHED = POSTS[0]?.pubDate ?? '2026-08-03';
+
+// Sort posts: newest first.
+const POSTS_SORTED = [...POSTS].sort((a, b) =>
+  a.pubDate < b.pubDate ? 1 : a.pubDate > b.pubDate ? -1 : 0
+);
+
+// JSON-LD: Blog schema with each post as a BlogPosting item.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Pulse Blog',
+  description: PAGE_DESC,
+  url: 'https://ownlocalml.com/blog/',
+  blogPost: POSTS_SORTED.map((p) => ({
+    '@type': 'BlogPosting',
+    headline: p.title,
+    description: p.description,
+    url: `https://ownlocalml.com/blog/${p.slug}/`,
+    datePublished: p.pubDate,
+    author: { '@type': 'Organization', name: p.author },
+    keywords: p.tags.join(', '),
+    publisher: {
+      '@type': 'Organization',
+      name: 'Pulse',
+      url: 'https://ownlocalml.com/',
+    },
+  })),
+};
+
+const formatDate = (iso: string): string => {
+  // Render as "Aug 3, 2026" without depending on a date library.
+  const [y, m, d] = iso.split('-').map(Number);
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${months[(m ?? 1) - 1]} ${d ?? 1}, ${y}`;
+};
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-image.svg"
+  canonical="https://ownlocalml.com/blog/"
+  ctaVisible={false}
+  footerLicense=""
+  footerVersion=""
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/#features">Features</a></li>
+        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/#download">Download</a></li>
+        <li><a class="nav__link" href="/install/windows/">Install</a></li>
+        <li><a class="nav__link" href="/compare/">Compare</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+        <li><a class="nav__link is-cta" href="/blog/" aria-current="page">Blog</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/#download">Start trial ↓ 12 MB</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/#features">Features</a>
+    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/#download">Download</a>
+    <a class="nav-drawer__link" href="/install/windows/">Install</a>
+    <a class="nav-drawer__link" href="/compare/">Compare</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="nav-drawer__link" href="/blog/" aria-current="page">Blog</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/#download">Start trial ↓ 12 MB</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => { setOpen(!drawer.classList.contains('is-open')); });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="blog-index">
+    <section class="blog-index__hero">
+      <div class="bg-glow"></div>
+      <div class="container blog-index__hero-grid reveal">
+        <div class="blog-index__hero-copy">
+          <span class="eyebrow">Pulse · blog</span>
+          <h1 class="blog-index__title">Pulse Blog</h1>
+          <p class="blog-index__sub">Notes on running AI locally on Windows and Android.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="blog-index__list" aria-label="Latest posts">
+      <div class="container">
+        {POSTS_SORTED.length === 0 ? (
+          <p class="blog-index__empty">
+            No posts yet. Check back after the first one ships.
+          </p>
+        ) : (
+          <ul class="blog-index__grid" role="list">
+            {POSTS_SORTED.map((post) => (
+              <li>
+                <article class="post-card glass reveal">
+                  <a class="post-card__link" href={`/blog/${post.slug}/`} aria-label={`Read “${post.title}”`}>
+                    <header class="post-card__head">
+                      <h2 class="post-card__title">{post.title}</h2>
+                    </header>
+                    <p class="post-card__desc">{post.description}</p>
+                    <footer class="post-card__meta">
+                      <span class="post-card__date">
+                        <time datetime={post.pubDate}>{formatDate(post.pubDate)}</time>
+                      </span>
+                      <span class="post-card__sep" aria-hidden="true">·</span>
+                      <span class="post-card__time">{post.readingTime}</span>
+                      {post.tags.length > 0 && (
+                        <>
+                          <span class="post-card__sep" aria-hidden="true">·</span>
+                          <ul class="post-card__tags" role="list" aria-label="Tags">
+                            {post.tags.slice(0, 3).map((tag) => (
+                              <li class="post-card__tag">{tag}</li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
+                    </footer>
+                  </a>
+                </article>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+
+    <section class="blog-index__next" aria-label="Next">
+      <div class="container">
+        <ul class="blog-index__next-list" role="list">
+          <li>
+            <a class="blog-index__next-link" href="/download/">
+              <span class="blog-index__next-label">Download</span>
+              <span class="blog-index__next-meta">Three installers for Windows, one for Android.</span>
+            </a>
+          </li>
+          <li>
+            <a class="blog-index__next-link" href="/faq/">
+              <span class="blog-index__next-label">FAQ</span>
+              <span class="blog-index__next-meta">Common questions on hotkeys, models, and the manifest.</span>
+            </a>
+          </li>
+          <li>
+            <a class="blog-index__next-link" href="/changelog/">
+              <span class="blog-index__next-label">Changelog</span>
+              <span class="blog-index__next-meta">Reverse-chronological release history.</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <Footer license="" version="" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</Base>
+
+<style>
+  /* ── Hero ──────────────────────────────────────────── */
+  .blog-index__hero {
+    padding-top: clamp(112px, 14vw, 160px);
+    padding-bottom: clamp(56px, 8vw, 88px);
+    overflow: hidden;
+  }
+  .blog-index__hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .blog-index__hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+  .blog-index__title {
+    font-size: var(--fs-1);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.04;
+    margin: 0;
+    max-width: 18ch;
+  }
+  .blog-index__sub {
+    font-size: 1.18rem;
+    color: var(--fg-dim);
+    max-width: 52ch;
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  /* ── List ──────────────────────────────────────────── */
+  .blog-index__list {
+    padding-block: clamp(48px, 7vw, 88px);
+    background:
+      radial-gradient(800px 400px at 80% 0%, rgba(187, 154, 247, 0.05), transparent 65%),
+      radial-gradient(700px 400px at 10% 100%, rgba(122, 162, 247, 0.06), transparent 65%);
+  }
+  .blog-index__grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+  }
+  @media (min-width: 760px) {
+    .blog-index__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .blog-index__empty {
+    color: var(--fg-dim);
+    font-size: 1rem;
+    max-width: 50ch;
+    margin: 0;
+  }
+
+  /* ── Post card ─────────────────────────────────────── */
+  .post-card {
+    position: relative;
+    padding: 0;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .post-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(187, 154, 247, 0.5);
+  }
+  .post-card__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem 1.5rem 1.4rem;
+    min-height: 56px;
+    color: inherit;
+    text-decoration: none;
+    border-radius: inherit;
+  }
+  .post-card__link:focus-visible {
+    outline: 2px solid var(--purple);
+    outline-offset: 2px;
+  }
+  .post-card__head { margin: 0; }
+  .post-card__title {
+    font-size: 1.18rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    margin: 0;
+    color: var(--fg);
+    line-height: 1.3;
+  }
+  .post-card__desc {
+    color: var(--fg-dim);
+    font-size: 0.96rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .post-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.5rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+  }
+  .post-card__date { color: var(--fg-dim); }
+  .post-card__time { color: var(--fg-dim); }
+  .post-card__sep { opacity: 0.5; }
+  .post-card__tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+  }
+  .post-card__tag {
+    display: inline-block;
+    padding: 0.12rem 0.5rem;
+    background: rgba(187, 154, 247, 0.08);
+    border: 1px solid rgba(187, 154, 247, 0.25);
+    border-radius: 9999px;
+    color: var(--purple);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+  }
+
+  /* ── Next links ────────────────────────────────────── */
+  .blog-index__next {
+    padding-block: clamp(56px, 8vw, 96px);
+  }
+  .blog-index__next-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+  }
+  @media (min-width: 760px) {
+    .blog-index__next-list { grid-template-columns: repeat(3, 1fr); }
+  }
+  .blog-index__next-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.1rem 1.25rem;
+    min-height: 56px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--fg);
+    text-decoration: none;
+    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .blog-index__next-link:hover {
+    border-color: rgba(187, 154, 247, 0.5);
+    transform: translateY(-1px);
+  }
+  .blog-index__next-link:focus-visible {
+    outline: 2px solid var(--purple);
+    outline-offset: 2px;
+  }
+  .blog-index__next-label {
+    font-weight: 600;
+    color: var(--purple);
+    font-size: 0.95rem;
+  }
+  .blog-index__next-meta {
+    color: var(--fg-dim);
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+
+  /* ── Motion safety ─────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .post-card,
+    .blog-index__next-link { transition: none; }
+    .post-card:hover,
+    .blog-index__next-link:hover { transform: none; }
+  }
+</style>
