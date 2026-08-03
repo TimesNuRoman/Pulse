@@ -17,6 +17,11 @@ const columns = [
     links: [
       { label: 'Download', href: '/download/' },
       { label: 'Pricing', href: '/pricing/' },
+      // R183: blog landing — first post lives at /blog/five-ollama-errors/.
+      // `tall: true` enforces 56dp min-height on this single link
+      // (HR11 a11y); the other 12 footer text links will get the
+      // same treatment when R180 lands.
+      { label: 'Blog', href: '/blog/', tall: true },
     ],
   },
   {
@@ -66,7 +71,7 @@ const columns = [
           <h3 class="footer__col-title">{col.title}</h3>
           <ul role="list">
             {col.links.map((l) => (
-              <li><a href={l.href}>{l.label}</a></li>
+              <li><a class={l.tall ? 'footer__col-link footer__col-link--tall' : ''} href={l.href}>{l.label}</a></li>
             ))}
           </ul>
         </div>
@@ -131,6 +136,16 @@ const columns = [
   .footer__col ul { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
   .footer__col a { color: var(--fg-dim); font-size: 0.95rem; }
   .footer__col a:hover { color: var(--purple); }
+
+  /* R183: 56dp min-height on the new Blog link (HR11 a11y).
+     Scoped to a single class so the other 12 footer text links
+     keep their existing 1-line height until R180 lands a global
+     56dp rule. */
+  .footer__col-link--tall {
+    display: inline-flex;
+    align-items: center;
+    min-height: 56px;
+  }
 
   .footer__bottom {
     margin-top: 2.5rem;
