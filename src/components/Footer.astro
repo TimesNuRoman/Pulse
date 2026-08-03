@@ -31,6 +31,7 @@ const columns = [
     links: [
       { label: `${license} License`, href: '/license/' },
       { label: 'Privacy', href: '/privacy' },
+      { label: 'Security', href: '/security/' },
       { label: 'Code of Conduct', href: '/code-of-conduct' },
     ],
   },
@@ -129,7 +130,13 @@ const columns = [
     margin-bottom: 0.7rem;
   }
   .footer__col ul { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
-  .footer__col a { color: var(--fg-dim); font-size: 0.95rem; }
+  .footer__col a {
+    color: var(--fg-dim);
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 56px;  /* R180 HR11e: above 44dp Apple HIG / 48dp M3 — keep all footer links tappable on touch */
+  }
   .footer__col a:hover { color: var(--purple); }
 
   .footer__bottom {
