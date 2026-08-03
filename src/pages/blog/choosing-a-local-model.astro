@@ -1,0 +1,551 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R192: /blog/choosing-a-local-model/ — first long-form blog post.
+ *
+ * Educational. Compares 3 small models (gemma3:4b, qwen2.5:3b,
+ * llama3.2:3b), covers benchmarks and hardware sizing, and shows the
+ * Ollama commands to switch between them.
+ *
+ * 5 H2 sections + a final section on integration with the product
+ * (R129 anonymous-brand rule: no personal name in copy; the section
+ * describes behaviour generically).
+ */
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+
+const POST_TITLE = 'Choosing a local model: gemma3:4b vs qwen2.5:3b vs llama3.2:3b';
+const POST_SUBTITLE = 'A practical guide to picking a small language model that runs on your laptop or phone.';
+const POST_DESC =
+  'A practical guide to picking a small language model that runs on a ' +
+  'laptop or phone. RAM budgets, benchmark reality, Ollama commands, ' +
+  'and a clear rule for when to upgrade hardware.';
+const PUB_DATE = '2026-08-03';
+const READING_TIME = '7 min read';
+const TAGS = ['local-ai', 'ollama', 'models', 'guide'];
+
+// JSON-LD: BlogPosting. Author is "Editorial team" to stay within the
+// R129 anonymous-brand rule (no personal name / "we" / "I" in copy).
+const blogPostingJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: POST_TITLE,
+  description: POST_DESC,
+  url: 'https://ownlocalml.com/blog/choosing-a-local-model/',
+  datePublished: PUB_DATE,
+  inLanguage: 'en',
+  author: { '@type': 'Organization', name: 'Editorial team' },
+  keywords: TAGS.join(', '),
+  publisher: {
+    '@type': 'Organization',
+    name: 'Editorial team',
+    url: 'https://ownlocalml.com/',
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': 'https://ownlocalml.com/blog/choosing-a-local-model/',
+  },
+};
+
+// JSON-LD: HowTo. 5 HowToSteps for "How to choose a model that fits your hardware".
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to choose a model that fits your hardware',
+  description:
+    'Pick a small language model (gemma3:4b, qwen2.5:3b, or llama3.2:3b) ' +
+    'based on available RAM, expected speed, and use case.',
+  totalTime: 'PT7M',
+  step: [
+    {
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'Check your free RAM',
+      text:
+        'Run `system_profiler SPHardwareDataType | grep Memory` on macOS, ' +
+        '`wmic OS get FreePhysicalMemory` on Windows, or `free -h` on Linux. ' +
+        'Subtract 2 GB for the OS and the apps you keep open. The remainder ' +
+        'is the budget for the model.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'Pick a model size that fits',
+      text:
+        'A 2.5 GB model wants 4-5 GB free. A 4 GB model wants 6-8 GB free. ' +
+        'A 7 GB model wants 10-14 GB free. If your free RAM is under 8 GB, ' +
+        'stay with 2-3B. If it is 8-16 GB, 4-7B is the sweet spot. ' +
+        '16 GB or more opens the 7-13B tier.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'Pull the model in Ollama',
+      text:
+        'Run `ollama pull gemma3:4b` (or `qwen2.5:3b` or `llama3.2:3b`). ' +
+        'The first pull downloads the GGUF weights to `~/.ollama/models`. ' +
+        'Subsequent pulls reuse the cache and only fetch new tags.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 4,
+      name: 'Run a 5-message smoke test',
+      text:
+        'Start with `ollama run <model>` and ask the model to summarise a ' +
+        'short article, write a 10-line Python function, extract a JSON ' +
+        'object from a paragraph, and remember a name across two turns. ' +
+        'If it loses context or hallucinates a function, drop down a tier.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 5,
+      name: 'Measure tokens per second on your hardware',
+      text:
+        'Use `ollama run <model> --verbose` and watch the eval-rate line. ' +
+        'Anything above 15 tok/s is comfortable for chat. Below 8 tok/s, ' +
+        'consider a smaller model, a Q4 quantisation instead of Q8, or a ' +
+        'GPU offload if your hardware supports it.',
+    },
+  ],
+};
+---
+
+<Base
+  title={POST_TITLE}
+  description={POST_DESC}
+  canonical="https://ownlocalml.com/blog/choosing-a-local-model/"
+  ctaVisible={false}
+  footerLicense="Apache 2.0"
+  footerVersion="v0.3.0"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <main id="main" class="blog-post">
+    <article class="blog-post__article">
+      <header class="blog-post__head">
+        <div class="container">
+          <p class="blog-post__crumbs">
+            <a href="/blog/">← Back to Blog</a>
+          </p>
+          <ul class="blog-post__tags" role="list" aria-label="Tags">
+            {TAGS.map((t) => <li class="blog-post__tag">{t}</li>)}
+          </ul>
+          <h1 class="blog-post__title">{POST_TITLE}</h1>
+          <p class="blog-post__sub">{POST_SUBTITLE}</p>
+          <p class="blog-post__meta">
+            <time datetime={PUB_DATE}>{PUB_DATE}</time>
+            <span aria-hidden="true"> · </span>
+            <span>{READING_TIME}</span>
+          </p>
+        </div>
+      </header>
+
+      <div class="container blog-post__body">
+        <section class="blog-post__lede" aria-label="Introduction">
+          <p>
+            The local model landscape in 2026 looks very different from the cloud-LLM era.
+            Three years ago, "small" meant a 7B model that needed a workstation GPU to run.
+            Today, a 3B model can hold a coherent conversation on a mid-range phone, and a
+            4B model can write a working Python function on the same hardware that streams
+            Netflix. This post walks through three concrete choices — gemma3:4b,
+            qwen2.5:3b, and llama3.2:3b — and shows how to switch between them in Ollama
+            without rewriting the client.
+          </p>
+        </section>
+
+        <section aria-labelledby="what-small-means">
+          <h2 id="what-small-means">What "small" means in 2026</h2>
+          <p>
+            In 2026, "small" refers to models between roughly 500 million and 2 billion
+            parameters. Anything in this range fits comfortably in 4-8 GB of RAM when
+            quantized to 4-bit, which is the format Ollama ships by default. The 1B-2B
+            tier is the new entry point for phones, the 2B-4B tier is the sweet spot for
+            laptops, and anything above 7B is firmly a workstation-class load.
+          </p>
+          <p>
+            The reason "small" works now is a combination of better training data and
+            better post-training. The 2024 generation of small models (Phi-2, Gemma 1,
+            Llama 2 7B) was clearly a tier below GPT-3.5 on long-form reasoning. The
+            2025-2026 generation (Gemma 3, Qwen 2.5, Llama 3.2) closes most of that gap on
+            the specific tasks small models are actually good at: short-form
+            summarization, code completion, JSON extraction, and routine writing.
+          </p>
+          <p>
+            The other reason is quantization. A "4B" model at Q4_K_M is roughly 2.5 GB on
+            disk, fits in 4 GB of RAM, and runs at usable speed on any 4-core CPU from
+            the last 5 years. The same model at Q8 is 4.5 GB on disk and noticeably
+            slower but slightly higher quality. For a first-time setup, Q4 is the right
+            default — bump to Q8 only if the Q4 model is producing obvious quality
+            regressions on your workload.
+          </p>
+        </section>
+
+        <section aria-labelledby="three-models">
+          <h2 id="three-models">Three models worth trying first</h2>
+          <p>
+            The table below summarises the three practical defaults. All three are
+            available in the default Ollama registry, all three are redistributable, and
+            all three speak the same HTTP API on port 11434.
+          </p>
+
+          <div class="blog-post__table-wrap" role="region" aria-label="Model comparison" tabindex="0">
+            <table class="blog-post__table">
+              <caption class="blog-post__table-caption">Three small models compared</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Model</th>
+                  <th scope="col">On-disk size</th>
+                  <th scope="col">Free RAM needed</th>
+                  <th scope="col">Strengths</th>
+                  <th scope="col">Weaknesses</th>
+                  <th scope="col">License</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">gemma3:4b</th>
+                  <td>2.5 GB (Q4_K_M)</td>
+                  <td>5-6 GB</td>
+                  <td>Strong reasoning, code completion, multi-turn dialogue</td>
+                  <td>Verbose output, slower than 3B on CPU</td>
+                  <td>Apache 2.0</td>
+                </tr>
+                <tr>
+                  <th scope="row">qwen2.5:3b</th>
+                  <td>2.0 GB (Q4_K_M)</td>
+                  <td>4-5 GB</td>
+                  <td>Fast, compact, strong Chinese and English</td>
+                  <td>Limited reasoning depth on long chains</td>
+                  <td>Apache 2.0</td>
+                </tr>
+                <tr>
+                  <th scope="row">llama3.2:3b</th>
+                  <td>2.0 GB (Q4_K_M)</td>
+                  <td>4-5 GB</td>
+                  <td>Balanced, broad third-party fine-tune ecosystem</td>
+                  <td>Weaker on code than gemma3:4b</td>
+                  <td>Llama 3.2 Community</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            Beyond the table, the practical advice is: try <code>gemma3:4b</code> first if
+            you want a single default. It is the strongest of the three on code, reasoning,
+            and multi-turn dialogue. Switch to <code>qwen2.5:3b</code> if you need faster
+            responses or are running on very tight RAM. Switch to <code>llama3.2:3b</code>
+            if you want the broadest community tooling — the Llama ecosystem has the most
+            third-party fine-tunes and adapters by a wide margin.
+          </p>
+          <p>
+            All three can be installed at once. <code>ollama list</code> shows the
+            downloaded models; <code>ollama rm &lt;name&gt;</code> removes one. Picking
+            per-query is a matter of which tag the client passes to the API.
+          </p>
+        </section>
+
+        <section aria-labelledby="benchmarks">
+          <h2 id="benchmarks">Benchmarks that matter</h2>
+          <p>
+            The two numbers that matter most for a local model are subjective quality and
+            tokens-per-second on your hardware. MMLU, HumanEval, and MGSM scores are
+            useful for ranking models against each other in the abstract, but they do not
+            predict how a model will feel on a 6-year-old laptop with 8 GB of RAM. A model
+            that scores 60 on MMLU but loses context after three messages is a worse daily
+            driver than a model that scores 52 and stays coherent.
+          </p>
+          <p>
+            For subjective quality, the practical test is a 5-message conversation. If the
+            model loses context between messages, misremembers a name, or hallucinates a
+            function that does not exist, it is not ready for daily use regardless of its
+            MMLU score. gemma3:4b is the strongest of the three on this test, with
+            qwen2.5:3b close behind and llama3.2:3b noticeably behind on long dialogue.
+          </p>
+          <p>
+            For speed, the relevant numbers are tokens-per-second for prompt ingestion and
+            tokens-per-second for generation. On a modern x86 CPU with AVX2, expect
+            20-40 tok/s for a 3B model and 12-25 tok/s for a 4B model at Q4_K_M. On Apple
+            Silicon, M1 and newer hit 40-80 tok/s for 3B. On a recent Android phone, expect
+            8-15 tok/s for a 2B model and 5-10 tok/s for a 4B model. Below 8 tok/s, chat
+            feels sluggish and the user starts reaching for the cancel button.
+          </p>
+          <p>
+            Context length is the third number worth knowing. gemma3:4b ships with 128K
+            context, qwen2.5:3b with 32K, llama3.2:3b with 128K. Larger context costs
+            more RAM and slows the model down — for a 128K context, expect 2-3x the
+            latency of a 4K context on the same prompt. For chat and most code
+            completion, 8K-16K is plenty.
+          </p>
+        </section>
+
+        <section aria-labelledby="switch-models">
+          <h2 id="switch-models">How to switch models in Ollama</h2>
+          <p>
+            Ollama has three ways to pick a model. The simplest is <code>ollama run</code>:
+          </p>
+<pre class="code-block" aria-label="Run a model in Ollama"><code>ollama run gemma3:4b</code></pre>
+          <p>
+            This starts a chat session with that model. The model is pulled from the
+            registry on first run and cached for next time. To pull without running, use
+            <code>ollama pull</code>:
+          </p>
+<pre class="code-block" aria-label="Pull additional models"><code>ollama pull qwen2.5:3b
+ollama pull llama3.2:3b</code></pre>
+          <p>
+            Once the model is on disk, Ollama serves it via the HTTP API. The server
+            listens on <code>localhost:11434</code> by default. Any client that speaks
+            the Ollama protocol can hit the API; the default model is the most recent one
+            started, but the client can override per-request:
+          </p>
+<pre class="code-block" aria-label="Call the Ollama API with a chosen model"><code>curl http://localhost:11434/api/generate -d '&#123;
+  "model": "gemma3:4b",
+  "prompt": "Summarise the second paragraph of Moby-Dick."
+&#125;'</code></pre>
+          <p>
+            The <code>OLLAMA_MODEL</code> environment variable sets the default for any
+            session that does not specify a model. To pin a model across reboots, add
+            <code>export OLLAMA_MODEL=gemma3:4b</code> to the shell profile. The same
+            value can be passed to the server directly:
+          </p>
+<pre class="code-block" aria-label="Pin the default model at server start"><code>OLLAMA_MODEL=qwen2.5:3b ollama serve</code></pre>
+          <p>
+            For batch jobs or scheduled scripts, the <code>--model</code> flag on
+            <code>ollama run</code> is the right choice — it does not require editing the
+            shell profile and does not affect other sessions.
+          </p>
+          <p>
+            If a model is not in the public registry, the Ollama Modelfile format wraps a
+            custom GGUF. The minimum Modelfile is two lines:
+          </p>
+<pre class="code-block" aria-label="Define a custom Modelfile"><code>FROM ./my-custom-weights.gguf
+PARAMETER temperature 0.7</code></pre>
+          <p>
+            Then <code>ollama create my-custom &amp;&amp; ollama run my-custom</code>
+            brings it online with the same HTTP API and the same JSON payload shape.
+          </p>
+        </section>
+
+        <section aria-labelledby="upgrade-hardware">
+          <h2 id="upgrade-hardware">When to upgrade your hardware</h2>
+          <p>
+            The right time to upgrade is when the model you want to run does not fit in
+            the RAM you have, with a little headroom. The general rule is: 1.5-2x the
+            model's on-disk size in free RAM. A 2.5 GB model wants 4-5 GB free, a 4 GB
+            model wants 6-8 GB free, a 7 GB model wants 10-14 GB free. Headroom matters
+            because the OS and the rest of the apps will compete for the same memory.
+          </p>
+          <p>
+            Under 8 GB of free RAM, stay with 2-3B models. The difference between a 2B and
+            a 3B model on Q4 is roughly 1.5 GB of RAM and a noticeable quality gap. The
+            difference between a 3B and a 4B model on Q4 is another 1 GB and a smaller
+            quality gap. Diminishing returns set in fast under 8 GB.
+          </p>
+          <p>
+            8-16 GB of free RAM is the 4-7B sweet spot. The 4B tier is what most
+            "small but capable" guides target. The 7B tier is the first tier where clear
+            reasoning improvements show up, but 8 GB total is not enough for Chrome plus a
+            7B model — keep 16 GB in mind as the practical minimum for that tier.
+          </p>
+          <p>
+            16-32 GB of free RAM opens the 7-13B tier. These models are a clear step up
+            on long-form reasoning, multi-step code, and structured output, but they are
+            slow on CPU and require a recent GPU for real-time use. CUDA, Metal, and
+            Vulkan paths all work in Ollama; the offload is automatic when a compatible
+            GPU is detected.
+          </p>
+          <p>
+            32 GB or more puts fine-tuning on the table. LoRA on a 7B base model fits in
+            16 GB of VRAM; full fine-tuning of a 3B model fits in 24 GB. Both are out of
+            scope for this guide, but the fact that they are reachable on consumer
+            hardware is the most important shift in the local-model landscape of the
+            last two years.
+          </p>
+        </section>
+
+        <section aria-labelledby="how-this-is-handled">
+          <h2 id="how-this-is-handled">How Pulse handles this</h2>
+          <p>
+            Model switching uses the same path as any other Ollama-compatible client.
+            To change the default, update the model path under <code>~/.ollama/models</code>
+            or set the <code>OLLAMA_MODEL</code> environment variable. Ollama exposes a
+            stable HTTP API on port 11434, so the same JSON payload works from any client
+            that speaks the Ollama protocol — no client-side model catalogue, no
+            proprietary download path. The default for the first run is
+            <code>gemma3:4b</code>; the user can swap to any installed model without
+            restarting the service.
+          </p>
+        </section>
+
+        <p class="blog-post__back">
+          <a href="/blog/">← Back to Blog</a>
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <Footer license="Apache 2.0" version="v0.3.0" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(blogPostingJsonLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(howToJsonLd)} />
+</Base>
+
+<style>
+  .blog-post { padding-block: clamp(60px, 10vw, 120px); }
+  .blog-post__head { margin-bottom: 2.5rem; }
+  .blog-post__crumbs {
+    font-size: 0.92rem;
+    color: var(--fg-dim);
+    margin-bottom: 1rem;
+  }
+  .blog-post__crumbs a { color: var(--fg-dim); }
+  .blog-post__crumbs a:hover { color: var(--purple); }
+  .blog-post__tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0 0 1.25rem;
+    padding: 0;
+  }
+  .blog-post__tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    color: var(--fg-dim);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 0.18rem 0.6rem;
+    border-radius: 999px;
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
+  }
+  .blog-post__title {
+    font-size: var(--fs-1);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.0125em;
+    margin: 0 0 0.6rem;
+    max-width: 28ch;
+  }
+  .blog-post__sub {
+    color: var(--fg-dim);
+    font-size: 1.15rem;
+    max-width: 60ch;
+    margin: 0 0 1.5rem;
+  }
+  .blog-post__meta {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0;
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .blog-post__body {
+    max-width: 75ch;
+  }
+  .blog-post__body section + section { margin-top: 2.5rem; }
+  .blog-post__lede p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--fg);
+  }
+  .blog-post__body h2 {
+    font-size: var(--fs-2);
+    font-weight: 500;
+    letter-spacing: -0.0125em;
+    line-height: 1.15;
+    margin: 0 0 1rem;
+    scroll-margin-top: 80px;
+  }
+  .blog-post__body p {
+    color: var(--fg-dim);
+    font-size: 1.02rem;
+    line-height: 1.65;
+    margin: 0 0 1rem;
+  }
+  .blog-post__body p code,
+  .blog-post__body li code {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+    font-size: 0.92em;
+  }
+  .blog-post__body a {
+    color: var(--blue);
+    border-bottom: 1px dotted var(--border);
+  }
+  .blog-post__body a:hover { color: var(--purple); border-bottom-color: var(--purple); }
+
+  .code-block {
+    background: #0d0e14;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.15rem;
+    overflow-x: auto;
+    margin: 0.5rem 0 1.25rem;
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--fg);
+  }
+  .code-block code { background: transparent; border: 0; padding: 0; color: inherit; }
+
+  .blog-post__table-wrap {
+    overflow-x: auto;
+    margin: 0.5rem 0 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .blog-post__table-wrap:focus-visible {
+    outline: 2px solid var(--purple);
+    outline-offset: 2px;
+  }
+  .blog-post__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+  .blog-post__table-caption {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .blog-post__table th,
+  .blog-post__table td {
+    padding: 0.7rem 0.85rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+    vertical-align: top;
+  }
+  .blog-post__table thead th {
+    font-weight: 600;
+    color: var(--fg);
+    background: var(--bg-soft);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .blog-post__table tbody tr:last-child th,
+  .blog-post__table tbody tr:last-child td { border-bottom: 0; }
+  .blog-post__table tbody th {
+    font-weight: 500;
+    color: var(--purple);
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
+    font-size: 0.88rem;
+  }
+  .blog-post__table tbody td { color: var(--fg-dim); }
+
+  .blog-post__back {
+    margin-top: 3rem;
+    font-size: 0.95rem;
+  }
+  .blog-post__back a { color: var(--fg-dim); }
+  .blog-post__back a:hover { color: var(--purple); }
+</style>
