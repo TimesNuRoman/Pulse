@@ -84,4 +84,9 @@
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
+  <url>
+    <loc>https://ownlocalml.com/install/android/</loc>
+    <lastmod>2026-08-03</lastmod>
+    <priority>0.8</priority>
+  </url>
 </urlset>
