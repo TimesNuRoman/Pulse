@@ -85,6 +85,7 @@
     <priority>0.5</priority>
   </url>
   <url>
+  <url>
     <loc>https://ownlocalml.com/blog/</loc>
     <lastmod>2026-08-03</lastmod>
     <changefreq>weekly</changefreq>
@@ -95,5 +96,11 @@
     <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ownlocalml.com/trademark/</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
   </url>
 </urlset>

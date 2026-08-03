@@ -1,0 +1,399 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+// R189: Trademark usage guidelines page.
+// Mirrors the structure of /license, /privacy, /code-of-conduct.
+// Anonymous brand: no real name, no made-up email, no founder mentions.
+// The hex codes in Section 5 are quoted brand values, not CSS literals.
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+
+const dateModified = '2026-08-03';
+const canonicalUrl = 'https://ownlocalml.com/trademark/';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  about: 'Pulse trademark usage guidelines',
+  dateModified,
+  url: canonicalUrl,
+  publisher: {
+    '@type': 'Organization',
+    name: 'Pulse',
+  },
+};
+---
+
+<Base
+  title="Trademark — Pulse"
+  description="Guidelines for using the Pulse name and logo. Allowed editorial references, prohibited uses, and logo treatment rules."
+  ctaVisible={false}
+  footerLicense=""
+  footerVersion=""
+  canonical={canonicalUrl}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+  <main class="legal" id="trademark-main">
+    <div class="container">
+      <header class="legal__head reveal">
+        <span class="eyebrow">Legal</span>
+        <h1>Pulse trademark and brand usage.</h1>
+        <p class="lede">
+          Pulse is a free, local-first project. The Pulse name and the P+spark
+          mark identify the project. This page covers how to use them — and how
+          not to.
+        </p>
+      </header>
+
+      <article class="legal__body">
+        <section class="legal__section" aria-label="What is trademarked">
+          <h2 class="legal__h2">1. What the project trademark covers.</h2>
+          <p>The following are reserved for the Pulse project:</p>
+          <ul>
+            <li>
+              The <strong>wordmark</strong>: the name "Pulse" written as a
+              single word, in any typography, when used to identify the
+              project.
+            </li>
+            <li>
+              The <strong>logo</strong>: the geometric P+spark mark visible
+              in <a href="/og-home.png" rel="noopener noreferrer">/og-home.png</a>
+              and in the footer of every page on this site.
+            </li>
+            <li>
+              The <strong>combination</strong>: the Pulse wordmark and the
+              P+spark mark used together, as a single brand identity.
+            </li>
+            <li>
+              Plain text references to "Pulse" in editorial copy are covered
+              by the fair-use rules in Section 3, not by the trademark
+              reservation itself.
+            </li>
+          </ul>
+        </section>
+
+        <section class="legal__section" aria-label="What is not trademarked">
+          <h2 class="legal__h2">2. What is not trademarked.</h2>
+          <p>
+            Trademark protection does not extend to the underlying technology.
+            The following are free for anyone to use under the project's
+            source license:
+          </p>
+          <ul>
+            <li>
+              The source code, configuration, and documentation (covered by
+              the <a href="/license/">source license</a>).
+            </li>
+            <li>
+              The wire protocol: the HTTP calls between Pulse and a local
+              model runtime (Ollama-compatible).
+            </li>
+            <li>
+              The compiled binary artifacts (the Windows installer, the
+              Android APK) — re-distributable under the source license.
+            </li>
+            <li>
+              The project name as a generic noun in unrelated contexts
+              (for example, a medical device called "pulse oximeter" or a
+              music application called "Pulse Trainer").
+            </li>
+          </ul>
+          <p>
+            Anyone can build, fork, or redistribute Pulse under the source
+            license. The trademark exists to identify the official Pulse
+            project — not to restrict what people do with the code.
+          </p>
+        </section>
+
+        <section class="legal__section" aria-label="Allowed uses of the Pulse name">
+          <h2 class="legal__h2">3. Allowed uses of the Pulse name.</h2>
+          <p>The following are explicitly allowed without prior permission:</p>
+          <ul>
+            <li>
+              <strong>Editorial references.</strong> Blog posts, articles,
+              reviews, podcasts, and video essays may refer to the project
+              as "Pulse" in plain text. The customary one-liner is:
+              <em>Pulse is a local-first AI side panel for Windows and
+              Android.</em>
+            </li>
+            <li>
+              <strong>Linking to the project.</strong> Articles and pages
+              may link to <a href="https://ownlocalml.com" rel="noopener noreferrer">ownlocalml.com</a>
+              or to the
+              <a href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">public repository</a>
+              and label the destination as the official project.
+            </li>
+            <li>
+              <strong>Distributing unmodified binaries.</strong> The official
+              Windows installer and Android APK may be mirrored and
+              re-distributed, provided attribution is preserved and the
+              binaries are not modified.
+            </li>
+            <li>
+              <strong>Plugins and extensions.</strong> A third-party plugin
+              or extension for Pulse may be published under its own name,
+              with a clear "unofficial" or "community" label so users do
+              not mistake it for the official project.
+            </li>
+            <li>
+              <strong>Forks.</strong> A fork may use the Pulse source code
+              but must pick a different name (for example, "Pulse Plus",
+              "PulseEDU", or "PulseMirror") and must not imply endorsement
+              by the original project.
+            </li>
+            <li>
+              <strong>Academic and research papers.</strong> Pulse may be
+              cited in publications, benchmarks, and case studies in the
+              same way as any other source-available tool.
+            </li>
+          </ul>
+        </section>
+
+        <section class="legal__section" aria-label="Prohibited uses of the Pulse name">
+          <h2 class="legal__h2">4. Prohibited uses of the Pulse name.</h2>
+          <p>The following are not allowed without prior written permission:</p>
+          <ul>
+            <li>
+              Naming a competing or unrelated product "Pulse", "Pulse-X",
+              "Pulse Pro", "Pulse Studio", or any name that begins with
+              "Pulse" — even when paired with a "trademark disclaimer".
+            </li>
+            <li>
+              Using the P+spark logo on a product, service, or web page in
+              a way that suggests official endorsement of something the
+              project has not endorsed.
+            </li>
+            <li>
+              Implying that a fork, mod, or repackaged build is the
+              official Pulse. The phrase "Pulse 2.0" without a
+              "(forked)" or "(modified)" qualifier on the same surface is
+              not allowed.
+            </li>
+            <li>
+              Using "Pulse" inside a paid product name, paid bundle, or
+              paid service tier (for example, "Pulse Premium" inside a
+              third-party subscription).
+            </li>
+            <li>
+              Domain squatting: registering <code>pulse.io</code>,
+              <code>pulse-app.com</code>, <code>pulse-ai.com</code>,
+              <code>pulsesidebar.com</code>, or any similar domain that
+              could be confused with the official project. The official
+              domain is <a href="https://ownlocalml.com" rel="noopener noreferrer">ownlocalml.com</a>.
+            </li>
+            <li>
+              Modifying the P+spark logo (changing colours, proportions,
+              or adding elements such as shadows, glows, or extra
+              geometry) and using the result as if it were the official
+              mark.
+            </li>
+          </ul>
+        </section>
+
+        <section class="legal__section" aria-label="Logo usage rules">
+          <h2 class="legal__h2">5. Logo usage rules.</h2>
+          <p>
+            The P+spark mark is the geometric icon shown in the footer of
+            this site. The following rules apply whenever the mark is
+            reproduced:
+          </p>
+
+          <h3 class="legal__h3">Colours.</h3>
+          <ul>
+            <li>
+              The mark itself is rendered in the project purple
+              <code>#bb9af7</code>.
+            </li>
+            <li>
+              The mark is designed for a dark surface. Use it on
+              <code>#1a1b26</code> (the project background) or on a
+              similarly dark, low-saturation surface.
+            </li>
+            <li>
+              Do not recolour the mark to brand colours of another
+              product. Do not invert the geometry into a different
+              composition.
+            </li>
+          </ul>
+
+          <h3 class="legal__h3">Geometry.</h3>
+          <ul>
+            <li>
+              Do not rotate, mirror, skew, or otherwise distort the mark.
+            </li>
+            <li>
+              Do not crop the mark. Always render it in full, with the
+              spark visible.
+            </li>
+            <li>
+              Do not place the mark on a busy photographic background. Use
+              a solid dark surface; an untextured dark card is fine.
+            </li>
+          </ul>
+
+          <h3 class="legal__h3">Size.</h3>
+          <ul>
+            <li>
+              On screen, the mark must be at least 24 px on its longest
+              side.
+            </li>
+            <li>
+              In print, the mark must be at least 0.5 inch (12.7 mm) on
+              its longest side.
+            </li>
+            <li>
+              Do not add effects: no drop shadows, no glow, no gradient
+              fill that is not present in the original. Use the original
+              flat geometry.
+            </li>
+          </ul>
+
+          <h3 class="legal__h3">Source files.</h3>
+          <p>
+            The current source-of-truth for the mark is
+            <a href="/og-home.png" rel="noopener noreferrer">/og-home.png</a>
+            (PNG, 1200x630, generated for the open-graph card). When the
+            <code>/press/</code> kit ships with dedicated SVG variants,
+            that kit will become the canonical source and this page will
+            link to it.
+          </p>
+        </section>
+
+        <section class="legal__section" aria-label="Trademark enforcement">
+          <h2 class="legal__h2">6. Trademark enforcement.</h2>
+          <p>
+            The Pulse trademark is protected to keep the project
+            identifiable — not to be aggressive. If misuse is spotted, the
+            common response is a name-change request, not a legal threat.
+          </p>
+          <p>
+            If a name-change request is ignored, or if the misuse is
+            commercial in nature (paid products, advertising, or
+            impersonation), legal action may be considered. That step is
+            reserved for cases where the request is ignored or where
+            downstream users are likely to be confused.
+          </p>
+        </section>
+
+        <section class="legal__section" aria-label="Contact for trademark questions">
+          <h2 class="legal__h2">7. Contact.</h2>
+          <p>
+            Trademark questions, name-change requests, and reports of
+            misuse are handled on the public issue tracker:
+          </p>
+          <p>
+            <a
+              href="https://github.com/TimesNuRoman/pulse/issues/new?template=trademark.md"
+              rel="noopener noreferrer"
+            >Open a trademark issue on GitHub</a>.
+            If the trademark template is not available in the issue
+            picker, file a regular issue and prefix the title with
+            <code>[trademark]</code>.
+          </p>
+          <p>
+            No support email is published. The project does not operate a
+            trademark hotline or a trademark intake form outside the
+            repository.
+          </p>
+        </section>
+
+        <p class="legal__meta">
+          Last updated <time datetime={dateModified}>3 August 2026</time>.
+          This page is informational, not legal advice. For formal
+          trademark questions, consult a lawyer in the relevant
+          jurisdiction.
+        </p>
+      </article>
+
+      <p class="legal__back reveal"><a href="/">&larr; Back to Pulse</a></p>
+    </div>
+  </main>
+  <Footer license="" version="" />
+</Base>
+
+<style>
+  .legal { padding-block: clamp(60px, 10vw, 120px); }
+  .legal__head { text-align: left; margin-bottom: 2.5rem; }
+  .legal__head .lede { margin-top: 0.6rem; }
+
+  .legal__body {
+    max-width: 75ch;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    color: var(--fg-dim);
+    font-size: 1.02rem;
+  }
+
+  .legal__section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .legal__h2 {
+    margin-top: 0.5rem;
+    font-size: 1.15rem;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+
+  .legal__h3 {
+    margin-top: 0.85rem;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--fg);
+    letter-spacing: 0.01em;
+  }
+
+  .legal__body p { line-height: 1.65; }
+  .legal__body p code {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+    font-size: 0.92em;
+  }
+  .legal__body em {
+    color: var(--fg);
+    font-style: normal;
+    border-bottom: 1px dotted var(--border);
+    padding-bottom: 1px;
+  }
+
+  .legal__body ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .legal__body li::marker { color: var(--purple); }
+  .legal__body li strong { color: var(--fg); font-weight: 600; }
+
+  .legal__body a {
+    color: var(--cyan);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border);
+  }
+  .legal__body a:hover {
+    color: var(--purple);
+    border-bottom-color: var(--purple);
+  }
+
+  .legal__meta {
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .legal__meta time { color: var(--fg-dim); }
+
+  .legal__back {
+    margin-top: 3rem;
+    font-size: 0.95rem;
+  }
+</style>
