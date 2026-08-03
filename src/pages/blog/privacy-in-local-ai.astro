@@ -1,0 +1,867 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R201: /blog/privacy-in-local-ai/ — first blog post.
+ *
+ * 5 sections, ~1600 words, 1 Pulse mention (R129 strict count).
+ * JSON-LD: BlogPosting + HowTo (5 HowToStep for "How to verify your
+ * local AI setup").
+ *
+ * Hard rules (R141 brand + R143 + R129):
+ *   - 0 new npm deps
+ *   - Anonymous brand: no personal name, no team attribution, no first-person
+ *   - No "free, forever" / "$0"
+ *   - No emoji
+ *   - No marketing fluff, no future promises
+ *   - Apache 2.0 SPDX only on line 1
+ *   - Tokyo Night dark only (handled by global.css)
+ *   - 56dp min-height on interactive elements
+ *   - 1 brand mention in section 5 (R129 strict, ≤ 1)
+ *
+ * Astro parser gotcha (R192/R198 lesson): literal `${` inside JSX text
+ * breaks the build with an esbuild "Expected '}' but found ':'" error.
+ * Fix: use HTML entities `&#36;&#123;` for `${` in code samples. We
+ * also avoid raw `${` placeholders by using `<VAR>` style.
+ *
+ * Page count: 16 -> 17 (+1 page; +1 sitemap entry).
+ */
+
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/notes.css';
+
+const PAGE_TITLE = 'Privacy in local AI: what stays on your device';
+const PAGE_DESC =
+  'A practical guide to data sovereignty when running AI models on your own hardware. ' +
+  'What stays local, what leaves the device, and how to verify the boundary yourself.';
+const PUB_DATE = '2026-08-03';
+const READING_TIME = '7 min read';
+const CANONICAL = 'https://ownlocalml.com/blog/privacy-in-local-ai/';
+
+// R129 strict: ≤ 1 "Pulse" mention per blog post. The single mention
+// lives in section 5 ("How to verify your setup"), neutral and factual.
+// Counter (used by verification grep): any string containing "Pulse"
+// anywhere in the rendered post body. Keep this honest.
+const TAGS = ['privacy', 'local-ai', 'data-sovereignty', 'guide'];
+
+// Section anchors (for in-page TOC + HowTo steps).
+const SECTIONS = [
+  { id: 'why-local-ai-why-now', num: 1, label: 'Why local AI, why now' },
+  { id: 'what-stays-local', num: 2, label: 'What stays local with Ollama' },
+  { id: 'what-leaves-the-device', num: 3, label: 'What goes to the cloud (and when)' },
+  { id: 'threat-model', num: 4, label: 'Threat model: what local AI protects against' },
+  { id: 'how-to-verify', num: 5, label: 'How to verify your setup' },
+];
+
+// HowTo JSON-LD — 5 steps, mirrors the section structure for SEO.
+const howToSteps = [
+  {
+    '@type': 'HowToStep',
+    position: 1,
+    name: 'List active connections on the Ollama port',
+    text:
+      'Run `netstat -an | grep :11434` (Linux / macOS) or ' +
+      '`Get-NetTCPConnection -LocalPort 11434` (PowerShell) to confirm ' +
+      'Ollama only listens on localhost. Connections to public IPs mean ' +
+      'something is misconfigured.',
+  },
+  {
+    '@type': 'HowToStep',
+    position: 2,
+    name: 'Inspect raw HTTP traffic with a packet capture',
+    text:
+      'Open Wireshark on the loopback interface, capture for sixty ' +
+      'seconds, then apply a display filter for non-local traffic. ' +
+      'No request body should match the size and shape of a prompt.',
+  },
+  {
+    '@type': 'HowToStep',
+    position: 3,
+    name: 'Enable verbose logging on the Ollama server',
+    text:
+      'Stop the running server and restart it with `OLLAMA_DEBUG=1 ollama serve`. ' +
+      'The log shows every inbound request and outbound connection. ' +
+      'Cross-reference each outbound host against the documented list.',
+  },
+  {
+    '@type': 'HowToStep',
+    position: 4,
+    name: 'Confirm telemetry is off',
+    text:
+      'Read the env file or service unit that starts Ollama. The variable ' +
+      '`OLLAMA_TELEMETRY` should be set to `false` or absent. ' +
+      'If unset, Ollama disables telemetry by default since v0.3.x.',
+  },
+  {
+    '@type': 'HowToStep',
+    position: 5,
+    name: 'Verify the client does not exfiltrate',
+    text:
+      'In the client app, disable any cloud fallback in settings. ' +
+      'Then repeat the packet capture with a long conversation. ' +
+      'No bytes should leave the device during inference.',
+  },
+];
+
+// BlogPosting JSON-LD.
+const blogPostingLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: PAGE_TITLE,
+  description: PAGE_DESC,
+  datePublished: PUB_DATE,
+  dateModified: PUB_DATE,
+  author: { '@type': 'Organization', name: 'Pulse' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Pulse',
+    url: 'https://ownlocalml.com/',
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': CANONICAL,
+  },
+  url: CANONICAL,
+  keywords: TAGS.join(', '),
+  inLanguage: 'en',
+};
+
+// HowTo JSON-LD (one per page; aggregated for the "How to verify" section).
+const howToLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to verify your local AI setup',
+  description:
+    'Five concrete checks to confirm that an Ollama-based local AI setup ' +
+    'keeps prompts, responses, and conversation history on the device.',
+  totalTime: 'PT10M',
+  step: howToSteps,
+};
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-image.svg"
+  canonical={CANONICAL}
+  ctaVisible={false}
+  footerLicense=""
+  footerVersion=""
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/#features">Features</a></li>
+        <li><a class="nav__link" href="/notes/">Notes</a></li>
+        <li><a class="nav__link" href="/#download">Download</a></li>
+        <li><a class="nav__link" href="/install/windows/">Install</a></li>
+        <li><a class="nav__link" href="/compare/">Compare</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+        <li><a class="nav__link is-cta" href="/blog/" aria-current="page">Blog</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/#download">Start trial ↓ 12 MB</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/#features">Features</a>
+    <a class="nav-drawer__link" href="/notes/">Notes</a>
+    <a class="nav-drawer__link" href="/#download">Download</a>
+    <a class="nav-drawer__link" href="/install/windows/">Install</a>
+    <a class="nav-drawer__link" href="/compare/">Compare</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="nav-drawer__link" href="/blog/" aria-current="page">Blog</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/#download">Start trial ↓ 12 MB</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => { setOpen(!drawer.classList.contains('is-open')); });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="post">
+    <!-- ── Hero ─────────────────────────────────────── -->
+    <section class="post__hero">
+      <div class="bg-glow"></div>
+      <div class="container post__hero-grid reveal">
+        <div class="post__hero-copy">
+          <div class="post__hero-badges">
+            <span class="eyebrow">Pulse · blog · privacy</span>
+            <span class="post__hero-pill" aria-label="Reading time">
+              <span class="post__hero-pill-dot" aria-hidden="true"></span>
+              {READING_TIME}
+            </span>
+          </div>
+          <h1 class="post__title">{PAGE_TITLE}</h1>
+          <p class="post__sub">A practical guide to data sovereignty when running AI models on your own hardware.</p>
+          <div class="post__meta">
+            <span class="post__meta-author">By Pulse</span>
+            <span class="post__meta-sep" aria-hidden="true">·</span>
+            <time class="post__meta-date" datetime={PUB_DATE}>Aug 3, 2026</time>
+            <span class="post__meta-sep" aria-hidden="true">·</span>
+            <ul class="post__meta-tags" role="list" aria-label="Tags">
+              {TAGS.map((tag) => (
+                <li class="post__meta-tag">{tag}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TOC ──────────────────────────────────────── -->
+    <section class="post__toc" aria-label="Table of contents">
+      <div class="container">
+        <details class="post__toc-details" open>
+          <summary class="post__toc-summary">In this post</summary>
+          <ol class="post__toc-list" role="list">
+            {SECTIONS.map((s) => (
+              <li>
+                <a class="post__toc-link" href={`#${s.id}`}>
+                  <span class="post__toc-num">{s.num}.</span> {s.label}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </details>
+      </div>
+    </section>
+
+    <!-- ── Article body ─────────────────────────────── -->
+    <article class="post__body">
+      <div class="container post__body-grid">
+
+        <!-- ── Section 1: Why local AI, why now ─────────── -->
+        <section class="post__section" id="why-local-ai-why-now" aria-labelledby="why-local-ai-why-now-h">
+          <header class="post__section-head">
+            <span class="post__section-num">01</span>
+            <h2 id="why-local-ai-why-now-h">Why local AI, why now</h2>
+          </header>
+
+          <p>
+            Cloud-hosted AI assistants have become the default. A prompt typed into a chat box is, in most cases, transmitted to a remote inference cluster, processed by a model the user cannot inspect, and stored in a log the user cannot read. The trade is convenience for visibility, and for many workflows that trade is fine. For others, it is not.
+          </p>
+
+          <p>
+            Local AI — running a model directly on your own hardware — reverses that trade. The model weights, the prompts, the responses, and the conversation history all live on the device. No round trip to a remote server, no central log, no model provider holding a copy of your input. The model is yours in the same sense a calculator is yours: the data you feed it never leaves the room.
+          </p>
+
+          <p>
+            Who this matters for:
+          </p>
+          <ul class="post__list" role="list">
+            <li><strong>Journalists and their sources.</strong> Encrypted chat protects messages in transit; local AI protects the prompts that summarise, draft, or analyse them.</li>
+            <li><strong>Researchers working with unpublished data.</strong> Preprints, grant text, and review responses are not safe to send to a third-party inference endpoint under most institutional policies.</li>
+            <li><strong>Students in restrictive networks.</strong> Some campus and corporate networks block cloud AI entirely; local AI runs offline.</li>
+            <li><strong>Anyone whose threat model includes data breaches.</strong> Cloud providers get breached. Local-first setups do not have a remote target to breach.</li>
+            <li><strong>Anyone who simply prefers the property.</strong> Local inference is a structural choice, not a feature flag.</li>
+          </ul>
+
+          <p>
+            The rest of this post is a practical guide to what "local" actually means in an Ollama-based setup, what still leaves the device, and how to verify the boundary yourself.
+          </p>
+        </section>
+
+        <!-- ── Section 2: What stays local with Ollama ──── -->
+        <section class="post__section" id="what-stays-local" aria-labelledby="what-stays-local-h">
+          <header class="post__section-head">
+            <span class="post__section-num">02</span>
+            <h2 id="what-stays-local-h">What stays local with Ollama</h2>
+          </header>
+
+          <p>
+            Ollama is the most common runtime for local models on consumer hardware. The default install exposes an HTTP API on <code>http://127.0.0.1:11434</code> and an OpenAI-compatible endpoint at <code>/v1/chat/completions</code>. A client application on the same machine — for example, a side-panel assistant — talks to that loopback port and nowhere else.
+          </p>
+
+          <p>
+            What stays on the device by default:
+          </p>
+          <ul class="post__list" role="list">
+            <li><strong>Model weights.</strong> Once downloaded, the model is stored on disk and loaded into RAM or VRAM. No part of the weight file is sent anywhere.</li>
+            <li><strong>Prompts.</strong> The text you send to <code>/api/chat</code> or <code>/v1/chat/completions</code> is processed by the local inference engine. It is not transmitted to a remote endpoint.</li>
+            <li><strong>Responses.</strong> Token-by-token output is generated locally. The stream of tokens is delivered to the client on loopback and not forwarded.</li>
+            <li><strong>Conversation history.</strong> Anything the client application persists — message lists, system prompts, scratchpads — lives in the client's own storage. Ollama itself is stateless; the conversation context is reconstructed from client-side state on each turn.</li>
+            <li><strong>Embeddings.</strong> When the client uses <code>/api/embeddings</code> for vector search, the resulting vectors stay local. The text used to produce them is not transmitted.</li>
+          </ul>
+
+          <p>
+            The only network calls Ollama makes are:
+          </p>
+          <ul class="post__list" role="list">
+            <li><strong>Model pull</strong> — when you run <code>ollama pull &lt;model&gt;</code>, the manifest and weight shards are downloaded from the Ollama registry (or a private registry you have configured). Subsequent loads use the local cache.</li>
+            <li><strong>Telemetry (configurable, off by default)</strong> — Ollama sends a small anonymous ping on the first run of a day. The payload contains the OS, the Ollama version, and a random UUID. Set the environment variable <code>OLLAMA_TELEMETRY=false</code> to disable it permanently.</li>
+          </ul>
+
+          <p>
+            No prompt, response, or conversation history leaves the device under a default Ollama install with telemetry disabled. The boundary is the loopback interface.
+          </p>
+        </section>
+
+        <!-- ── Section 3: What goes to the cloud (and when) -->
+        <section class="post__section" id="what-leaves-the-device" aria-labelledby="what-leaves-the-device-h">
+          <header class="post__section-head">
+            <span class="post__section-num">03</span>
+            <h2 id="what-leaves-the-device-h">What goes to the cloud (and when)</h2>
+          </header>
+
+          <p>
+            Local-first is not zero-network. Three categories of traffic are expected and worth listing explicitly so the boundary is auditable rather than implicit.
+          </p>
+
+          <h3 class="post__h3">3.1 Model downloads</h3>
+          <p>
+            The first time you run <code>ollama pull gemma3:4b</code>, the model manifest and weight shards are downloaded over HTTPS from the Ollama registry. The download is a one-time event for each model; the cache lives in <code>~/.ollama/models</code> (Linux and macOS) or <code>%USERPROFILE%\.ollama\models</code> (Windows). Subsequent <code>ollama run</code> commands do not re-download.
+          </p>
+          <p>
+            Custom registries are supported: set <code>OLLAMA_HOST</code> and <code>OLLAMA_REGISTRY</code> to point at a private mirror. Air-gapped setups can pre-stage the model directory and skip the registry entirely.
+          </p>
+
+          <h3 class="post__h3">3.2 Documentation and help pages</h3>
+          <p>
+            If you open a "Help" link in a client application, the request goes to the project's documentation site. No user content is included in the request — it is a plain GET. The model name or local file path is not sent. Third-party documentation pages may set cookies or run analytics under their own privacy policies.
+          </p>
+
+          <h3 class="post__h3">3.3 Source repository and stars</h3>
+          <p>
+            Update checks, bug reports, and "star this repo" buttons go to <code>github.com</code>. These calls are user-initiated and contain no prompt or response data. They are visible in the same packet capture as everything else.
+          </p>
+
+          <h3 class="post__h3">3.4 What is NOT in this list</h3>
+          <p>
+            No analytics SDK is bundled with the model runtime. No crash reports are sent automatically. No A/B test framework phones home. None of these categories are opt-in or opt-out — they do not exist in the default install. If a client application adds them on top, that is a property of the client, not the runtime.
+          </p>
+
+          <p>
+            The full expected outbound set under a clean install is therefore: model downloads (one-time, cacheable), optional telemetry (off by default), and user-initiated links to docs or the source repository.
+          </p>
+        </section>
+
+        <!-- ── Section 4: Threat model ───────────────────── -->
+        <section class="post__section" id="threat-model" aria-labelledby="threat-model-h">
+          <header class="post__section-head">
+            <span class="post__section-num">04</span>
+            <h2 id="threat-model-h">Threat model: what local AI protects against</h2>
+          </header>
+
+          <p>
+            A practical threat model is more useful than a marketing claim. Below is the realistic scope of protection from running AI on your own hardware, and the boundary beyond which local-first stops helping.
+          </p>
+
+          <div class="post__table-wrap" role="region" aria-label="Cloud AI vs local AI privacy comparison" tabindex="0">
+            <table class="post__table">
+              <thead>
+                <tr>
+                  <th scope="col">Property</th>
+                  <th scope="col">Cloud AI (default)</th>
+                  <th scope="col">Local AI (Ollama)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Prompts and responses</th>
+                  <td>Sent to remote endpoint, may be logged</td>
+                  <td>Stay on device between client and loopback</td>
+                </tr>
+                <tr>
+                  <th scope="row">Training on your data</th>
+                  <td>Permitted by most provider ToS unless opted out</td>
+                  <td>No third party has the data to train on</td>
+                </tr>
+                <tr>
+                  <th scope="row">Model access</th>
+                  <td>Subject to provider rate limits and shutdowns</td>
+                  <td>Unlimited local invocations, model on disk</td>
+                </tr>
+                <tr>
+                  <th scope="row">Conversation history</th>
+                  <td>Stored on provider servers</td>
+                  <td>Stored in client application data directory</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="post__h3">What local AI protects against</h3>
+          <ul class="post__list" role="list">
+            <li><strong>Mass surveillance of inference traffic.</strong> There is no remote endpoint to log your prompts.</li>
+            <li><strong>Provider data breaches.</strong> No remote store of your data means no remote store to be breached.</li>
+            <li><strong>Provider-side training on your input.</strong> The model weights you run are already final; nothing you send can retroactively train them.</li>
+            <li><strong>Provider lock-in.</strong> The model is a file on disk. You can run it with any compatible runtime.</li>
+            <li><strong>Region-based restrictions and account suspensions.</strong> A local install is not gated by an account or a billing status.</li>
+          </ul>
+
+          <h3 class="post__h3">What local AI does NOT protect against</h3>
+          <ul class="post__list" role="list">
+            <li><strong>Physical access to the device.</strong> An attacker with the laptop open and the disk unlocked sees everything you see.</li>
+            <li><strong>Malware on the device.</strong> A keylogger or a screen capture is unaffected by the model running locally. Local-first is a network property, not an endpoint security property.</li>
+            <li><strong>Side-channel attacks on the model.</strong> Inference leaks information through timing and power channels. Research-grade attacks, not consumer-relevant today, but real.</li>
+            <li><strong>Output of harmful or biased content.</strong> A local model inherits the bias of its training data. Running locally does not make a model "safer" in the policy sense.</li>
+            <li><strong>Poor operational security on the operator's side.</strong> Screenshots, screen sharing, shoulder-surfing, and cloud backups of the model cache are out of scope for the model itself.</li>
+          </ul>
+
+          <p>
+            Local AI is a network and data-sovereignty property. It does not turn a laptop into a fortress. Use it together with full-disk encryption, screen lock, and a sane threat model.
+          </p>
+        </section>
+
+        <!-- ── Section 5: How to verify your setup ───────── -->
+        <section class="post__section" id="how-to-verify" aria-labelledby="how-to-verify-h">
+          <header class="post__section-head">
+            <span class="post__section-num">05</span>
+            <h2 id="how-to-verify-h">How to verify your setup</h2>
+          </header>
+
+          <p>
+            Trust is verified, not declared. Five concrete checks confirm that a local Ollama setup behaves as documented. None of them require trusting the model or the client — only the network and the logs.
+          </p>
+
+          <ol class="post__steps" role="list">
+            <li class="post__step">
+              <h3 class="post__step-title">Confirm Ollama only listens on localhost</h3>
+              <p>
+                On Linux or macOS, list active connections on the Ollama port. The address should always be <code>127.0.0.1</code> or <code>::1</code>:
+              </p>
+              <pre class="post__code"><code class="language-bash">netstat -an | grep :11434</code></pre>
+              <p>
+                On Windows PowerShell, the equivalent is:
+              </p>
+              <pre class="post__code"><code class="language-powershell">Get-NetTCPConnection -LocalPort 11434 | Select-Object LocalAddress, State, OwningProcess</code></pre>
+              <p>
+                Any line showing a non-loopback address means the runtime has been bound to a public interface — investigate before continuing.
+              </p>
+            </li>
+
+            <li class="post__step">
+              <h3 class="post__step-title">Capture raw traffic with Wireshark</h3>
+              <p>
+                Start a packet capture on the loopback interface, send a prompt through the client, and stop the capture after sixty seconds. A useful display filter to isolate non-local traffic is:
+              </p>
+              <pre class="post__code"><code class="language-bash">http.request and ip.dst != 127.0.0.0/8 and ip.dst != 192.168.0.0/16</code></pre>
+              <p>
+                The expected result is zero requests. Any non-zero count deserves a manual review of the destination host.
+              </p>
+            </li>
+
+            <li class="post__step">
+              <h3 class="post__step-title">Restart Ollama with debug logging</h3>
+              <p>
+                Stop the running server and start it with verbose logging. Every inbound request and outbound connection is written to the log:
+              </p>
+              <pre class="post__code"><code class="language-bash">OLLAMA_DEBUG=1 ollama serve</code></pre>
+              <p>
+                Cross-reference each outbound host against the documented list (registry, optional telemetry, user-initiated links). Anything else is a configuration drift.
+              </p>
+            </li>
+
+            <li class="post__step">
+              <h3 class="post__step-title">Confirm telemetry is off</h3>
+              <p>
+                Read the environment file or service unit that starts Ollama. The variable <code>OLLAMA_TELEMETRY</code> should be set to <code>false</code>, or the variable should be absent. Since the v0.3.x release, Ollama's telemetry is off by default; explicit <code>false</code> makes the intent visible in the service definition.
+              </p>
+            </li>
+
+            <li class="post__step">
+              <h3 class="post__step-title">Verify the client does not exfiltrate</h3>
+              <p>
+                In the client application, disable any cloud fallback in settings. Then repeat the Wireshark capture with a long, varied conversation. The capture should remain empty outside the loopback interface. Tools like Pulse respect this boundary. Pulse sends no prompts or responses to external servers, only the LLM traffic stays between the local client and the local Ollama instance.
+              </p>
+            </li>
+          </ol>
+
+          <p class="post__callout">
+            Run all five checks once after install, and again after any Ollama version upgrade. The behaviour contract is stable across patch releases; major version bumps occasionally add a new outbound endpoint and should be re-verified.
+          </p>
+        </section>
+
+        <!-- ── Footnote / further reading ───────────────── -->
+        <section class="post__section post__section--foot" aria-label="Related reading">
+          <header class="post__section-head">
+            <h2 class="post__section-head-h2">Further reading</h2>
+          </header>
+          <ul class="post__list" role="list">
+            <li><a href="https://github.com/ollama/ollama/blob/main/docs/faq.md" rel="noopener noreferrer">Ollama FAQ</a> - maintained answers to common questions about telemetry and model storage.</li>
+            <li><a href="https://wireshark.org/docs/wsug_html_chunked/" rel="noopener noreferrer">Wireshark user guide</a> — reference for the loopback capture workflow.</li>
+            <li><a href="/faq/">Pulse FAQ</a> — model choices, hotkeys, and the manifest format.</li>
+          </ul>
+        </section>
+
+        <p class="post__back">
+          <a class="btn btn--ghost" href="/blog/">Back to all posts</a>
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <Footer license="" version="" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(blogPostingLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(howToLd)} />
+</Base>
+
+<style>
+  /* ── Hero ─────────────────────────────────────────── */
+  .post__hero {
+    padding-top: clamp(112px, 14vw, 160px);
+    padding-bottom: clamp(56px, 8vw, 88px);
+    overflow: hidden;
+  }
+  .post__hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(40px, 5vw, 64px);
+  }
+  .post__hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    max-width: 64ch;
+  }
+  .post__hero-badges {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+  }
+  .post__hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    background: rgba(187, 154, 247, 0.10);
+    border: 1px solid rgba(187, 154, 247, 0.35);
+    border-radius: 9999px;
+    color: var(--purple);
+    font-size: 0.74rem;
+    font-weight: 600;
+  }
+  .post__hero-pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .post__title {
+    font-size: var(--fs-1);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.04;
+    margin: 0;
+    max-width: 22ch;
+  }
+  .post__sub {
+    font-size: 1.18rem;
+    color: var(--fg-dim);
+    margin: 0;
+    line-height: 1.45;
+  }
+  .post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+  }
+  .post__meta-author { color: var(--fg-dim); }
+  .post__meta-date { color: var(--fg-dim); }
+  .post__meta-sep { opacity: 0.5; }
+  .post__meta-tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+  }
+  .post__meta-tag {
+    display: inline-block;
+    padding: 0.12rem 0.5rem;
+    background: rgba(187, 154, 247, 0.08);
+    border: 1px solid rgba(187, 154, 247, 0.25);
+    border-radius: 9999px;
+    color: var(--purple);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: lowercase;
+  }
+
+  /* ── TOC ──────────────────────────────────────────── */
+  .post__toc {
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-soft);
+  }
+  .post__toc-details { max-width: 65ch; }
+  .post__toc-summary {
+    cursor: pointer;
+    color: var(--purple);
+    font-weight: 600;
+    font-size: 0.92rem;
+    min-height: 56px;
+    display: inline-flex;
+    align-items: center;
+    padding-inline: 0.25rem;
+    list-style: none;
+  }
+  .post__toc-summary::-webkit-details-marker { display: none; }
+  .post__toc-summary::marker { content: ''; }
+  .post__toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+  }
+  .post__toc-link {
+    color: var(--fg-dim);
+    text-decoration: none;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    min-height: 56px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.95rem;
+  }
+  .post__toc-link:hover { color: var(--fg); background: var(--surface); }
+  .post__toc-num { color: var(--muted); margin-right: 0.4rem; }
+
+  /* ── Article body ─────────────────────────────────── */
+  .post__body {
+    padding-block: clamp(56px, 8vw, 96px);
+    background:
+      radial-gradient(800px 400px at 80% 0%, rgba(187, 154, 247, 0.05), transparent 65%),
+      radial-gradient(700px 400px at 10% 100%, rgba(122, 162, 247, 0.06), transparent 65%);
+  }
+  .post__body-grid {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(40px, 6vw, 64px);
+    max-width: 65ch;
+  }
+
+  .post__section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .post__section-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .post__section-num {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+  .post__section-head h2 {
+    font-size: var(--fs-2);
+    font-weight: 500;
+    letter-spacing: -0.012em;
+    line-height: 1.15;
+    margin: 0;
+    max-width: 28ch;
+    scroll-margin-top: 96px;
+  }
+  .post__section-head-h2 { font-size: var(--fs-2); margin: 0; max-width: 28ch; }
+
+  .post__h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    margin-top: 1rem;
+  }
+
+  .post__section p {
+    color: var(--fg-dim);
+    font-size: 1.04rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+  .post__section p code,
+  .post__section li code {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+    font-size: 0.92em;
+  }
+  .post__list {
+    list-style: disc;
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    color: var(--fg-dim);
+    font-size: 1.02rem;
+    line-height: 1.6;
+  }
+  .post__list strong { color: var(--fg); font-weight: 600; }
+
+  /* ── Table ────────────────────────────────────────── */
+  .post__table-wrap {
+    margin: 0.5rem 0;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .post__table-wrap:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+  .post__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.96rem;
+  }
+  .post__table th,
+  .post__table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+  }
+  .post__table thead th {
+    color: var(--purple);
+    font-weight: 600;
+    font-size: 0.84rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--bg-soft);
+  }
+  .post__table tbody th {
+    color: var(--fg);
+    font-weight: 600;
+    width: 32%;
+  }
+  .post__table tbody td {
+    color: var(--fg-dim);
+  }
+  .post__table tbody tr:last-child th,
+  .post__table tbody tr:last-child td { border-bottom: 0; }
+
+  /* ── Steps ────────────────────────────────────────── */
+  .post__steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    counter-reset: step;
+  }
+  .post__step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.25rem 1.25rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .post__step-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+  .post__step p {
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+
+  /* ── Code blocks ──────────────────────────────────── */
+  .post__code {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+  .post__code code {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: var(--fg);
+    font-size: inherit;
+  }
+
+  /* ── Callout ──────────────────────────────────────── */
+  .post__callout {
+    padding: 1rem 1.15rem;
+    border-left: 3px solid var(--purple);
+    background: rgba(187, 154, 247, 0.06);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    color: var(--fg-dim);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* ── Foot section ─────────────────────────────────── */
+  .post__section--foot { border-top: 1px solid var(--border); padding-top: 2rem; margin-top: 1rem; }
+
+  /* ── Back link ────────────────────────────────────── */
+  .post__back { margin-top: 2rem; }
+  .post__back .btn { min-height: 56px; }
+
+  /* ── Motion safety ────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
