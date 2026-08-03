@@ -1,0 +1,295 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R192: /blog/ — the Pulse blog index.
+ *
+ * Future-proof PostMeta[] table-of-contents. Today: 1 post (the model
+ * picker guide). Future rounds (R148 / R154 / R162 / R170) will append
+ * to the array as their posts get merged into main.
+ *
+ * Renders the array as a list of .post-card items. Empty-state branch
+ * is defensive (zero-posts case) so the page never throws if the
+ * content pipeline is mid-update.
+ *
+ * 56dp touch targets on every link/card, JSON-LD Blog schema with
+ * blogPost entries for every PostMeta.
+ */
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+
+interface PostMeta {
+  slug: string;
+  title: string;
+  description: string;
+  pubDate: string;             // ISO YYYY-MM-DD
+  author: string;              // 'Editorial team' (anonymous brand)
+  readingTime: string;         // '7 min read'
+  tags: string[];
+  pulseMentionCount: number;   // R129 hard rule (≤1 in body copy)
+}
+
+const posts: PostMeta[] = [
+  {
+    slug: 'choosing-a-local-model',
+    title: 'Choosing a local model: gemma3:4b vs qwen2.5:3b vs llama3.2:3b',
+    description:
+      'A practical guide to picking a small language model that runs on a ' +
+      'laptop or phone. RAM budgets, benchmark reality, and Ollama commands.',
+    pubDate: '2026-08-03',
+    author: 'Editorial team',
+    readingTime: '7 min read',
+    tags: ['local-ai', 'ollama', 'models', 'guide'],
+    pulseMentionCount: 1,
+  },
+];
+
+// JSON-LD: Blog with one blogPost per entry. Schema.org BlogPosting shape.
+const blogJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Pulse Blog',
+  description: 'Notes on running AI locally on Windows and Android.',
+  url: 'https://ownlocalml.com/blog/',
+  blogPost: posts.map((p) => ({
+    '@type': 'BlogPosting',
+    headline: p.title,
+    description: p.description,
+    url: `https://ownlocalml.com/blog/${p.slug}/`,
+    datePublished: p.pubDate,
+    author: { '@type': 'Organization', name: p.author },
+    keywords: p.tags.join(', '),
+  })),
+};
+
+// Build the post list sorted by date, newest first.
+const sortedPosts = [...posts].sort((a, b) => b.pubDate.localeCompare(a.pubDate));
+
+const PAGE_TITLE = 'Pulse Blog — Notes on running AI locally';
+const PAGE_DESC = 'Notes on running AI locally on Windows and Android. ' +
+  'Picking a model, switching models in Ollama, and matching RAM to context length.';
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  canonical="https://ownlocalml.com/blog/"
+  ctaVisible={false}
+  footerLicense="Apache 2.0"
+  footerVersion="v0.3.0"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/#features">Features</a></li>
+        <li><a class="nav__link" href="/#download">Download</a></li>
+        <li><a class="nav__link" href="/compare/">Compare</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+        <li><a class="nav__link is-cta" href="/blog/" aria-current="page">Blog</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/#download">Start trial ↓ 12.29 MB</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/#features">Features</a>
+    <a class="nav-drawer__link" href="/#download">Download</a>
+    <a class="nav-drawer__link" href="/compare/">Compare</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="nav-drawer__link" href="/blog/" aria-current="page">Blog</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/#download">Start trial ↓ 12.29 MB</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => { setOpen(!drawer.classList.contains('is-open')); });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="blog-index">
+    <section class="blog-index__head">
+      <div class="bg-glow"></div>
+      <div class="container">
+        <header class="blog-index__intro reveal">
+          <span class="eyebrow">Blog</span>
+          <h1>Pulse Blog</h1>
+          <p class="lede">Notes on running AI locally on Windows and Android.</p>
+        </header>
+
+        {sortedPosts.length === 0 ? (
+          <p class="blog-index__empty" role="status">No posts yet. Check back later.</p>
+        ) : (
+          <ul class="blog-index__list" role="list" aria-label="Blog posts">
+            {sortedPosts.map((p) => (
+              <li class="post-card reveal">
+                <a class="post-card__link" href={`/blog/${p.slug}/`} aria-label={`Read: ${p.title}`}>
+                  <div class="post-card__meta">
+                    <time class="post-card__date" datetime={p.pubDate}>{p.pubDate}</time>
+                    <span class="post-card__sep" aria-hidden="true">·</span>
+                    <span class="post-card__reading">{p.readingTime}</span>
+                  </div>
+                  <h2 class="post-card__title">{p.title}</h2>
+                  <p class="post-card__desc">{p.description}</p>
+                  <ul class="post-card__tags" role="list" aria-label="Tags">
+                    {p.tags.map((t) => (
+                      <li class="post-card__tag">{t}</li>
+                    ))}
+                  </ul>
+                  <span class="post-card__cta" aria-hidden="true">Read post →</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+  </main>
+
+  <Footer license="Apache 2.0" version="v0.3.0" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(blogJsonLd)} />
+</Base>
+
+<style>
+  .blog-index { padding-block: clamp(60px, 10vw, 120px); }
+  .blog-index__head { position: relative; }
+  .blog-index__intro {
+    text-align: left;
+    margin-bottom: 2.5rem;
+    max-width: 60ch;
+  }
+  .blog-index__intro .lede { margin-top: 0.6rem; }
+
+  .blog-index__empty {
+    color: var(--fg-dim);
+    font-size: 1rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .blog-index__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .post-card {
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color var(--dur) var(--ease),
+                transform var(--dur) var(--ease),
+                box-shadow var(--dur) var(--ease);
+  }
+  .post-card:hover {
+    border-color: var(--purple);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .post-card__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 1.5rem 1.6rem;
+    color: var(--fg);
+    text-decoration: none;
+    /* HR11: 56dp min-height for a tappable card (Apple HIG / WCAG) */
+    min-height: 56px;
+  }
+  .post-card__link:hover { color: var(--fg); }
+  .post-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .post-card__date { font-variant-numeric: tabular-nums; }
+  .post-card__title {
+    font-size: var(--fs-3);
+    font-weight: 500;
+    line-height: 1.2;
+    margin: 0;
+    color: var(--fg);
+  }
+  .post-card__link:hover .post-card__title { color: var(--purple); }
+  .post-card__desc {
+    color: var(--fg-dim);
+    font-size: 0.98rem;
+    line-height: 1.55;
+    max-width: 65ch;
+    margin: 0;
+  }
+  .post-card__tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.4rem 0 0;
+    padding: 0;
+  }
+  .post-card__tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    color: var(--fg-dim);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 0.18rem 0.6rem;
+    border-radius: 999px;
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
+  }
+  .post-card__cta {
+    margin-top: 0.4rem;
+    font-size: 0.92rem;
+    color: var(--blue);
+    font-weight: 500;
+  }
+  .post-card__link:hover .post-card__cta { color: var(--purple); }
+</style>
