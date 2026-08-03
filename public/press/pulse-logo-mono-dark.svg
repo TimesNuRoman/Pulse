@@ -1,0 +1,8 @@
+<!-- SPDX-License-Identifier: Apache-2.0
+R198: Pulse logo, monochrome dark. Single-tone (bg #1a1b26) for light backgrounds
+(paper print, light-mode web). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Pulse">
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#1a1b26" stroke-width="2"/>
+  <path d="M8 32 Q16 18, 24 32 T40 32 T56 32" stroke="#1a1b26" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <circle cx="48" cy="32" r="3" fill="#1a1b26"/>
+</svg>
