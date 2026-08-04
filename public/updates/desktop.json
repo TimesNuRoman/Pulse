@@ -38,5 +38,64 @@
       "type": "minor",
       "summary": "R100: first Windows desktop public release. Tauri v2 side panel that talks to local Ollama. NSIS + MSI installers. Smart Engine v3 on by default. ~6.4 MB NSIS / ~7.1 MB MSI. Subsequent retag 0.6.5 → 0.6.7 in R115 covers the R100 build-infra fixes and the R115 R114-audit quick win #1."
     }
+  ],
+  "releases": [
+    {
+      "version": "0.6.9",
+      "date": "2026-08-03",
+      "channel": "desktop",
+      "type": "minor",
+      "title": "13 R-rounds merged: image paste, onboarding, multi-chat, voice input",
+      "summary": "Pulse Agent v3.1 lands (retry / budget / telemetry / runAgentLoop), inline image paste, first-run onboarding, multi-chat tabs, hardware detector + Ollama recommender, voice input via MediaRecorder, 14-day trial PRO auto-start, streaming tool call parser, conversation memory sliding window.",
+      "bullets": [
+        "Inline image paste into chat (clipboard PNG/JPEG, base64 round-trip).",
+        "First-run onboarding: 3-slide flow, opt-in per surface (Local-first, Voice + AI, Markdown).",
+        "Multi-chat tabs: open N parallel conversations, switch via the top tab bar.",
+        "Voice input on Windows: MediaRecorder captures mic audio, Whisper transcript posts to chat.",
+        "Pulse Agent v3.1: retry-with-budget, telemetry ring buffer, streaming tool call parser, runAgentLoop.",
+        "Hardware detector + Ollama recommender: picks a model from VRAM / RAM and lists compatible sizes.",
+        "Code block Copy button, AI chat titles (auto-name from first user turn), chat model switcher.",
+        "Vitest: 47 -> 443 (+396, 8.4x). NSIS 12.30 MB / MSI 16.96 MB / portable 10.01 MB."
+      ],
+      "url": "/changelog/#v0.6.9",
+      "featured": true
+    },
+    {
+      "version": "0.6.7",
+      "date": "2026-08-02",
+      "channel": "desktop",
+      "type": "patch",
+      "title": "R100 build-infra fixes + R115 SPDX headers, 8/12 strict hard rules",
+      "summary": "Prebuild-kill.ps1 (ollama.exe orphan killer), Cargo.lock 0.6.5 sync, SPDX-License-Identifier headers on previously-missing source files. Smart Engine v3 already on by default.",
+      "bullets": [
+        "prebuild-kill.ps1: kills orphan ollama.exe before tauri build, removes the R99 build-fail mode.",
+        "Cargo.lock committed alongside Cargo.toml, exact dependency tree reproducible from a fresh clone.",
+        "SPDX-License-Identifier headers on previously-missing source files (R115 R114-audit quick win #1).",
+        "Smart Engine v3 on by default: recall gate (PassThreshold = 5) picks the local model best matched to the query.",
+        "Tree-sitter Smart Engine classifies JS / TS / Python / Rust / Go at the AST level before the model call.",
+        "8/12 strict hard rules on pulse-desktop; 10/12 targeted with R115 quick wins #2 and #3 (gradient border + 44dp touch targets).",
+        "NSIS 12.27 MB, MSI 16.94 MB, binary 9.98 MB. SHA-256 pinned in /updates/desktop.json."
+      ],
+      "url": "/changelog/#v0.6.7",
+      "featured": false
+    },
+    {
+      "version": "0.6.5",
+      "date": "2026-08-01",
+      "channel": "desktop",
+      "type": "minor",
+      "title": "R100: first Windows desktop public release, Tauri v2 side panel",
+      "summary": "Pulse v0.6.5 is the first Windows desktop public release. Tauri v2 side panel that talks to a local Ollama instance. NSIS + MSI installers. Smart Engine v3 on by default.",
+      "bullets": [
+        "First Windows desktop public release: Tauri v2 side panel, lives in the system tray, opens with a global hotkey.",
+        "NSIS installer (per-user) and MSI installer (per-machine, for IT admins).",
+        "Smart Engine v3 on by default (PassThreshold = 5).",
+        "~6.4 MB NSIS, ~7.1 MB MSI at launch.",
+        "Ollama runtime committed to the repo (no separate install step for first-run users on Windows).",
+        "Subsequent retag 0.6.5 -> 0.6.7 in R115 covers the R100 build-infra fixes and R115 R114-audit quick win #1."
+      ],
+      "url": "/changelog/#v0.6.5",
+      "featured": false
+    }
   ]
 }

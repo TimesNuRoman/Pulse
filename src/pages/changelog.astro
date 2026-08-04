@@ -1,137 +1,49 @@
 ---
 // SPDX-License-Identifier: Apache-2.0
 /**
- * R134: /changelog/ page тАФ v0.6.8 release history.
+ * R134 + R239: /changelog/ page тАФ release history, sourced from the
+ * `releases` SSOT in `public/updates/{desktop,android}.json`.
  *
- * Reverse-chronological release list. Major versions render as cards
- * (border + padding); minor versions render as compact bullet lists.
- * Data is hardcoded here (no fetch) so the page works offline.
+ * R239 replaced the inline 7-entry `releases` array (R134) with a
+ * call to `getReleasesByChannel(...)` for both channels, sorted
+ * newest-first by date. Major versions render as cards (border +
+ * padding); minor versions render as compact bullet lists. Data is
+ * read at build time (Astro / Vite's static JSON import) so the
+ * page works offline.
+ *
+ * The cross-platform 'all' platform that R134 used is gone тАФ entries
+ * now belong to exactly one channel. The 0.6.6 cross-platform entry
+ * lives in the `releases.android` array (it's a notes-app release,
+ * not a desktop build). 0.6.4 / 0.6.3 / 0.6.0 historical entries
+ * are pending migration in a follow-up round; see the report OQ
+ * section.
  *
  * Hard rules: no emoji, no "we / I / by Roman / Pulse team", no marketing
  * fluff, dark-only, present-tense only (no "soon" / "v0.7" promises).
  */
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
+import { getReleasesByChannel, type ReleaseEntry } from '../data/releases';
 import '../styles/notes.css';
 
-interface Release {
-  version: string;
-  date: string;        // YYYY-MM-DD, Asia/Bangkok
-  platform: 'windows' | 'android' | 'all';
-  type: 'major' | 'minor';
-  title: string;
-  bullets: string[];
-}
+// R239: merge both channels, sort newest-first. The .slice() before
+// sort is defensive тАФ the source arrays from getReleasesByChannel
+// are the SSOT's readonly views, and we don't want to mutate them.
+const allReleases: readonly ReleaseEntry[] = [
+  ...getReleasesByChannel('desktop'),
+  ...getReleasesByChannel('android'),
+].slice().sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 
-const releases: Release[] = [
-  {
-    version: '0.6.8',
-    date: '2026-08-02',
-    platform: 'windows',
-    type: 'major',
-    title: 'PRO license foundation тАФ store, gates, badge',
-    bullets: [
-      'PRO license store: encrypted at rest with AES-256-GCM; KEK derived from SHA-256(machine-id || APP_SECRET); nonce-prefixed blob on disk under app.getPath(\'appData\')/license.bin.',
-      'Four PRO feature gates (in priority order): multi-model hot-swap, tree-sitter code intelligence (R82 router), Whisper voice input, web search (Habr + YouTube).',
-      'License input: chunked paste auto-split across the five PULSE-XXXX-XXXX-XXXX-XXXX-XXXX groups; a dev-only test key path bypasses server validation; the field starts empty (no prefill, no echo of a stored key).',
-      'PRO badge surfaces in HabrSearch (lang=ru) тАФ search results from pro-gated runs mark the source line.',
-      'R123 high-severity issues fixed (license blob tamper detection, keyring write race, paste handler truncation, badge cache miss on cold start).',
-      '3 installers: NSIS 12.29 MB, MSI 16.94 MB, portable 9.99 MB. SHA-256 fingerprints on the download block.',
-      'Pulse Agent v3.1 default model: gemma3:4b. R82 tree-sitter router selects between local Ollama models based on AST-level code structure.',
-    ],
-  },
-  {
-    version: '0.6.7',
-    date: '2026-08-02',
-    platform: 'android',
-    type: 'major',
-    title: 'Haptics, onboarding, app shortcuts, deep links',
-    bullets: [
-      'Haptics API: tap({ style: \'light\' | \'medium\' | \'heavy\' | \'selection\' }) тАФ short, scoped vibrations, no repeating buzz patterns.',
-      'First-launch onboarding: 3 slides (local-first, voice + AI, markdown + wikilinks) тАФ swipable, M3-styled, opt-in to each card.',
-      'Settings gains a feedback toggle тАФ vibration on capture save, on/off from the gear menu.',
-      'App Shortcuts (M3, API 25+): long-press the launcher icon to reach New / Voice / Search / Settings without opening the app first.',
-      'pulse:// deep links: pulse://new, pulse://voice, pulse://search, pulse://settings тАФ handle from a single intent dispatcher in MainActivity.',
-      'Material You dynamic colors (API 31+) тАФ surfaces recolor against the system wallpaper on Android 12+ devices; falls back to the static Tokyo Night palette on older API levels.',
-      'APK 1.29 MB. SHA-256 published on /download/.',
-    ],
-  },
-  {
-    version: '0.6.6',
-    date: '2026-08-01',
-    platform: 'all',
-    type: 'major',
-    title: 'Smart Engine v3 тАФ code-aware router, adaptive icon, update checker',
-    bullets: [
-      'Smart Engine v3 enabled by default (PassThreshold = 5). Recall gate picks the local model best matched to the query; the +32 pp / тИТ1370 ms A/B numbers from the v3 evaluation apply to all surfaces.',
-      'Tree-sitter code-aware router: parses JS / TS / Python / Rust / Go at the AST level before the model call. Skips the model for trivially-classifiable snippets (imports, type definitions, lint).',
-      'Adaptive launcher icon: foreground, background, and monochrome layers generated from the same SVG; legacy mipmap PNGs regenerated for pre-O devices.',
-      'M3 splash screen: windowSplashScreenBackground = #1a1b26 тАФ no white flash on cold start, on both Android 8+ and Android 12+.',
-      'Winget installer entry: `winget install Pulse.Pulse` resolves to the NSIS bundle on Windows; SHA-256 pinned in the manifest.',
-      'Update checker revival: in-app update prompt surfaces on the Settings page; verifies SHA-256 against the manifest fingerprint; 24h TTL cache.',
-    ],
-  },
-  {
-    version: '0.6.5',
-    date: '2026-07-30',
-    platform: 'windows',
-    type: 'minor',
-    title: '12/12 hard rules pass, build chain committed',
-    bullets: [
-      '12/12 hard rules pass: gradient border on the window edge, 44dp touch targets in every control, 20px rounded window, dark-only Tokyo Night palette, no emoji, sticky-CTA on mobile.',
-      'Ollama runtime committed to the repo (no separate install step for first-run users on Windows).',
-      'Cargo.lock committed alongside Cargo.toml тАФ exact dependency tree reproducible from a fresh clone.',
-      'Update chain extended: the v0.6.5 manifest fallback now covers 5 known hosts (R90 тЖТ R88 тЖТ R87 тЖТ R85 тЖТ R78).',
-    ],
-  },
-  {
-    version: '0.6.4',
-    date: '2026-07-29',
-    platform: 'windows',
-    type: 'minor',
-    title: '85 tests, 12/12 hard rules',
-    bullets: [
-      'Test count grew to 85 (vitest) тАФ covers the Smart Engine v3 recall gate, the tree-sitter router, the settings store, and the theme switcher.',
-      '12/12 hard rules audit: 8 strict + 4 targeted. Quick wins #2 and #3 (gradient border + 44dp touch targets) ship in the next desktop patch.',
-      'Path 0.6.4 release: the greenfield build (R77-reset desktop) is the first tagged artifact from the new src-tauri/ tree.',
-    ],
-  },
-  {
-    version: '0.6.3',
-    date: '2026-07-28',
-    platform: 'android',
-    type: 'minor',
-    title: 'UpdateChecker revival on Android',
-    bullets: [
-      'In-app UpdateChecker restored: polls the manifest at 24h TTL, surfaces a soft "Update available" prompt with SHA-256 verification.',
-      'Force-update path: if latest_apk_sha256 differs and the new version requires a manual side-load, the prompt offers a "Open release notes" CTA.',
-      'Manifest fallback chain: the 5-host chain is baked into the APK тАФ works even if the R78 host is down.',
-    ],
-  },
-  {
-    version: '0.6.0',
-    date: '2026-07-25',
-    platform: 'all',
-    type: 'major',
-    title: 'Smart Engine v3 Phase 3, Notes on Android, Voice input',
-    bullets: [
-      'Smart Engine v3 Phase 3: production rollout of the +32 pp / тИТ1370 ms A/B result. PassThreshold = 5 in the recall gate.',
-      'Greenfield v0.6.0 public deploy: the pulse-landing site serves the first publicly-pinned release notes page, the first /download/ block with 3 installers, and the first /pricing/ stub.',
-      'Notes app on Android: the Pulse Notes markdown editor (CodeMirror 6, [[wikilink]] backlinks, tag autocomplete) reaches the Android surface for the first time.',
-      'Voice input on Android: Web Speech API integration through Capacitor тАФ tap-to-dictate, locale auto-detect, falls back to en-US on no-match.',
-    ],
-  },
-];
-
-const platformLabel: Record<Release['platform'], string> = {
-  windows: 'Windows',
+const channelLabel: Record<ReleaseEntry['channel'], string> = {
+  desktop: 'Windows',
   android: 'Android',
-  all: 'Windows + Android',
 };
+
+const latestVersion: string = allReleases[0]?.version ?? '0.6.0';
 
 const intro =
   'Releases are tagged by date. Major features get a card, small fixes get a bullet. ' +
-  'Seven shipped entries between v0.6.0 and v0.6.8. Dates are local (Asia/Bangkok).';
+  'Dates are local (Asia/Bangkok). The full list of versions is sourced from /updates/desktop.json and /updates/android.json.';
 ---
 
 <Base
@@ -140,7 +52,7 @@ const intro =
   ogImage="/og-image.svg"
   ctaVisible={false}
   footerLicense=""
-  footerVersion="v0.6.8"
+  footerVersion={`v${latestVersion}`}
   canonical="https://ownlocalml.com/changelog/"
 >
   <a class="skip-link" href="#main">Skip to content</a>
@@ -238,7 +150,7 @@ const intro =
             <span class="notes-hero__eyebrow">Pulse ┬╖ Changelog</span>
             <span class="notes-hero__pill" aria-label="Latest version">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Latest v0.6.8
+              Latest v{latestVersion}
             </span>
           </div>
           <h1 class="notes-hero__title">What changed.</h1>
@@ -250,7 +162,7 @@ const intro =
     <section class="changelog" id="changelog-list" aria-label="Release history">
       <div class="container">
         <ol class="changelog__list" role="list">
-          {releases.map((r) => (
+          {allReleases.map((r) => (
             <li
               class:list={[
                 'changelog__item',
@@ -266,8 +178,8 @@ const intro =
                     {r.type}
                   </span>
                   {' '}v{r.version}
-                  <span class="changelog__platform" aria-label={`Platform: ${platformLabel[r.platform]}`}>
-                    ┬╖ {platformLabel[r.platform]}
+                  <span class="changelog__platform" aria-label={`Platform: ${channelLabel[r.channel]}`}>
+                    ┬╖ {channelLabel[r.channel]}
                   </span>
                 </h2>
                 <p class="changelog__lede">{r.title}</p>
@@ -286,7 +198,7 @@ const intro =
     </section>
   </main>
 
-  <Footer license="" version="v0.6.8" />
+  <Footer license="" version={`v${latestVersion}`} />
 </Base>
 
 <style>
