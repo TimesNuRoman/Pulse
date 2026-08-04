@@ -24,6 +24,9 @@
  */
 export default {
   test: {
-    include: ['src/lib/__tests__/versions.test.ts'],
+    include: [
+      'src/lib/__tests__/versions.test.ts',
+      'src/data/__tests__/releases.test.ts',
+    ],
   },
 };
