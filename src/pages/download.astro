@@ -2,6 +2,27 @@
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/notes.css';
+import {
+  ANDROID_VERSION,
+  ANDROID_VERSION_CODE,
+  ANDROID_APP_ID,
+  ANDROID_MIN_SDK,
+  ANDROID_TARGET_SDK,
+  ANDROID_APK_URL,
+  ANDROID_APK_SIZE,
+  ANDROID_APK_SIZE_BYTES,
+  ANDROID_APK_SHA,
+  WINDOWS_VERSION,
+  WINDOWS_NSIS_URL,
+  WINDOWS_MSI_URL,
+  WINDOWS_NSIS_SIZE,
+  WINDOWS_MSI_SIZE,
+  WINDOWS_NSIS_SHA,
+  WINDOWS_MSI_SHA,
+  WINDOWS_MIN_OS,
+  WINDOWS_BUILD_TARGET,
+  absoluteAndroidDownloadUrl,
+} from '../lib/versions';
 
 // R120 site simplify: download surface for the user-facing site.
 // Keeps the platform details (NSIS / MSI, SHA-256, size, min OS) — those
@@ -15,26 +36,33 @@ import '../styles/notes.css';
 // cards move into a `<details id="other-platforms">` disclosure, opened
 // by the "Pick a different platform" button. macOS / Linux / iOS all
 // render an honest "no build yet" message with a fork-on-GitHub link.
+//
+// R234: every version string + URL + size + SHA is now sourced from
+// `src/lib/versions.ts` (the SSOT). The next version bump is a 1-line
+// edit to public/updates/{desktop,android}.json, not a search-replace
+// marathon across this file.
 
-const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
-const APK_SIZE = '1.29 MB';
-const APK_SIZE_BYTES = 1352869;
-const APK_VERSION = '0.6.6';
-const APK_VERSION_CODE = '16';
-const APK_SHA = 'AD6E3302…45BAB5';
-const APK_APP_ID = 'app.pulse.notes';
-const APK_MIN_SDK = '24';
-const APK_TARGET_SDK = '36';
+// Local aliases — keep call-site diffs minimal (the names already in
+// use below). All values come from the SSOT.
+const APK_URL = ANDROID_APK_URL;
+const APK_SIZE = ANDROID_APK_SIZE;
+const APK_SIZE_BYTES = ANDROID_APK_SIZE_BYTES;
+const APK_VERSION = ANDROID_VERSION;
+const APK_VERSION_CODE = String(ANDROID_VERSION_CODE);
+const APK_SHA = ANDROID_APK_SHA;
+const APK_APP_ID = ANDROID_APP_ID;
+const APK_MIN_SDK = String(ANDROID_MIN_SDK);
+const APK_TARGET_SDK = String(ANDROID_TARGET_SDK);
 
-const WIN_VERSION = '0.6.7';
-const WIN_EXE = `/downloads/Pulse_${WIN_VERSION}_x64-setup.exe`;
-const WIN_MSI = `/downloads/Pulse_${WIN_VERSION}_x64_en-US.msi`;
-const WIN_SIZE_EXE = '12.27 MB';
-const WIN_SIZE_MSI = '16.94 MB';
-const WIN_SHA_EXE = '08FD2FB2…3F8E65';
-const WIN_SHA_MSI = 'D246AFFC…2AD2982D';
-const WIN_MIN_OS = 'Windows 10 (build 17763)';
-const WIN_BUILD_TARGET = 'x86_64-pc-windows-msvc';
+const WIN_VERSION = WINDOWS_VERSION;
+const WIN_EXE = WINDOWS_NSIS_URL;
+const WIN_MSI = WINDOWS_MSI_URL;
+const WIN_SIZE_EXE = WINDOWS_NSIS_SIZE;
+const WIN_SIZE_MSI = WINDOWS_MSI_SIZE;
+const WIN_SHA_EXE = WINDOWS_NSIS_SHA;
+const WIN_SHA_MSI = WINDOWS_MSI_SHA;
+const WIN_MIN_OS = WINDOWS_MIN_OS;
+const WIN_BUILD_TARGET = WINDOWS_BUILD_TARGET;
 
 // R184: GitHub repo URL for the "no build yet" CTA on macOS / Linux / iOS.
 const GITHUB_URL = 'https://github.com/TimesNuRoman/pulse';
@@ -547,8 +575,12 @@ const softwareAppsJsonLd = [
 
   <!-- R184: Smart CTA detection + content swap. Inline IIFE mirror of
        `src/lib/platformDetect.ts` (pure module). MUST stay in sync —
-       if you edit one, edit the other. Browser-only context. -->
-  <script is:inline>
+       if you edit one, edit the other. Browser-only context.
+       R234: WIN_EXE_PATH / APK_PATH / WIN_SIZE / APK_SIZE are
+       pre-rendered from the SSOT (`src/lib/versions.ts`) via
+       Astro's `define:vars` directive. The next version bump is a
+       1-line edit to public/updates/*.json, not a search-replace. -->
+  <script is:inline define:vars={{ WIN_EXE_PATH: WIN_EXE, APK_PATH: APK_URL, WIN_SIZE: WIN_SIZE_EXE, APK_SIZE: APK_SIZE }}>
     (() => {
       // ─── Inline mirror of src/lib/platformDetect.ts ─────────────
       function detectPlatform(input) {
@@ -576,12 +608,12 @@ const softwareAppsJsonLd = [
       // ─── End mirror ─────────────────────────────────────────────
 
       // Server-side rendered defaults — these must match the values in
-      // src/pages/download.astro's <dl-smart__cta> block.
+      // src/pages/download.astro's <dl-smart__cta> block. R234: the
+      // four URL/size values are pre-rendered via Astro `define:vars`
+      // from `src/lib/versions.ts` (the SSOT). GITHUB is a build-time
+      // constant (not in the SSOT) — the canonical repo URL is
+      // hardcoded in the frontmatter.
       var GITHUB = 'https://github.com/TimesNuRoman/pulse';
-      var WIN_EXE_PATH = '/downloads/Pulse_0.6.7_x64-setup.exe';
-      var APK_PATH     = '/downloads/pulse-notes-0.6.6.apk';
-      var WIN_SIZE = '12.27 MB';
-      var APK_SIZE = '1.29 MB';
 
       var VARIANTS = {
         windows: {

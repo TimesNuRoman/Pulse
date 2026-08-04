@@ -21,6 +21,7 @@
 import Base from '../../layouts/Base.astro';
 import Footer from '../../components/Footer.astro';
 import '../../styles/notes.css';
+import { DESKTOP_VERSION, LINUX_VERSION } from '../../lib/versions';
 
 const PAGE_TITLE = 'Install Pulse on Linux — build from source';
 const PAGE_DESC =
@@ -119,7 +120,7 @@ const howToJsonLd = {
   canonical="https://ownlocalml.com/install/linux/"
   ctaVisible={false}
   footerLicense=""
-  footerVersion="v0.6.7"
+  footerVersion={`v${DESKTOP_VERSION}`}
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -202,7 +203,7 @@ const howToJsonLd = {
             <span class="notes-hero__eyebrow">Pulse · Linux · build from source</span>
             <span class="notes-hero__pill" aria-label="Source build">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              v0.6.7 · source
+              {`v${LINUX_VERSION} · source`}
             </span>
           </div>
           <h1 class="notes-hero__title">Install Pulse on Linux</h1>
@@ -384,8 +385,8 @@ cd pulse/pulse-desktop</code></pre>
             The build pipeline produces a Debian package for Debian-based distros, an AppImage for portable use, and a raw ELF binary under <code>src-tauri/target/release/pulse-desktop</code>. The full output tree:
           </p>
           <ul class="ig__list" role="list">
-            <li><strong>Debian package</strong> — <code>src-tauri/target/release/bundle/deb/Pulse_0.6.7_amd64.deb</code></li>
-            <li><strong>AppImage</strong> — <code>src-tauri/target/release/bundle/appimage/Pulse_0.6.7_amd64.AppImage</code></li>
+            <li><strong>Debian package</strong> — <code>{`src-tauri/target/release/bundle/deb/Pulse_${LINUX_VERSION}_amd64.deb`}</code></li>
+            <li><strong>AppImage</strong> — <code>{`src-tauri/target/release/bundle/appimage/Pulse_${LINUX_VERSION}_amd64.AppImage`}</code></li>
             <li><strong>Raw binary</strong> — <code>src-tauri/target/release/pulse-desktop</code> (run directly, no install)</li>
           </ul>
           <p>
@@ -523,7 +524,7 @@ cd pulse/pulse-desktop</code></pre>
     </section>
   </main>
 
-  <Footer license="" version="v0.6.7" />
+  <Footer license="" version={`v${DESKTOP_VERSION}`} />
 
   <!-- R195 SEO: `HowTo` JSON-LD for the build-from-source path. -->
   <script type="application/ld+json" set:html={JSON.stringify(howToJsonLd)} />

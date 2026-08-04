@@ -1,7 +1,7 @@
 ---
 // SPDX-License-Identifier: Apache-2.0
 /**
- * R135: /install/windows/ — step-by-step install guide for Pulse Windows v0.6.8.
+ * R135: /install/windows/ — step-by-step install guide for Pulse Windows.
  *
  * 10 sections (H2):
  *   1. Choose an installer   (NSIS / MSI / portable, with SHA-256)
@@ -18,36 +18,50 @@
  * Hard rules: no emoji, no "we / I / by Roman / Pulse team", no marketing
  * fluff, no future promises, dark-only, Apache 2.0. Section styles are
  * scoped to this page (no global CSS touched — R133/R134 scope respected).
+ *
+ * R234: VERSION, NSIS_URL/MSI_URL, NSIS_FILE/MSI_FILE, and the
+ * SHA-256 fingerprints are sourced from `src/lib/versions.ts` (the
+ * SSOT). The next version bump is a 1-line edit to
+ * public/updates/*.json, not a search-replace.
  */
 import Base from '../../layouts/Base.astro';
 import Footer from '../../components/Footer.astro';
 import '../../styles/notes.css';
+import {
+  WINDOWS_VERSION,
+  WINDOWS_NSIS_URL,
+  WINDOWS_MSI_URL,
+  WINDOWS_PORTABLE_URL,
+  WINDOWS_NSIS_SHA,
+  WINDOWS_MSI_SHA,
+  WINDOWS_PORTABLE_SHA,
+  WINDOWS_MIN_OS,
+  SITE_BASE,
+} from '../../lib/versions';
 
-const VERSION = '0.6.8';
+const VERSION = WINDOWS_VERSION;
 const PAGE_TITLE = `Install Pulse for Windows v${VERSION} — step-by-step guide`;
 const PAGE_DESC =
   'Install Pulse for Windows. Three installers, five minutes, works offline. ' +
   'SHA-256 hashes, system requirements, and a fix for SmartScreen.';
 
-// Canonical SHA-256 prefixes (R130 verified against actual files).
-// Format: first 8 chars ... last 4 chars of the full hash.
-const NSIS_SHA_FULL = '58c00a9e332cb9256a7aa2a5a229b50915185e5af933f7766cf649cb39679128';
-const MSI_SHA_FULL  = 'e3bee8d39644e011aae166207b6b67a3574edd87c8105410c716991fb373da57';
-const PORT_SHA_FULL = 'd2786524460133231b227625f81ac02bffe12acefcb557c10dfe7f8282b9d264';
-const NSIS_SHA = `${NSIS_SHA_FULL.slice(0, 8)}...${NSIS_SHA_FULL.slice(-4)}`;
-const MSI_SHA  = `${MSI_SHA_FULL.slice(0, 8)}...${MSI_SHA_FULL.slice(-4)}`;
-const PORT_SHA = `${PORT_SHA_FULL.slice(0, 8)}...${PORT_SHA_FULL.slice(-4)}`;
+// SHA-256 fingerprints (R130 verified against actual files). The
+// short form (first 8 ... last 4) is exposed by the SSOT as
+// WINDOWS_NSIS_SHA / WINDOWS_MSI_SHA / WINDOWS_PORTABLE_SHA.
+const NSIS_SHA = WINDOWS_NSIS_SHA;
+const MSI_SHA = WINDOWS_MSI_SHA;
+const PORT_SHA = WINDOWS_PORTABLE_SHA;
 
 // Direct download URLs (R130 pinned to ownlocalml.com).
-const NSIS_URL  = 'https://ownlocalml.com/downloads/Pulse_0.6.8_x64-setup.exe';
-const MSI_URL   = 'https://ownlocalml.com/downloads/Pulse_0.6.8_x64_en-US.msi';
-const PORT_URL  = 'https://ownlocalml.com/downloads/pulse-desktop.exe';
-const NSIS_FILE = 'Pulse_0.6.8_x64-setup.exe';
-const MSI_FILE  = 'Pulse_0.6.8_x64_en-US.msi';
-const PORT_FILE = 'pulse-desktop.exe';
+const NSIS_URL  = `${SITE_BASE}${WINDOWS_NSIS_URL}`;
+const MSI_URL   = `${SITE_BASE}${WINDOWS_MSI_URL}`;
+const PORT_URL  = `${SITE_BASE}${WINDOWS_PORTABLE_URL}`;
+const NSIS_FILE = WINDOWS_NSIS_URL.split('/').pop() ?? '';
+const MSI_FILE  = WINDOWS_MSI_URL.split('/').pop() ?? '';
+const PORT_FILE = WINDOWS_PORTABLE_URL.split('/').pop() ?? '';
 
 // System requirements.
-const MIN_OS = 'Windows 10 (build 17763)';
+const MIN_OS = WINDOWS_MIN_OS;
 const ARCH = 'x86_64';
 ---
 

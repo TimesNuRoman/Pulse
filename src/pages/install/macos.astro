@@ -21,6 +21,7 @@
 import Base from '../../layouts/Base.astro';
 import Footer from '../../components/Footer.astro';
 import '../../styles/notes.css';
+import { DESKTOP_VERSION, MACOS_VERSION } from '../../lib/versions';
 
 const PAGE_TITLE = 'Install Pulse on macOS — build from source';
 const PAGE_DESC =
@@ -121,7 +122,7 @@ const howToJsonLd = {
   canonical="https://ownlocalml.com/install/macos/"
   ctaVisible={false}
   footerLicense=""
-  footerVersion="v0.6.7"
+  footerVersion={`v${DESKTOP_VERSION}`}
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -204,7 +205,7 @@ const howToJsonLd = {
             <span class="notes-hero__eyebrow">Pulse · macOS · build from source</span>
             <span class="notes-hero__pill" aria-label="Source build">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              v0.6.7 · source
+              {`v${MACOS_VERSION} · source`}
             </span>
           </div>
           <h1 class="notes-hero__title">Install Pulse on macOS</h1>
@@ -398,7 +399,7 @@ cd pulse/pulse-desktop</code></pre>
           </p>
           <ul class="ig__list" role="list">
             <li><strong>App bundle</strong> &mdash; <code>src-tauri/target/release/bundle/macos/Pulse.app</code></li>
-            <li><strong>DMG installer</strong> &mdash; <code>src-tauri/target/release/bundle/dmg/Pulse_0.6.7_aarch64.dmg</code> (or <code>x64</code> on Intel)</li>
+            <li><strong>DMG installer</strong> &mdash; <code>{`src-tauri/target/release/bundle/dmg/Pulse_${MACOS_VERSION}_aarch64.dmg`}</code> (or <code>x64</code> on Intel)</li>
             <li><strong>Raw binary</strong> &mdash; <code>src-tauri/target/release/pulse-desktop</code> (run directly, no bundle)</li>
           </ul>
           <p>
@@ -541,7 +542,7 @@ cd pulse/pulse-desktop</code></pre>
     </section>
   </main>
 
-  <Footer license="" version="v0.6.7" />
+  <Footer license="" version={`v${DESKTOP_VERSION}`} />
 
   <!-- R195 SEO: `HowTo` JSON-LD for the build-from-source path. -->
   <script type="application/ld+json" set:html={JSON.stringify(howToJsonLd)} />
