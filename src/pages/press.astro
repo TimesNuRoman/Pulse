@@ -30,6 +30,7 @@
  */
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
+import { DESKTOP_VERSION } from '../lib/versions';
 
 const PAGE_TITLE = 'Press kit — Pulse';
 const PAGE_DESC =
@@ -190,7 +191,7 @@ const jsonLd = [
   canonical={CANONICAL}
   ctaVisible={false}
   footerLicense="Apache 2.0"
-  footerVersion="v0.6.8"
+  footerVersion={`v${DESKTOP_VERSION}`}
 >
   <a class="skip-link" href="#main">Skip to main content</a>
 
@@ -399,7 +400,7 @@ const jsonLd = [
     </div>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.6.8" />
+  <Footer license="Apache 2.0" version={`v${DESKTOP_VERSION}`} />
 
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline></script>
 </Base>

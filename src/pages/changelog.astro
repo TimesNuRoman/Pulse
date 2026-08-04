@@ -12,6 +12,7 @@
  */
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
+import { DESKTOP_VERSION } from '../lib/versions';
 import '../styles/notes.css';
 
 interface Release {
@@ -140,7 +141,7 @@ const intro =
   ogImage="/og-image.svg"
   ctaVisible={false}
   footerLicense=""
-  footerVersion="v0.6.8"
+  footerVersion={`v${DESKTOP_VERSION}`}
   canonical="https://ownlocalml.com/changelog/"
 >
   <a class="skip-link" href="#main">Skip to content</a>
@@ -238,7 +239,7 @@ const intro =
             <span class="notes-hero__eyebrow">Pulse ┬╖ Changelog</span>
             <span class="notes-hero__pill" aria-label="Latest version">
               <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-              Latest v0.6.8
+              Latest v{DESKTOP_VERSION}
             </span>
           </div>
           <h1 class="notes-hero__title">What changed.</h1>
@@ -286,7 +287,7 @@ const intro =
     </section>
   </main>
 
-  <Footer license="" version="v0.6.8" />
+  <Footer license="" version={`v${DESKTOP_VERSION}`} />
 </Base>
 
 <style>

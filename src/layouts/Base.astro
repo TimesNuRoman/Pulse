@@ -1,4 +1,9 @@
 ---
+// R234: default `footerVersion` is sourced from `src/lib/versions.ts`
+// (the SSOT). Pages can still pass `footerVersion=""` to hide the
+// pill, or pass a literal `footerVersion="v0.6.4"` to pin a
+// historical release-notes page footer.
+import { DESKTOP_VERSION } from '../lib/versions';
 import '../styles/global.css';
 
 export interface Props {
@@ -33,7 +38,7 @@ const {
   // by passing `footerLicense="Apache 2.0"` if they need to surface the Apache label
   // (e.g. the /license/ page). Marketing pages stay neutral.
   footerLicense = '',
-  footerVersion = 'v0.3.0',
+  footerVersion = `v${DESKTOP_VERSION}`,
 } = Astro.props;
 
 // R128 SEO polish: per-page canonical URL. Default '' → no canonical emitted.

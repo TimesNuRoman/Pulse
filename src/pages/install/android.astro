@@ -1,7 +1,7 @@
 ---
 // SPDX-License-Identifier: Apache-2.0
 /**
- * R177: /install/android/ — step-by-step install guide for Pulse Android v0.6.6.
+ * R177: /install/android/ — step-by-step install guide for Pulse Android.
  *
  * 9 sections (H2):
  *   1. What you'll need   (Android version + storage + unknown-sources + Wi-Fi)
@@ -17,12 +17,21 @@
  * Hard rules: no emoji, no first-person copy, no marketing
  * fluff, no future promises, dark-only. Section styles are
  * scoped to this page (no global CSS touched — R133/R135 scope respected).
+ *
+ * R234: VERSION is sourced from `src/lib/versions.ts` (the SSOT).
+ * The next version bump is a 1-line edit to public/updates/*.json.
+ * The page's body copy that references "v0.6.6" describes the
+ * historical / current side-load procedure and is left as-is
+ * (the JSX renders v0.6.6 → v${VERSION} where the literal makes
+ * sense; some body copy stays anchored to the v0.6.6 procedure
+ * for SEO continuity — see the body for context).
  */
 import Base from '../../layouts/Base.astro';
 import Footer from '../../components/Footer.astro';
 import '../../styles/notes.css';
+import { ANDROID_VERSION } from '../../lib/versions';
 
-const VERSION = '0.6.6';
+const VERSION = ANDROID_VERSION;
 const PAGE_TITLE = `Install Pulse for Android v${VERSION} — step-by-step guide`;
 const PAGE_DESC =
   'Install Pulse for Android. Sideload the signed APK in five steps, ' +

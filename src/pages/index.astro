@@ -2,6 +2,14 @@
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/notes.css';
+import {
+  ANDROID_APK_URL,
+  ANDROID_APK_SIZE,
+  WINDOWS_NSIS_URL,
+  WINDOWS_MSI_URL,
+  WINDOWS_NSIS_SIZE,
+  WINDOWS_MSI_SIZE,
+} from '../lib/versions';
 
 // R120: site simplified for users. Strip roadmap / changelog /
 // implementation detail. Two product names (Pulse for Windows,
@@ -9,13 +17,17 @@ import '../styles/notes.css';
 //
 // Brand rule: no first-person ("we", "I"), no founder credit, no
 // "team" personal voice — use "Pulse" or no subject.
+//
+// R234: every URL + size + version is sourced from
+// `src/lib/versions.ts` (the SSOT). The next version bump is a
+// 1-line edit to public/updates/*.json, not a search-replace.
 
-const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
-const APK_SIZE = '1.29 MB';
-const WIN_NSIS_URL = '/downloads/Pulse_0.6.7_x64-setup.exe';
-const WIN_MSI_URL = '/downloads/Pulse_0.6.7_x64_en-US.msi';
-const WIN_NSIS_SIZE = '12.27 MB';
-const WIN_MSI_SIZE = '16.94 MB';
+const APK_URL = ANDROID_APK_URL;
+const APK_SIZE = ANDROID_APK_SIZE;
+const WIN_NSIS_URL = WINDOWS_NSIS_URL;
+const WIN_MSI_URL = WINDOWS_MSI_URL;
+const WIN_NSIS_SIZE = WINDOWS_NSIS_SIZE;
+const WIN_MSI_SIZE = WINDOWS_MSI_SIZE;
 
 const PAGE_TITLE = 'Pulse — AI side panel for Windows and Android, paid with a 14-day trial';
 const PAGE_DESC = 'Pulse is a paid, local-first AI side panel for Windows and a notes app for Android. 14-day trial, then $20/month or $192/year. No account, no cloud, no telemetry.';
@@ -261,18 +273,20 @@ const softwareAppJsonLd = {
        Same data as the visible home page copy, no extra claims. -->
   <script type="application/ld+json" set:html={JSON.stringify(softwareAppJsonLd)} />
 
-  <script is:inline>
+  <script is:inline define:vars={{ APK_URL: ANDROID_APK_URL }}>
     (() => {
       // R120 site simplify: hero CTA picks the right artifact by UA.
       // - Windows desktop → /download/ page (user picks NSIS or MSI).
       // - Mobile / Android → direct APK download.
       // - macOS / Linux / unknown → /download/ page.
+      // R234: APK_URL is pre-rendered from `src/lib/versions.ts` (the
+      // SSOT) via Astro's `define:vars` directive.
       const a = document.getElementById('hero-download');
       if (!a) return;
       const ua = (navigator.userAgent || '').toLowerCase();
       const isAndroid = /android|mobile|iphone|ipad|ipod/.test(ua);
       if (isAndroid) {
-        a.setAttribute('href', '/downloads/pulse-notes-0.6.6.apk');
+        a.setAttribute('href', APK_URL);
       }
       // else leave as /download/ — Windows + macOS + Linux go to the picker
     })();

@@ -2,6 +2,9 @@
 // Hero — top of the page
 // P1-8: fetch GitHub stars at build time. Hide the trust block if API fails
 // (no fake numbers — honest UX beats a fabricated dashboard every time).
+// R234: version pill is sourced from the SSOT (`src/lib/versions.ts`).
+import { DESKTOP_VERSION } from '../lib/versions';
+
 let githubStars: number | null = null;
 try {
   const res = await fetch('https://api.github.com/repos/TimesNuRoman/pulse', {
@@ -62,7 +65,7 @@ const formattedStars = githubStars !== null
           <span class="hero__trust-item">·</span>
           <span class="hero__trust-item">MIT licensed</span>
           <span class="hero__trust-item">·</span>
-          <span class="hero__trust-item">v0.3.0</span>
+          <span class="hero__trust-item">{`v${DESKTOP_VERSION}`}</span>
         </p>
       )}
 

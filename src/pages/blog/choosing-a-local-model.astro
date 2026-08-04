@@ -13,6 +13,7 @@
  */
 import Base from '../../layouts/Base.astro';
 import Footer from '../../components/Footer.astro';
+import { DESKTOP_VERSION } from '../../lib/versions';
 
 const POST_TITLE = 'Choosing a local model: gemma3:4b vs qwen2.5:3b vs llama3.2:3b';
 const POST_SUBTITLE = 'A practical guide to picking a small language model that runs on your laptop or phone.';
@@ -116,7 +117,7 @@ const howToJsonLd = {
   canonical="https://ownlocalml.com/blog/choosing-a-local-model/"
   ctaVisible={false}
   footerLicense="Apache 2.0"
-  footerVersion="v0.3.0"
+  footerVersion={`v${DESKTOP_VERSION}`}
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -384,7 +385,7 @@ PARAMETER temperature 0.7</code></pre>
     </article>
   </main>
 
-  <Footer license="Apache 2.0" version="v0.3.0" />
+  <Footer license="Apache 2.0" version={`v${DESKTOP_VERSION}`} />
 
   <script type="application/ld+json" set:html={JSON.stringify(blogPostingJsonLd)} />
   <script type="application/ld+json" set:html={JSON.stringify(howToJsonLd)} />

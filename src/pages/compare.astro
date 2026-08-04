@@ -5,13 +5,22 @@
  * comparison matrix. Replaces 2 "no Pro tier" mentions with PRO
  * context linked to /pricing/. No prices for Pulse PRO in code
  * — the cell links to /pricing/ via the table.
+ *
+ * R234: APK URL + size + footer version are sourced from
+ * `src/lib/versions.ts` (the SSOT). The next version bump is a
+ * 1-line edit to public/updates/*.json, not a search-replace.
  */
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import CompareTable from '../components/CompareTable.astro';
+import {
+  ANDROID_APK_URL,
+  ANDROID_APK_SIZE,
+  WINDOWS_VERSION,
+} from '../lib/versions';
 
-const APK_URL = '/downloads/pulse-notes-0.6.6.apk';
-const APK_SIZE = '1.29 MB';
+const APK_URL = ANDROID_APK_URL;
+const APK_SIZE = ANDROID_APK_SIZE;
 
 const PAGE_TITLE = 'Pulse vs Raycast AI, Notion AI, GitHub Copilot, Claude Pro, AnythingLLM, LM Studio, Ollama — local-first AI';
 const PAGE_DESC = "Honest side-by-side: Pulse (trial and PRO), Raycast AI, Notion AI, GitHub Copilot, Claude Pro, AnythingLLM, LM Studio, Ollama. Local-first, voice input, markdown notes, price, mobile, RAM, privacy - no asterisks, no marketing fluff. Updated 2026-08-03.";
@@ -122,7 +131,7 @@ const faqJsonLd = {
   ctaHref={APK_URL}
   ctaVisible={true}
   footerLicense=""
-  footerVersion="v0.6.6"
+  footerVersion={`v${WINDOWS_VERSION}`}
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -299,7 +308,7 @@ const faqJsonLd = {
           <p class="lede">
             Pulse is not a platform. It does one thing well: runs an AI on
             your device, and keeps your notes on your device. The list
-            below is what Pulse actually does in v0.6.6, not what it might
+            below is what Pulse actually does in v{WINDOWS_VERSION}, not what it might
             do someday.
           </p>
         </header>
@@ -386,7 +395,7 @@ const faqJsonLd = {
     </section>
   </main>
 
-  <Footer license="" version="v0.6.6" />
+  <Footer license="" version={`v${WINDOWS_VERSION}`} />
 </Base>
 
 <style>

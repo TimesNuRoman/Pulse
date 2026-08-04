@@ -4,11 +4,16 @@
 // No /changelog/, /compare/, /notes/, /release-notes/, /install/ links here —
 // those are power-user pages reachable directly, not from the marketing nav.
 // `version = ''` hides the version pill entirely (used on /privacy + /code-of-conduct + /license).
+// R234: default `version` is sourced from `src/lib/versions.ts` (the SSOT).
+// Pages can still pass `version=""` to hide the pill, or pass a literal
+// `version="v0.6.4"` to pin a historical release-notes page footer.
+import { DESKTOP_VERSION } from '../lib/versions';
+
 export interface Props {
   license?: string;
   version?: string;
 }
-const { license = '', version = 'v0.3.0' } = Astro.props;
+const { license = '', version = `v${DESKTOP_VERSION}` } = Astro.props;
 const showVersion = version.trim().length > 0;
 
 const columns = [
@@ -143,11 +148,7 @@ const columns = [
     font-size: 0.95rem;
     display: inline-flex;
     align-items: center;
-<<<<<<< HEAD
-    min-height: 56px;  /* R189: 56dp touch target per brief rule #11 */
-=======
-    min-height: 56px;  /* R180 HR11e: above 44dp Apple HIG / 48dp M3 — keep all footer links tappable on touch */
->>>>>>> feat/r180-compare-page
+    min-height: 56px;  /* R189: 56dp touch target per brief rule #11 (supersedes R180 HR11e — same value, R189 landed later) */
   }
   .footer__col a:hover { color: var(--purple); }
 
