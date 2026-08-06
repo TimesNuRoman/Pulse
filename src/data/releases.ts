@@ -27,13 +27,14 @@
  * Hard rules: no emoji, no first-person, no marketing fluff, dark-only,
  * Apache-2.0 SPDX, no future promises, no prices, no money tokens.
  *
- * NOTE: the `ReleaseChannel` name collides with R234's
- * `src/lib/versions.ts` (which uses `'stable' | 'beta' | 'nightly'`
- * for the release track). Both R234 and R239 export `ReleaseChannel`
- * from different modules with different shapes. Resolution at merge
- * time: rename R234's to `ReleaseTrack` (semantic: which channel of
- * the same build), keep R239's as `ReleaseChannel` (semantic: which
- * product). See R239-SITE-RELEASES-DATA-SSOT-2026-08-04.md OQ#1.
+ * R242: the name `ReleaseChannel` here (R239) is intentionally distinct
+ * from R234's `ReleaseTrack` (`src/lib/versions.ts`, which uses
+ * `'stable' | 'beta' | 'nightly'` for the installer track). R242
+ * renamed R234's type to `ReleaseTrack` to remove the prior collision
+ * that this module documented at R239 time. Semantic: R239's
+ * `ReleaseChannel` = which product (`'desktop' | 'android'`);
+ * R234's `ReleaseTrack` = which channel of the same build
+ * (`'stable' | 'beta' | 'nightly'`).
  */
 
 import desktopManifest from '../../public/updates/desktop.json';
@@ -44,11 +45,12 @@ import androidManifest from '../../public/updates/android.json';
 /**
  * Which product a release belongs to.
  *
- * R234's `versions.ts` also exports a `ReleaseChannel` type — but
- * with the shape `'stable' | 'beta' | 'nightly'` (release track,
- * not product). The two are semantically different and will be
- * aliased to `ReleaseTrack` in the R234 module at merge time. See
- * file header for the post-merge resolution plan.
+ * R234's `versions.ts` exports a `ReleaseTrack` type (R242 rename
+ * from `ReleaseChannel` to avoid the collision this module's JSDoc
+ * originally flagged). Semantic split:
+ *   R239 `ReleaseChannel` here = which product (`'desktop' | 'android'`).
+ *   R234 `ReleaseTrack`        = which channel of the same build
+ *                                 (`'stable' | 'beta' | 'nightly'`).
  */
 export type ReleaseChannel = 'desktop' | 'android';
 

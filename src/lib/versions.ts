@@ -24,7 +24,7 @@
 import desktopManifest from '../../public/updates/desktop.json';
 import androidManifest from '../../public/updates/android.json';
 
-export type ReleaseChannel = 'stable' | 'beta' | 'nightly';
+export type ReleaseTrack = 'stable' | 'beta' | 'nightly';
 export type DesktopPlatform = 'windows' | 'macos' | 'linux';
 
 // ─── Version constants ─────────────────────────────────────────────
@@ -43,7 +43,7 @@ export const LINUX_VERSION: string = DESKTOP_VERSION;
 
 /** Current release channel. Hardcoded to "stable" — the JSON doesn't
  *  track pre-release channels today, but the type leaves room. */
-export const RELEASE_CHANNEL: ReleaseChannel = 'stable';
+export const RELEASE_CHANNEL: ReleaseTrack = 'stable';
 
 // ─── Installer URLs (relative paths; the JSON stores them so) ──────
 /** Windows NSIS installer (per-user, default). Relative path. */
