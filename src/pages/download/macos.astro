@@ -1,0 +1,364 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R248g: per-platform download page for macOS.
+ *
+ * Same per-platform structure as /download/windows/ (R248g).
+ * No official macOS build today. The hero copy is honest about
+ * that, the primary CTA goes to the /install/macos/ build-from-
+ * source guide, and the meta-grid explains what artifacts the
+ * build produces and what their signing posture is.
+ *
+ * All version constants are sourced from `src/lib/versions.ts`
+ * (the SSOT). The next version bump is a 1-line edit to
+ * public/updates/desktop.json.
+ *
+ * Hard rules: no emoji, no first-person, no marketing fluff,
+ * no future promises, dark-only (Tokyo Night), Apache 2.0
+ * SPDX, 48dp+ touch targets, prefers-reduced-motion respected.
+ */
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/notes.css';
+import '../../styles/download-page.css';
+import { MACOS_VERSION, WINDOWS_NSIS_SIZE, ANDROID_APK_SIZE } from '../../lib/versions';
+
+const VERSION = MACOS_VERSION;
+
+const PAGE_TITLE = `Pulse for macOS — build from source (v${VERSION})`;
+const PAGE_DESC = `No official macOS build today. Build Pulse v${VERSION} for macOS from source on Apple Silicon or Intel. The artifact is an unsigned .app bundle and a .dmg.`;
+
+const GITHUB_URL = 'https://github.com/TimesNuRoman/pulse';
+---
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-image.svg"
+  ctaText="Build from source on Mac ↓"
+  ctaHref="/install/macos/"
+  ctaVisible={true}
+  footerLicense=""
+  footerVersion={`v${VERSION}`}
+  canonical="https://ownlocalml.com/download/macos/"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/download/" aria-current="page">Download</a></li>
+        <li><a class="nav__link" href="/install/macos/">Build guide</a></li>
+        <li><a class="nav__link" href={GITHUB_URL} rel="noopener noreferrer">Source</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href="/install/macos/">Build from source ↓</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/">Home</a>
+    <a class="nav-drawer__link" href="/download/" aria-current="page">Download</a>
+    <a class="nav-drawer__link" href="/install/macos/">Build guide</a>
+    <a class="nav-drawer__link" href={GITHUB_URL} rel="noopener noreferrer">Source</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="btn btn--primary nav-drawer__cta" href="/install/macos/">Build from source ↓</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => {
+          const isOpen = drawer.classList.contains('is-open');
+          setOpen(!isOpen);
+        });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="notes-main">
+    <!-- ─── Hero ──────────────────────────────────────── -->
+    <section class="dlpg-hero" aria-labelledby="dlpg-hero-title">
+      <div class="dlpg-hero__bg" aria-hidden="true">
+        <div class="dlpg-hero__bg-shape dlpg-hero__bg-shape--1"></div>
+        <div class="dlpg-hero__bg-shape dlpg-hero__bg-shape--2"></div>
+        <div class="dlpg-hero__bg-shape dlpg-hero__bg-shape--3"></div>
+      </div>
+      <div class="dlpg-hero__inner">
+        <span class="dlpg-hero__eyebrow">
+          <span class="dlpg-hero__eyebrow-dot" aria-hidden="true"></span>
+          Pulse for macOS · v{VERSION} · source build
+        </span>
+        <h1 class="dlpg-hero__title" id="dlpg-hero-title">
+          Build Pulse for <span class="dlpg-hero__title-hl">macOS.</span>
+        </h1>
+        <p class="dlpg-hero__sub">
+          No official macOS build today. The community has ported the source
+          to Apple Silicon and Intel. The build produces an unsigned
+          <code>.app</code> bundle and a <code>.dmg</code> that drags into
+          <code>/Applications</code>.
+        </p>
+        <div class="dlpg-hero__ctas">
+          <a class="btn btn--primary dlpg-hero__btn" href="/install/macos/">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            Build from source on Mac
+            <span class="dlpg-hero__size">step-by-step</span>
+          </a>
+          <a class="btn btn--ghost dlpg-hero__btn" href={GITHUB_URL} rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg>
+            Read the source
+            <span class="dlpg-hero__size">on GitHub</span>
+          </a>
+        </div>
+        <p class="dlpg-hero__meta">v{VERSION} · macOS 11+ · arm64 · x86_64</p>
+      </div>
+    </section>
+
+    <!-- ─── Mockup (Pulse chat panel — same as other pages) -->
+    <section class="dlpg-mock" aria-labelledby="dlpg-mock-title">
+      <div class="dlpg-mock__inner">
+        <div class="dlpg-mock__frame">
+          <h2 class="visually-hidden" id="dlpg-mock-title">Pulse side panel preview</h2>
+          <div class="dlpg-mock-chat" role="img" aria-label="Pulse chat panel showing a user prompt and an assistant response from a local model">
+            <div class="dlpg-mock-chat__topbar">
+              <div class="dlpg-mock-chat__left">
+                <span class="dlpg-mock-chat__model">gemma3:4b</span>
+              </div>
+              <span class="dlpg-mock-chat__status">
+                <span class="dlpg-mock-chat__dot" aria-hidden="true"></span>
+                local · ready
+              </span>
+            </div>
+            <div class="dlpg-mock-chat__messages">
+              <div class="dlpg-mock-chat__msg dlpg-mock-chat__msg--user">
+                <span class="dlpg-mock-chat__role dlpg-mock-chat__role--user">You</span>
+                <p>What can a source build of Pulse for macOS actually do today?</p>
+              </div>
+              <div class="dlpg-mock-chat__msg dlpg-mock-chat__msg--assistant">
+                <span class="dlpg-mock-chat__role dlpg-mock-chat__role--assistant">Pulse</span>
+                <p>It runs the same Tauri v2 side panel and talks to a local model. The build is unsigned, so Gatekeeper warns on first launch. Right-click &ldquo;Open&rdquo; clears it once.</p>
+              </div>
+            </div>
+            <div class="dlpg-mock-chat__composer">
+              <span class="dlpg-mock-chat__mic" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="12" y1="19" x2="12" y2="23"></line>
+                  <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+              </span>
+              <span class="dlpg-mock-chat__input">Ask anything…</span>
+              <span class="dlpg-mock-chat__send" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </span>
+            </div>
+          </div>
+          <p class="dlpg-mock__caption">
+            Same Pulse chat panel. Built locally on macOS, not signed for distribution.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Meta grid (3 columns) ──────────────────────── -->
+    <section class="dlpg-meta" aria-labelledby="dlpg-meta-title">
+      <h2 class="visually-hidden" id="dlpg-meta-title">Build details</h2>
+      <div class="dlpg-meta__grid">
+        <article class="dlpg-meta__col" aria-labelledby="meta-mac-req">
+          <h3 id="meta-mac-req">System requirements</h3>
+          <ul>
+            <li>macOS 11 (Big Sur) or newer</li>
+            <li>Apple Silicon (arm64) or Intel (x86_64)</li>
+            <li>Xcode Command Line Tools</li>
+            <li>Rust 1.78+ via <code>rustup</code></li>
+            <li>Node.js 20 LTS</li>
+            <li>~3 GB free disk (target + deps + intermediate artifacts)</li>
+          </ul>
+        </article>
+
+        <article class="dlpg-meta__col" aria-labelledby="meta-mac-build">
+          <h3 id="meta-mac-build">Build details</h3>
+          <dl>
+            <div>
+              <dt>version</dt>
+              <dd>v{VERSION}</dd>
+            </div>
+            <div>
+              <dt>artifact</dt>
+              <dd><code>.app</code> · <code>.dmg</code></dd>
+            </div>
+            <div>
+              <dt>target triple</dt>
+              <dd><code>aarch64-apple-darwin</code></dd>
+            </div>
+            <div>
+              <dt>intEL triple</dt>
+              <dd><code>x86_64-apple-darwin</code></dd>
+            </div>
+            <div>
+              <dt>framework</dt>
+              <dd>Tauri v2</dd>
+            </div>
+            <div>
+              <dt>signing</dt>
+              <dd>Unsigned · Gatekeeper warns</dd>
+            </div>
+            <div>
+              <dt>license</dt>
+              <dd><a href="/license/">Proprietary</a></dd>
+            </div>
+          </dl>
+        </article>
+
+        <article class="dlpg-meta__col" aria-labelledby="meta-mac-verify">
+          <h3 id="meta-mac-verify">Verify the source</h3>
+          <dl>
+            <div>
+              <dt>repository</dt>
+              <dd><a href={GITHUB_URL} rel="noopener noreferrer">github.com/TimesNuRoman/pulse</a></dd>
+            </div>
+            <div>
+              <dt>tag</dt>
+              <dd><code>v{VERSION}</code></dd>
+            </div>
+            <div>
+              <dt>guide</dt>
+              <dd><a href="/install/macos/">/install/macos/</a></dd>
+            </div>
+            <div>
+              <dt>open issues</dt>
+              <dd><a href={`${GITHUB_URL}/issues`} rel="noopener noreferrer">macOS port tracking</a></dd>
+            </div>
+            <div>
+              <dt>notes</dt>
+              <dd><a href="/changelog/#v{VERSION}">v{VERSION} release notes</a></dd>
+            </div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <!-- ─── Also available on (cross-link to siblings) ──── -->
+    <nav class="dlpg-other" aria-labelledby="dlpg-other-title">
+      <div class="dlpg-other__inner">
+        <h2 id="dlpg-other-title">Also available on</h2>
+        <p>Pulse ships installers for Windows and Android. The other platforms live on the install guides and on GitHub.</p>
+        <ul class="dlpg-other__list" role="list">
+          <li>
+            <a class="dlpg-other__item" href="/download/windows/">
+              <span class="dlpg-other__item-name">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                </svg>
+                Windows
+              </span>
+              <span class="dlpg-other__item-meta">{WINDOWS_NSIS_SIZE} · v{VERSION}</span>
+            </a>
+          </li>
+          <li>
+            <a class="dlpg-other__item" href="/download/android/">
+              <span class="dlpg-other__item-name">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                Android
+              </span>
+              <span class="dlpg-other__item-meta">{ANDROID_APK_SIZE} · v{VERSION}</span>
+            </a>
+          </li>
+          <li>
+            <a class="dlpg-other__item" href="/download/macos/" aria-current="page">
+              <span class="dlpg-other__item-name">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                macOS
+              </span>
+              <span class="dlpg-other__item-meta">source build</span>
+            </a>
+          </li>
+          <li>
+            <a class="dlpg-other__item" href="/download/linux/">
+              <span class="dlpg-other__item-name">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                Linux
+              </span>
+              <span class="dlpg-other__item-meta">source build</span>
+            </a>
+          </li>
+          <li>
+            <a class="dlpg-other__item" href="/download/ios/">
+              <span class="dlpg-other__item-name">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                iOS
+              </span>
+              <span class="dlpg-other__item-meta">not available</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </main>
+
+  <Footer license="" version={`v${VERSION}`} />
+</Base>
