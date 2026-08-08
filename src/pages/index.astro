@@ -93,6 +93,7 @@ const softwareAppJsonLd = {
         <li><a class="nav__link" href="/faq/">FAQ</a></li>
       </ul>
       <div class="nav__right">
+        <a class="nav__login" href="/login/" aria-label="Activate an existing license">Log in</a>
         <a class="btn btn--primary nav__cta" href="/download/">Start trial ↓</a>
         <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -110,6 +111,7 @@ const softwareAppJsonLd = {
     <a class="nav-drawer__link" href="/download/">Download</a>
     <a class="nav-drawer__link" href="/pricing/">Pricing</a>
     <a class="nav-drawer__link" href="/faq/">FAQ</a>
+    <a class="nav-drawer__link" href="/login/">Log in</a>
     <a class="btn btn--primary nav-drawer__cta" href="/download/">Start trial ↓</a>
   </div>
 
@@ -466,6 +468,27 @@ const softwareAppJsonLd = {
     gap: 0.6rem;
     justify-content: center;
     margin-top: 0.5rem;
+  }
+
+  /* ─── Topnav: "Log in" link (sits to the left of the Start trial CTA) ─── */
+  .nav__login {
+    display: none;        /* mobile: shown via the drawer */
+    align-items: center;
+    color: var(--fg-dim);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 0.85rem;
+    min-height: 36px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .nav__login:hover {
+    color: var(--fg);
+    background: var(--surface);
+  }
+  @media (min-width: 768px) {
+    .nav__login { display: inline-flex; }
   }
 </style>
 
