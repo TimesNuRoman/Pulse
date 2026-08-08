@@ -1,4 +1,5 @@
 ---
+// SPDX-License-Identifier: Apache-2.0
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 import { getLatestRelease } from '../data/releases';
@@ -21,6 +22,13 @@ import {
 // `latest_nsis_url` field remain the source of truth for the
 // artifact paths; the R239 SSOT provides the version string for
 // the visible "Latest vX.Y.Z" pill on the hero.
+//
+// R248d: home page only — replaced the inlined full-width nav
+// with a centered floating frosted-glass capsule, and rebuilt
+// the hero around 2 side-by-side platform download pills with
+// an abstract radial-gradient backdrop. The same nav markup
+// still ships in BaseLayout for the other pages (see R101),
+// so this page renders standalone until the integrator reconciles.
 //
 // Brand rule: no first-person ("we", "I"), no founder credit, no
 // "team" personal voice — use "Pulse" or no subject.
@@ -75,9 +83,9 @@ const softwareAppJsonLd = {
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <nav class="nav" id="topnav" aria-label="Primary">
-    <div class="nav__inner">
-      <a class="nav__brand" href="/" aria-label="Pulse — home">
+  <header class="ray-header" id="topnav" role="navigation" aria-label="Primary">
+    <div class="ray-header__inner glass">
+      <a class="ray-header__brand" href="/" aria-label="Pulse — home">
         <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
           <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
           <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
@@ -85,17 +93,24 @@ const softwareAppJsonLd = {
           <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
           <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
         </svg>
-        <span class="nav__brand-name">Pulse</span>
+        <span class="ray-header__brand-name">Pulse</span>
       </a>
-      <ul class="nav__links" role="list">
-        <li><a class="nav__link" href="/download/">Download</a></li>
-        <li><a class="nav__link" href="/pricing/">Pricing</a></li>
-        <li><a class="nav__link" href="/faq/">FAQ</a></li>
-      </ul>
-      <div class="nav__right">
-        <a class="btn btn--primary nav__cta" href="/download/">Start trial ↓</a>
-        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <nav class="ray-header__links" aria-label="Primary">
+        <a class="ray-header__link" href="/download/">Download</a>
+        <a class="ray-header__link" href="/pricing/">Pricing</a>
+        <a class="ray-header__link" href="/faq/">FAQ</a>
+      </nav>
+      <div class="ray-header__right">
+        <a class="ray-header__login" href="/pricing/">Log in</a>
+        <a class="ray-header__cta" href="/download/">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 5v14"></path>
+            <path d="M19 12l-7 7-7-7"></path>
+          </svg>
+          Download
+        </a>
+        <button class="ray-header__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="4" y1="7" x2="20" y2="7"></line>
             <line x1="4" y1="12" x2="20" y2="12"></line>
             <line x1="4" y1="17" x2="20" y2="17"></line>
@@ -103,14 +118,14 @@ const softwareAppJsonLd = {
         </button>
       </div>
     </div>
-  </nav>
+  </header>
 
-  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
-    <a class="nav-drawer__link" href="/">Home</a>
-    <a class="nav-drawer__link" href="/download/">Download</a>
-    <a class="nav-drawer__link" href="/pricing/">Pricing</a>
-    <a class="nav-drawer__link" href="/faq/">FAQ</a>
-    <a class="btn btn--primary nav-drawer__cta" href="/download/">Start trial ↓</a>
+  <div class="ray-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="ray-drawer__link" href="/">Home</a>
+    <a class="ray-drawer__link" href="/download/">Download</a>
+    <a class="ray-drawer__link" href="/pricing/">Pricing</a>
+    <a class="ray-drawer__link" href="/faq/">FAQ</a>
+    <a class="btn btn--primary ray-drawer__cta" href="/download/">Start trial ↓</a>
   </div>
 
   <script is:inline>
@@ -161,24 +176,43 @@ const softwareAppJsonLd = {
 
   <main id="main">
     <!-- ─── Hero ──────────────────────────────────────── -->
-    <section class="home-hero">
-      <div class="bg-glow"></div>
-      <div class="container home-hero__grid">
-        <div class="home-hero__copy reveal">
-          <h1 class="home-hero__title">
-            AI on your machine.<br /><span class="home-hero__hl">Not in someone else's cloud.</span>
-          </h1>
-          <p class="home-hero__sub">
-            Pulse is a paid, local-first AI side panel for Windows and a
-            notes app for Android. Notes, chat, and your model stay on the
-            device. No account, no telemetry, no upload.
-          </p>
-          <div class="home-hero__ctas">
-            <a class="btn btn--primary btn--lg" id="hero-download" href="/download/" rel="noopener noreferrer">Start 14-day trial ↓</a>
-            <a class="btn btn--ghost btn--lg" href="#what">See what it does →</a>
-          </div>
-          <p class="home-hero__meta">Latest v{latestDesktopVersion} · 14-day trial · $20/mo or $192/yr · Windows + Android</p>
+    <section class="home-hero-ray" id="top">
+      <div class="home-hero-ray__bg" aria-hidden="true">
+        <div class="home-hero-ray__shape home-hero-ray__shape--1"></div>
+        <div class="home-hero-ray__shape home-hero-ray__shape--2"></div>
+        <div class="home-hero-ray__shape home-hero-ray__shape--3"></div>
+      </div>
+      <div class="container home-hero-ray__inner reveal">
+        <h1 class="home-hero-ray__title">
+          AI on your machine.<br /><span class="home-hero-ray__hl">Not in someone else's cloud.</span>
+        </h1>
+        <p class="home-hero-ray__sub">
+          Pulse is a paid, local-first AI side panel for Windows and a
+          notes app for Android. Notes, chat, and your model stay on the
+          device. No account, no telemetry, no upload.
+        </p>
+        <div class="home-hero-ray__ctas">
+          <a class="home-hero-ray__btn home-hero-ray__btn--win" id="hero-download" href="/download/" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M3 5.5L10.5 4.5v7.5H3v-6.5zM11.5 4.4L21 3v9h-9.5V4.4zM3 13.5h7.5V21L3 19.5v-6zM11.5 13.5H21V21l-9.5-1.5v-6z"></path>
+            </svg>
+            Download for Windows
+            <span class="home-hero-ray__size">↓ {WIN_NSIS_SIZE}</span>
+          </a>
+          <a class="home-hero-ray__btn home-hero-ray__btn--android" href={APK_URL} rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M6 9c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2v2c0 .55.45 1 1 1s1-.45 1-1v-2h8v2c0 .55.45 1 1 1s1-.45 1-1v-2c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2H6zM8 11.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM16 11.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM7 8L5.5 5.5C5.4 5.3 5.5 5 5.7 5c.2 0 .3.1.4.2L7.5 7.5C8.6 7.2 9.8 7 11 7h2c1.2 0 2.4.2 3.5.5l1.4-2.3c.1-.1.2-.2.4-.2.2 0 .3.3.2.5L17 8H7z"></path>
+            </svg>
+            Download APK
+            <span class="home-hero-ray__size">↓ {APK_SIZE}</span>
+          </a>
         </div>
+        <p class="home-hero-ray__meta">Install via winget · Try Pulse v{latestDesktopVersion}</p>
+        <a class="home-hero-ray__more" href="/changelog/#v0.6.9">
+          <span class="home-hero-ray__more-pill">Meet Pulse v3.1</span>
+          <span class="home-hero-ray__more-sep" aria-hidden="true">|</span>
+          <span class="home-hero-ray__more-link">Learn more →</span>
+        </a>
       </div>
     </section>
 
@@ -285,72 +319,366 @@ const softwareAppJsonLd = {
 
   <script is:inline define:vars={{ APK_URL: ANDROID_APK_URL }}>
     (() => {
-      // R120 site simplify: hero CTA picks the right artifact by UA.
-      // - Windows desktop → /download/ page (user picks NSIS or MSI).
-      // - Mobile / Android → direct APK download.
-      // - macOS / Linux / unknown → /download/ page.
-      // R234: APK_URL is pre-rendered from `src/lib/versions.ts` (the
-      // SSOT) via Astro's `define:vars` directive.
-      const a = document.getElementById('hero-download');
-      if (!a) return;
+      // R248d: hero has TWO pills now (Windows + APK). On Android
+      // mobile the Windows pill collapses — the APK pill is already
+      // direct. So on Android we just hide the Windows pill (it would
+      // download an .exe that can't run on the phone) and let the APK
+      // pill take the full row. Other platforms see both pills side
+      // by side and can pick whichever fits.
+      const win = document.getElementById('hero-download');
+      if (!win) return;
       const ua = (navigator.userAgent || '').toLowerCase();
-      const isAndroid = /android|mobile|iphone|ipad|ipod/.test(ua);
+      const isAndroid = /android/.test(ua);
       if (isAndroid) {
-        a.setAttribute('href', APK_URL);
+        win.style.display = 'none';
       }
-      // else leave as /download/ — Windows + macOS + Linux go to the picker
+      // On iOS we also hide it — same reason. (The APK CTA stays.)
+      if (/iphone|ipad|ipod/.test(ua)) {
+        win.style.display = 'none';
+      }
     })();
   </script>
 </Base>
 
-<style>
-  /* ─── Hero ──────────────────────────────────────────── */
-  .home-hero {
-    padding-top: clamp(112px, 14vw, 160px);
-    padding-bottom: clamp(64px, 9vw, 96px);
-    overflow: hidden;
+<style is:global>
+  /* ─── Floating capsule header (R248d) ─────────────────
+     Centered, frosted glass, ~880px wide, with a thin border
+     and a soft drop shadow. Scrolls opaque (background gets
+     denser and the border sharpens on scroll). */
+
+  .ray-header {
+    position: fixed;
+    top: clamp(12px, 1.6vw, 20px);
+    left: 0; right: 0;
+    z-index: 50;
+    padding: 0 clamp(12px, 2vw, 20px);
+    pointer-events: none;        /* let clicks fall through to the
+                                    inner capsule, which captures them */
   }
-  .home-hero__grid {
-    display: grid;
-    grid-template-columns: 1fr;
+  .ray-header__inner {
+    pointer-events: auto;
+    width: 100%;
+    max-width: 880px;
+    margin: 0 auto;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0 0.5rem 0 1.1rem;
+    border-radius: 9999px;       /* pill / capsule */
+    background: rgba(26, 27, 38, 0.6);
+    border: 1px solid var(--border);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+    transition:
+      background var(--dur) var(--ease),
+      border-color var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+  .ray-header.is-scrolled .ray-header__inner {
+    background: rgba(26, 27, 38, 0.85);
+    border-color: var(--border-strong);
+  }
+
+  .ray-header__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--fg);
+    font-weight: 600;
+    font-size: 0.98rem;
+    text-decoration: none;
+    min-height: 44px;             /* a11y touch target */
+    flex-shrink: 0;
+  }
+  .ray-header__brand:hover { color: var(--fg); }
+  .ray-header__brand-name { font-weight: 700; letter-spacing: -0.005em; }
+  .ray-header__brand svg { width: 28px; height: 28px; flex-shrink: 0; }
+
+  .ray-header__links {
+    display: none;
+    align-items: center;
     gap: 1.5rem;
+    margin: 0 auto;
   }
-  .home-hero__copy {
+  @media (min-width: 768px) {
+    .ray-header__links { display: flex; }
+  }
+  .ray-header__link {
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+    font-weight: 500;
+    padding: 0.5rem 0.25rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+  }
+  .ray-header__link:hover { color: var(--fg); }
+  .ray-header__link[aria-current="page"] { color: var(--purple); }
+
+  .ray-header__right {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+  .ray-header__login {
+    display: none;
+    color: var(--fg-dim);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 0.7rem;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: color var(--dur) var(--ease);
+  }
+  @media (min-width: 768px) {
+    .ray-header__login { display: inline-flex; }
+  }
+  .ray-header__login:hover { color: var(--fg); }
+
+  .ray-header__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    background: var(--fg);
+    color: #1a1b26;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    text-decoration: none;
+    min-height: 36px;
+    transition:
+      transform var(--dur) var(--ease),
+      background var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+  .ray-header__cta:hover {
+    background: #e8eaf6;
+    color: #1a1b26;
+    transform: translateY(-1px);
+  }
+  .ray-header__cta svg { width: 14px; height: 14px; }
+
+  .ray-header__burger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    color: var(--fg);
+    border: 1px solid var(--border);
+    background: transparent;
+    transition: border-color var(--dur) var(--ease);
+  }
+  .ray-header__burger:hover { border-color: var(--fg-dim); }
+  @media (min-width: 768px) { .ray-header__burger { display: none; } }
+  .ray-header__burger svg { width: 18px; height: 18px; }
+
+  /* Drawer (mobile only; same UX as the legacy .nav-drawer
+     but bound to .ray-drawer so it pairs with the new header). */
+  .ray-drawer {
+    position: fixed;
+    inset: calc(56px + clamp(12px, 1.6vw, 20px) + 8px) 0 0;
+    z-index: 49;
+    background: rgba(26, 27, 38, 0.96);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1.25rem;
-    max-width: 820px;
+    padding: 1.5rem var(--gutter) 2rem;
+    gap: 0.5rem;
+    transform: translateY(-110%);
+    transition: transform var(--dur) var(--ease);
+    visibility: hidden;
+    overflow-y: auto;
   }
-  .home-hero__title {
-    font-size: var(--fs-1);
+  .ray-drawer.is-open { transform: translateY(0); visibility: visible; }
+  .ray-drawer__link {
+    display: block;
+    padding: 0.85rem 0.25rem;
+    color: var(--fg);
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: -0.005em;
+    text-decoration: none;
+  }
+  .ray-drawer__link:hover { color: var(--purple); }
+  .ray-drawer__cta {
+    margin-top: 1rem;
+    align-self: stretch;
+    min-height: 52px;
+    font-size: 1.05rem;
+  }
+
+  /* ─── Hero (R248d) ────────────────────────────────────
+     Centered, with a soft abstract radial-gradient backdrop
+     in Tokyo Night colors (purple / blue / cyan). Two
+     side-by-side pill CTAs (Windows + APK), each with a
+     platform icon and a dimmed file-size text. The
+     "Meet Pulse v3.1" outline pill at the bottom links to
+     the changelog anchor. */
+  .home-hero-ray {
+    position: relative;
+    padding-top: clamp(120px, 16vw, 180px);
+    padding-bottom: clamp(72px, 11vw, 128px);
+    text-align: center;
+    overflow: hidden;
+  }
+  .home-hero-ray__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .home-hero-ray__shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    will-change: transform;
+  }
+  .home-hero-ray__shape--1 {
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 620px;
+    height: 620px;
+    background: radial-gradient(circle, rgba(187, 154, 247, 0.55) 0%, transparent 60%);
+    opacity: 0.55;
+  }
+  .home-hero-ray__shape--2 {
+    top: 40%;
+    left: 12%;
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(circle, rgba(122, 162, 247, 0.45) 0%, transparent 65%);
+    opacity: 0.4;
+  }
+  .home-hero-ray__shape--3 {
+    top: 26%;
+    right: 10%;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(125, 207, 255, 0.4) 0%, transparent 65%);
+    opacity: 0.3;
+  }
+  @media (max-width: 639px) {
+    .home-hero-ray__shape--1 { width: 460px; height: 460px; }
+    .home-hero-ray__shape--2 { width: 280px; height: 280px; left: -40px; }
+    .home-hero-ray__shape--3 { width: 320px; height: 320px; right: -40px; }
+  }
+
+  .home-hero-ray__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .home-hero-ray__title {
+    font-size: clamp(2.4rem, 5.6vw + 0.5rem, 4.5rem);
     line-height: 1.05;
     font-weight: 700;
     color: var(--fg);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+    margin: 0;
   }
-  .home-hero__hl {
-    background: linear-gradient(120deg, var(--purple), var(--blue));
+  .home-hero-ray__hl {
+    background: linear-gradient(120deg, var(--purple) 0%, var(--blue) 50%, var(--cyan) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  .home-hero__sub {
+  .home-hero-ray__sub {
     color: var(--fg-dim);
     font-size: var(--fs-body);
     line-height: 1.65;
-    max-width: 60ch;
+    max-width: 640px;
+    margin: 0;
   }
-  .home-hero__ctas {
+  .home-hero-ray__ctas {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    gap: 0.75rem;
+    justify-content: center;
     margin-top: 0.5rem;
+    width: 100%;
   }
-  .home-hero__meta {
+  .home-hero-ray__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85em 1.4em;
+    background: rgba(192, 202, 245, 0.06);
+    color: var(--fg);
+    border: 1px solid var(--border-strong);
+    border-radius: 9999px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    min-height: 56px;             /* a11y: 56dp touch target */
+    transition:
+      transform var(--dur) var(--ease),
+      border-color var(--dur) var(--ease),
+      background var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+  .home-hero-ray__btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--fg-dim);
+    background: rgba(192, 202, 245, 0.1);
+    color: var(--fg);
+  }
+  .home-hero-ray__btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .home-hero-ray__size {
+    color: var(--fg-dim);
+    font-size: 0.85em;
+    font-weight: 400;
+  }
+  .home-hero-ray__meta {
     color: var(--muted);
-    font-size: 0.92rem;
+    font-size: 0.9rem;
     margin: 0.25rem 0 0;
+  }
+  .home-hero-ray__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+    padding: 0.4rem 0.5rem 0.4rem 0.4rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 9999px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: border-color var(--dur) var(--ease);
+    min-height: 44px;
+  }
+  .home-hero-ray__more:hover { border-color: var(--purple); }
+  .home-hero-ray__more-pill {
+    background: var(--surface);
+    padding: 0.3rem 0.7rem;
+    border-radius: 9999px;
+    color: var(--fg);
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  .home-hero-ray__more-sep { color: var(--muted); }
+  .home-hero-ray__more-link { color: var(--fg-dim); font-weight: 500; padding-right: 0.4rem; }
+  .home-hero-ray__more:hover .home-hero-ray__more-link { color: var(--purple); }
+
+  /* Mobile: stack the two CTAs, hide the .ray-header__login
+     (it's a desktop-only link, but the breakpoint should also
+     keep the capsule from clipping). */
+  @media (max-width: 639px) {
+    .home-hero-ray__btn { width: 100%; justify-content: center; }
+    .home-hero-ray__ctas { flex-direction: column; }
   }
 
   /* ─── What Pulse does ────────────────────────────── */
