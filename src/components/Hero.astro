@@ -118,7 +118,7 @@ const formattedStars = githubStars !== null
   .hero__brandname { font-weight: 700; letter-spacing: 0.04em; }
 
   .hero__title {
-    margin-bottom: 1rem;
+    margin-bottom: var(--sp-3);
   }
   .hero__hl {
     background: linear-gradient(120deg, var(--purple), var(--blue));
@@ -129,17 +129,17 @@ const formattedStars = githubStars !== null
   .hero__sub {
     font-size: 1.15rem;
     color: var(--fg-dim);
-    margin-bottom: 2rem;
+    margin-bottom: var(--sp-4);
     max-width: 50ch;
   }
   .hero__ctas {
-    display: flex; flex-wrap: wrap; gap: 0.75rem;
+    display: flex; flex-wrap: wrap; gap: var(--sp-2);
     margin-bottom: 1.25rem;
   }
   .hero__trust {
     display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
     font-size: 0.85rem; color: var(--muted);
-    margin-bottom: 0.75rem;
+    margin-bottom: var(--sp-2);
   }
   .hero__trust-item { white-space: nowrap; display: inline-flex; align-items: center; gap: 0.3rem; }
   .hero__star { color: var(--yellow); flex-shrink: 0; }
@@ -202,7 +202,7 @@ const formattedStars = githubStars !== null
     color: var(--purple);
     border: 1px solid var(--border);
     border-radius: 4px;
-    padding: 1px 6px;
+    padding: 1px var(--sp-1);
     font-size: 0.78rem;
     margin-right: 0.3rem;
   }

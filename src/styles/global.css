@@ -4,6 +4,8 @@
    Tokyo Night palette, mobile-first, vanilla CSS, no framework
    ────────────────────────────────────────────────────────── */
 
+@import './tokens.css';
+
 :root {
   /* Tokyo Night core */
   --bg:           #1a1b26;
@@ -57,7 +59,16 @@
 * { margin: 0; padding: 0; }
 html, body { height: 100%; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+/* R245: re-expose the spacing rhythm tokens on <body> as well
+ * so any component (incl. Astro-scoped stylesheets that target
+ * body descendants) can reference var(--sp-N) without re-importing
+ * tokens.css. Values mirror :root in tokens.css. */
 body {
+  --sp-1: 6px;
+  --sp-2: 12px;
+  --sp-3: 18px;
+  --sp-4: 28px;
+  --sp-5: 44px;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
                "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   font-size: var(--fs-body);

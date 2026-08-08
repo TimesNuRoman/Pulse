@@ -371,7 +371,7 @@ const softwareAppJsonLd = {
     .home-what__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
   .home-what__item {
-    padding: 1.5rem 1.5rem 1.75rem;
+    padding: 1.5rem 1.5rem var(--sp-4);
     border-radius: var(--radius);
     background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
     border: 1px solid var(--border);
@@ -390,7 +390,7 @@ const softwareAppJsonLd = {
   }
 
   /* ─── Start trial cards ────────────────────────────── */
-  .home-get { padding: 3rem 0 4rem; }
+  .home-get { padding: var(--sp-5) 0 4rem; }
   .home-get__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
   .home-get__head h2 { font-size: var(--fs-2); }
   .home-get__head .lede { margin: 0.5rem auto 0; }
@@ -403,11 +403,11 @@ const softwareAppJsonLd = {
     .home-get__grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
   }
   .home-get__card {
-    padding: 1.75rem 1.75rem 2rem;
+    padding: var(--sp-4) var(--sp-4) 2rem;
     border-radius: var(--radius);
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--sp-2);
   }
   .home-get__platform {
     font-size: 0.7rem;
@@ -445,7 +445,7 @@ const softwareAppJsonLd = {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: var(--sp-3);
   }
   .home-free h2 {
     font-size: var(--fs-2);
