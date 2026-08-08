@@ -1,0 +1,376 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * R248g: per-platform download page for iOS.
+ *
+ * Same per-platform structure as /download/windows/ (R248g).
+ *
+ * iOS is "not available" today: Apple's rules do not allow
+ * sideloading an unsigned build on iPhone or iPad. This page
+ * is honest about that, points the user at the Android APK
+ * (which can be sideloaded on a tablet if a markdown editor
+ * is the goal), and links to the GitHub source so they can
+ * read the code or follow the issue tracker.
+ *
+ * The hero CTA is the Android APK download (the most useful
+ * action for an iOS user who arrived here). The ghost CTA is
+ * the source on GitHub.
+ *
+ * All version / URL / size / SHA constants are sourced from
+ * `src/lib/versions.ts` (the SSOT). The next Android version
+ * bump is a 1-line edit to public/updates/android.json.
+ *
+ * Hard rules: no emoji, no first-person, no marketing fluff,
+ * no future promises (we do NOT claim an iOS build is coming
+ * — we just say "not available" + "Android tablet fallback"),
+ * dark-only (Tokyo Night), Apache 2.0 SPDX, 48dp+ touch
+ * targets, prefers-reduced-motion respected.
+ */
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/notes.css';
+import '../../styles/download-page.css';
+import {
+  ANDROID_VERSION,
+  ANDROID_APK_URL,
+  ANDROID_APK_SIZE,
+  ANDROID_MIN_SDK,
+  WINDOWS_NSIS_SIZE,
+  SITE_BASE,
+} from '../../lib/versions';
+
+const VERSION = ANDROID_VERSION;
+
+const PAGE_TITLE = `Pulse for iOS — not available, Android tablet fallback`;
+const PAGE_DESC = `Pulse is not on the App Store and cannot be sideloaded on iPhone or iPad. If a markdown note editor on a tablet is the goal, the Android APK can be sideloaded on any modern Android tablet.`;
+
+const APK_URL_ABS = `${SITE_BASE}${ANDROID_APK_URL}`;
+const GITHUB_URL = 'https://github.com/TimesNuRoman/pulse';
+---
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-image.svg"
+  ctaText={`Try the Android APK ↓ ${ANDROID_APK_SIZE}`}
+  ctaHref={ANDROID_APK_URL}
+  ctaVisible={true}
+  footerLicense=""
+  footerVersion={`v${VERSION}`}
+  canonical="https://ownlocalml.com/download/ios/"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a class="nav__link" href="/download/" aria-current="page">Download</a></li>
+        <li><a class="nav__link" href={GITHUB_URL} rel="noopener noreferrer">Source</a></li>
+        <li><a class="nav__link" href="/changelog/">Changelog</a></li>
+        <li><a class="nav__link" href="/pricing/">Pricing</a></li>
+      </ul>
+      <div class="nav__right">
+        <a class="btn btn--primary nav__cta" href={ANDROID_APK_URL} rel="noopener noreferrer">Android APK ↓ {ANDROID_APK_SIZE}</a>
+        <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <a class="nav-drawer__link" href="/">Home</a>
+    <a class="nav-drawer__link" href="/download/" aria-current="page">Download</a>
+    <a class="nav-drawer__link" href={GITHUB_URL} rel="noopener noreferrer">Source</a>
+    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
+    <a class="nav-drawer__link" href="/pricing/">Pricing</a>
+    <a class="btn btn--primary nav-drawer__cta" href={ANDROID_APK_URL} rel="noopener noreferrer">Android APK ↓ {ANDROID_APK_SIZE}</a>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const nav = document.getElementById('topnav');
+      const burger = document.getElementById('nav-burger');
+      const drawer = document.getElementById('nav-drawer');
+      if (!nav) return;
+      let scrolled = false;
+      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
+      const onScroll = () => setScrolled(window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      if (burger && drawer) {
+        const setOpen = (open) => {
+          burger.setAttribute('aria-expanded', String(open));
+          drawer.setAttribute('aria-hidden', String(!open));
+          drawer.classList.toggle('is-open', open);
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => {
+          const isOpen = drawer.classList.contains('is-open');
+          setOpen(!isOpen);
+        });
+        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
+        const mq = window.matchMedia('(min-width: 768px)');
+        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
+      }
+      document.body.classList.add('has-nav');
+    })();
+  </script>
+
+  <main id="main" class="notes-main">
+    <!-- ─── Hero ──────────────────────────────────────── -->
+    <section class="dlpg-hero" aria-labelledby="dlpg-hero-title">
+      <div class="dlpg-hero__bg" aria-hidden="true">
+        <div class="dlpg-hero__bg-shape dlpg-hero__bg-shape--1"></div>
+        <div class="dlpg-hero__bg-shape dlpg-hero__bg-shape--2"></div>
+        <div class="dlpg-hero__bg-shape dlpg-hero__bg-shape--3"></div>
+      </div>
+      <div class="dlpg-hero__inner">
+        <span class="dlpg-hero__eyebrow">
+          <span class="dlpg-hero__eyebrow-dot" aria-hidden="true"></span>
+          Pulse for iOS · not available
+        </span>
+        <h1 class="dlpg-hero__title" id="dlpg-hero-title">
+          No iOS build <span class="dlpg-hero__title-hl">today.</span>
+        </h1>
+        <p class="dlpg-hero__sub">
+          Pulse is not on the App Store. Apple's rules do not allow sideloading
+          an unsigned build on iPhone or iPad. The Android APK can be
+          sideloaded on a tablet if a markdown editor is the goal &mdash; it
+          shares the same data model.
+        </p>
+        <div class="dlpg-hero__ctas">
+          <a class="btn btn--primary dlpg-hero__btn" href={ANDROID_APK_URL} rel="noopener noreferrer" download>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+            Download Android APK
+            <span class="dlpg-hero__size">{ANDROID_APK_SIZE}</span>
+          </a>
+          <a class="btn btn--ghost dlpg-hero__btn" href={GITHUB_URL} rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg>
+            Read the source
+            <span class="dlpg-hero__size">on GitHub</span>
+          </a>
+        </div>
+        <p class="dlpg-hero__meta">Android {ANDROID_MIN_SDK}+ · tablet-friendly · v{VERSION}</p>
+      </div>
+    </section>
+
+    <!-- ─── Mockup (Pulse Notes editor on Android) ────── -->
+    <section class="dlpg-mock" aria-labelledby="dlpg-mock-title">
+      <div class="dlpg-mock__inner">
+        <div class="dlpg-mock__frame">
+          <h2 class="visually-hidden" id="dlpg-mock-title">Pulse Notes preview on Android tablet</h2>
+          <div class="dlpg-mock-chat" role="img" aria-label="Pulse Notes editor running on an Android tablet showing a markdown document with backlinks">
+            <div class="dlpg-mock-chat__topbar">
+              <div class="dlpg-mock-chat__left">
+                <span class="dlpg-mock-chat__model">tablet · notes.md</span>
+              </div>
+              <span class="dlpg-mock-chat__status">
+                <span class="dlpg-mock-chat__dot" aria-hidden="true"></span>
+                local · 142 notes
+              </span>
+            </div>
+            <div class="dlpg-mock-chat__messages">
+              <div class="dlpg-mock-chat__msg dlpg-mock-chat__msg--user">
+                <span class="dlpg-mock-chat__role dlpg-mock-chat__role--user">Note</span>
+                <p>Linked to <code>[[Pulse roadmap]]</code> and tagged <code>#design</code> · <code>#wip</code>.</p>
+              </div>
+              <div class="dlpg-mock-chat__msg dlpg-mock-chat__msg--assistant">
+                <span class="dlpg-mock-chat__role dlpg-mock-chat__role--assistant">Backlinks</span>
+                <p>Pulse roadmap, Onboarding flow, Voice input design notes, R172 v0.6.0 spec.</p>
+              </div>
+            </div>
+            <div class="dlpg-mock-chat__composer">
+              <span class="dlpg-mock-chat__mic" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="12" y1="19" x2="12" y2="23"></line>
+                  <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+              </span>
+              <span class="dlpg-mock-chat__input">Search notes…</span>
+              <span class="dlpg-mock-chat__send" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </span>
+            </div>
+          </div>
+          <p class="dlpg-mock__caption">
+            Same Pulse Notes editor. The Android APK runs on a tablet without code changes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Meta grid (3 columns: why / fallback / status) ── -->
+    <section class="dlpg-meta" aria-labelledby="dlpg-meta-title">
+      <h2 class="visually-hidden" id="dlpg-meta-title">iOS status</h2>
+      <div class="dlpg-meta__grid">
+        <article class="dlpg-meta__col" aria-labelledby="meta-ios-why">
+          <h3 id="meta-ios-why">Why no iOS build</h3>
+          <ul>
+            <li>Apple does not allow sideloading an unsigned build on iPhone or iPad.</li>
+            <li>App Store review rejects apps that bundle a local model runtime for general distribution.</li>
+            <li>TestFlight is invite-only and limited to 10,000 external testers per app.</li>
+            <li>An iOS-native port would require a separate Tauri target and a different WebKit build chain.</li>
+            <li>The blocker is the distribution policy, not the code.</li>
+          </ul>
+        </article>
+
+        <article class="dlpg-meta__col" aria-labelledby="meta-ios-fallback">
+          <h3 id="meta-ios-fallback">Android tablet fallback</h3>
+          <dl>
+            <div>
+              <dt>package</dt>
+              <dd>Android APK (signed · v2 + v3)</dd>
+            </div>
+            <div>
+              <dt>min Android</dt>
+              <dd>version {ANDROID_MIN_SDK} (7.0 Nougat)</dd>
+            </div>
+            <div>
+              <dt>tablet-friendly</dt>
+              <dd>Yes &mdash; landscape, split view, external keyboard</dd>
+            </div>
+            <div>
+              <dt>size</dt>
+              <dd>{ANDROID_APK_SIZE}</dd>
+            </div>
+            <div>
+              <dt>data model</dt>
+              <dd>Same as Windows desktop</dd>
+            </div>
+            <div>
+              <dt>install</dt>
+              <dd><a href="/install/android/">sideload guide</a></dd>
+            </div>
+          </dl>
+        </article>
+
+        <article class="dlpg-meta__col" aria-labelledby="meta-ios-status">
+          <h3 id="meta-ios-status">Source · status</h3>
+          <dl>
+            <div>
+              <dt>repository</dt>
+              <dd><a href={GITHUB_URL} rel="noopener noreferrer">github.com/TimesNuRoman/pulse</a></dd>
+            </div>
+            <div>
+              <dt>iOS issues</dt>
+              <dd><a href={`${GITHUB_URL}/issues?q=is%3Aissue+ios`} rel="noopener noreferrer">iOS port tracking</a></dd>
+            </div>
+            <div>
+              <dt>read the code</dt>
+              <dd><a href={GITHUB_URL} rel="noopener noreferrer">browse the source</a></dd>
+            </div>
+            <div>
+              <dt>license</dt>
+              <dd><a href="/license/">Proprietary</a></dd>
+            </div>
+            <div>
+              <dt>current release</dt>
+              <dd><a href="/changelog/#v{VERSION}">v{VERSION} release notes</a></dd>
+            </div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <!-- ─── Also available on (cross-link to siblings) ──── -->
+    <nav class="dlpg-other" aria-labelledby="dlpg-other-title">
+      <div class="dlpg-other__inner">
+        <h2 id="dlpg-other-title">Also available on</h2>
+        <p>Pulse ships installers for Windows and Android. The other platforms live on the install guides and on GitHub.</p>
+        <ul class="dlpg-other__list" role="list">
+          <li>
+            <a class="dlpg-other__item" href="/download/windows/">
+              <span class="dlpg-other__item-name">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                </svg>
+                Windows
+              </span>
+              <span class="dlpg-other__item-meta">{WINDOWS_NSIS_SIZE} · v{VERSION}</span>
+            </a>
+          </li>
+          <li>
+            <a class="dlpg-other__item" href="/download/android/">
+              <span class="dlpg-other__item-name">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                Android
+              </span>
+              <span class="dlpg-other__item-meta">{ANDROID_APK_SIZE} · v{VERSION}</span>
+            </a>
+          </li>
+          <li>
+            <a class="dlpg-other__item" href="/download/macos/">
+              <span class="dlpg-other__item-name">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                macOS
+              </span>
+              <span class="dlpg-other__item-meta">source build</span>
+            </a>
+          </li>
+          <li>
+            <a class="dlpg-other__item" href="/download/linux/">
+              <span class="dlpg-other__item-name">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                Linux
+              </span>
+              <span class="dlpg-other__item-meta">source build</span>
+            </a>
+          </li>
+          <li>
+            <a class="dlpg-other__item" href="/download/ios/" aria-current="page">
+              <span class="dlpg-other__item-name">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                iOS
+              </span>
+              <span class="dlpg-other__item-meta">not available</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </main>
+
+  <Footer license="" version={`v${VERSION}`} />
+</Base>
