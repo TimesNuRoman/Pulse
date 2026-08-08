@@ -541,8 +541,12 @@ body.has-nav.is-scrolled main { padding-top: 56px; }
 .bg-lines   { z-index: 3; }
 .bg-particles { z-index: 4; }
 
-/* Content always sits above the background layers. */
-main, .topnav, header, footer { position: relative; z-index: 20; }
+/* Content always sits above the background layers.
+   Note: .topnav is `position: fixed` (scroll-morph), so we only
+   need to make sure it's z-index:50+. Other elements get
+   `position: relative` so their `z-index: 20` actually creates
+   a stacking context above the fixed background layers. */
+main, header, footer { position: relative; z-index: 20; }
 
 /* ── Layer 1: radial beams (slow drift) ── */
 .beam { position: absolute; border-radius: 50%; filter: blur(60px); will-change: transform, opacity; }
