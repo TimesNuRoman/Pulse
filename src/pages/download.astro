@@ -27,20 +27,21 @@ import {
 // R120 site simplify: download surface for the user-facing site.
 // Keeps the platform details (NSIS / MSI, SHA-256, size, min OS) — those
 // are required to verify a binary before running it. Strips round
-// numbers and implementation jargon. UA-based JS reorder: mobile →
-// Android first, desktop → Windows first.
-//
-// R184: smart download CTA — server-renders a Windows-flavoured CTA at
-// the top, upgrades to the visitor's platform via the inline IIFE that
-// mirrors `src/lib/platformDetect.ts`. The existing hero + platform
-// cards move into a `<details id="other-platforms">` disclosure, opened
-// by the "Pick a different platform" button. macOS / Linux / iOS all
-// render an honest "no build yet" message with a fork-on-GitHub link.
+// numbers and implementation jargon.
 //
 // R234: every version string + URL + size + SHA is now sourced from
 // `src/lib/versions.ts` (the SSOT). The next version bump is a 1-line
 // edit to public/updates/{desktop,android}.json, not a search-replace
 // marathon across this file.
+//
+// R247c: Steam-pattern layout. Replaces the R184 "smart CTA in a big
+// glass card + <details> wrapping the rest" pattern with a compact
+// hero + visible tab strip + one tabpanel per platform. The 5
+// platform cards (Windows, Android, macOS, Linux, iOS) are now
+// always-visible tabs (click to switch) instead of a stack behind a
+// "+/-" disclosure. Smart-CTA detection still swaps the primary
+// download button's text/href based on the visitor's UA — but the
+// surrounding hero is now a single-row layout (title left, CTA right).
 
 // Local aliases — keep call-site diffs minimal (the names already in
 // use below). All values come from the SSOT.
@@ -64,15 +65,15 @@ const WIN_SHA_MSI = WINDOWS_MSI_SHA;
 const WIN_MIN_OS = WINDOWS_MIN_OS;
 const WIN_BUILD_TARGET = WINDOWS_BUILD_TARGET;
 
-// R184: GitHub repo URL for the "no build yet" CTA on macOS / Linux / iOS.
+// R195: GitHub repo URL for the "no build yet" CTA on macOS / Linux / iOS.
 const GITHUB_URL = 'https://github.com/TimesNuRoman/pulse';
 
 const PAGE_TITLE = 'Download Pulse — for Windows or Android';
-const PAGE_DESC = 'Download Pulse for Windows (NSIS or MSI installer) or Pulse for Android (APK). 14-day trial included. Local-first, no account, no telemetry.';
+const PAGE_DESC = 'Download Pulse for Windows (NSIS or MSI installer) or Pulse for Android (APK). Local-first, no account, no telemetry.';
 
 // R128 SEO polish: JSON-LD for the two apps on this page.
 // One SoftwareApplication per platform so search engines can surface
-// each platform's installer + APK separately. Free / open-source.
+// each platform's installer + APK separately.
 const softwareAppsJsonLd = [
   {
     '@context': 'https://schema.org',
@@ -190,86 +191,104 @@ const softwareAppsJsonLd = [
   </script>
 
   <main id="main" class="notes-main">
-    <!-- ─── R184: Smart download CTA ────────────────────
-         Server-renders the Windows-flavoured CTA. The inline IIFE
-         below detects the visitor's platform and swaps the CTA in
-         place. The pure function is in src/lib/platformDetect.ts;
-         this IIFE MUST mirror its logic. -->
-    <section class="dl-smart" id="smart">
-      <div class="bg-glow"></div>
-      <div class="container dl-smart__inner glass">
-        <div class="dl-smart__cta" data-smart-state="ready" data-smart-platform="windows">
-          <span class="dl-smart__eyebrow">
-            Detected: <span class="dl-smart__os" aria-live="polite" data-smart-os>Windows</span>
-          </span>
-          <h2 class="dl-smart__title" data-smart-title>One click. That's it.</h2>
-          <p class="dl-smart__sub" data-smart-sub>
-            Local-first, no account, 14-day trial included. We'll send you the right installer for <span data-smart-os-tail>Windows</span>.
+    <!-- ─── R247c: Compact hero ───────────────────────────
+         Single-row layout: product name + version meta on the
+         left, the smart primary CTA on the right. No glass card,
+         no "One click" placeholder copy. The smart-CTA IIFE at
+         the bottom of the file swaps this button's label / href
+         in place based on the visitor's UA. -->
+    <section class="dl-hero-compact">
+      <div class="container dl-hero-compact__inner">
+        <div class="dl-hero-compact__title">
+          <h1 class="dl-hero-compact__h1">Download Pulse</h1>
+          <p class="dl-hero-compact__meta">
+            Windows v{WIN_VERSION} <span aria-hidden="true">·</span> Android v{APK_VERSION}
+            <span aria-hidden="true">·</span> {WIN_SIZE_EXE} / {APK_SIZE}
           </p>
-          <a class="btn dl-smart__btn"
+        </div>
+        <div class="dl-hero-compact__cta" data-smart-state="ready" data-smart-platform="windows">
+          <a class="btn dl-hero-compact__btn"
              data-smart-href
              data-smart-btn-class="btn--primary"
              href={WIN_EXE}
              rel="noopener noreferrer"
              download>
             <span data-smart-filename>Download Pulse for Windows</span>
-            <span class="dl-smart__size" data-smart-size>· {WIN_SIZE_EXE}</span>
+            <span class="dl-hero-compact__size" data-smart-size>· {WIN_SIZE_EXE}</span>
           </a>
-          <button class="dl-smart__pick"
-                  data-smart-pick
-                  type="button"
-                  aria-expanded="false"
-                  aria-controls="other-platforms">
-            Pick a different platform <span aria-hidden="true">↓</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── R247c: Tab strip ──────────────────────────────
+         5 platform pills, all visible above the fold. Click or
+         arrow-key to switch. The active tab's content renders
+         in the matching panel below. macOS / Linux / iOS tabs
+         still show — they just open to "no build today" cards
+         with the build-from-source / GitHub links. -->
+    <section class="dl-tabs-wrap" aria-labelledby="dl-tabs-heading">
+      <div class="container">
+        <h2 id="dl-tabs-heading" class="dl-tabs-heading">Choose a platform</h2>
+        <div class="dl-tabs" role="tablist" aria-label="Download platform">
+          <button role="tab" type="button"
+                  id="tab-windows" aria-selected="true" aria-controls="panel-windows" data-tab="windows"
+                  class="dl-tab">
+            <svg class="dl-tab__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M3 4.5l6.5-1v7H3v-6zm0 11l6.5 1V10H3v5.5zM10.5 3.4L17 2.4v8.1h-6.5V3.4zm0 13.2L17 17.6V9.5h-6.5v7.1z"/>
+            </svg>
+            <span class="dl-tab__label">Windows</span>
+            <span class="dl-tab__badge">v{WIN_VERSION}</span>
+          </button>
+          <button role="tab" type="button"
+                  id="tab-android" aria-selected="false" aria-controls="panel-android" data-tab="android" tabindex="-1"
+                  class="dl-tab">
+            <svg class="dl-tab__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M5 9.5a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm7 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM3.5 6h13v7.5a1.5 1.5 0 01-1.5 1.5h-1V17a1 1 0 11-2 0v-2h-4v2a1 1 0 11-2 0v-2H5A1.5 1.5 0 013.5 13.5V6zM4.7 4l-.7-.7a.5.5 0 11.7-.7l.8.7a5.5 5.5 0 014.5-.6L10.5 2a.5.5 0 11.4.9l-.4.7a5.5 5.5 0 014 1.4l.7-.7a.5.5 0 11.7.7l-.6.7A3 3 0 0116.5 8h-13A3 3 0 014.7 4z"/>
+            </svg>
+            <span class="dl-tab__label">Android</span>
+            <span class="dl-tab__badge">v{APK_VERSION}</span>
+          </button>
+          <button role="tab" type="button"
+                  id="tab-macos" aria-selected="false" aria-controls="panel-macos" data-tab="macos" tabindex="-1"
+                  class="dl-tab">
+            <svg class="dl-tab__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M14.5 10.6c0-2.1 1.7-3.1 1.8-3.2-1-1.5-2.5-1.7-3-1.7-1.3-.1-2.5.8-3.2.8-.7 0-1.7-.7-2.8-.7-1.4 0-2.7.8-3.5 2.1-1.5 2.6-.4 6.4 1 8.5.7 1 1.6 2.2 2.7 2.1 1.1 0 1.5-.7 2.8-.7 1.3 0 1.7.7 2.8.7 1.2 0 1.9-1 2.6-2 .8-1.1 1.2-2.3 1.2-2.3-.1 0-2.4-1-2.4-3.6zM12.4 4.3c.6-.7 1-1.7.9-2.7-.9 0-1.9.6-2.5 1.3-.6.6-1 1.6-.9 2.6 1 0 2-.5 2.5-1.2z"/>
+            </svg>
+            <span class="dl-tab__label">macOS</span>
+            <span class="dl-tab__badge">source</span>
+          </button>
+          <button role="tab" type="button"
+                  id="tab-linux" aria-selected="false" aria-controls="panel-linux" data-tab="linux" tabindex="-1"
+                  class="dl-tab">
+            <svg class="dl-tab__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M10 2.5c-1.7 0-3 1.4-3 3.2 0 .9.2 1.6.5 2.2-.5.8-1.4 1.7-2.2 2.7-1 1.3-1.8 2.8-1.8 4.2 0 .7.2 1.4.6 2 .4.5 1 .8 1.7.8.5 0 1-.1 1.4-.3.5-.2.9-.5 1.4-.5h2.8c.5 0 .9.3 1.4.5.4.2.9.3 1.4.3.7 0 1.3-.3 1.7-.8.4-.6.6-1.3.6-2 0-1.4-.8-2.9-1.8-4.2-.8-1-1.7-1.9-2.2-2.7.3-.6.5-1.3.5-2.2 0-1.8-1.3-3.2-3-3.2zM8.5 6.2a.7.7 0 110 1.4.7.7 0 010-1.4zm3 0a.7.7 0 110 1.4.7.7 0 010-1.4zM8 8.8a2 2 0 002 2 2 2 0 002-2h-4z"/>
+            </svg>
+            <span class="dl-tab__label">Linux</span>
+            <span class="dl-tab__badge">source</span>
+          </button>
+          <button role="tab" type="button"
+                  id="tab-ios" aria-selected="false" aria-controls="panel-ios" data-tab="ios" tabindex="-1"
+                  class="dl-tab">
+            <svg class="dl-tab__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M11 2.5a2 2 0 00-2 2v.6c-2.4.4-4 2.4-4 4.9v4a2 2 0 01-1 1.7.8.8 0 00.4 1.5h11.2a.8.8 0 00.4-1.5 2 2 0 01-1-1.7v-4c0-2.5-1.6-4.5-4-4.9v-.6a2 2 0 00-2-2zm-1 1.5a.7.7 0 110 1.4.7.7 0 010-1.4zM5 14.5h10v1.3c0 .2 0 .4.1.6H4.9c.1-.2.1-.4.1-.6v-1.3z"/>
+            </svg>
+            <span class="dl-tab__label">iOS</span>
+            <span class="dl-tab__badge">n/a</span>
           </button>
         </div>
       </div>
     </section>
 
-    <!-- ─── R184: "Other platforms" disclosure ────────────
-         Wraps the R120 hero + platform cards. Default closed.
-         The "Pick a different platform" button above opens this. -->
-    <details id="other-platforms" class="dl-other">
-      <summary class="dl-other__summary">
-        <span class="dl-other__summary-label">Other platforms</span>
-        <span class="dl-other__summary-sub">Windows, Android, or build from source</span>
-        <span class="dl-other__summary-caret" aria-hidden="true">+</span>
-      </summary>
+    <!-- ─── R247c: Tab panels ─────────────────────────────
+         One panel per platform. Default = Windows. macOS / Linux
+         / iOS panels stay honest: "no build today" + the build-
+         from-source guide or the GitHub repo. No stack of
+         conditional cards — every tab is reachable. -->
+    <section class="dl-panels">
+      <div class="container">
 
-      <!-- ─── Hero ──────────────────────────────────────── -->
-      <section class="dl-hero">
-        <div class="bg-glow"></div>
-        <div class="container dl-hero__grid">
-          <div class="dl-hero__copy reveal">
-            <div class="dl-hero__badges">
-              <span class="notes-hero__eyebrow">Pulse · download</span>
-              <span class="notes-hero__pill" aria-label="Latest versions">
-                <span class="notes-hero__pill-dot" aria-hidden="true"></span>
-                Windows v{WIN_VERSION} · Android v{APK_VERSION}
-              </span>
-            </div>
-            <h2 class="dl-hero__title">
-              Other ways<br />to install. <span class="notes-hero__hl">Same Pulse.</span>
-            </h2>
-            <p class="dl-hero__sub">
-              Pick an installer below or jump to the source on GitHub.
-              Both builds are local-first. The Windows installer is NSIS
-              (per-user) or MSI (per-machine); the Android build is a
-              signed APK.
-            </p>
-            <ul class="dl-hero__platforms" role="list" aria-label="Jump to platform">
-              <li><a class="btn btn--ghost btn--lg" href="#windows">Pulse for Windows ↓</a></li>
-              <li><a class="btn btn--ghost btn--lg" href="#android">Pulse for Android ↓ {APK_SIZE}</a></li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- ─── Platform sections (UA-reordered) ─────────── -->
-      <section class="dl-platforms" id="platforms" data-dl-reorder>
-        <div class="container dl-platforms__grid">
-
-          <article class="dl-card glass reveal" id="windows" data-dl-platform="windows">
+        <div role="tabpanel" id="panel-windows" aria-labelledby="tab-windows" data-panel="windows" class="dl-panel">
+          <article class="dl-card glass reveal">
             <header class="dl-card__head">
               <span class="dl-card__platform">Pulse for Windows</span>
               <span class="notes-hero__pill" aria-label="Latest version">
@@ -325,8 +344,10 @@ const softwareAppsJsonLd = [
               <a href="/changelog/">changelog</a>.
             </p>
           </article>
+        </div>
 
-          <article class="dl-card glass reveal" id="android" data-dl-platform="android">
+        <div role="tabpanel" id="panel-android" aria-labelledby="tab-android" data-panel="android" class="dl-panel" hidden>
+          <article class="dl-card glass reveal">
             <header class="dl-card__head">
               <span class="dl-card__platform">Pulse for Android</span>
               <span class="notes-hero__pill" aria-label="Latest version">
@@ -385,13 +406,10 @@ const softwareAppsJsonLd = [
               <a href="/privacy/">Privacy &amp; data model</a>
             </p>
           </article>
+        </div>
 
-          <!-- ─── R195: macOS / Linux / iOS cards ───────────
-               macOS and Linux: "no official build today" + link
-               to the /install/{platform}/ build-from-source guide.
-               iOS: no sideloading path on Apple hardware, link
-               to the Android APK as a tablet fallback. -->
-          <article class="dl-card glass reveal" id="macos" data-dl-platform="macos">
+        <div role="tabpanel" id="panel-macos" aria-labelledby="tab-macos" data-panel="macos" class="dl-panel" hidden>
+          <article class="dl-card glass reveal">
             <header class="dl-card__head">
               <span class="dl-card__platform">Pulse for macOS</span>
               <span class="notes-hero__pill" aria-label="Build from source">
@@ -434,8 +452,10 @@ const softwareAppsJsonLd = [
               </div>
             </dl>
           </article>
+        </div>
 
-          <article class="dl-card glass reveal" id="linux" data-dl-platform="linux">
+        <div role="tabpanel" id="panel-linux" aria-labelledby="tab-linux" data-panel="linux" class="dl-panel" hidden>
+          <article class="dl-card glass reveal">
             <header class="dl-card__head">
               <span class="dl-card__platform">Pulse for Linux</span>
               <span class="notes-hero__pill" aria-label="Build from source">
@@ -478,8 +498,10 @@ const softwareAppsJsonLd = [
               </div>
             </dl>
           </article>
+        </div>
 
-          <article class="dl-card glass reveal" id="ios" data-dl-platform="ios">
+        <div role="tabpanel" id="panel-ios" aria-labelledby="tab-ios" data-panel="ios" class="dl-panel" hidden>
+          <article class="dl-card glass reveal">
             <header class="dl-card__head">
               <span class="dl-card__platform">Pulse for iOS</span>
               <span class="notes-hero__pill" aria-label="Not available">
@@ -518,8 +540,8 @@ const softwareAppsJsonLd = [
             </dl>
           </article>
         </div>
-      </section>
-    </details>
+      </div>
+    </section>
 
     <!-- ─── One product, two surfaces ── -->
     <section class="dl-unified">
@@ -554,486 +576,301 @@ const softwareAppsJsonLd = [
        engines can surface each installer / APK independently. -->
   <script type="application/ld+json" set:html={JSON.stringify(softwareAppsJsonLd)} />
 
-  <!-- UA-based reorder. mobile → Android first; desktop → Windows first.
-       Uses CSS order: property with a UA class so screen-readers see a stable
-       document order (Android article second) but the visual order swaps.
-       No-JS fallback: Android first (matches the mobile-primary audience). -->
-  <script is:inline>
-    (() => {
-      const root = document.querySelector('[data-dl-reorder]');
-      if (!root) return;
-      const grid = root.querySelector('.dl-platforms__grid');
-      if (!grid) return;
-      // isMobile = matches phone UA + narrow viewport
-      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-        || (window.matchMedia && window.matchMedia('(max-width: 767px)').matches);
-      if (!isMobile) {
-        root.classList.add('dl-platforms--desktop-first');
-      }
-    })();
-  </script>
-
-  <!-- R184: Smart CTA detection + content swap. Inline IIFE mirror of
-       `src/lib/platformDetect.ts` (pure module). MUST stay in sync —
-       if you edit one, edit the other. Browser-only context.
-       R234: WIN_EXE_PATH / APK_PATH / WIN_SIZE / APK_SIZE are
-       pre-rendered from the SSOT (`src/lib/versions.ts`) via
-       Astro's `define:vars` directive. The next version bump is a
-       1-line edit to public/updates/*.json, not a search-replace. -->
+  <!-- R247c: Tab switching + smart CTA that mirrors the active tab.
+       WAI-ARIA tabs pattern. Click or arrow keys to switch panels.
+       UA-based default tab (mobile → Android, macOS → macOS, Linux →
+       Linux, else Windows). The hero CTA label / href / size swaps
+       in place to follow the active tab — the smart download is no
+       longer a separate "magic CTA" that diverges from the panel you
+       just opened. -->
   <script is:inline define:vars={{ WIN_EXE_PATH: WIN_EXE, APK_PATH: APK_URL, WIN_SIZE: WIN_SIZE_EXE, APK_SIZE: APK_SIZE }}>
     (() => {
-      // ─── Inline mirror of src/lib/platformDetect.ts ─────────────
-      function detectPlatform(input) {
-        var uadPlatform = input.userAgentData && input.userAgentData.platform;
-        if (uadPlatform) {
-          if (uadPlatform === 'Windows')  return { platform: 'windows', confidence: 'high', source: 'userAgentData' };
-          if (uadPlatform === 'macOS')   return { platform: 'macos',  confidence: 'high', source: 'userAgentData' };
-          if (uadPlatform === 'Linux')   return { platform: 'linux',  confidence: 'high', source: 'userAgentData' };
-          if (uadPlatform === 'Android') return { platform: 'android', confidence: 'high', source: 'userAgentData' };
-          if (uadPlatform === 'iOS')     return { platform: 'ios',    confidence: 'high', source: 'userAgentData' };
-          if (uadPlatform === 'Chrome OS') return { platform: 'linux', confidence: 'medium', source: 'userAgentData' };
-        }
-        var ua = input.userAgent || '';
-        if (/\bWindows NT\b/i.test(ua))       return { platform: 'windows', confidence: 'high',   source: 'navigatorUA' };
-        if (/\b(iPhone|iPad|iPod)\b/i.test(ua)) return { platform: 'ios',  confidence: 'high',   source: 'navigatorUA' };
-        if (/\bAndroid\b/i.test(ua))          return { platform: 'android', confidence: 'high',  source: 'navigatorUA' };
-        if (/\b(Mac OS X|Macintosh)\b/i.test(ua)) return { platform: 'macos', confidence: 'high', source: 'navigatorUA' };
-        if (/\bLinux|X11\b/i.test(ua))        return { platform: 'linux',  confidence: 'medium', source: 'navigatorUA' };
-        var narrow = typeof input.viewportWidth === 'number' && input.viewportWidth < 600;
-        if (narrow && input.isTouch) {
-          return { platform: 'unknown', confidence: 'low', source: 'viewport' };
-        }
-        return { platform: 'unknown', confidence: 'low', source: 'navigatorUA' };
-      }
-      // ─── End mirror ─────────────────────────────────────────────
-
-      // Server-side rendered defaults — these must match the values in
-      // src/pages/download.astro's <dl-smart__cta> block. R234: the
-      // four URL/size values are pre-rendered via Astro `define:vars`
-      // from `src/lib/versions.ts` (the SSOT). GITHUB is a build-time
-      // constant (not in the SSOT) — the canonical repo URL is
-      // hardcoded in the frontmatter.
       var GITHUB = 'https://github.com/TimesNuRoman/pulse';
 
+      // Per-platform CTA copy. Server-rendered default is Windows;
+      // selectTab() rewrites the button on every switch.
       var VARIANTS = {
         windows: {
-          eyebrow: 'Detected: Windows',
-          os:      'Windows',
-          osTail:  'Windows',
-          title:   "One click. That's it.",
-          sub:     "Local-first, no account, 14-day trial included. We'll send you the right installer for Windows.",
-          filename:'Download Pulse for Windows',
-          size:    '\u00b7 ' + WIN_SIZE,
-          href:    WIN_EXE_PATH,
-          btnClass:'btn--primary',
-          download:true
+          filename: 'Download Pulse for Windows',
+          size:     '\u00b7 ' + WIN_SIZE,
+          href:     WIN_EXE_PATH,
+          btnClass: 'btn--primary',
+          download: true
         },
         android: {
-          eyebrow: 'Detected: Android',
-          os:      'Android',
-          osTail:  'Android',
-          title:   "One click. That's it.",
-          sub:     "Local-first, no account, 14-day trial included. We'll send you the right APK for Android.",
-          filename:'Download Pulse for Android',
-          size:    '\u00b7 ' + APK_SIZE,
-          href:    APK_PATH,
-          btnClass:'btn--primary',
-          download:true
+          filename: 'Download Pulse for Android',
+          size:     '\u00b7 ' + APK_SIZE,
+          href:     APK_PATH,
+          btnClass: 'btn--primary',
+          download: true
         },
         macos: {
-          eyebrow: 'Detected: macOS',
-          os:      'macOS',
-          osTail:  'macOS',
-          title:   'macOS build is not published yet',
-          sub:     'Pulse is built for Windows and Android today. The source is on GitHub if you want a native binary.',
-          filename:'Read the source on GitHub',
-          size:    '',
-          href:    GITHUB,
-          btnClass:'btn--ghost',
-          download:false
+          filename: 'Build Pulse for macOS from source',
+          size:     '',
+          href:     '/install/macos/',
+          btnClass: 'btn--primary',
+          download: false
         },
         linux: {
-          eyebrow: 'Detected: Linux',
-          os:      'Linux',
-          osTail:  'Linux',
-          title:   'Linux build is not published yet',
-          sub:     'Pulse is built for Windows and Android today. The source is on GitHub if you want to package it yourself.',
-          filename:'Read the source on GitHub',
-          size:    '',
-          href:    GITHUB,
-          btnClass:'btn--ghost',
-          download:false
+          filename: 'Build Pulse for Linux from source',
+          size:     '',
+          href:     '/install/linux/',
+          btnClass: 'btn--primary',
+          download: false
         },
         ios: {
-          eyebrow: 'Detected: iOS',
-          os:      'iOS',
-          osTail:  'iOS',
-          title:   'No iOS build',
-          sub:     'Pulse is not on the App Store. The Android APK can be sideloaded on a tablet if you want to try it.',
-          filename:'Read the source on GitHub',
-          size:    '',
-          href:    GITHUB,
-          btnClass:'btn--ghost',
-          download:false
-        },
-        unknown: {
-          eyebrow: 'Could not detect your device',
-          os:      '',
-          osTail:  '',
-          title:   'Pick your platform',
-          sub:     'Open the section below and choose Windows, Android, or build from source.',
-          filename:'',
-          size:    '',
-          href:    '',
-          btnClass:'btn--primary',
-          download:false,
-          hideBtn: true
+          filename: 'Download Android APK',
+          size:     '\u00b7 ' + APK_SIZE,
+          href:     APK_PATH,
+          btnClass: 'btn--primary',
+          download: true
         }
       };
 
-      var cta = document.querySelector('.dl-smart__cta');
-      if (!cta) return;
+      var cta   = document.querySelector('.dl-hero-compact__cta');
+      var btnEl = cta && cta.querySelector('[data-smart-href]');
+      var fnEl  = cta && cta.querySelector('[data-smart-filename]');
+      var szEl  = cta && cta.querySelector('[data-smart-size]');
 
-      // Read UA-CH with a Promise wrapper; on older browsers it is undefined.
-      var uadPromise = null;
-      try {
-        if (navigator.userAgentData && typeof navigator.userAgentData.getHighEntropyValues === 'function') {
-          uadPromise = navigator.userAgentData.getHighEntropyValues(['platform']);
-        }
-      } catch (e) { /* ignore */ }
-
-      function runDetection(uad) {
-        var isTouch = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
-        return detectPlatform({
-          userAgent: navigator.userAgent,
-          userAgentData: uad || (navigator.userAgentData ? { platform: navigator.userAgentData.platform, mobile: navigator.userAgentData.mobile } : undefined),
-          viewportWidth: window.innerWidth,
-          isTouch: isTouch
-        });
-      }
-
-      function applyVariant(v) {
-        if (v === 'windows') return; // server-rendered default; nothing to swap
+      var applyVariant = function (v) {
+        if (!cta) return;
         var data = VARIANTS[v];
         if (!data) return;
         cta.setAttribute('data-smart-platform', v);
-        var eyebrowEl = cta.querySelector('[data-smart-eyebrow]') || cta.querySelector('.dl-smart__eyebrow');
-        var osEl   = cta.querySelector('[data-smart-os]');
-        var titleEl= cta.querySelector('[data-smart-title]');
-        var subEl  = cta.querySelector('[data-smart-sub]');
-        var btnEl  = cta.querySelector('[data-smart-href]');
-        var fnEl   = cta.querySelector('[data-smart-filename]');
-        var sizeEl = cta.querySelector('[data-smart-size]');
-        var tailEl = cta.querySelector('[data-smart-os-tail]');
-        if (eyebrowEl) {
-          if (data.os) {
-            eyebrowEl.innerHTML = 'Detected: <span class="dl-smart__os" aria-live="polite" data-smart-os>' + data.os + '</span>';
-          } else {
-            eyebrowEl.textContent = data.eyebrow;
-          }
-        }
-        if (osEl)   osEl.textContent   = data.os;
-        if (titleEl)titleEl.textContent = data.title;
-        if (subEl)  subEl.textContent  = data.sub;
-        if (tailEl) tailEl.textContent = data.osTail;
         if (btnEl) {
           btnEl.setAttribute('href', data.href);
           btnEl.classList.remove('btn--primary', 'btn--ghost');
           btnEl.classList.add(data.btnClass);
-          if (data.download) {
-            btnEl.setAttribute('download', '');
-          } else {
-            btnEl.removeAttribute('download');
-          }
+          if (data.download) btnEl.setAttribute('download', '');
+          else btnEl.removeAttribute('download');
         }
-        if (fnEl)   fnEl.textContent   = data.filename;
-        if (sizeEl) sizeEl.textContent = data.size;
-        if (data.hideBtn && btnEl) {
-          btnEl.style.display = 'none';
-        } else if (btnEl) {
-          btnEl.style.display = '';
-        }
-      }
+        if (fnEl) fnEl.textContent = data.filename;
+        if (szEl) szEl.textContent = data.size;
+      };
 
-      // UA-CH path: when the high-entropy promise resolves, re-detect and swap.
-      // The first synchronous detection uses the basic UA-CH object (if any),
-      // so the user sees the right CTA within the first paint.
-      var initial = runDetection(uadPromise ? null : null);
-      // initial.userAgentData is undefined above — fall back to basic UA-CH.
-      if (navigator.userAgentData && !uadPromise) {
-        initial = detectPlatform({
-          userAgent: navigator.userAgent,
-          userAgentData: { platform: navigator.userAgentData.platform, mobile: navigator.userAgentData.mobile },
-          viewportWidth: window.innerWidth,
-          isTouch: !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)
+      // ─── Tab switching ─────────────────────────────────────
+      var tabs   = Array.from(document.querySelectorAll('[role="tab"][data-tab]'));
+      var panels = Array.from(document.querySelectorAll('[role="tabpanel"][data-panel]'));
+      if (tabs.length === 0 || panels.length === 0) return;
+
+      var selectTab = function (tab) {
+        if (!tab) return;
+        tabs.forEach(function (t) {
+          var selected = t === tab;
+          t.setAttribute('aria-selected', String(selected));
+          t.setAttribute('tabindex', selected ? '0' : '-1');
         });
-      }
-      applyVariant(initial.platform);
+        panels.forEach(function (p) {
+          var show = p.getAttribute('data-panel') === tab.getAttribute('data-tab');
+          if (show) p.removeAttribute('hidden');
+          else p.setAttribute('hidden', '');
+        });
+        // Sync the hero CTA to the active tab. No separate UA
+        // detection — the CTA is just a shortcut for the active
+        // panel's primary action.
+        applyVariant(tab.getAttribute('data-tab'));
+      };
 
-      if (uadPromise && typeof uadPromise.then === 'function') {
-        uadPromise.then(function (uad) {
-          var upgraded = detectPlatform({
-            userAgent: navigator.userAgent,
-            userAgentData: { platform: uad.platform, mobile: navigator.userAgentData && navigator.userAgentData.mobile },
-            viewportWidth: window.innerWidth,
-            isTouch: !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)
-          });
-          if (upgraded.platform !== initial.platform) {
-            applyVariant(upgraded.platform);
-          }
-        }).catch(function () { /* ignore — initial detection stands */ });
-      }
-
-      // "Pick a different platform" toggle.
-      var pickBtn = cta.querySelector('[data-smart-pick]');
-      var other   = document.getElementById('other-platforms');
-      if (pickBtn && other) {
-        pickBtn.addEventListener('click', function () {
-          other.open = !other.open;
-          pickBtn.setAttribute('aria-expanded', String(other.open));
-          if (other.open) {
-            // Move focus into the disclosure for keyboard users.
-            var firstLink = other.querySelector('a, button');
-            if (firstLink) {
-              // Defer so the <details> open transition can finish.
-              setTimeout(function () { firstLink.focus({ preventScroll: false }); }, 60);
-            }
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          selectTab(tab);
+          tab.focus();
+        });
+        tab.addEventListener('keydown', function (e) {
+          var i = tabs.indexOf(tab);
+          var next = -1;
+          if (e.key === 'ArrowRight') next = (i + 1) % tabs.length;
+          else if (e.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+          else if (e.key === 'Home') next = 0;
+          else if (e.key === 'End') next = tabs.length - 1;
+          if (next >= 0) {
+            e.preventDefault();
+            selectTab(tabs[next]);
+            tabs[next].focus();
           }
         });
-        other.addEventListener('toggle', function () {
-          pickBtn.setAttribute('aria-expanded', String(other.open));
-        });
-      }
+      });
+
+      // UA-based default tab.
+      var ua = (navigator.userAgent || '');
+      var isAndroid = /android|mobile/i.test(ua);
+      var isIOS     = /\b(iPhone|iPad|iPod)\b/i.test(ua);
+      var isMac     = /\b(Mac OS X|Macintosh)\b/i.test(ua) && !isIOS;
+      var isLinux   = /\bLinux|X11\b/i.test(ua) && !isAndroid;
+      var defaultTab = 'windows';
+      if (isAndroid) defaultTab = 'android';
+      else if (isMac) defaultTab = 'macos';
+      else if (isLinux) defaultTab = 'linux';
+      var targetTab = tabs.find(function (t) { return t.getAttribute('data-tab') === defaultTab; }) || tabs[0];
+      if (targetTab) selectTab(targetTab);
     })();
   </script>
 </Base>
 
 <style>
-  /* ─── R184: Smart download CTA ──────────────────────── */
-  .dl-smart {
-    padding-top: clamp(112px, 14vw, 152px);
-    padding-bottom: clamp(28px, 4vw, 56px);
+  /* ─── R247c: Compact hero ──────────────────────────────
+     Single-row layout (title left, CTA right) on desktop.
+     Stacks on narrow viewports. ~120px tall total — no
+     oversized placeholder glass card. */
+  .dl-hero-compact {
+    padding-top: clamp(112px, 14vw, 144px);
+    padding-bottom: clamp(20px, 2.5vw, 32px);
     position: relative;
     overflow: hidden;
   }
-  .dl-smart__inner {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: clamp(28px, 4vw, 48px) clamp(24px, 4vw, 48px);
+  .dl-hero-compact__inner {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    position: relative;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
   }
-  .dl-smart__inner::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--purple) 0%, var(--blue) 50%, var(--cyan) 100%);
-    opacity: 0.7;
-    border-top-left-radius: var(--radius);
-    border-top-right-radius: var(--radius);
+  .dl-hero-compact__title {
+    flex: 1 1 auto;
+    min-width: 0;
   }
-  .dl-smart__eyebrow {
-    display: inline-block;
-    font-size: 0.78rem;
+  .dl-hero-compact__h1 {
+    font-size: clamp(1.5rem, 2.2vw + 0.5rem, 2.1rem);
     font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--purple);
-  }
-  .dl-smart__os { color: var(--fg); }
-  .dl-smart__title {
-    font-size: clamp(1.65rem, 2.4vw + 0.6rem, 2.4rem);
-    font-weight: 500;
-    letter-spacing: -0.018em;
-    line-height: 1.1;
-    margin: 0;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
     color: var(--fg);
-  }
-  .dl-smart__sub {
-    color: var(--fg-dim);
-    font-size: 1.02rem;
-    line-height: 1.55;
     margin: 0;
-    max-width: 56ch;
   }
-  .dl-smart__btn {
-    margin-top: 0.5rem;
-    width: 100%;
-    min-height: 56px;   /* hard rule 11: 56dp touch target on smart CTA */
-    font-size: 1.05rem;
-    padding-block: 0.95em;
+  .dl-hero-compact__meta {
+    margin: 0.4rem 0 0;
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+    font-variant-numeric: tabular-nums;
   }
-  .dl-smart__btn[style*="display: none"] { display: none !important; }
-  .dl-smart__size {
+  .dl-hero-compact__meta span {
+    color: var(--border);
+    margin: 0 0.35rem;
+  }
+  .dl-hero-compact__cta {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+  }
+  .dl-hero-compact__btn {
+    min-height: 56px;   /* hard rule 11: 56dp touch target on the primary CTA */
+    font-size: 1.02rem;
+    padding: 0.85em 1.4em;
+    white-space: nowrap;
+  }
+  .dl-hero-compact__size {
     color: inherit;
     opacity: 0.85;
     font-weight: 400;
     font-variant-numeric: tabular-nums;
-  }
-  .dl-smart__pick {
-    align-self: center;
-    background: none;
-    border: 0;
-    padding: 0.5rem 0.75rem;
-    color: var(--fg-dim);
-    font-size: 0.92rem;
-    font-weight: 500;
-    text-decoration: none;
-    border-bottom: 1px dashed rgba(187, 154, 247, 0.35);
-    cursor: pointer;
-    border-radius: 4px;
-    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
-  }
-  .dl-smart__pick:hover,
-  .dl-smart__pick:focus-visible {
-    color: var(--blue);
-    border-bottom-color: var(--blue);
-  }
-  .dl-smart__pick[aria-expanded="true"] {
-    color: var(--purple);
-    border-bottom-color: var(--purple);
-  }
-
-  /* ─── R184: "Other platforms" disclosure ────────────── */
-  .dl-other {
-    margin: 1.5rem 0 0;
-  }
-  .dl-other > summary {
-    list-style: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.85rem;
-    padding: 1rem 1.25rem;
-    margin: 0 auto;
-    max-width: 720px;
-    min-height: 52px;
-    border-radius: 9999px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--fg);
-    font-size: 0.96rem;
-    font-weight: 500;
-    text-align: center;
-    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
-  }
-  .dl-other > summary::-webkit-details-marker { display: none; }
-  .dl-other > summary::marker { display: none; }
-  .dl-other > summary:hover,
-  .dl-other > summary:focus-visible {
-    border-color: var(--purple);
-    background: var(--bg-soft);
-  }
-  .dl-other[open] > summary {
-    border-color: var(--purple);
-  }
-  .dl-other__summary-label { color: var(--fg); }
-  .dl-other__summary-sub {
-    color: var(--fg-dim);
-    font-size: 0.88rem;
-    font-weight: 400;
-  }
-  .dl-other__summary-caret {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.4em;
-    height: 1.4em;
-    border-radius: 50%;
-    background: rgba(187, 154, 247, 0.12);
-    color: var(--purple);
-    font-weight: 700;
-    transition: transform var(--dur) var(--ease);
-  }
-  .dl-other[open] > summary .dl-other__summary-caret {
-    transform: rotate(45deg);
+    margin-left: 0.45em;
   }
 
   @media (max-width: 639px) {
-    .dl-smart__title { font-size: clamp(1.5rem, 7vw, 2rem); }
-    .dl-smart__sub { font-size: 0.98rem; }
-    .dl-smart__btn { min-height: 52px; font-size: 1rem; }
-    .dl-other > summary { padding: 0.85rem 1rem; font-size: 0.92rem; }
+    .dl-hero-compact__h1 { font-size: clamp(1.4rem, 6.5vw, 1.85rem); }
+    .dl-hero-compact__inner { flex-direction: column; align-items: flex-start; }
+    .dl-hero-compact__btn { width: 100%; min-height: 52px; font-size: 1rem; }
   }
 
-  /* ─── Hero (reframed as "Other ways to install") ──── */
-  .dl-hero {
-    padding-top: clamp(64px, 9vw, 112px);
-    padding-bottom: clamp(36px, 5vw, 56px);
+  /* ─── R247c: Tab strip ──────────────────────────────────
+     Horizontal row on desktop, horizontal scroll on narrow
+     viewports. 56dp min-height per tab. Active = purple border
+     + soft bg; inactive = transparent + dim border. Tokyo
+     Night dark, no light theme. */
+  .dl-tabs-wrap {
+    padding: 0 0 clamp(20px, 2.5vw, 32px);
+  }
+  .dl-tabs-heading {
+    /* Visually hidden but available to screen-readers — the
+       tabs themselves are the primary affordance. */
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
     overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
-  .dl-hero__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    align-items: start;
-  }
-  .dl-hero__copy {
+  .dl-tabs {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.25rem;
-    max-width: 760px;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    padding-bottom: 0.25rem;
   }
-  .dl-hero__badges {
+  .dl-tab {
     display: inline-flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.75rem;
-    margin-bottom: -0.25rem;
-  }
-  .dl-hero__title {
-    font-size: var(--fs-1);
-    line-height: 1.05;
-    font-weight: 700;
-    color: var(--fg);
-    letter-spacing: -0.02em;
-  }
-  .dl-hero__sub {
+    gap: 0.5rem;
+    padding: 0.85rem 1rem;
+    min-height: 56px;            /* hard rule 11: 56dp touch target */
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
     color: var(--fg-dim);
-    font-size: var(--fs-body);
-    line-height: 1.65;
-    max-width: 60ch;
+    font: inherit;
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color var(--dur) var(--ease),
+                background var(--dur) var(--ease),
+                border-color var(--dur) var(--ease);
   }
-  .dl-hero__sub code {
-    font-size: 0.9em;
-    color: var(--cyan);
-    background: var(--surface-2);
-    padding: 0.05em 0.35em;
-    border-radius: 4px;
+  .dl-tab:hover {
+    color: var(--fg);
+    border-color: var(--purple);
   }
-  .dl-hero__platforms {
-    list-style: none;
-    padding: 0;
-    margin: 0.5rem 0 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
+  .dl-tab:focus-visible {
+    outline: 2px solid var(--purple);
+    outline-offset: 2px;
+  }
+  .dl-tab[aria-selected="true"] {
+    color: var(--fg);
+    background: rgba(187, 154, 247, 0.12);
+    border-color: var(--purple);
+  }
+  .dl-tab__icon {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    color: currentColor;
+  }
+  .dl-tab__label {
+    font-weight: 600;
+  }
+  .dl-tab__badge {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.1rem 0.45rem;
+    margin-left: 0.15rem;
+  }
+  .dl-tab[aria-selected="true"] .dl-tab__badge {
+    color: var(--purple);
+    border-color: rgba(187, 154, 247, 0.35);
   }
 
-  /* ─── Platform cards (UA-reorder via CSS order:) ──── */
-  .dl-platforms { padding: 1rem 0 4rem; }
-  .dl-platforms__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  @media (min-width: 920px) {
-    .dl-platforms__grid { grid-template-columns: 1fr 1fr; gap: 1.75rem; }
+  @media (max-width: 639px) {
+    .dl-tab { min-height: 52px; padding: 0.7rem 0.85rem; font-size: 0.88rem; }
   }
 
-  /* Default order: Android first (no-JS / mobile baseline). */
-  .dl-platforms__grid .dl-card[data-dl-platform="android"] { order: 1; }
-  .dl-platforms__grid .dl-card[data-dl-platform="windows"] { order: 2; }
-  /* Desktop UA flips the order so Windows leads visually. */
-  .dl-platforms--desktop-first .dl-card[data-dl-platform="android"] { order: 2; }
-  .dl-platforms--desktop-first .dl-card[data-dl-platform="windows"] { order: 1; }
+  /* ─── R247c: Panels ─────────────────────────────────────
+     Each tabpanel is hidden by default and toggled by the
+     inline IIFE via the `hidden` attribute. The card content
+     is the same as the R120 platform cards — the layout shell
+     is what changed. */
+  .dl-panels {
+    padding: 0 0 3rem;
+  }
+  .dl-panel { display: block; }
+  .dl-panel[hidden] { display: none; }
 
+  /* ─── Card styles (kept verbatim from R120) ─────────── */
   .dl-card {
     padding: 1.75rem 1.75rem 2rem;
     border-radius: var(--radius);
