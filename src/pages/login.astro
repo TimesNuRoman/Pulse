@@ -1,0 +1,400 @@
+<!-- SPDX-License-Identifier: Apache-2.0
+     ──────────────────────────────────────────────────────────
+     Pulse — Activation page
+     Cursor-style centered card with 4 identity providers.
+     Pulse has no account model: identity is a license token,
+     a license file, a hardware key, or a pairing code.
+     No email, no OAuth, no signup form.
+     ────────────────────────────────────────────────────────── -->
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="Activate Pulse"
+  description="Enter your license key to unlock Pulse PRO. 14-day trial starts at first launch."
+  ogImage="/og-login.png"
+  ctaVisible={false}
+  footerLicense="Apache 2.0"
+  canonical="https://ownlocalml.com/login/"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" id="topnav" aria-label="Primary">
+    <div class="nav__inner">
+      <a class="nav__brand" href="/" aria-label="Pulse — home">
+        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+        </svg>
+        <span class="nav__brand-name">Pulse</span>
+      </a>
+      <div class="nav__right">
+        <a class="btn btn--ghost nav__login" href="/pricing/" aria-label="Buy a PRO license">Buy PRO</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main" class="auth-page">
+    <div class="auth-page__bg" aria-hidden="true"></div>
+
+    <div class="auth-page__inner">
+      <header class="auth-page__head">
+        <h1 class="auth-page__title">Welcome to Pulse</h1>
+        <p class="auth-page__sub">The local way to think with your machine.</p>
+      </header>
+
+      <div class="auth-page__providers" role="group" aria-label="Identity providers">
+        <button class="auth-provider is-active" type="button" data-provider="license" aria-pressed="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>License key</span>
+        </button>
+        <button class="auth-provider" type="button" data-provider="file" aria-pressed="false">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <span>License file</span>
+        </button>
+        <button class="auth-provider" type="button" data-provider="hardware" aria-pressed="false">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4"/>
+          </svg>
+          <span>Hardware key</span>
+        </button>
+        <button class="auth-provider" type="button" data-provider="pair" aria-pressed="false">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12a7 7 0 0 1 14 0"/>
+            <path d="M5 12a7 7 0 0 0 14 0"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+          <span>Pair device</span>
+        </button>
+      </div>
+
+      <form class="auth-form" id="auth-form" novalidate>
+        <label for="license-key" class="auth-form__label" id="auth-form-label">License key</label>
+        <input
+          type="text"
+          id="license-key"
+          class="auth-form__input"
+          name="license"
+          placeholder="PULSE-XXXX-XXXX-XXXX-XXXX-XXXX"
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          pattern="PULSE-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}"
+          maxlength="29"
+          aria-describedby="license-help"
+          aria-labelledby="auth-form-label"
+          required
+        />
+        <p id="license-help" class="auth-form__help">
+          Format: <code>PULSE-XXXX-XXXX-XXXX-XXXX-XXXX</code>
+        </p>
+        <button type="submit" class="btn btn--primary auth-form__submit">Activate license ↓</button>
+      </form>
+
+      <p class="auth-page__switch">
+        Don't have a license? <a href="/pricing/">Buy PRO →</a>
+      </p>
+    </div>
+
+    <footer class="auth-page__bottom">
+      <a href="/license/">Terms of use</a>
+      <span aria-hidden="true">·</span>
+      <a href="/privacy/">Privacy</a>
+    </footer>
+  </main>
+
+  <script is:inline>
+    (() => {
+      const providers = document.querySelectorAll('.auth-provider');
+      const input = document.getElementById('license-key');
+      const label = document.getElementById('auth-form-label');
+      const help = document.getElementById('license-help');
+
+      // Per-provider UI state. Pulse has no OAuth/email — these are the
+      // four native identity methods documented in the product.
+      const states = {
+        license: {
+          label: 'License key',
+          placeholder: 'PULSE-XXXX-XXXX-XXXX-XXXX-XXXX',
+          help: 'Format: <code>PULSE-XXXX-XXXX-XXXX-XXXX-XXXX</code>',
+          type: 'text',
+          pattern: 'PULSE-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}',
+          maxlength: 29,
+          submit: 'Activate license ↓',
+        },
+        file: {
+          label: 'License file',
+          placeholder: 'Paste license file contents or drop a .lic file',
+          help: 'Drop a .lic file, or paste its contents above.',
+          type: 'text',
+          pattern: '',
+          maxlength: 4096,
+          submit: 'Import license ↓',
+        },
+        hardware: {
+          label: 'Hardware key',
+          placeholder: 'Hardware fingerprint will be detected on submit',
+          help: 'Pulse will read your hardware fingerprint and confirm before binding.',
+          type: 'text',
+          pattern: '',
+          maxlength: 64,
+          submit: 'Bind to this machine ↓',
+        },
+        pair: {
+          label: 'Pairing code',
+          placeholder: 'XXXXXX',
+          help: 'Open Pulse on the other device and read the 6-character code from the activation screen.',
+          type: 'text',
+          pattern: '[A-Z0-9]{6}',
+          maxlength: 6,
+          submit: 'Pair devices ↓',
+        },
+      };
+
+      const apply = (key) => {
+        const s = states[key];
+        if (!s) return;
+        if (label) label.textContent = s.label;
+        if (input) {
+          input.placeholder = s.placeholder;
+          input.type = s.type;
+          input.setAttribute('pattern', s.pattern);
+          input.setAttribute('maxlength', String(s.maxlength));
+          input.value = '';
+        }
+        if (help) help.innerHTML = s.help;
+        const submit = document.querySelector('.auth-form__submit');
+        if (submit) submit.textContent = s.submit;
+      };
+
+      providers.forEach((b) => {
+        b.addEventListener('click', () => {
+          const key = b.getAttribute('data-provider');
+          providers.forEach((x) => {
+            const on = x === b;
+            x.setAttribute('aria-pressed', String(on));
+            x.classList.toggle('is-active', on);
+          });
+          if (key) apply(key);
+          if (input) input.focus();
+        });
+      });
+
+      // Form submit: store the value so the desktop client can pick it
+      // up on next launch, then route to the download page where the
+      // installer ships the value through the OS's deep-link handoff.
+      const form = document.getElementById('auth-form');
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const value = input ? input.value.trim() : '';
+          if (!value) return;
+          try { localStorage.setItem('pulse_pending_license', value); } catch (_) { /* storage may be disabled */ }
+          window.location.href = '/download/?activate=' + encodeURIComponent(value);
+        });
+      }
+    })();
+  </script>
+</Base>
+
+<style>
+  /* ─── Auth page shell ─────────────────────────────── */
+  .auth-page {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(96px, 12vw, 140px) var(--gutter) clamp(40px, 6vw, 60px);
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .auth-page__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(800px 500px at 50% 0%, rgba(187, 154, 247, 0.08), transparent 60%),
+      radial-gradient(700px 400px at 50% 100%, rgba(122, 162, 247, 0.06), transparent 65%);
+  }
+  .auth-page__inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* ─── Header copy ─────────────────────────────────── */
+  .auth-page__head { text-align: center; margin-bottom: 0.5rem; }
+  .auth-page__title {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+    letter-spacing: -0.018em;
+    line-height: 1.15;
+  }
+  .auth-page__sub {
+    color: var(--fg-dim);
+    font-size: 1rem;
+    margin: 0.5rem 0 0;
+    line-height: 1.5;
+  }
+
+  /* ─── Provider grid (4 native identity methods) ──── */
+  .auth-page__providers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+  .auth-provider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.85rem 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--fg);
+    font-size: 0.72rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 200ms ease, background 200ms ease, color 200ms ease;
+    min-height: 72px;     /* 48dp touch + icon */
+    text-align: center;
+  }
+  .auth-provider:hover {
+    border-color: var(--purple);
+    background: var(--surface-2);
+  }
+  .auth-provider[aria-pressed="true"] {
+    border-color: var(--purple);
+    background: rgba(187, 154, 247, 0.1);
+    color: var(--purple);
+  }
+  .auth-provider[aria-pressed="true"] svg { color: var(--purple); }
+  .auth-provider svg { color: var(--fg-dim); transition: color 200ms ease; }
+
+  /* ─── Form ────────────────────────────────────────── */
+  .auth-form { display: flex; flex-direction: column; gap: 0.5rem; }
+  .auth-form__label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+  }
+  .auth-form__input {
+    padding: 0.85rem 1rem;
+    background: var(--bg-soft);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    color: var(--fg);
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    text-align: center;
+    min-height: 52px;     /* 48dp touch */
+    transition: border-color 200ms ease;
+  }
+  .auth-form__input::placeholder {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .auth-form__input:focus {
+    outline: 2px solid var(--purple);
+    outline-offset: 2px;
+    border-color: var(--purple);
+  }
+  .auth-form__input:invalid:not(:placeholder-shown) {
+    border-color: var(--red);
+  }
+  .auth-form__help {
+    color: var(--muted);
+    font-size: 0.78rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+  .auth-form__help code {
+    background: var(--surface);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: var(--cyan);
+  }
+  .auth-form__submit {
+    width: 100%;
+    margin-top: 0.5rem;
+    min-height: 52px;     /* 48dp touch */
+  }
+
+  /* ─── Switch link ─────────────────────────────────── */
+  .auth-page__switch {
+    text-align: center;
+    color: var(--fg-dim);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  .auth-page__switch a {
+    color: var(--purple);
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(187, 154, 247, 0.4);
+    padding-bottom: 1px;
+  }
+  .auth-page__switch a:hover {
+    color: var(--blue);
+    border-bottom-color: var(--blue);
+  }
+
+  /* ─── Bottom legal links ──────────────────────────── */
+  .auth-page__bottom {
+    position: relative;
+    z-index: 1;
+    margin-top: clamp(40px, 6vw, 60px);
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .auth-page__bottom a {
+    color: var(--fg-dim);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border);
+  }
+  .auth-page__bottom a:hover {
+    color: var(--purple);
+    border-bottom-color: var(--purple);
+  }
+
+  /* ─── Top nav overrides for this page ─────────────── */
+  .nav__login {
+    padding: 0.5rem 1rem;
+    font-size: 0.88rem;
+    min-height: 36px;
+  }
+
+  /* ─── Responsive ──────────────────────────────────── */
+  @media (max-width: 480px) {
+    .auth-page__providers { grid-template-columns: repeat(2, 1fr); }
+    .auth-page__inner { max-width: 360px; }
+  }
+</style>
