@@ -106,18 +106,23 @@ const columns = [
   }
   .footer__grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--sp-4);
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
   }
   @media (min-width: 700px) {
-    .footer__grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
+    .footer__grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--sp-4); }
   }
-  .footer__brand { display: flex; flex-direction: column; gap: 0.6rem; }
+  .footer__brand { display: flex; flex-direction: column; gap: 0.4rem; grid-column: 1 / -1; }
+  @media (min-width: 700px) { .footer__brand { grid-column: auto; gap: 0.6rem; } }
   .footer__logo { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; }
-  .footer__tagline { color: var(--fg-dim); font-size: 0.92rem; }
+  .footer__tagline { color: var(--fg-dim); font-size: 0.78rem; max-width: 56ch; }
+  @media (min-width: 700px) { .footer__tagline { font-size: 0.92rem; } }
 
   .footer__socials {
-    list-style: none; display: flex; gap: 0.6rem; margin-top: 0.5rem;
+    list-style: none; display: flex; gap: 0.4rem; margin-top: 0.25rem;
+  }
+  @media (min-width: 700px) {
+    .footer__socials { gap: 0.6rem; margin-top: 0.5rem; }
   }
   .footer__socials a {
     display: inline-flex; align-items: center; justify-content: center;
@@ -135,19 +140,26 @@ const columns = [
   }
 
   .footer__col-title {
-    font-size: 0.78rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: var(--muted);
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.35rem;
   }
-  .footer__col ul { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+  @media (min-width: 700px) {
+    .footer__col-title { font-size: 0.78rem; margin-bottom: 0.7rem; }
+  }
+  .footer__col ul { list-style: none; display: flex; flex-direction: column; gap: 0; }
+  @media (min-width: 700px) { .footer__col ul { gap: 0.4rem; } }
   .footer__col a {
     color: var(--fg-dim);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     display: inline-flex;
     align-items: center;
-    min-height: 56px;  /* R189: 56dp touch target per brief rule #11 (supersedes R180 HR11e — same value, R189 landed later) */
+    min-height: 38px;
+  }
+  @media (min-width: 700px) {
+    .footer__col a { font-size: 0.95rem; min-height: 56px; }
   }
   .footer__col a:hover { color: var(--purple); }
 
@@ -158,16 +170,23 @@ const columns = [
   .footer__col-link--tall {
     display: inline-flex;
     align-items: center;
-    min-height: 56px;
+    min-height: 38px;
+  }
+  @media (min-width: 700px) {
+    .footer__col-link--tall { min-height: 56px; }
   }
 
   .footer__bottom {
-    margin-top: 2.5rem;
-    padding-top: 1.5rem;
+    margin-top: 1.25rem;
+    padding-top: 0.75rem;
     border-top: 1px solid var(--border);
     display: flex; flex-wrap: wrap; gap: 0.5rem;
     color: var(--muted);
     font-size: 0.85rem;
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 700px) {
+    .footer__bottom { margin-top: 2.5rem; padding-top: 1.5rem; }
   }
   .footer__bottom a {
     color: var(--fg-dim);
