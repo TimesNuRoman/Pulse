@@ -28,3 +28,12 @@ $RECYCLE.BIN/
 
 # Wrangler local R2 emulator state (NEVER commit)
 .wrangler/
+
+# Helper files (deploy scripts, throwaway CSS probes, verify scripts).
+# Created during deploy rounds; never part of the project.
+.deploy-*.ps1
+deploy-*.ps1
+remove-*.ps1
+.commit-msg.txt
+.ray-header-live.css
+.verify-deploy.cjs

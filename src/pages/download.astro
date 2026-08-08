@@ -87,6 +87,14 @@ const softwareAppsJsonLd = [
       <span class="dl__dot" id="step-dot-2" aria-hidden="true"></span>
     </div>
 
+    <!--
+      R256: all .step sections live in a single grid cell.
+      Inactive steps are visibility:hidden + opacity:0 + tiny Y offset;
+      the active step fades in. The cell sizes to the tallest step,
+      so toggling never shifts the page below the indicator.
+    -->
+    <div class="dl__stack">
+
     <!-- ═══ STEP 1 ═══ -->
     <section class="step is-active" id="step-1" data-step="1" aria-labelledby="dl-step1-title">
       <div class="container">
@@ -156,7 +164,7 @@ const softwareAppsJsonLd = [
     <!-- ═══ STEP 2 — per-platform sections ═══ -->
 
     <!-- 2A. Windows -->
-    <section class="step" id="step-2-windows" data-step="2" aria-labelledby="dl-win-title" hidden>
+    <section class="step" id="step-2-windows" data-step="2" aria-labelledby="dl-win-title">
       <div class="container dl-step">
         <button class="dl-step__back" type="button" data-back aria-label="Back to platform picker">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
@@ -192,7 +200,7 @@ const softwareAppsJsonLd = [
     </section>
 
     <!-- 2B. Android -->
-    <section class="step" id="step-2-android" data-step="2" aria-labelledby="dl-and-title" hidden>
+    <section class="step" id="step-2-android" data-step="2" aria-labelledby="dl-and-title">
       <div class="container dl-step">
         <button class="dl-step__back" type="button" data-back aria-label="Back to platform picker">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
@@ -215,7 +223,7 @@ const softwareAppsJsonLd = [
     </section>
 
     <!-- 2C. macOS — no signed build, build-from-source -->
-    <section class="step" id="step-2-macos" data-step="2" aria-labelledby="dl-mac-title" hidden>
+    <section class="step" id="step-2-macos" data-step="2" aria-labelledby="dl-mac-title">
       <div class="container dl-step">
         <button class="dl-step__back" type="button" data-back aria-label="Back to platform picker">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
@@ -246,7 +254,7 @@ const softwareAppsJsonLd = [
     </section>
 
     <!-- 2D. Linux — build from source -->
-    <section class="step" id="step-2-linux" data-step="2" aria-labelledby="dl-lin-title" hidden>
+    <section class="step" id="step-2-linux" data-step="2" aria-labelledby="dl-lin-title">
       <div class="container dl-step">
         <button class="dl-step__back" type="button" data-back aria-label="Back to platform picker">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
@@ -275,7 +283,7 @@ const softwareAppsJsonLd = [
     </section>
 
     <!-- 2E. iOS — not available, cross-link to Android -->
-    <section class="step" id="step-2-ios" data-step="2" aria-labelledby="dl-ios-title" hidden>
+    <section class="step" id="step-2-ios" data-step="2" aria-labelledby="dl-ios-title">
       <div class="container dl-step">
         <button class="dl-step__back" type="button" data-back aria-label="Back to platform picker">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
@@ -296,6 +304,8 @@ const softwareAppsJsonLd = [
         </div>
       </div>
     </section>
+
+    </div><!-- /.dl__stack -->
   </main>
 
   <Footer license="" version={`v${ANDROID_VERSION} / v${WIN_VERSION}`} />
@@ -303,12 +313,15 @@ const softwareAppsJsonLd = [
   <script type="application/ld+json" set:html={JSON.stringify(softwareAppsJsonLd)} />
 
   <!--
-    R253: Two-step state machine.
+    R253/R256: Two-step state machine.
     - .plat[data-platform]  → switches to step 2 for that platform
     - [data-back]           → returns to step 1
     - [data-jump]           → cross-link (iOS → Android)
     - hash routing          → /download#windows opens step 2 windows
     - smooth scroll to top on every switch
+    - R256: step visibility uses class toggle (is-active), not the
+      `hidden` attribute, so opacity + transform transitions in CSS
+      can fade between steps instead of an instant snap.
   -->
   <script is:inline>
     (() => {
@@ -328,8 +341,8 @@ const softwareAppsJsonLd = [
       };
 
       const showStep1 = () => {
-        step1.hidden = false;
-        step2s.forEach((s) => (s.hidden = true));
+        step1.classList.add('is-active');
+        step2s.forEach((s) => s.classList.remove('is-active'));
         setStepIndicator(1);
         if (history.replaceState) history.replaceState(null, '', location.pathname);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -338,8 +351,8 @@ const softwareAppsJsonLd = [
       const showStep2 = (platform) => {
         const target = document.getElementById('step-2-' + platform);
         if (!target) return;
-        step1.hidden = true;
-        step2s.forEach((s) => (s.hidden = s !== target));
+        step1.classList.remove('is-active');
+        step2s.forEach((s) => s.classList.toggle('is-active', s === target));
         setStepIndicator(2);
         if (history.replaceState) history.replaceState(null, '', '#' + platform);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -383,11 +396,47 @@ const softwareAppsJsonLd = [
       font-size: 12px;
       color: var(--text-dim);
     }
+    .dl__dot, .dl__num {
+      transition: color 200ms var(--ease), background 200ms var(--ease);
+    }
     .dl__dot { width: 6px; height: 6px; background: var(--text-dim); }
     .dl__dot.is-active { background: var(--purple); }
     .dl__num { color: var(--text-muted); }
     .dl__num.is-active { color: var(--fg); font-weight: 600; }
     .dl__sep { flex: 1; height: 1px; background: var(--border); }
+
+    /*
+     * R256: Stack all .step sections in a single grid cell so the
+     * container keeps the tallest step's height. Toggling
+     * `.is-active` fades between them (opacity + tiny Y offset) —
+     * the page below the indicator doesn't shift.
+     */
+    .dl__stack {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    .dl__stack > .step {
+      grid-column: 1;
+      grid-row: 1;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(6px);
+      pointer-events: none;
+      transition:
+        opacity 220ms var(--ease),
+        transform 220ms var(--ease),
+        visibility 0s linear 220ms;
+    }
+    .dl__stack > .step.is-active {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      pointer-events: auto;
+      transition:
+        opacity 220ms var(--ease),
+        transform 220ms var(--ease),
+        visibility 0s linear 0s;
+    }
 
     /* Section head shared by both steps */
     .dl__h1 {

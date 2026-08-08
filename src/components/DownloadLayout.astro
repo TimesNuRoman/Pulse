@@ -1,19 +1,20 @@
 ---
-// SPDX-License-Identifier: Apache-2.0
-// R250: shared layout for /download/<platform>/ subpages.
-// Wraps the per-platform page with: TopNav placeholder, breadcrumb,
-// platform switcher (pills), content slot, cross-links to other platforms.
-import Base from '../layouts/Base.astro';
+// R250/R256: shared layout for /download/<platform>/ subpages.
+// Wraps the per-platform page with: breadcrumb, platform switcher,
+// content slot, cross-links, footer.
+//
+// R256: NOT a Base wrapper — the per-platform page already wraps
+// with <Base>, so this used to render the TopNav twice. Now this
+// emits only the inner <main> content; TopNav comes from the
+// per-platform page's own <Base>.
 import { PLATFORMS, getPlatform, ICONS, type PlatformId } from '../lib/platforms';
 
 export interface Props {
-  title: string;
-  description: string;
   currentPlatform: PlatformId;
   version?: string;
 }
 
-const { title, description, currentPlatform, version = 'v0.6.9' } = Astro.props;
+const { currentPlatform, version = 'v0.6.9' } = Astro.props;
 const current = getPlatform(currentPlatform);
 const others = PLATFORMS.filter((p) => p.id !== currentPlatform);
 
@@ -25,64 +26,62 @@ const crossSub: Record<PlatformId, string> = {
   ios:     'Not available · Android APK fallback',
 };
 ---
-<Base title={title} description={description}>
-  <main id="main" class="notes-main">
-    <section class="dl-page-hero">
-      <div class="container">
-        <nav class="dl-crumb" aria-label="Breadcrumb">
-          <a href="/download/">All downloads</a>
-          <Fragment set:html={ICONS.chevron} />
-          <span aria-current="page">{current.label}</span>
-        </nav>
-        <span class="eyebrow">Download · {current.label}</span>
-        <h1 class="dl-page-hero__title">
-          <slot name="title">Get Pulse on <span class="hl">{current.label}.</span></slot>
-        </h1>
-        <p class="dl-page-hero__sub">
-          <slot name="lede" />
-        </p>
+<main id="main" class="notes-main">
+  <section class="dl-page-hero">
+    <div class="container">
+      <nav class="dl-crumb" aria-label="Breadcrumb">
+        <a href="/download/">All downloads</a>
+        <Fragment set:html={ICONS.chevron} />
+        <span aria-current="page">{current.label}</span>
+      </nav>
+      <span class="eyebrow">Download · {current.label}</span>
+      <h1 class="dl-page-hero__title">
+        <slot name="title">Get Pulse on <span class="hl">{current.label}.</span></slot>
+      </h1>
+      <p class="dl-page-hero__sub">
+        <slot name="lede" />
+      </p>
 
-        <div class="dl-platforms" role="tablist" aria-label="Choose platform">
-          {PLATFORMS.map((p) => (
-            <a
-              href={p.href}
-              class:list={['dl-plat', { 'is-active': p.id === currentPlatform }]}
-              role="tab"
-              aria-selected={p.id === currentPlatform ? 'true' : 'false'}
-              data-platform={p.id}
-            >
-              <Fragment set:html={ICONS.platform[p.id]} />
-              <span>{p.label}</span>
+      <div class="dl-platforms" role="tablist" aria-label="Choose platform">
+        {PLATFORMS.map((p) => (
+          <a
+            href={p.href}
+            class:list={['dl-plat', { 'is-active': p.id === currentPlatform }]}
+            role="tab"
+            aria-selected={p.id === currentPlatform ? 'true' : 'false'}
+            data-platform={p.id}
+          >
+            <Fragment set:html={ICONS.platform[p.id]} />
+            <span>{p.label}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <slot />
+
+  <section class="dl-section dl-section--sur2">
+    <div class="container">
+      <span class="eyebrow">Other platforms</span>
+      <h2>Need a different OS?</h2>
+      <ul class="dl-cross-list" role="list">
+        {others.map((p) => (
+          <li>
+            <a class="dl-cross-link" href={p.href}>
+              <div>
+                <div class="dl-cross-link__name">{p.label}{p.id === 'ios' ? ' — not available' : ''}</div>
+                <div class="dl-cross-link__sub">{crossSub[p.id]}</div>
+              </div>
+              <span class="dl-cross-link__chev" aria-hidden="true">→</span>
             </a>
-          ))}
-        </div>
-      </div>
-    </section>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
 
-    <slot />
-
-    <section class="dl-section dl-section--sur2">
-      <div class="container">
-        <span class="eyebrow">Other platforms</span>
-        <h2>Need a different OS?</h2>
-        <ul class="dl-cross-list" role="list">
-          {others.map((p) => (
-            <li>
-              <a class="dl-cross-link" href={p.href}>
-                <div>
-                  <div class="dl-cross-link__name">{p.label}{p.id === 'ios' ? ' — not available' : ''}</div>
-                  <div class="dl-cross-link__sub">{crossSub[p.id]}</div>
-                </div>
-                <span class="dl-cross-link__chev" aria-hidden="true">→</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-
-    <footer class="dl-footer">
-      Pulse for {current.label} · {version} · <a href="/license/">Apache 2.0</a>
-    </footer>
-  </main>
-</Base>
+  <footer class="dl-footer">
+    Pulse for {current.label} · {version}
+  </footer>
+</main>
