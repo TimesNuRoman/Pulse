@@ -406,22 +406,24 @@ const softwareAppsJsonLd = [
     .dl__sep { flex: 1; height: 1px; background: var(--border); }
 
     /*
-     * R256: Stack all .step sections in a single grid cell so the
-     * container keeps the tallest step's height. Toggling
-     * `.is-active` fades between them (opacity + tiny Y offset) —
-     * the page below the indicator doesn't shift.
+     * R256: Stack .step sections so the container collapses to the
+     * active step's height. Inactive steps are taken out of the
+     * flow (position:absolute) and faded out; the active step is
+     * `position:relative` and gives the container its size. Toggling
+     * `.is-active` fades between them — page below the indicator
+     * doesn't shift, but the steps themselves don't pile on each
+     * other.
      */
     .dl__stack {
-      display: grid;
-      grid-template-columns: 1fr;
+      position: relative;
     }
     .dl__stack > .step {
-      grid-column: 1;
-      grid-row: 1;
       opacity: 0;
       visibility: hidden;
       transform: translateY(6px);
       pointer-events: none;
+      position: absolute;
+      inset: 0;
       transition:
         opacity 220ms var(--ease),
         transform 220ms var(--ease),
@@ -432,6 +434,7 @@ const softwareAppsJsonLd = [
       visibility: visible;
       transform: none;
       pointer-events: auto;
+      position: relative;
       transition:
         opacity 220ms var(--ease),
         transform 220ms var(--ease),
