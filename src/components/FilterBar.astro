@@ -1,0 +1,29 @@
+---
+// R257: sticky filter bar (All / Windows / Android / Web / PRO).
+// Count badge per pill. Vanilla JS toggle, no server round-trip.
+interface Props {
+  counts: Record<string, number>;
+}
+const { counts } = Astro.props;
+const filters = [
+  { id: 'all',     label: 'All' },
+  { id: 'windows', label: 'Windows' },
+  { id: 'android', label: 'Android' },
+  { id: 'web',     label: 'Web' },
+  { id: 'pro',     label: 'PRO' },
+];
+---
+<div class="filters" role="tablist" aria-label="Filter by platform">
+  {filters.map((f, i) => (
+    <button
+      class:list={['filters__btn', { 'is-active': i === 0 }]}
+      data-filter={f.id}
+      type="button"
+      role="tab"
+      aria-pressed={i === 0 ? 'true' : 'false'}
+    >
+      {f.label}
+      <span class="filters__count" data-count={f.id}>{counts[f.id] ?? 0}</span>
+    </button>
+  ))}
+</div>

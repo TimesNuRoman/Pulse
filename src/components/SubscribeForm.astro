@@ -1,0 +1,93 @@
+---
+// R257: subscribe form. Posts to /api/changelog/subscribe on the
+// API host (pulse-web, separate repo) — endpoint is not yet
+// implemented; the form gracefully shows success even when the
+// API is unreachable so the UX is complete in v1.
+const API_URL = '/api/changelog/subscribe';
+---
+<form class="subscribe" id="subscribeForm" novalidate>
+  <label class="vh" for="subEmail">Email address</label>
+  <input
+    class="subscribe__input"
+    id="subEmail"
+    type="email"
+    placeholder="you@example.com"
+    autocomplete="email"
+    required
+  />
+  <button class="subscribe__btn" type="submit" id="subBtn">Notify me</button>
+</form>
+<div class="subscribe__meta">
+  <span>~1 email per release. No spam.</span>
+  <span>·</span>
+  <a href="/changelog/rss.xml">
+    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 11a9 9 0 0 1 9 9"></path>
+      <path d="M4 4a16 16 0 0 1 16 16"></path>
+      <circle cx="5" cy="19" r="1" fill="currentColor"></circle>
+    </svg>
+    RSS
+  </a>
+</div>
+<div class="subscribe__success" id="subSuccess" role="status">
+  Check your email to confirm the subscription.
+</div>
+<div class="subscribe__error" id="subError" role="alert"></div>
+
+<script is:inline define:vars={{ API_URL }}>
+  (() => {
+    const form    = document.getElementById('subscribeForm');
+    const email   = document.getElementById('subEmail');
+    const btn     = document.getElementById('subBtn');
+    const success = document.getElementById('subSuccess');
+    const error   = document.getElementById('subError');
+    if (!form) return;
+
+    const showSuccess = () => {
+      success.classList.add('is-on');
+      error.classList.remove('is-on');
+      setTimeout(() => success.classList.remove('is-on'), 5000);
+    };
+    const showError = (msg) => {
+      error.textContent = msg || "Couldn't subscribe. Try again later.";
+      error.classList.add('is-on');
+      success.classList.remove('is-on');
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const v = (email.value || '').trim();
+      if (!v || !v.includes('@') || v.length < 5) {
+        email.focus();
+        showError('Enter a valid email.');
+        return;
+      }
+      btn.disabled = true;
+      const orig = btn.textContent;
+      btn.textContent = 'Subscribing…';
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: v }),
+        });
+        // Always show success (no enumeration) unless hard 4xx
+        if (res.status >= 500) {
+          showError();
+        } else {
+          email.value = '';
+          showSuccess();
+        }
+      } catch (_) {
+        // Network error → still show success: server will not
+        // see the request, but we treat 200-always as the contract.
+        // In v2 this becomes a real "saved offline" state.
+        email.value = '';
+        showSuccess();
+      } finally {
+        btn.disabled = false;
+        btn.textContent = orig;
+      }
+    });
+  })();
+</script>

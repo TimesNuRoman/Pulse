@@ -37,3 +37,8 @@ remove-*.ps1
 .commit-msg.txt
 .ray-header-live.css
 .verify-deploy.cjs
+
+# Re-base throwaway diffs (do not commit)
+.local-download.astro
+.remote-download.astro
+

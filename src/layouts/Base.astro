@@ -78,6 +78,15 @@ const showBackground = ['/', '/pricing', '/pricing/', '/download', '/download/']
 
     {canonical && <link rel="canonical" href={canonical} />}
 
+    {/*
+      R257: surface the changelog RSS feed in <head> when the page
+      is a /changelog* surface, so feed readers can auto-discover
+      it from any page in the family.
+    */}
+    {Astro.url.pathname.startsWith('/changelog') && (
+      <link rel="alternate" type="application/rss+xml" title="Pulse Changelog" href="/changelog/rss.xml" />
+    )}
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <!-- noscript fallback: show reveal content immediately -->

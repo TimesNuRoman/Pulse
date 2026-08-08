@@ -1,0 +1,86 @@
+---
+// R257: /changelog/unsubscribe — one-click unsubscribe via the
+// email link. POSTs the token to the API; on success, shows
+// "You've been unsubscribed". On failure, "Link invalid or
+// already used".
+import Base from '../../layouts/Base.astro';
+const API_URL = '/api/changelog/unsubscribe';
+---
+<Base
+  title="Unsubscribe — Pulse changelog"
+  description="Unsubscribe from Pulse release notes."
+  ctaVisible={false}
+  footerLicense=""
+  canonical="https://ownlocalml.com/changelog/unsubscribe/"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <main class="page" id="main">
+    <section class="hero">
+      <span class="eyebrow">Changelog</span>
+      <h1 id="unsubTitle">Unsubscribing…</h1>
+      <p class="lede" id="unsubLede">One moment.</p>
+      <p class="confirm__actions" id="unsubActions" hidden>
+        <a class="confirm__btn" href="/changelog/">Back to changelog</a>
+      </p>
+    </section>
+  </main>
+
+  <script is:inline define:vars={{ API_URL }}>
+    (() => {
+      const title = document.getElementById('unsubTitle');
+      const lede  = document.getElementById('unsubLede');
+      const acts  = document.getElementById('unsubActions');
+      const token = new URLSearchParams(location.search).get('token');
+
+      if (!token) {
+        title.textContent = 'Open the link from your email';
+        lede.textContent  = 'Paste the unsubscribe link from your inbox into your browser.';
+        acts.hidden = false;
+        return;
+      }
+
+      fetch(API_URL + '?token=' + encodeURIComponent(token), { method: 'POST' })
+        .then((res) => {
+          if (res.ok) {
+            title.textContent = "You've been unsubscribed";
+            lede.textContent  = 'No more release emails will be sent to this address.';
+          } else {
+            title.textContent = 'Link invalid or already used';
+            lede.textContent  = "Couldn't find your subscription. You may already be unsubscribed.";
+          }
+        })
+        .catch(() => {
+          title.textContent = 'Link invalid or already used';
+          lede.textContent  = "Couldn't reach the subscription service. Try again later.";
+        })
+        .finally(() => { acts.hidden = false; });
+    })();
+  </script>
+
+  <style>
+    .page { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+    .page .hero { padding: 80px 0 48px; }
+    .page .eyebrow {
+      display: block; font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.14em; color: var(--comment, #565f89);
+      margin-bottom: 12px; font-weight: 600;
+    }
+    .page h1 {
+      font-size: 36px; font-weight: 700; letter-spacing: -0.025em;
+      margin: 0 0 12px; line-height: 1.1; color: var(--fg, #c0caf5);
+    }
+    .page .lede {
+      color: var(--muted, #9aa5ce); font-size: 16px;
+      margin: 0 0 28px; max-width: 56ch;
+    }
+    .confirm__actions { margin: 0; }
+    .confirm__btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 18px; background: var(--purple, #bb9af7);
+      color: #1a1b26; font-size: 13px; font-weight: 600;
+      text-decoration: none; border-radius: 0;
+    }
+    .confirm__btn:hover { background: #c4adf9; }
+  </style>
+</Base>

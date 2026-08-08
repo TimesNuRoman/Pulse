@@ -1,0 +1,67 @@
+---
+// R257: a single changelog post (compact or featured variant).
+// Renders the version chip, date, platform chips, title, summary,
+// and the parsed change groups from the MD body.
+import ChangeGroup from './ChangeGroup.astro';
+import { parseChanges } from '../lib/parse-changes';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'changelog'>;
+  /** Featured = latest, gets the .post--featured card chrome. */
+  featured?: boolean;
+  /** Raw body of the MD file, already frontmatter-stripped. */
+  body: string;
+}
+
+const { post, featured = false, body } = Astro.props;
+const d = post.data;
+const id = `v${d.version.replace(/\./g, '-')}`;
+
+const formattedDate = d.date.toLocaleDateString('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
+
+const PLATFORMS = [
+  { id: 'windows', label: 'Windows',
+    svg: '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>' },
+  { id: 'android', label: 'Android',
+    svg: '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="2" width="14" height="20"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>' },
+  { id: 'web', label: 'Web',
+    svg: '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>' },
+  { id: 'pro', label: 'PRO',
+    svg: '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15 8 22 9 17 14 18 21 12 18 6 21 7 14 2 9 9 8 12 2"/></svg>' },
+] as const;
+const visiblePlatforms = PLATFORMS.filter((p) => d.platforms.includes(p.id as any));
+const dataPlatforms = d.platforms.join(' ');
+const groups = parseChanges(body);
+---
+<article
+  class:list={['post', { 'post--featured': featured }]}
+  id={id}
+  data-platforms={dataPlatforms}
+>
+  <div class="post__meta">
+    <span class="post__version">v{d.version}</span>
+    <time class="post__date" datetime={d.date.toISOString().slice(0, 10)}>{formattedDate}</time>
+    <span class="post__platforms">
+      {visiblePlatforms.map((p) => (
+        <span class="post__platform">
+          <Fragment set:html={p.svg} />
+          {p.label}
+        </span>
+      ))}
+    </span>
+  </div>
+  {featured
+    ? <h2 class="post__title">{d.title}</h2>
+    : <h3 class="post__title">{d.title}</h3>}
+  {d.summary && <p class="post__summary">{d.summary}</p>}
+  {groups.length > 0 && (
+    <div class="changes">
+      {groups.map((g) => <ChangeGroup label={g.label} items={g.items} />)}
+    </div>
+  )}
+</article>
