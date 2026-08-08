@@ -83,96 +83,12 @@ const softwareAppJsonLd = {
 >
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="ray-header" id="topnav" role="navigation" aria-label="Primary">
-    <div class="ray-header__inner glass">
-      <a class="ray-header__brand" href="/" aria-label="Pulse — home">
-        <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
-          <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
-          <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
-          <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
-          <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
-          <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
-        </svg>
-        <span class="ray-header__brand-name">Pulse</span>
-      </a>
-      <nav class="ray-header__links" aria-label="Primary">
-        <a class="ray-header__link" href="/download/">Download</a>
-        <a class="ray-header__link" href="/pricing/">Pricing</a>
-        <a class="ray-header__link" href="/faq/">FAQ</a>
-      </nav>
-      <div class="ray-header__right">
-        <a class="ray-header__login" href="/pricing/">Log in</a>
-        <a class="ray-header__cta" href="/download/">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 5v14"></path>
-            <path d="M19 12l-7 7-7-7"></path>
-          </svg>
-          Download
-        </a>
-        <button class="ray-header__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="4" y1="7" x2="20" y2="7"></line>
-            <line x1="4" y1="12" x2="20" y2="12"></line>
-            <line x1="4" y1="17" x2="20" y2="17"></line>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <div class="ray-drawer" id="nav-drawer" aria-hidden="true">
-    <a class="ray-drawer__link" href="/">Home</a>
-    <a class="ray-drawer__link" href="/download/">Download</a>
-    <a class="ray-drawer__link" href="/pricing/">Pricing</a>
-    <a class="ray-drawer__link" href="/faq/">FAQ</a>
-    <a class="btn btn--primary ray-drawer__cta" href="/download/">Start trial ↓</a>
-  </div>
-
-  <script is:inline>
-    (() => {
-      const nav = document.getElementById('topnav');
-      const burger = document.getElementById('nav-burger');
-      const drawer = document.getElementById('nav-drawer');
-      if (!nav) return;
-
-      let scrolled = false;
-      const setScrolled = (v) => {
-        if (v === scrolled) return;
-        scrolled = v;
-        nav.classList.toggle('is-scrolled', v);
-      };
-      const onScroll = () => setScrolled(window.scrollY > 8);
-      onScroll();
-      window.addEventListener('scroll', onScroll, { passive: true });
-
-      if (burger && drawer) {
-        const setOpen = (open) => {
-          burger.setAttribute('aria-expanded', String(open));
-          drawer.setAttribute('aria-hidden', String(!open));
-          drawer.classList.toggle('is-open', open);
-          document.body.style.overflow = open ? 'hidden' : '';
-        };
-        burger.addEventListener('click', () => {
-          const isOpen = drawer.classList.contains('is-open');
-          setOpen(!isOpen);
-        });
-        drawer.querySelectorAll('a').forEach((a) => {
-          a.addEventListener('click', () => setOpen(false));
-        });
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
-            setOpen(false);
-            burger.focus();
-          }
-        });
-        const mq = window.matchMedia('(min-width: 768px)');
-        mq.addEventListener?.('change', (e) => {
-          if (e.matches && drawer.classList.contains('is-open')) setOpen(false);
-        });
-      }
-      document.body.classList.add('has-nav');
-    })();
-  </script>
+  {/*
+    R251: header is rendered by <Base/> via <RayHeader/>.
+    All the inline markup, drawer, and scroll-script used to live
+    here; now the component owns it so every page gets the same
+    floating frosted-glass capsule with active-link highlight.
+  */}
 
   <main id="main">
     <!-- ─── Hero ──────────────────────────────────────── -->

@@ -250,80 +250,124 @@ section + section { border-top: 1px solid var(--border); }
   border-color: transparent;
 }
 
-/* ── Top nav + drawer (shared by every page via Base.astro) ──
-   Placed AFTER .btn on purpose: an element with class "btn nav__cta"
-   needs .nav__cta { display: none } to win the cascade on mobile.
-   Previously lived in src/styles/notes.css and only loaded on
-   notes/changelog/release-notes pages. Moved here in r101 so the
-   other pages (home, compare, license, privacy, coc) get the same
-   64px fixed nav + mobile drawer. Renders identically on pages
-   that imported notes.css because cascade order is preserved.
+/* ── Top nav + drawer (R251: shared by every page via Base.astro) ──
+   Renders through src/components/RayHeader.astro. Centered floating
+   frosted-glass capsule (56px tall, max-width 880px, pill-rounded),
+   not the legacy 64px full-width bar. Drawer covers the screen below
+   the capsule on mobile. `pointer-events: none` on the wrapper +
+   `auto` on the inner capsule lets the page scroll under the nav
+   while clicks land on the actual UI.
    ──────────────────────────────────────────────────────────── */
-.nav {
+.ray-header {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: clamp(12px, 1.6vw, 20px);
+  left: 0; right: 0;
   z-index: 50;
-  padding: 0 var(--gutter);
-  transition: backdrop-filter var(--dur) var(--ease),
-              background var(--dur) var(--ease),
-              border-color var(--dur) var(--ease);
-  border-bottom: 1px solid transparent;
+  padding: 0 clamp(12px, 2vw, 20px);
+  pointer-events: none;
 }
-.nav.is-scrolled {
-  background: rgba(26, 27, 38, 0.72);
-  backdrop-filter: saturate(180%) blur(18px);
-  -webkit-backdrop-filter: saturate(180%) blur(18px);
-  border-bottom-color: var(--border);
-}
-.nav__inner {
+.ray-header__inner {
+  pointer-events: auto;
   width: 100%;
-  max-width: var(--max-w);
+  max-width: 880px;
   margin: 0 auto;
-  height: 64px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
+  padding: 0 0.5rem 0 1.1rem;
+  border-radius: 9999px;
+  background: rgba(26, 27, 38, 0.6);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  transition: background var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease);
 }
-.nav__brand {
+.ray-header.is-scrolled .ray-header__inner {
+  background: rgba(26, 27, 38, 0.85);
+  border-color: var(--border-strong);
+}
+.ray-header__brand {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--fg);
   font-weight: 600;
   font-size: 0.98rem;
-  letter-spacing: -0.005em;
+  text-decoration: none;
+  min-height: 44px;
+  flex-shrink: 0;
 }
-.nav__brand:hover { color: var(--fg); }
-.nav__brand-name { font-weight: 700; }
-.nav__brand svg { width: 28px; height: 28px; flex-shrink: 0; }
-.nav__links {
+.ray-header__brand:hover { color: var(--fg); }
+.ray-header__brand-name { font-weight: 700; letter-spacing: -0.005em; }
+.ray-header__brand svg { width: 28px; height: 28px; flex-shrink: 0; }
+
+.ray-header__links {
   display: none;
-  list-style: none;
   align-items: center;
-  gap: 1.75rem;
-  margin: 0;
-  padding: 0;
+  gap: 1.5rem;
+  margin: 0 auto;
 }
-@media (min-width: 768px) { .nav__links { display: flex; } }
-.nav__link {
+@media (min-width: 768px) { .ray-header__links { display: flex; } }
+
+.ray-header__link {
   color: var(--fg-dim);
   font-size: 0.92rem;
   font-weight: 500;
+  padding: 0.5rem 0.25rem;
+  border-radius: 6px;
+  text-decoration: none;
   transition: color var(--dur) var(--ease);
 }
-.nav__link:hover, .nav__link.is-cta { color: var(--fg); }
-.nav__link.is-cta:hover { color: var(--purple); }
-.nav__right { display: flex; align-items: center; gap: 0.5rem; }
-.nav__cta {
-  display: none;
-  padding: 0.5rem 1rem;
-  font-size: 0.88rem;
-  min-height: 36px;
-  border-radius: 8px;  /* R248f: rectangle, not pill */
+.ray-header__link:hover { color: var(--fg); }
+.ray-header__link[aria-current="page"] { color: var(--purple); }
+
+.ray-header__right {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
 }
-@media (min-width: 768px) { .nav__cta { display: inline-flex; } }
-.nav__burger {
+.ray-header__login {
+  display: none;
+  color: var(--fg-dim);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.5rem 0.7rem;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: color var(--dur) var(--ease);
+}
+@media (min-width: 768px) { .ray-header__login { display: inline-flex; } }
+.ray-header__login:hover { color: var(--fg); }
+
+.ray-header__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: var(--fg);
+  color: #1a1b26;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-decoration: none;
+  min-height: 36px;
+  transition: transform var(--dur) var(--ease),
+              background var(--dur) var(--ease),
+              color var(--dur) var(--ease);
+}
+.ray-header__cta:hover {
+  background: #e8eaf6;
+  color: #1a1b26;
+  transform: translateY(-1px);
+}
+.ray-header__cta svg { width: 14px; height: 14px; }
+
+.ray-header__burger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -335,12 +379,13 @@ section + section { border-top: 1px solid var(--border); }
   background: transparent;
   transition: border-color var(--dur) var(--ease);
 }
-.nav__burger:hover { border-color: var(--fg-dim); }
-@media (min-width: 768px) { .nav__burger { display: none; } }
-.nav__burger svg { width: 18px; height: 18px; }
-.nav-drawer {
+.ray-header__burger:hover { border-color: var(--fg-dim); }
+@media (min-width: 768px) { .ray-header__burger { display: none; } }
+.ray-header__burger svg { width: 18px; height: 18px; }
+
+.ray-drawer {
   position: fixed;
-  inset: 64px 0 0;
+  inset: calc(64px + clamp(12px, 1.6vw, 20px)) 0 0;
   z-index: 49;
   background: rgba(26, 27, 38, 0.96);
   backdrop-filter: blur(20px) saturate(160%);
@@ -354,8 +399,8 @@ section + section { border-top: 1px solid var(--border); }
   visibility: hidden;
   overflow-y: auto;
 }
-.nav-drawer.is-open { transform: translateY(0); visibility: visible; }
-.nav-drawer__link {
+.ray-drawer.is-open { transform: translateY(0); visibility: visible; }
+.ray-drawer__link {
   display: block;
   padding: 0.85rem 0.25rem;
   color: var(--fg);
@@ -363,14 +408,21 @@ section + section { border-top: 1px solid var(--border); }
   font-weight: 500;
   border-bottom: 1px solid var(--border);
   letter-spacing: -0.005em;
+  text-decoration: none;
 }
-.nav-drawer__link:hover { color: var(--purple); }
-.nav-drawer__cta {
+.ray-drawer__link:hover { color: var(--purple); }
+.ray-drawer__cta {
   margin-top: 1rem;
   align-self: stretch;
   min-height: 52px;
   font-size: 1.05rem;
 }
+
+/* Skip link target — push anchored sections below the floating nav. */
+:where(.home-hero-ray, .home-what, .home-showcase, .home-cta, .home-pricing, .hero, section[id]) {
+  scroll-margin-top: 84px;  /* 56 capsule + 20 top gap + 8 breathing room */
+}
+
 body.has-nav { padding-top: 0; }
 
 /* ── Cards ───────────────────────────────────────────── */

@@ -4,6 +4,7 @@
 // pill, or pass a literal `footerVersion="v0.6.4"` to pin a
 // historical release-notes page footer.
 import { DESKTOP_VERSION } from '../lib/versions';
+import RayHeader from '../components/RayHeader.astro';
 import '../styles/global.css';
 
 export interface Props {
@@ -87,6 +88,14 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ownlocalml
     <meta name="twitter:image" content={ogImage} />
   </head>
   <body data-page-footer-license={footerLicense} data-page-footer-version={footerVersion}>
+    {/*
+      R251: shared header on every page. Rendered above <slot/> so
+      pages don't need to know about the nav at all. The component
+      handles desktop links, mobile burger, drawer, scroll-blur,
+      and the `aria-current="page"` active state.
+    */}
+    <RayHeader />
+
     <slot />
 
     {ctaVisible && (
