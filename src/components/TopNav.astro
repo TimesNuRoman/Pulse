@@ -1,0 +1,129 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+// R252: единая sticky-шапка на всех страницах. Spec — TopNav.astro.
+// Floating glass pill → morphs to full-width bar on scroll > 80px.
+// Renders the same on every page via <Base/>.
+
+interface Props {
+  /** Path текущей страницы, например "/pricing/" */
+  currentPath?: string;
+  /** Текст primary CTA */
+  ctaText?: string;
+  /** Ссылка primary CTA */
+  ctaHref?: string;
+}
+
+const {
+  currentPath = '',
+  ctaText = 'Download',
+  ctaHref = '/download/',
+} = Astro.props;
+
+const links: { href: string; label: string }[] = [
+  { href: '/',           label: 'Home' },
+  { href: '/pricing/',   label: 'Pricing' },
+  { href: '/download/',  label: 'Download' },
+  { href: '/faq/',       label: 'FAQ' },
+  { href: '/changelog/', label: 'Changelog' },
+  { href: '/privacy/',   label: 'Privacy' },
+];
+
+// Active match: exact for `/`, prefix for everything else.
+// `startsWith` is intentional — `/download/` should also highlight
+// `/download/android/`, `/install/windows/`, etc.
+const isActive = (href: string) =>
+  href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+---
+
+<header class="topnav" id="topnav" role="navigation" aria-label="Primary">
+  <div class="topnav__inner">
+    <a class="topnav__brand" href="/" aria-label="Pulse — home">
+      <svg class="pulse-logo" viewBox="0 0 64 64" width="28" height="28" role="img" aria-label="Pulse">
+        <circle class="pulse-logo__ring" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+        <circle class="pulse-logo__ring pulse-logo__ring--2" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+        <circle class="pulse-logo__ring pulse-logo__ring--3" cx="32" cy="32" r="14" fill="none" stroke="#bb9af7" stroke-width="1.5"></circle>
+        <circle cx="32" cy="32" r="9" fill="#bb9af7"></circle>
+        <circle cx="35" cy="30" r="2" fill="#1a1b26"></circle>
+      </svg>
+      <span class="topnav__brand-name">Pulse</span>
+    </a>
+
+    <nav class="topnav__links" aria-label="Primary">
+      {links.map(({ href, label }) => (
+        <a
+          class="topnav__link"
+          href={href}
+          aria-current={isActive(href) ? 'page' : undefined}
+        >{label}</a>
+      ))}
+    </nav>
+
+    <a class="topnav__cta" href={ctaHref}>
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 5v14"></path>
+        <path d="M19 12l-7 7-7-7"></path>
+      </svg>
+      {ctaText}
+    </a>
+
+    <button class="topnav__burger" id="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="4" y1="7" x2="20" y2="7"></line>
+        <line x1="4" y1="12" x2="20" y2="12"></line>
+        <line x1="4" y1="17" x2="20" y2="17"></line>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div class="nav-drawer" id="nav-drawer" aria-hidden="true" role="menu">
+  {links.map(({ href, label }) => (
+    <a
+      href={href}
+      role="menuitem"
+      aria-current={isActive(href) ? 'page' : undefined}
+    >{label}</a>
+  ))}
+</div>
+
+<script is:inline>
+  (() => {
+    const nav = document.getElementById('topnav');
+    const burger = document.getElementById('nav-burger');
+    const drawer = document.getElementById('nav-drawer');
+    if (!nav) return;
+
+    let scrolled = false;
+    const setScrolled = (v) => {
+      if (v === scrolled) return;
+      scrolled = v;
+      nav.classList.toggle('is-scrolled', v);
+      document.body.classList.toggle('is-scrolled', v);
+    };
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    if (burger && drawer) {
+      const setOpen = (open) => {
+        burger.setAttribute('aria-expanded', String(open));
+        drawer.setAttribute('aria-hidden', String(!open));
+        drawer.classList.toggle('is-open', open);
+        document.body.style.overflow = open ? 'hidden' : '';
+      };
+      burger.addEventListener('click', () => {
+        setOpen(!drawer.classList.contains('is-open'));
+      });
+      drawer.querySelectorAll('a').forEach((a) => {
+        a.addEventListener('click', () => setOpen(false));
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+          setOpen(false);
+          burger.focus();
+        }
+      });
+    }
+    document.body.classList.add('has-nav');
+  })();
+</script>

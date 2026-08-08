@@ -250,128 +250,197 @@ section + section { border-top: 1px solid var(--border); }
   border-color: transparent;
 }
 
-/* ── Top nav + drawer (shared by every page via Base.astro) ──
-   Placed AFTER .btn on purpose: an element with class "btn nav__cta"
-   needs .nav__cta { display: none } to win the cascade on mobile.
-   Previously lived in src/styles/notes.css and only loaded on
-   notes/changelog/release-notes pages. Moved here in r101 so the
-   other pages (home, compare, license, privacy, coc) get the same
-   64px fixed nav + mobile drawer. Renders identically on pages
-   that imported notes.css because cascade order is preserved.
+/* ── TopNav (R252: shared sticky glass header on every page) ─────
+   Renders through src/components/TopNav.astro, mounted in Base.astro.
+   Spec: floating glass pill at top:12, morphs to full-width bar at
+   top:0 once scrollY > 80. Drawer below the nav on mobile, hidden
+   at >= 768px. Body padding compensates so content doesn't slide
+   under the nav (96px unscrolled, 56px scrolled).
+
+   Token mapping (spec → project):
+     --text        → --fg         (Tokyo Night fg)
+     --text-muted  → --fg-dim
+     --primary     → --purple
+     --primary-2   → #c4adf9      (btn--primary:hover)
+     --on-primary  → #1a1b26      (dark text on purple)
+     --surface     → --surface
+     --border      → --border
    ──────────────────────────────────────────────────────────── */
-.nav {
+.topnav {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 12px;
+  left: 12px;
+  right: 12px;
   z-index: 50;
-  padding: 0 var(--gutter);
-  transition: backdrop-filter var(--dur) var(--ease),
-              background var(--dur) var(--ease),
-              border-color var(--dur) var(--ease);
-  border-bottom: 1px solid transparent;
+  transition: top 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.nav.is-scrolled {
-  background: rgba(26, 27, 38, 0.72);
-  backdrop-filter: saturate(180%) blur(18px);
-  -webkit-backdrop-filter: saturate(180%) blur(18px);
-  border-bottom-color: var(--border);
-}
-.nav__inner {
-  width: 100%;
-  max-width: var(--max-w);
+.topnav.is-scrolled { top: 0; left: 0; right: 0; }
+
+.topnav__inner {
+  max-width: 1200px;
   margin: 0 auto;
-  height: 64px;
+  height: 56px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 12px;
+  padding: 0 12px 0 16px;
+  background: rgba(31, 35, 53, 0.72);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 8px 32px rgba(0, 0, 0, 0.32);
+  transition: max-width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-radius 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+              background var(--dur) var(--ease);
 }
-.nav__brand {
-  display: inline-flex;
+.topnav.is-scrolled .topnav__inner {
+  max-width: 100%;
+  border-radius: 0;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  background: rgba(26, 27, 38, 0.85);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.topnav__brand {
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: var(--fg);
+  gap: 8px;
   font-weight: 600;
-  font-size: 0.98rem;
-  letter-spacing: -0.005em;
+  font-size: 15px;
+  color: var(--fg);
+  text-decoration: none;
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
+  min-height: 44px;
 }
-.nav__brand:hover { color: var(--fg); }
-.nav__brand-name { font-weight: 700; }
-.nav__brand svg { width: 28px; height: 28px; flex-shrink: 0; }
-.nav__links {
+.topnav__brand:hover { color: var(--fg); }
+.topnav__brand-name { font-weight: 700; }
+.topnav__brand svg { color: var(--purple); flex-shrink: 0; }
+
+.topnav__links {
   display: none;
-  list-style: none;
   align-items: center;
-  gap: 1.75rem;
-  margin: 0;
-  padding: 0;
+  gap: 2px;
+  margin-left: auto;
 }
-@media (min-width: 768px) { .nav__links { display: flex; } }
-.nav__link {
+.topnav__link {
+  padding: 8px 12px;
+  border-radius: 8px;
   color: var(--fg-dim);
-  font-size: 0.92rem;
+  text-decoration: none;
+  font-size: 14px;
   font-weight: 500;
-  transition: color var(--dur) var(--ease);
+  transition: color 0.15s, background 0.15s;
 }
-.nav__link:hover, .nav__link.is-cta { color: var(--fg); }
-.nav__link.is-cta:hover { color: var(--purple); }
-.nav__right { display: flex; align-items: center; gap: 0.5rem; }
-.nav__cta {
-  display: none;
-  padding: 0.5rem 1rem;
-  font-size: 0.88rem;
-  min-height: 36px;
-  border-radius: 8px;  /* R248f: rectangle, not pill */
+.topnav__link:hover {
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.04);
 }
-@media (min-width: 768px) { .nav__cta { display: inline-flex; } }
-.nav__burger {
-  display: inline-flex;
+.topnav__link[aria-current="page"] {
+  color: var(--purple);
+  background: rgba(187, 154, 247, 0.10);
+}
+
+.topnav__cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  height: 38px;
+  background: var(--purple);
+  color: #1a1b26;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.1s;
+}
+.topnav__cta:hover { background: #c4adf9; color: #1a1b26; }
+.topnav__cta:active { transform: scale(0.97); }
+.topnav__cta svg { width: 13px; height: 13px; }
+
+.topnav__burger {
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 8px;
-  color: var(--fg);
-  border: 1px solid var(--border);
+  border-radius: 10px;
   background: transparent;
-  transition: border-color var(--dur) var(--ease);
+  border: 0;
+  color: var(--fg-dim);
+  cursor: pointer;
+  margin-left: auto;
+  transition: color 0.15s, background 0.15s;
 }
-.nav__burger:hover { border-color: var(--fg-dim); }
-@media (min-width: 768px) { .nav__burger { display: none; } }
-.nav__burger svg { width: 18px; height: 18px; }
+.topnav__burger:hover {
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.04);
+}
+.topnav__burger svg { width: 18px; height: 18px; }
+
+@media (min-width: 768px) {
+  .topnav__burger { display: none; }
+  .topnav__links   { display: flex; }
+  .topnav__inner   { padding: 0 12px 0 20px; gap: 16px; }
+}
+
+/* Drawer (mobile only) — same UX as the legacy drawer but bound to
+   .nav-drawer so it pairs with the new .topnav. */
 .nav-drawer {
   position: fixed;
-  inset: 64px 0 0;
+  top: 80px;
+  left: 12px;
+  right: 12px;
   z-index: 49;
-  background: rgba(26, 27, 38, 0.96);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 8px;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+.nav-drawer.is-open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.nav-drawer a {
   display: flex;
-  flex-direction: column;
-  padding: 1.5rem var(--gutter) 2rem;
-  gap: 0.5rem;
-  transform: translateY(-110%);
-  transition: transform var(--dur) var(--ease);
-  visibility: hidden;
-  overflow-y: auto;
-}
-.nav-drawer.is-open { transform: translateY(0); visibility: visible; }
-.nav-drawer__link {
-  display: block;
-  padding: 0.85rem 0.25rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 10px;
   color: var(--fg);
-  font-size: 1.1rem;
+  text-decoration: none;
+  font-size: 15px;
   font-weight: 500;
-  border-bottom: 1px solid var(--border);
-  letter-spacing: -0.005em;
+  transition: background 0.15s, color 0.15s;
 }
-.nav-drawer__link:hover { color: var(--purple); }
-.nav-drawer__cta {
-  margin-top: 1rem;
-  align-self: stretch;
-  min-height: 52px;
-  font-size: 1.05rem;
+.nav-drawer a:hover,
+.nav-drawer a[aria-current="page"] {
+  background: rgba(187, 154, 247, 0.10);
+  color: var(--purple);
 }
-body.has-nav { padding-top: 0; }
+.nav-drawer a[aria-current="page"]::after {
+  content: "•";
+  color: var(--purple);
+  font-size: 18px;
+}
+@media (min-width: 768px) { .nav-drawer { display: none; } }
+
+/* Body offset for fixed header — 96 unscrolled, 56 scrolled. */
+body.has-nav main { padding-top: 96px; }
+body.has-nav.is-scrolled main { padding-top: 56px; }
 
 /* ── Cards ───────────────────────────────────────────── */
 .card {
