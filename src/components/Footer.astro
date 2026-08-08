@@ -18,11 +18,23 @@ const showVersion = version.trim().length > 0;
 
 const columns = [
   {
+    title: 'Apps',
+    // R255: compact "Apps" column replaces the old separate
+    // "Download" + "Android" rows. All three links point to
+    // /download/{windows,android,}/ subpages created in R250,
+    // so no more 404s on /install/* (the old URL before R250).
+    links: [
+      { label: 'Download hub', href: '/download/' },
+      { label: 'Windows', href: '/download/windows/' },
+      { label: 'Android', href: '/download/android/' },
+      { label: 'macOS / Linux / iOS', href: '/download/' },
+    ],
+  },
+  {
     title: 'Product',
     links: [
-      { label: 'Download', href: '/download/' },
-      { label: 'Android', href: '/install/android/' },
       { label: 'Pricing', href: '/pricing/' },
+      { label: 'Login', href: '/login/' },
       // R183: blog landing — first post lives at /blog/five-ollama-errors/.
       // `tall: true` enforces 56dp min-height on this single link
       // (HR11 a11y); the other 12 footer text links will get the
@@ -101,16 +113,23 @@ const columns = [
 <style>
   .footer {
     border-top: 1px solid var(--border);
-    padding-block: var(--sp-5) var(--sp-3);
+    padding-block: var(--sp-3) var(--sp-2);
     background: var(--bg-soft);
+  }
+  @media (min-width: 700px) {
+    .footer { padding-block: var(--sp-5) var(--sp-3); }
   }
   .footer__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem 1rem;
   }
-  @media (min-width: 700px) {
-    .footer__grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--sp-4); }
+  /* R255: 4 columns on desktop (Apps + Product + Source + Legal)
+     plus the brand block on the left = 5 tracks total. Tighter
+     column gap than before so all four link columns fit at
+     1024-1280 without overflow. */
+  @media (min-width: 900px) {
+    .footer__grid { grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; gap: var(--sp-4) var(--sp-3); }
   }
   .footer__brand { display: flex; flex-direction: column; gap: 0.4rem; grid-column: 1 / -1; }
   @media (min-width: 700px) { .footer__brand { grid-column: auto; gap: 0.6rem; } }
