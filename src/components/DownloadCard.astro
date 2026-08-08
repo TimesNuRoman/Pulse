@@ -1,0 +1,41 @@
+---
+// SPDX-License-Identifier: Apache-2.0
+// R250: One download card (NSIS / MSI / APK / .deb / .AppImage / .exe).
+// Used by Windows (3 cards), Linux (2 cards), Android (1 card).
+import { ICONS } from '../lib/platforms';
+
+export interface Props {
+  name: string;            // "NSIS installer (per-user)"
+  href: string;            // "/downloads/Pulse_0.6.9_x64-setup.exe"
+  filename: string;        // "Pulse_0.6.9_x64-setup.exe"
+  size: string;            // "12.30 MB"
+  arch?: string;           // "x86_64"
+  tag?: string;            // "Recommended"
+  description?: string;    // 1-2 sentences
+  checksum?: string;       // SHA-256 hex
+}
+
+const { name, href, filename, size, arch, tag, description, checksum } = Astro.props;
+---
+<div class="dl-card">
+  <div class="dl-card__head">
+    <span class="dl-card__name">{name}</span>
+    {tag && <span class="dl-card__tag">{tag}</span>}
+  </div>
+  <div class="dl-card__meta">
+    <b>{size}</b>
+    {arch && <><span>·</span><b>{arch}</b></>}
+    <span>·</span>
+    <span class="dl-card__filename">{filename}</span>
+  </div>
+  {description && <p class="dl-card__desc">{description}</p>}
+  <a class="dl-card__btn" href={href} rel="noopener noreferrer" download>
+    <Fragment set:html={ICONS.down} />
+    Download {filename}
+  </a>
+  {checksum && (
+    <div class="dl-checksum">
+      <b>SHA-256</b>  <code>{checksum}</code>  <span>{filename}</span>
+    </div>
+  )}
+</div>
