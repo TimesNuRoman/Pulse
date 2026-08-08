@@ -167,50 +167,67 @@ section + section { border-top: 1px solid var(--border); }
 .nav__link:hover { color: var(--fg); background: var(--surface); }
 .nav__link[aria-current="page"] { color: var(--purple); }
 
-/* ── Buttons ─────────────────────────────────────────── */
+/* ── Buttons (R248f: unified rectangle system) ─────────
+   Roman: прямоугольные кнопки без закруглений, красивая рамка,
+   один стиль на весь сайт, hover — без translateY (плоский,
+   только смена фона/рамки/тени). ─────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.85em 1.6em;
-  border-radius: 9999px;  /* P1-2: pill shape — Cursor-style */
+  padding: 0.7em 1.4em;
+  border-radius: 8px;
   font-weight: 500;
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   letter-spacing: -0.005em;
-  transition: transform var(--dur) var(--ease),
-              background var(--dur) var(--ease),
-              box-shadow var(--dur) var(--ease),
-              border-color var(--dur) var(--ease),
-              color var(--dur) var(--ease);
   border: 1px solid transparent;
   white-space: nowrap;
-  min-height: 44px;  /* Apple HIG touch target */
+  min-height: 48px;
   text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* NO transform: hover stays flat */
 }
-.btn:hover { transform: translateY(-1px); }
-.btn:active { transform: translateY(0); }
 .btn:focus-visible {
   outline: 2px solid var(--purple);
   outline-offset: 2px;
 }
 
+.btn--lg {
+  padding: 0.85em 1.6em;
+  font-size: 1rem;
+  min-height: 52px;
+}
+.btn--sm {
+  padding: 0.5em 0.9em;
+  font-size: 0.85rem;
+  min-height: 40px;
+}
+
 .btn--primary {
   background: var(--purple);
   color: #1a1b26;
-  box-shadow: 0 6px 24px rgba(187, 154, 247, 0.35),
-              0 0 0 1px rgba(187, 154, 247, 0.3);  /* P1-3: subtle ring */
+  border-color: var(--purple);
+  box-shadow: 0 0 0 1px var(--purple) inset,
+              0 4px 16px rgba(187, 154, 247, 0.2);
 }
 .btn--primary:hover {
-  box-shadow: 0 10px 30px rgba(187, 154, 247, 0.55),
-              0 0 0 1px rgba(187, 154, 247, 0.5);
+  background: #c4adf9;
+  border-color: #c4adf9;
+  box-shadow: 0 0 0 1px #c4adf9 inset,
+              0 6px 24px rgba(187, 154, 247, 0.35);
   color: #1a1b26;
 }
 
 .btn--ghost {
   background: transparent;
   color: var(--fg);
-  border-color: var(--border-strong);  /* P1-3: stronger border for ghost */
+  border-color: var(--border-strong);
 }
 .btn--ghost:hover {
   background: var(--surface);
@@ -218,16 +235,20 @@ section + section { border-top: 1px solid var(--border); }
   color: var(--fg);
 }
 
-/* Tertiary link-style button (used in Hero, in-card CTAs) */
 .btn--link {
   background: transparent;
   color: var(--purple);
-  font-weight: 400;
+  border-color: transparent;
   padding-inline: 0.25em;
   min-height: auto;
-  border: 0;
+  font-weight: 500;
+  text-decoration: none;
 }
-.btn--link:hover { color: var(--blue); transform: none; }
+.btn--link:hover {
+  color: var(--blue);
+  background: transparent;
+  border-color: transparent;
+}
 
 /* ── Top nav + drawer (shared by every page via Base.astro) ──
    Placed AFTER .btn on purpose: an element with class "btn nav__cta"
@@ -299,6 +320,7 @@ section + section { border-top: 1px solid var(--border); }
   padding: 0.5rem 1rem;
   font-size: 0.88rem;
   min-height: 36px;
+  border-radius: 8px;  /* R248f: rectangle, not pill */
 }
 @media (min-width: 768px) { .nav__cta { display: inline-flex; } }
 .nav__burger {
@@ -489,7 +511,9 @@ body.has-nav { padding-top: 0; }
    lose the cascade without it. Mobile-only @media makes the
    !important scope well-defined. */
 @media (max-width: 639px) {
-  .btn { min-height: 52px !important; width: 100% !important; padding: 0.9em 1.4em !important; }
+  .btn { min-height: 52px !important; width: 100% !important; padding: 0.85em 1.4em !important; }
+  .btn--lg { min-height: 56px !important; padding: 0.9em 1.4em !important; }
+  .btn--sm { min-height: 48px !important; }
   .hero__ctas,
   .download__ctas,
   .home-hero__ctas,
