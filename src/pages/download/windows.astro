@@ -102,46 +102,6 @@ const softwareAppJsonLd = {
   {/* R251: header is rendered by <Base/> via <RayHeader/> */}
 
 
-  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
-    <a class="nav-drawer__link" href="/">Home</a>
-    <a class="nav-drawer__link" href="/download/" aria-current="page">Download</a>
-    <a class="nav-drawer__link" href="/install/windows/">Install guide</a>
-    <a class="nav-drawer__link" href="/changelog/">Changelog</a>
-    <a class="nav-drawer__link" href="/pricing/">Pricing</a>
-    <a class="btn btn--primary nav-drawer__cta" href={WINDOWS_NSIS_URL} rel="noopener noreferrer">Download ↓ {WINDOWS_NSIS_SIZE}</a>
-  </div>
-
-  <script is:inline>
-    (() => {
-      const nav = document.getElementById('topnav');
-      const burger = document.getElementById('nav-burger');
-      const drawer = document.getElementById('nav-drawer');
-      if (!nav) return;
-      let scrolled = false;
-      const setScrolled = (v) => { if (v === scrolled) return; scrolled = v; nav.classList.toggle('is-scrolled', v); };
-      const onScroll = () => setScrolled(window.scrollY > 8);
-      onScroll();
-      window.addEventListener('scroll', onScroll, { passive: true });
-      if (burger && drawer) {
-        const setOpen = (open) => {
-          burger.setAttribute('aria-expanded', String(open));
-          drawer.setAttribute('aria-hidden', String(!open));
-          drawer.classList.toggle('is-open', open);
-          document.body.style.overflow = open ? 'hidden' : '';
-        };
-        burger.addEventListener('click', () => {
-          const isOpen = drawer.classList.contains('is-open');
-          setOpen(!isOpen);
-        });
-        drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) { setOpen(false); burger.focus(); } });
-        const mq = window.matchMedia('(min-width: 768px)');
-        mq.addEventListener?.('change', (e) => { if (e.matches && drawer.classList.contains('is-open')) setOpen(false); });
-      }
-      document.body.classList.add('has-nav');
-    })();
-  </script>
-
   <main id="main" class="notes-main">
     <!-- ─── Hero ──────────────────────────────────────── -->
     <section class="dlpg-hero" aria-labelledby="dlpg-hero-title">

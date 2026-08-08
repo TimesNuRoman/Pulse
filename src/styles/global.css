@@ -250,180 +250,197 @@ section + section { border-top: 1px solid var(--border); }
   border-color: transparent;
 }
 
-/* ── Top nav + drawer (R251: shared by every page via Base.astro) ──
-   Renders through src/components/RayHeader.astro. Centered floating
-   frosted-glass capsule (56px tall, max-width 880px, pill-rounded),
-   not the legacy 64px full-width bar. Drawer covers the screen below
-   the capsule on mobile. `pointer-events: none` on the wrapper +
-   `auto` on the inner capsule lets the page scroll under the nav
-   while clicks land on the actual UI.
+/* ── TopNav (R252: shared sticky glass header on every page) ─────
+   Renders through src/components/TopNav.astro, mounted in Base.astro.
+   Spec: floating glass pill at top:12, morphs to full-width bar at
+   top:0 once scrollY > 80. Drawer below the nav on mobile, hidden
+   at >= 768px. Body padding compensates so content doesn't slide
+   under the nav (96px unscrolled, 56px scrolled).
+
+   Token mapping (spec → project):
+     --text        → --fg         (Tokyo Night fg)
+     --text-muted  → --fg-dim
+     --primary     → --purple
+     --primary-2   → #c4adf9      (btn--primary:hover)
+     --on-primary  → #1a1b26      (dark text on purple)
+     --surface     → --surface
+     --border      → --border
    ──────────────────────────────────────────────────────────── */
-.ray-header {
+.topnav {
   position: fixed;
-  top: clamp(12px, 1.6vw, 20px);
-  left: 0; right: 0;
+  top: 12px;
+  left: 12px;
+  right: 12px;
   z-index: 50;
-  padding: 0 clamp(12px, 2vw, 20px);
-  pointer-events: none;
+  transition: top 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.ray-header__inner {
-  pointer-events: auto;
-  width: 100%;
-  max-width: 880px;
+.topnav.is-scrolled { top: 0; left: 0; right: 0; }
+
+.topnav__inner {
+  max-width: 1200px;
   margin: 0 auto;
   height: 56px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0 0.5rem 0 1.1rem;
-  border-radius: 9999px;
-  background: rgba(26, 27, 38, 0.6);
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-  transition: background var(--dur) var(--ease),
-              border-color var(--dur) var(--ease),
-              box-shadow var(--dur) var(--ease);
+  gap: 12px;
+  padding: 0 12px 0 16px;
+  background: rgba(31, 35, 53, 0.72);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 8px 32px rgba(0, 0, 0, 0.32);
+  transition: max-width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-radius 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+              background var(--dur) var(--ease);
 }
-.ray-header.is-scrolled .ray-header__inner {
+.topnav.is-scrolled .topnav__inner {
+  max-width: 100%;
+  border-radius: 0;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
   background: rgba(26, 27, 38, 0.85);
-  border-color: var(--border-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
-.ray-header__brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--fg);
-  font-weight: 600;
-  font-size: 0.98rem;
-  text-decoration: none;
-  min-height: 44px;
-  flex-shrink: 0;
-}
-.ray-header__brand:hover { color: var(--fg); }
-.ray-header__brand-name { font-weight: 700; letter-spacing: -0.005em; }
-.ray-header__brand svg { width: 28px; height: 28px; flex-shrink: 0; }
 
-.ray-header__links {
-  display: none;
-  align-items: center;
-  gap: 1.5rem;
-  margin: 0 auto;
-}
-@media (min-width: 768px) { .ray-header__links { display: flex; } }
-
-.ray-header__link {
-  color: var(--fg-dim);
-  font-size: 0.92rem;
-  font-weight: 500;
-  padding: 0.5rem 0.25rem;
-  border-radius: 6px;
-  text-decoration: none;
-  transition: color var(--dur) var(--ease);
-}
-.ray-header__link:hover { color: var(--fg); }
-.ray-header__link[aria-current="page"] { color: var(--purple); }
-
-.ray-header__right {
+.topnav__brand {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  flex-shrink: 0;
-}
-.ray-header__login {
-  display: none;
-  color: var(--fg-dim);
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 0.5rem 0.7rem;
-  text-decoration: none;
-  border-radius: 6px;
-  transition: color var(--dur) var(--ease);
-}
-@media (min-width: 768px) { .ray-header__login { display: inline-flex; } }
-.ray-header__login:hover { color: var(--fg); }
-
-.ray-header__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 1rem;
-  background: var(--fg);
-  color: #1a1b26;
-  font-size: 0.9rem;
+  gap: 8px;
   font-weight: 600;
-  border-radius: 9999px;
+  font-size: 15px;
+  color: var(--fg);
   text-decoration: none;
-  min-height: 36px;
-  transition: transform var(--dur) var(--ease),
-              background var(--dur) var(--ease),
-              color var(--dur) var(--ease);
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
+  min-height: 44px;
 }
-.ray-header__cta:hover {
-  background: #e8eaf6;
-  color: #1a1b26;
-  transform: translateY(-1px);
-}
-.ray-header__cta svg { width: 14px; height: 14px; }
+.topnav__brand:hover { color: var(--fg); }
+.topnav__brand-name { font-weight: 700; }
+.topnav__brand svg { color: var(--purple); flex-shrink: 0; }
 
-.ray-header__burger {
-  display: inline-flex;
+.topnav__links {
+  display: none;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+.topnav__link {
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--fg-dim);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.15s, background 0.15s;
+}
+.topnav__link:hover {
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.04);
+}
+.topnav__link[aria-current="page"] {
+  color: var(--purple);
+  background: rgba(187, 154, 247, 0.10);
+}
+
+.topnav__cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  height: 38px;
+  background: var(--purple);
+  color: #1a1b26;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.1s;
+}
+.topnav__cta:hover { background: #c4adf9; color: #1a1b26; }
+.topnav__cta:active { transform: scale(0.97); }
+.topnav__cta svg { width: 13px; height: 13px; }
+
+.topnav__burger {
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 8px;
-  color: var(--fg);
-  border: 1px solid var(--border);
+  border-radius: 10px;
   background: transparent;
-  transition: border-color var(--dur) var(--ease);
+  border: 0;
+  color: var(--fg-dim);
+  cursor: pointer;
+  margin-left: auto;
+  transition: color 0.15s, background 0.15s;
 }
-.ray-header__burger:hover { border-color: var(--fg-dim); }
-@media (min-width: 768px) { .ray-header__burger { display: none; } }
-.ray-header__burger svg { width: 18px; height: 18px; }
-
-.ray-drawer {
-  position: fixed;
-  inset: calc(64px + clamp(12px, 1.6vw, 20px)) 0 0;
-  z-index: 49;
-  background: rgba(26, 27, 38, 0.96);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem var(--gutter) 2rem;
-  gap: 0.5rem;
-  transform: translateY(-110%);
-  transition: transform var(--dur) var(--ease);
-  visibility: hidden;
-  overflow-y: auto;
-}
-.ray-drawer.is-open { transform: translateY(0); visibility: visible; }
-.ray-drawer__link {
-  display: block;
-  padding: 0.85rem 0.25rem;
+.topnav__burger:hover {
   color: var(--fg);
-  font-size: 1.1rem;
-  font-weight: 500;
-  border-bottom: 1px solid var(--border);
-  letter-spacing: -0.005em;
+  background: rgba(255, 255, 255, 0.04);
+}
+.topnav__burger svg { width: 18px; height: 18px; }
+
+@media (min-width: 768px) {
+  .topnav__burger { display: none; }
+  .topnav__links   { display: flex; }
+  .topnav__inner   { padding: 0 12px 0 20px; gap: 16px; }
+}
+
+/* Drawer (mobile only) — same UX as the legacy drawer but bound to
+   .nav-drawer so it pairs with the new .topnav. */
+.nav-drawer {
+  position: fixed;
+  top: 80px;
+  left: 12px;
+  right: 12px;
+  z-index: 49;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 8px;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+.nav-drawer.is-open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.nav-drawer a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: var(--fg);
   text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
 }
-.ray-drawer__link:hover { color: var(--purple); }
-.ray-drawer__cta {
-  margin-top: 1rem;
-  align-self: stretch;
-  min-height: 52px;
-  font-size: 1.05rem;
+.nav-drawer a:hover,
+.nav-drawer a[aria-current="page"] {
+  background: rgba(187, 154, 247, 0.10);
+  color: var(--purple);
 }
+.nav-drawer a[aria-current="page"]::after {
+  content: "•";
+  color: var(--purple);
+  font-size: 18px;
+}
+@media (min-width: 768px) { .nav-drawer { display: none; } }
 
-/* Skip link target — push anchored sections below the floating nav. */
-:where(.home-hero-ray, .home-what, .home-showcase, .home-cta, .home-pricing, .hero, section[id]) {
-  scroll-margin-top: 84px;  /* 56 capsule + 20 top gap + 8 breathing room */
-}
-
-body.has-nav { padding-top: 0; }
+/* Body offset for fixed header — 96 unscrolled, 56 scrolled. */
+body.has-nav main { padding-top: 96px; }
+body.has-nav.is-scrolled main { padding-top: 56px; }
 
 /* ── Cards ───────────────────────────────────────────── */
 .card {

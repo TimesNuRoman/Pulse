@@ -4,7 +4,7 @@
 // pill, or pass a literal `footerVersion="v0.6.4"` to pin a
 // historical release-notes page footer.
 import { DESKTOP_VERSION } from '../lib/versions';
-import RayHeader from '../components/RayHeader.astro';
+import TopNav from '../components/TopNav.astro';
 import '../styles/global.css';
 
 export interface Props {
@@ -26,6 +26,10 @@ export interface Props {
   // When empty/absent, no canonical link is emitted.
   // (R135 also passed `canonical` from /install/windows/ — same prop, same dest.)
   canonical?: string;
+  // R252: opt-out of the shared TopNav. 404.astro and notes.astro
+  // (the Android redirect) pass `showNav={false}` — they're either a
+  // terminal error state or a sub-app surface, not a marketing page.
+  showNav?: boolean;
 }
 
 const {
@@ -40,6 +44,7 @@ const {
   // (e.g. the /license/ page). Marketing pages stay neutral.
   footerLicense = '',
   footerVersion = `v${DESKTOP_VERSION}`,
+  showNav = true,
 } = Astro.props;
 
 // R128 SEO polish: per-page canonical URL. Default '' → no canonical emitted.
@@ -89,12 +94,13 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ownlocalml
   </head>
   <body data-page-footer-license={footerLicense} data-page-footer-version={footerVersion}>
     {/*
-      R251: shared header on every page. Rendered above <slot/> so
-      pages don't need to know about the nav at all. The component
-      handles desktop links, mobile burger, drawer, scroll-blur,
-      and the `aria-current="page"` active state.
+      R252: shared TopNav on every page. Rendered above <slot/> so
+      pages don't need to know about the nav. The component owns
+      desktop links, mobile burger, drawer, scroll-morph, and the
+      `aria-current="page"` active state. 404.astro and notes.astro
+      opt out via `showNav={false}`.
     */}
-    <RayHeader />
+    {showNav && <TopNav currentPath={Astro.url.pathname} />}
 
     <slot />
 
