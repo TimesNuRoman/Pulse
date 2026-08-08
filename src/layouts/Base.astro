@@ -100,7 +100,7 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ownlocalml
       `aria-current="page"` active state. 404.astro and notes.astro
       opt out via `showNav={false}`.
     */}
-    {showNav && <TopNav currentPath={Astro.url.pathname} />}
+    {showNav && <TopNav currentPath={Astro.url.pathname} showLogin={Astro.url.pathname !== '/login/'} />}
 
     <slot />
 

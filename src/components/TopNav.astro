@@ -11,12 +11,15 @@ interface Props {
   ctaText?: string;
   /** Ссылка primary CTA */
   ctaHref?: string;
+  /** Показывать ли кнопку "Log in" (false на самой /login/) */
+  showLogin?: boolean;
 }
 
 const {
   currentPath = '',
   ctaText = 'Download',
   ctaHref = '/download/',
+  showLogin = true,
 } = Astro.props;
 
 const links: { href: string; label: string }[] = [
@@ -58,6 +61,15 @@ const isActive = (href: string) =>
       ))}
     </nav>
 
+    {showLogin && (
+      <a
+        class="topnav__login"
+        href="/login/"
+        aria-current={isActive('/login/') ? 'page' : undefined}
+        aria-label="Activate an existing license"
+      >Log in</a>
+    )}
+
     <a class="topnav__cta" href={ctaHref}>
       <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M12 5v14"></path>
@@ -84,6 +96,13 @@ const isActive = (href: string) =>
       aria-current={isActive(href) ? 'page' : undefined}
     >{label}</a>
   ))}
+  {showLogin && (
+    <a
+      href="/login/"
+      role="menuitem"
+      aria-current={isActive('/login/') ? 'page' : undefined}
+    >Log in</a>
+  )}
 </div>
 
 <script is:inline>
