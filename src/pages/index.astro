@@ -215,6 +215,163 @@ const softwareAppJsonLd = {
       </div>
     </section>
 
+    <!-- ─── Showcase: Chat ─────────────────────────────── -->
+    <!-- R248e: Interactive product showcase. Pseudo-UI panels that
+         approximate real Pulse desktop surfaces (chat, routing,
+         voice). All inline HTML/CSS, no JS for the static panels.
+         The routing pills panel uses ~40 LoC of inline JS for tab
+         switching (the only feature that's fundamentally
+         interactive). Pseudo-UI is visually approximate, not a
+         real screenshot — but uses Pulse colors, real copy, real
+         component structure so it reads as "this is what Pulse
+         looks like", not a marketing render. -->
+    <section class="home-showcase" id="showcase-chat" aria-labelledby="showcase-chat-title">
+      <div class="container home-showcase__grid">
+        <div class="home-showcase__copy reveal">
+          <span class="eyebrow">Chat</span>
+          <h2 id="showcase-chat-title">Talk to a local model. From your tray.</h2>
+          <p class="lede">
+            Pulse opens with a global hotkey, lives in the system tray, and
+            talks to any model you have running on the machine — gemma,
+            llama, qwen, mistral. Chat history stays in a local file.
+          </p>
+          <a class="home-showcase__more" href="/download/">Get Pulse for Windows &nbsp;↓</a>
+        </div>
+        <div class="home-showcase__demo reveal">
+          <div class="demo-chat" role="img" aria-label="Pulse chat panel: a local-model conversation with copy button and voice input">
+            <div class="demo-chat__topbar">
+              <span class="demo-chat__model">gemma3:4b</span>
+              <span class="demo-chat__status">
+                <span class="demo-chat__dot" aria-hidden="true"></span>
+                connected
+              </span>
+            </div>
+            <div class="demo-chat__messages">
+              <div class="demo-chat__msg demo-chat__msg--user">
+                Summarize the README.
+              </div>
+              <div class="demo-chat__msg demo-chat__msg--assistant">
+                <p>
+                  Pulse is a local-first AI side panel for Windows and a
+                  notes app for Android. Notes, chat, and the model stay
+                  on the device. No account, no telemetry, no upload.
+                </p>
+                <button class="demo-chat__copy" type="button" aria-label="Copy assistant message">Copy</button>
+              </div>
+            </div>
+            <div class="demo-chat__composer">
+              <span class="demo-chat__mic" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="2" width="6" height="12" rx="3"></rect>
+                  <path d="M5 11a7 7 0 0 0 14 0"></path>
+                  <line x1="12" y1="18" x2="12" y2="22"></line>
+                </svg>
+              </span>
+              <span class="demo-chat__input">Ask anything…</span>
+              <span class="demo-chat__send" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"></path>
+                  <path d="M13 6l6 6-6 6"></path>
+                </svg>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Showcase: Routing modes (interactive) ──────── -->
+    <section class="home-showcase home-showcase--reverse" id="showcase-routing" aria-labelledby="showcase-routing-title">
+      <div class="container home-showcase__grid">
+        <div class="home-showcase__copy reveal">
+          <span class="eyebrow">Routing</span>
+          <h2 id="showcase-routing-title">Six routing modes. One model swap.</h2>
+          <p class="lede">
+            Each prompt takes a different path: short answers, code edits,
+            planning, vision, tests. The pill you pick routes the next
+            round through a different model or prompt — without
+            re-installing anything.
+          </p>
+          <a class="home-showcase__more" href="/faq/">How routing works &nbsp;→</a>
+        </div>
+        <div class="home-showcase__demo reveal">
+          <div class="demo-routing" data-testid="demo-routing">
+            <div class="demo-routing__pills" role="tablist" aria-label="Routing mode">
+              <button type="button" role="tab" id="pill-auto" class="demo-routing__pill is-active" aria-selected="true" aria-controls="demo-routing-panel" data-pill="auto" aria-label="Auto-routing (no override)">Авто</button>
+              <button type="button" role="tab" id="pill-ask" class="demo-routing__pill" aria-selected="false" aria-controls="demo-routing-panel" data-pill="ask" aria-label="Quick Answer — short reply">Ask</button>
+              <button type="button" role="tab" id="pill-plan" class="demo-routing__pill" aria-selected="false" aria-controls="demo-routing-panel" data-pill="plan" aria-label="Reasoning — analysis and planning">План</button>
+              <button type="button" role="tab" id="pill-code" class="demo-routing__pill" aria-selected="false" aria-controls="demo-routing-panel" data-pill="code" aria-label="CodeEdit — generation and refactor">Код</button>
+              <button type="button" role="tab" id="pill-vision" class="demo-routing__pill" aria-selected="false" aria-controls="demo-routing-panel" data-pill="vision" aria-label="Vision — image and screenshot description">Препью</button>
+              <button type="button" role="tab" id="pill-default" class="demo-routing__pill" aria-selected="false" aria-controls="demo-routing-panel" data-pill="default" aria-label="Default — general fallback">Тесты</button>
+            </div>
+            <div
+              class="demo-routing__panel"
+              id="demo-routing-panel"
+              role="tabpanel"
+              aria-labelledby="pill-auto"
+              data-testid="demo-routing-panel"
+            >
+              <span class="demo-routing__tag" data-routing-tag>Auto</span>
+              <p class="demo-routing__text" data-routing-text>
+                Pulse reads the prompt and picks the best mode for the
+                next round — short answer, planning, code, or vision.
+                Override with a pill any time; Pulse remembers the
+                choice for the rest of the conversation.
+              </p>
+            </div>
+            <span class="demo-routing__hint" aria-hidden="true">Tap a pill →</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Showcase: Voice input ──────────────────────── -->
+    <section class="home-showcase" id="showcase-voice" aria-labelledby="showcase-voice-title">
+      <div class="container home-showcase__grid">
+        <div class="home-showcase__copy reveal">
+          <span class="eyebrow">Voice</span>
+          <h2 id="showcase-voice-title">Hold to talk. Text lands in the input.</h2>
+          <p class="lede">
+            Hold the mic, speak, release. Pulse runs speech-to-text
+            locally, the transcript lands in the composer, and you can
+            edit before sending. No upload, no cloud STT.
+          </p>
+          <a class="home-showcase__more" href="/install/windows/">Setup voice on Windows &nbsp;→</a>
+        </div>
+        <div class="home-showcase__demo reveal">
+          <div class="demo-voice" role="img" aria-label="Voice input panel: a large microphone button, an animated waveform, and three live transcript lines">
+            <div class="demo-voice__row">
+              <span class="demo-voice__chip">STT · Web Speech · Chrome 138</span>
+              <span class="demo-voice__timer" aria-hidden="true">0:04</span>
+            </div>
+            <div class="demo-voice__center">
+              <span class="demo-voice__btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="2" width="6" height="12" rx="3"></rect>
+                  <path d="M5 11a7 7 0 0 0 14 0"></path>
+                  <line x1="12" y1="18" x2="12" y2="22"></line>
+                </svg>
+              </span>
+              <div class="voice-waveform" role="img" aria-label="Recording volume">
+                <span class="voice-waveform__bar" style="--vw-scale:0.35; --vw-delay:0s"></span>
+                <span class="voice-waveform__bar" style="--vw-scale:0.7;  --vw-delay:0.08s"></span>
+                <span class="voice-waveform__bar" style="--vw-scale:0.95; --vw-delay:0.16s"></span>
+                <span class="voice-waveform__bar" style="--vw-scale:0.55; --vw-delay:0.24s"></span>
+                <span class="voice-waveform__bar" style="--vw-scale:0.8;  --vw-delay:0.32s"></span>
+                <span class="voice-waveform__bar" style="--vw-scale:0.4;  --vw-delay:0.4s"></span>
+                <span class="voice-waveform__bar" style="--vw-scale:0.65; --vw-delay:0.48s"></span>
+              </div>
+            </div>
+            <ul class="demo-voice__transcript" role="list">
+              <li class="demo-voice__line"><span class="demo-voice__ts">0:01</span> открой</li>
+              <li class="demo-voice__line"><span class="demo-voice__ts">0:02</span> найди Pulse README</li>
+              <li class="demo-voice__line demo-voice__line--live" aria-live="polite"><span class="demo-voice__ts">0:04</span> <span class="demo-voice__caret" aria-hidden="true"></span> пр</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ─── Start trial: two cards ─────────────────────── -->
     <section class="home-get" id="get">
       <div class="container">
@@ -276,6 +433,89 @@ const softwareAppJsonLd = {
       </div>
     </section>
   </main>
+
+  <!-- R248e: Routing pill interactivity. Six tabs (Авто / Ask / План /
+       Код / Препью / Тесты), each swaps the panel text + tag. Mirrors
+       the real Pulse desktop ChatView ROUTING_PILLS array (r248). No
+       framework, no deps, ~40 LoC. Keyboard nav: ←/→ moves focus
+       between pills, Home/End jump to first/last, Enter/Space activates
+       (default <button> behavior). aria-selected is the source of
+       truth; .is-active is a visual mirror for the CSS. -->
+  <script is:inline>
+    (() => {
+      // Routing mode data — labels and copy mirror the real
+      // pulse-desktop-r248/web/src/components/ChatView.tsx ROUTING_PILLS
+      // (without emoji, in Pulse style).
+      const PILL_TEXTS = {
+        auto: {
+          tag: 'Auto',
+          text: 'Pulse reads the prompt and picks the best mode for the next round — short answer, planning, code, or vision. Override with a pill any time; Pulse remembers the choice for the rest of the conversation.',
+        },
+        ask: {
+          tag: 'QuickAnswer',
+          text: 'Short, factual reply. Routes to a fast model with a tight context window. Use it for one-line lookups, definitions, and quick clarifications.',
+        },
+        plan: {
+          tag: 'Reasoning',
+          text: 'Multi-step planning and analysis. Routes to a larger model with a wider context. Use it for architecture decisions, refactor strategy, or any prompt that needs the model to think out loud.',
+        },
+        code: {
+          tag: 'CodeEdit',
+          text: 'Code generation and refactor. Routes through a code-aware prompt with parseable code blocks in the response. Use it for "rewrite this function", "add a test", "explain this diff".',
+        },
+        vision: {
+          tag: 'Vision',
+          text: 'Image and screenshot description. Attaches the current screenshot (or any image in the chat) as a multimodal block. Use it for "what is on this screenshot" or "summarize this UI".',
+        },
+        default: {
+          tag: 'Default',
+          text: 'General fallback when the other five modes do not match. Routes to a balanced model with the system prompt unchanged. Use it as the safe choice when in doubt.',
+        },
+      };
+
+      const root = document.querySelector('[data-testid="demo-routing"]');
+      if (!root) return;
+      const pills = root.querySelectorAll('[data-pill]');
+      const panel = root.querySelector('#demo-routing-panel');
+      const tagEl = panel?.querySelector('[data-routing-tag]');
+      const textEl = panel?.querySelector('[data-routing-text]');
+      if (!pills.length || !panel || !tagEl || !textEl) return;
+
+      function activate(pill) {
+        const key = pill.getAttribute('data-pill');
+        if (!key || !(key in PILL_TEXTS)) return;
+        pills.forEach((p) => {
+          const isActive = p === pill;
+          p.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          p.classList.toggle('is-active', isActive);
+          p.setAttribute('tabindex', isActive ? '0' : '-1');
+        });
+        const data = PILL_TEXTS[key];
+        tagEl.textContent = data.tag;
+        textEl.textContent = data.text;
+        panel.setAttribute('aria-labelledby', pill.id);
+      }
+
+      pills.forEach((pill) => {
+        pill.addEventListener('click', () => activate(pill));
+        pill.addEventListener('keydown', (e) => {
+          const list = Array.from(pills);
+          const idx = list.indexOf(pill);
+          if (idx < 0) return;
+          let next = null;
+          if (e.key === 'ArrowRight') next = list[(idx + 1) % list.length];
+          else if (e.key === 'ArrowLeft') next = list[(idx - 1 + list.length) % list.length];
+          else if (e.key === 'Home') next = list[0];
+          else if (e.key === 'End') next = list[list.length - 1];
+          if (next) {
+            e.preventDefault();
+            next.focus();
+            activate(next);
+          }
+        });
+      });
+    })();
+  </script>
 
   <Footer license="" version="" />
 
@@ -466,6 +706,382 @@ const softwareAppJsonLd = {
     gap: 0.6rem;
     justify-content: center;
     margin-top: 0.5rem;
+  }
+
+  /* ─── R248e: Interactive product showcases ─────────── */
+  /* 2-column layout: copy on one side, pseudo-UI panel on
+     the other. Alternating side per section for visual
+     rhythm. Pseudo-UI is built from inline HTML+CSS that
+     approximates the real Pulse desktop surface (same
+     Tokyo Night tokens, same component structure, real
+     Russian copy from the product). NOT a real screenshot —
+     users will see it's a render, but it should read as
+     "this is what Pulse looks like" not a marketing render. */
+  .home-showcase {
+    padding-block: clamp(80px, 12vw, 140px);
+    position: relative;
+  }
+  .home-showcase + .home-showcase { border-top: 1px solid var(--border); }
+  .home-showcase__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(40px, 6vw, 64px);
+    align-items: center;
+  }
+  @media (min-width: 880px) {
+    .home-showcase__grid { grid-template-columns: 1fr 1fr; }
+    .home-showcase--reverse .home-showcase__copy { order: 2; }
+    .home-showcase--reverse .home-showcase__demo { order: 1; }
+  }
+  .home-showcase__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    max-width: 480px;
+  }
+  .home-showcase__copy h2 {
+    font-size: var(--fs-2);
+    font-weight: 500;
+    letter-spacing: -0.0125em;
+    line-height: 1.15;
+    color: var(--fg);
+  }
+  .home-showcase__copy .lede {
+    color: var(--fg-dim);
+    line-height: 1.65;
+    font-size: var(--fs-body);
+  }
+  .home-showcase__more {
+    color: var(--purple);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px dashed rgba(187, 154, 247, 0.4);
+    padding-bottom: 1px;
+    align-self: flex-start;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    margin-top: 0.4rem;
+  }
+  .home-showcase__more:hover { color: var(--blue); border-bottom-color: var(--blue); }
+
+  /* ─── Chat panel pseudo-UI ───────────────────────── */
+  .demo-chat {
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow:
+      0 30px 80px -20px rgba(0, 0, 0, 0.6),
+      0 12px 32px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    font-size: 0.92rem;
+  }
+  .demo-chat__topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .demo-chat__model {
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+    color: var(--cyan);
+    font-size: 0.85rem;
+  }
+  .demo-chat__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--green);
+    font-size: 0.8rem;
+  }
+  .demo-chat__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(158, 206, 106, 0.7);
+  }
+  .demo-chat__messages {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 220px;
+  }
+  .demo-chat__msg {
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    max-width: 85%;
+  }
+  .demo-chat__msg p {
+    margin: 0;
+    color: var(--fg);
+    line-height: 1.5;
+  }
+  .demo-chat__msg--user {
+    background: var(--purple);
+    color: #1a1b26;
+    align-self: flex-end;
+    font-weight: 500;
+  }
+  .demo-chat__msg--assistant {
+    background: var(--bg-soft);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    align-self: flex-start;
+  }
+  .demo-chat__copy {
+    margin-top: 0.55rem;
+    font-size: 0.72rem;
+    color: var(--fg-dim);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.22rem 0.55rem;
+    cursor: pointer;
+    min-height: 28px;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .demo-chat__copy:hover { color: var(--fg); border-color: var(--fg-dim); }
+  .demo-chat__composer {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1rem;
+    border-top: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .demo-chat__mic,
+  .demo-chat__send {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    color: var(--fg-dim);
+    flex-shrink: 0;
+  }
+  .demo-chat__mic { color: var(--purple); }
+  .demo-chat__send { color: var(--purple); }
+  .demo-chat__input {
+    flex: 1;
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+  }
+
+  /* ─── Routing panel pseudo-UI (interactive) ───────── */
+  .demo-routing {
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow:
+      0 30px 80px -20px rgba(0, 0, 0, 0.6),
+      0 12px 32px rgba(0, 0, 0, 0.4);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    position: relative;
+  }
+  .demo-routing__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .demo-routing__pill {
+    min-height: 56px; /* R244 a11y floor */
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg-dim);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      background var(--dur) var(--ease),
+      color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+  .demo-routing__pill:hover {
+    color: var(--fg);
+    border-color: var(--purple);
+    background: rgba(187, 154, 247, 0.1);
+  }
+  .demo-routing__pill:focus-visible {
+    outline: 2px solid var(--purple);
+    outline-offset: 2px;
+  }
+  .demo-routing__pill[aria-selected="true"],
+  .demo-routing__pill.is-active {
+    background: rgba(187, 154, 247, 0.18);
+    border-color: var(--purple);
+    color: var(--purple);
+  }
+  @media (max-width: 639px) {
+    .demo-routing__pill { min-height: 48px; padding: 0 12px; font-size: 0.85rem; }
+  }
+  .demo-routing__panel {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .demo-routing__tag {
+    align-self: flex-start;
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+    font-size: 0.72rem;
+    color: var(--purple);
+    background: rgba(187, 154, 247, 0.12);
+    border: 1px solid rgba(187, 154, 247, 0.3);
+    border-radius: 6px;
+    padding: 0.18rem 0.5rem;
+    letter-spacing: 0.02em;
+  }
+  .demo-routing__text {
+    margin: 0;
+    color: var(--fg);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .demo-routing__hint {
+    position: absolute;
+    bottom: 0.7rem;
+    right: 1rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    animation: demo-routing-hint 2.4s ease-in-out infinite;
+  }
+  @keyframes demo-routing-hint {
+    0%, 100% { opacity: 0.45; transform: translateX(0); }
+    50%      { opacity: 0.9;  transform: translateX(-3px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .demo-routing__hint { animation: none; opacity: 0.7; }
+  }
+
+  /* ─── Voice panel pseudo-UI ──────────────────────── */
+  .demo-voice {
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow:
+      0 30px 80px -20px rgba(0, 0, 0, 0.6),
+      0 12px 32px rgba(0, 0, 0, 0.4);
+    padding: 1.1rem 1.1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .demo-voice__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .demo-voice__chip {
+    display: inline-flex;
+    align-items: center;
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+    font-size: 0.72rem;
+    color: var(--cyan);
+    background: rgba(125, 207, 255, 0.08);
+    border: 1px solid rgba(125, 207, 255, 0.25);
+    border-radius: 6px;
+    padding: 0.18rem 0.5rem;
+  }
+  .demo-voice__timer {
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    color: var(--red);
+  }
+  .demo-voice__center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    padding: 0.8rem 0;
+  }
+  .demo-voice__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(247, 118, 142, 0.18);
+    border: 1px solid rgba(247, 118, 142, 0.55);
+    color: var(--red);
+    box-shadow: 0 0 0 6px rgba(247, 118, 142, 0.08);
+    animation: demo-voice-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes demo-voice-pulse {
+    0%, 100% { box-shadow: 0 0 0 6px rgba(247, 118, 142, 0.08); }
+    50%      { box-shadow: 0 0 0 12px rgba(247, 118, 142, 0.0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .demo-voice__btn { animation: none; }
+  }
+  .demo-voice__center .voice-waveform {
+    height: 28px;
+    gap: 4px;
+  }
+  .demo-voice__center .voice-waveform__bar {
+    width: 4px;
+    height: 22px;
+    background: var(--red);
+  }
+  .demo-voice__transcript {
+    list-style: none;
+    margin: 0;
+    padding: 0.75rem 0.85rem;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.32rem;
+    font-size: 0.92rem;
+    color: var(--fg);
+  }
+  .demo-voice__line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    line-height: 1.4;
+  }
+  .demo-voice__ts {
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+    color: var(--muted);
+    font-size: 0.72rem;
+    flex-shrink: 0;
+    min-width: 30px;
+  }
+  .demo-voice__line--live { color: var(--fg); }
+  .demo-voice__caret {
+    display: inline-block;
+    width: 1px;
+    height: 1em;
+    background: var(--purple);
+    margin-left: 1px;
+    vertical-align: text-bottom;
+    animation: demo-voice-caret 1s steps(2) infinite;
+  }
+  @keyframes demo-voice-caret {
+    0%, 50%  { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .demo-voice__caret { animation: none; opacity: 0.6; }
   }
 </style>
 
