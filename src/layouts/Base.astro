@@ -5,6 +5,7 @@
 // historical release-notes page footer.
 import { DESKTOP_VERSION } from '../lib/versions';
 import TopNav from '../components/TopNav.astro';
+import Background from '../components/Background.astro';
 import '../styles/global.css';
 
 export interface Props {
@@ -56,6 +57,11 @@ const ogImage = ogImageProp ?? '/og-image.svg';
 // ('pulse.local' / 'pulse.tld') even if Astro.site is undefined
 // (e.g. build with PULSE_SITE= overriding the config at runtime).
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ownlocalml.com';
+
+// R256: animated 6-layer background renders only on the three marketing
+// pages (/, /pricing, /download). Legal and login stay clean for readability.
+// Astro.url.pathname always starts with a slash, e.g. '/', '/pricing/'.
+const showBackground = ['/', '/pricing', '/pricing/', '/download', '/download/'].includes(Astro.url.pathname);
 ---
 <!doctype html>
 <html lang="en">
@@ -93,6 +99,14 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ownlocalml
     <meta name="twitter:image" content={ogImage} />
   </head>
   <body data-page-footer-license={footerLicense} data-page-footer-version={footerVersion}>
+    {/*
+      R256: animated background on the three marketing pages only.
+      Layers are pointer-events:none, fixed-position, behind main content
+      (main/.topnav/header/footer all z-index: 20). see Background.astro
+      and the .bg-* rules in global.css.
+    */}
+    {showBackground && <Background />}
+
     {/*
       R252: shared TopNav on every page. Rendered above <slot/> so
       pages don't need to know about the nav. The component owns

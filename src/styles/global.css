@@ -522,6 +522,146 @@ body.has-nav.is-scrolled main { padding-top: 56px; }
     radial-gradient(600px 600px at 50% 100%, rgba(125,207,255,0.06), transparent 70%);
 }
 
+/* ── R256: animated background layers (mounted in Base.astro on /, /pricing, /download) ── */
+.bg-beams,
+.bg-sweep,
+.bg-dots,
+.bg-vert,
+.bg-lines,
+.bg-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.bg-sweep   { z-index: 1; }
+.bg-dots,
+.bg-vert    { z-index: 2; }
+.bg-lines   { z-index: 3; }
+.bg-particles { z-index: 4; }
+
+/* Content always sits above the background layers. */
+main, .topnav, header, footer { position: relative; z-index: 20; }
+
+/* ── Layer 1: radial beams (slow drift) ── */
+.beam { position: absolute; border-radius: 50%; filter: blur(60px); will-change: transform, opacity; }
+.beam--1 {
+  top: -150px; left: 50%; width: 700px; height: 700px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(187, 154, 247, 0.35) 0%, transparent 65%);
+  animation: beam-1 6s ease-in-out infinite;
+}
+.beam--2 {
+  bottom: -100px; left: -100px; width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(122, 162, 247, 0.28) 0%, transparent 65%);
+  animation: beam-2 8s ease-in-out infinite;
+}
+.beam--3 {
+  top: 30%; right: -150px; width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(187, 154, 247, 0.22) 0%, transparent 65%);
+  animation: beam-3 9s ease-in-out infinite;
+}
+@keyframes beam-1 {
+  0%, 100% { transform: translateX(-50%) scale(1);   opacity: 0.7; }
+  50%      { transform: translateX(-30%) scale(1.3); opacity: 1;   }
+}
+@keyframes beam-2 {
+  0%, 100% { transform: translate(0, 0)      scale(1);    opacity: 0.5; }
+  33%      { transform: translate(80px, -40px) scale(1.15); opacity: 0.9; }
+  66%      { transform: translate(-30px, 30px) scale(0.9);  opacity: 0.7; }
+}
+@keyframes beam-3 {
+  0%, 100% { transform: translate(0, 0);     opacity: 0.6; }
+  50%      { transform: translate(-100px, 50px); opacity: 1;   }
+}
+
+/* ── Layer 2: diagonal sweep ── */
+.bg-sweep {
+  background: linear-gradient(115deg, transparent 40%, rgba(187, 154, 247, 0.08) 50%, transparent 60%);
+  animation: sweep 7s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes sweep {
+  0%   { transform: translateX(-30%); }
+  100% { transform: translateX(30%);  }
+}
+
+/* ── Layer 3: dot grid (static, masked to upper center) ── */
+.bg-dots {
+  background-image: radial-gradient(circle, rgba(187, 154, 247, 0.12) 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 90%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 90%);
+}
+
+/* ── Layer 4: vertical thin lines (static) ── */
+.bg-vert {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10%;
+}
+.bg-vert__line {
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(187, 154, 247, 0.06) 30%, rgba(187, 154, 247, 0.06) 70%, transparent 100%);
+}
+
+/* ── Layer 5: animated SVG lines (drift horizontally) ── */
+.bg-lines svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.bg-line { stroke-width: 1.5; fill: none; }
+.bg-line--1 { animation: drift-r  6s linear infinite; }
+.bg-line--2 { animation: drift-l  8s linear infinite; }
+.bg-line--3 { animation: drift-r 10s linear infinite; }
+.bg-line--4 { animation: drift-l  7s linear infinite; }
+@keyframes drift-r { from { transform: translateX(-40%); } to { transform: translateX(40%); } }
+@keyframes drift-l { from { transform: translateX(40%);  } to { transform: translateX(-40%); } }
+
+/* ── Layer 6: floating particles ── */
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: var(--purple);
+  border-radius: 50%;
+  opacity: 0;
+  animation: float 12s linear infinite;
+  will-change: transform, opacity;
+}
+.particle--2, .particle--4, .particle--6 { background: var(--blue); }
+.particle--1 { left: 10%; top: 20%; animation-delay:  0s; }
+.particle--2 { left: 25%; top: 60%; animation-delay:  2s; }
+.particle--3 { left: 50%; top: 30%; animation-delay:  4s; }
+.particle--4 { left: 70%; top: 70%; animation-delay:  6s; }
+.particle--5 { left: 85%; top: 15%; animation-delay:  8s; }
+.particle--6 { left: 40%; top: 80%; animation-delay: 10s; }
+@keyframes float {
+  0%   { transform: translate(0, 0);         opacity: 0;   }
+  10%  { opacity: 0.8; }
+  90%  { opacity: 0.8; }
+  100% { transform: translate(20px, -100px); opacity: 0;   }
+}
+
+/* ── Hero gradient text pulse (opt-in via .hl on any text element) ── */
+h1 .hl,
+h2 .hl {
+  background: linear-gradient(135deg, #bb9af7 0%, #7aa2f7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: hl-pulse 4s ease-in-out infinite;
+}
+@keyframes hl-pulse {
+  0%, 100% { filter: brightness(1);   }
+  50%      { filter: brightness(1.3); }
+}
+
+/* ── Mobile (<768px): drop the two most expensive layers ── */
+@media (max-width: 767px) {
+  .bg-particles,
+  .bg-sweep { display: none; }
+}
+
 /* ── Selection ───────────────────────────────────────── */
 ::selection { background: var(--purple); color: #1a1b26; }
 

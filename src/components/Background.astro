@@ -1,0 +1,56 @@
+---
+// R256: 6-layer animated background for marketing pages (/, /pricing, /download).
+// Mounted conditionally in Base.astro based on Astro.url.pathname.
+// All layers are `position: fixed; pointer-events: none;` so they never block
+// interaction. Static component, no props. Tokyo Night palette (purple #bb9af7,
+// blue #7aa2f7) — matches the rest of the site.
+//
+// Performance:
+// - `transform` + `opacity` only (compositor-friendly, no reflow)
+// - `filter: blur(60px)` on 3 beams only (acceptable cost)
+// - Mobile (<768px): .bg-particles + .bg-sweep hidden to save GPU
+// - prefers-reduced-motion: animations disabled
+// - No `will-change` (managed by UA, layers are short-lived)
+---
+<div class="bg-beams" aria-hidden="true">
+  <div class="beam beam--1"></div>
+  <div class="beam beam--2"></div>
+  <div class="beam beam--3"></div>
+</div>
+<div class="bg-sweep" aria-hidden="true"></div>
+<div class="bg-dots" aria-hidden="true"></div>
+<div class="bg-vert" aria-hidden="true">
+  <div class="bg-vert__line"></div>
+  <div class="bg-vert__line"></div>
+  <div class="bg-vert__line"></div>
+  <div class="bg-vert__line"></div>
+  <div class="bg-vert__line"></div>
+</div>
+<div class="bg-lines" aria-hidden="true">
+  <svg preserveAspectRatio="none" viewBox="0 0 1200 800">
+    <defs>
+      <linearGradient id="bgLineGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="rgba(187, 154, 247, 0)" />
+        <stop offset="50%" stop-color="rgba(187, 154, 247, 0.9)" />
+        <stop offset="100%" stop-color="rgba(187, 154, 247, 0)" />
+      </linearGradient>
+      <linearGradient id="bgLineGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="rgba(122, 162, 247, 0)" />
+        <stop offset="50%" stop-color="rgba(122, 162, 247, 0.7)" />
+        <stop offset="100%" stop-color="rgba(122, 162, 247, 0)" />
+      </linearGradient>
+    </defs>
+    <path class="bg-line bg-line--1" d="M 0 200 Q 600 180 1200 220" stroke="url(#bgLineGrad1)" />
+    <path class="bg-line bg-line--2" d="M 0 420 Q 600 400 1200 440" stroke="url(#bgLineGrad2)" />
+    <path class="bg-line bg-line--3" d="M 0 640 Q 600 660 1200 620" stroke="url(#bgLineGrad1)" />
+    <path class="bg-line bg-line--4" d="M 0 320 Q 600 340 1200 300" stroke="url(#bgLineGrad2)" />
+  </svg>
+</div>
+<div class="bg-particles" aria-hidden="true">
+  <div class="particle particle--1"></div>
+  <div class="particle particle--2"></div>
+  <div class="particle particle--3"></div>
+  <div class="particle particle--4"></div>
+  <div class="particle particle--5"></div>
+  <div class="particle particle--6"></div>
+</div>
