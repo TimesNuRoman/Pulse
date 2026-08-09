@@ -105,44 +105,82 @@ const isActive = (href: string) =>
   )}
 </div>
 
-<script is:inline>
-  (() => {
+<script>
+  // R264: topnav state must survive Astro ViewTransitions soft-nav.
+  // The previous IIFE bound scroll + burger handlers once on initial
+  // load; after a soft swap the new <header> and <nav-drawer> nodes
+  // either lose the .is-scrolled class or get new IDs with no
+  // listeners. Fix: bind scroll once on window, and use a delegated
+  // click + keydown handler on document that always resolves the
+  // current #nav-burger / #nav-drawer / #topnav from the live DOM.
+  let scrollBound = false;
+
+  const initTopNav = () => {
     const nav = document.getElementById('topnav');
     const burger = document.getElementById('nav-burger');
     const drawer = document.getElementById('nav-drawer');
-    if (!nav) return;
+    document.body.classList.add('has-nav');
 
-    let scrolled = false;
-    const setScrolled = (v) => {
-      if (v === scrolled) return;
-      scrolled = v;
-      nav.classList.toggle('is-scrolled', v);
-      document.body.classList.toggle('is-scrolled', v);
+    if (nav) {
+      // Sync .is-scrolled to the current scroll position immediately
+      // so the header doesn't render flat after a soft-nav that landed
+      // on a scrolled-down page.
+      nav.classList.toggle('is-scrolled', window.scrollY > 80);
+      document.body.classList.toggle('is-scrolled', window.scrollY > 80);
+    }
+
+    if (!scrollBound) {
+      scrollBound = true;
+      let scrolled = window.scrollY > 80;
+      window.addEventListener('scroll', () => {
+        const next = window.scrollY > 80;
+        if (next === scrolled) return;
+        scrolled = next;
+        const n = document.getElementById('topnav');
+        if (n) n.classList.toggle('is-scrolled', next);
+        document.body.classList.toggle('is-scrolled', next);
+      }, { passive: true });
+    }
+
+    const setOpen = (open) => {
+      const b = document.getElementById('nav-burger');
+      const d = document.getElementById('nav-drawer');
+      if (!b || !d) return;
+      b.setAttribute('aria-expanded', String(open));
+      d.setAttribute('aria-hidden', String(!open));
+      d.classList.toggle('is-open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
     };
-    const onScroll = () => setScrolled(window.scrollY > 80);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
 
-    if (burger && drawer) {
-      const setOpen = (open) => {
-        burger.setAttribute('aria-expanded', String(open));
-        drawer.setAttribute('aria-hidden', String(!open));
-        drawer.classList.toggle('is-open', open);
-        document.body.style.overflow = open ? 'hidden' : '';
-      };
+    if (burger) {
       burger.addEventListener('click', () => {
-        setOpen(!drawer.classList.contains('is-open'));
+        const d = document.getElementById('nav-drawer');
+        if (!d) return;
+        setOpen(!d.classList.contains('is-open'));
       });
+    }
+    if (drawer) {
       drawer.querySelectorAll('a').forEach((a) => {
         a.addEventListener('click', () => setOpen(false));
       });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
-          setOpen(false);
-          burger.focus();
-        }
-      });
     }
-    document.body.classList.add('has-nav');
-  })();
+  };
+
+  // Delegated escape: works regardless of which burger/drawer is live.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const d = document.getElementById('nav-drawer');
+    if (!d || !d.classList.contains('is-open')) return;
+    const b = document.getElementById('nav-burger');
+    d.classList.remove('is-open');
+    d.setAttribute('aria-hidden', 'true');
+    if (b) {
+      b.setAttribute('aria-expanded', 'false');
+      b.focus();
+    }
+    document.body.style.overflow = '';
+  });
+
+  initTopNav();
+  document.addEventListener('astro:page-load', initTopNav);
 </script>
