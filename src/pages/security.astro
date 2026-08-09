@@ -195,11 +195,11 @@ const securityJsonLd = {
         <section id="updates" class="legal__section" aria-label="Update policy">
           <h2 class="legal__h2">Update policy.</h2>
           <ul>
-            <li><strong>Windows</strong> — Pulse ships the Tauri updater. A manifest poll runs on launch; the user is prompted to install when a newer version is published. The check is disable-able in Settings. Manual install is also supported: download the latest NSIS / MSI / portable binary from <a href="https://github.com/TimesNuRoman/pulse/releases" rel="noopener noreferrer">GitHub Releases</a> and run it over the existing install.</li>
-            <li><strong>Android</strong> — Pulse is distributed as a signed APK on GitHub Releases. There is no Play Store listing; updates are sideloaded by installing the new APK over the existing one. The signing key fingerprint is published in the release notes for every release.</li>
+            <li><strong>Windows</strong> — Pulse ships the Tauri updater. A manifest poll runs on launch; the user is prompted to install when a newer version is published. The check is disable-able in Settings. Manual install is also supported: download the latest NSIS / MSI / portable binary from the <a href="/download/#windows">download hub</a> and run it over the existing install.</li>
+            <li><strong>Android</strong> — Pulse is distributed as a signed APK. There is no Play Store listing; updates are sideloaded by installing the new APK over the existing one. The signing key fingerprint is published in the <a href="/changelog/">changelog</a> for every release.</li>
             <li><strong>Critical patches</strong> — shipped as fast as the fix is ready. There is no fixed patch-day schedule.</li>
-            <li><strong>Signing</strong> — Windows binaries are Authenticode-signed. Android APKs are signed with a long-lived key; the SHA-256 fingerprint of the certificate is published in the release notes and is reproducible against the downloaded APK. Maintainer commits are GPG-signed and verifiable on the GitHub web UI.</li>
-            <li><strong>Old versions</strong> — every previously released version remains available on the GitHub Releases page for at least one major release cycle. Old versions are not patched in place; users on an old version move to the current version to pick up fixes.</li>
+            <li><strong>Signing</strong> — Windows binaries are Authenticode-signed. Android APKs are signed with a long-lived key; the SHA-256 fingerprint of the certificate is published in the changelog and is reproducible against the downloaded APK.</li>
+            <li><strong>Old versions</strong> — every previously released version remains available on the <a href="/downloads/">downloads archive</a> for at least one major release cycle. Old versions are not patched in place; users on an old version move to the current version to pick up fixes.</li>
           </ul>
         </section>
 

@@ -151,6 +151,20 @@ section + section { border-top: 1px solid var(--border); }
   max-width: 60ch;
 }
 
+/* R267: screen-reader-only label. Was scoped to <CompareTable.astro>
+   only, so any other page that used <span class="visually-hidden">
+   leaked the text into the visible flow. The text shows up as a
+   small glyph with weird font features in a tiny inline-block. */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ── Nav links (44dp+ touch target, M3 / Apple HIG) ─── */
 .nav__link {
   display: inline-flex;

@@ -40,7 +40,6 @@ const PAGE_DESC =
 
 // Direct asset URLs (R166 verified against the actual files in
 // public/install/android/). Kept as variables so the version bump is one line.
-const GITHUB_RELEASES = 'https://github.com/TimesNuRoman/pulse/releases';
 const ICON_MOCKUP = '/install/android/icon-mockup.png';
 const ICON_XXXHDPI = '/install/android/icon-xxxhdpi.png';
 const SPLASH_PORTRAIT = '/install/android/splash-portrait.png';
@@ -59,7 +58,7 @@ const jsonLd = [
     fileFormat: 'application/vnd.android.package-archive',
     softwareVersion: VERSION,
     softwareRequirements: 'Android 8.0 (API 26) or later',
-    downloadUrl: `${GITHUB_RELEASES}`.replace('/releases', '/releases/latest'),
+    downloadUrl: 'https://ownlocalml.com/downloads/pulse-notes-' + VERSION + '.apk',
     description:
       'A markdown note editor and AI side panel for Android. ' +
       'Backlinks, tags, voice input, and full-text search.',
@@ -219,12 +218,12 @@ const jsonLd = [
 
         <div class="ig__prose reveal">
           <p>
-            Open <a href={GITHUB_RELEASES} rel="noopener noreferrer"><code>github.com/TimesNuRoman/pulse/releases</code></a> on the phone and pick the latest Android asset. The APK file name is <code>pulse-notes-{VERSION}.apk</code>. A SHA-256 fingerprint sits next to the download on the release page; <code>adb shell sha256sum</code> on the file reproduces the value if the device is reachable over USB.
+            Open the <a href="/download/#android">Android download page</a> on the phone and grab the latest signed APK. The file name is <code>pulse-notes-{VERSION}.apk</code>. The SHA-256 fingerprint is printed on the download page; <code>adb shell sha256sum</code> on the file reproduces the value if the device is reachable over USB.
           </p>
         </div>
 
         <p class="ig__cta reveal">
-          <a class="btn btn--primary ig__cta-btn" href={GITHUB_RELEASES} rel="noopener noreferrer">Open GitHub releases → v{VERSION}</a>
+          <a class="btn btn--primary ig__cta-btn" href="/download/#android" rel="noopener noreferrer">Open Android download → v{VERSION}</a>
         </p>
       </div>
     </section>
