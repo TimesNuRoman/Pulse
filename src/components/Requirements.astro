@@ -1,0 +1,29 @@
+---
+// R258: requirements list for the new /download/ tabs page.
+// Each row is a check icon + a short label. No bullets, no list-style.
+// Pass `items: string[]` for requirements, or `testedOn: string[]`
+// for the "Tested on" section used by macOS / Linux.
+interface Props {
+  items: string[];
+  /** Optional label above the list ("Requirements" / "Tested on"). */
+  label?: string;
+  /** Optional caveat line rendered below the list in dim text. */
+  caveat?: string;
+}
+const { items, label, caveat } = Astro.props;
+
+// Check icon (12×12, green) — inline SVG, no emoji
+const ICON_CHECK = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
+---
+<div class="reqs">
+  {label && <div class="reqs__label">{label}</div>}
+  <ul class="reqs__list" role="list">
+    {items.map((it) => (
+      <li class="reqs__row">
+        <span class="reqs__icon" set:html={ICON_CHECK} />
+        <span class="reqs__text">{it}</span>
+      </li>
+    ))}
+  </ul>
+  {caveat && <p class="reqs__caveat">{caveat}</p>}
+</div>

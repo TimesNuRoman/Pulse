@@ -1,0 +1,41 @@
+---
+// R258: collapsible SHA-256 verification disclosure.
+// Used by the /download/ tabs page; lives below the per-platform
+// content. Native <details> element — square edges, no border-radius,
+// mono font for the hash, no JS required.
+interface Props {
+  /** Full 64-char SHA-256 hex. Display is `first8…last4` by default. */
+  sha: string;
+  /** Artifact filename shown next to the short hash. */
+  filename: string;
+  /** Human size, e.g. "12.30 MB" / "18.2 MB". */
+  size: string;
+  /** Optional: override the default shortSha formatter. */
+  shortSha?: string;
+}
+const { sha, filename, size, shortSha } = Astro.props;
+const short = shortSha ?? `${sha.slice(0, 8)}…${sha.slice(-4)}`;
+
+// Single-line <code> for the verify commands. Plain <code> rendered
+// as block on its own line; mono font via global .code-block class.
+const VERIFY_LINUX_MAC = 'sha256sum ' + filename;
+const VERIFY_WIN_PS    = 'Get-FileHash -Algorithm SHA256 ' + filename;
+---
+<details class="verify">
+  <summary class="verify__summary">
+    <span class="verify__summary-label">Show verification details</span>
+    <span class="verify__chev" aria-hidden="true">▾</span>
+  </summary>
+  <div class="verify__body">
+    <div class="verify__row">
+      <span class="verify__label">SHA-256</span>
+      <code class="verify__hash">{short}</code>
+      <span class="verify__file">{filename} ({size})</span>
+    </div>
+    <div class="verify__verify">
+      <div class="verify__label">Verify with</div>
+      <pre class="verify__cmd"><code>{VERIFY_LINUX_MAC}</code>  <span class="verify__cmd-os">Linux / macOS</span></pre>
+      <pre class="verify__cmd"><code>{VERIFY_WIN_PS}</code>  <span class="verify__cmd-os">Windows PowerShell</span></pre>
+    </div>
+  </div>
+</details>
