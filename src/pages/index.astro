@@ -5,15 +5,8 @@ import Footer from '../components/Footer.astro';
 import { getLatestRelease } from '../data/releases';
 import '../styles/notes.css';
 import {
-  ANDROID_APK_URL,
-  ANDROID_APK_SIZE,
-  ANDROID_VERSION,
-  WINDOWS_NSIS_URL,
-  WINDOWS_MSI_URL,
-  WINDOWS_NSIS_SIZE,
-  WINDOWS_MSI_SIZE,
-  WINDOWS_VERSION,
-} from '../lib/versions';
+  getLatestRelease,
+} from '../data/releases';
 
 // R120: site simplified for users. Strip roadmap / changelog /
 // implementation detail. Two product names (Pulse for Windows,
@@ -41,13 +34,6 @@ import {
 
 const latestDesktop = getLatestRelease('desktop');
 const latestDesktopVersion: string = latestDesktop.version;
-
-const APK_URL = ANDROID_APK_URL;
-const APK_SIZE = ANDROID_APK_SIZE;
-const WIN_NSIS_URL = WINDOWS_NSIS_URL;
-const WIN_MSI_URL = WINDOWS_MSI_URL;
-const WIN_NSIS_SIZE = WINDOWS_NSIS_SIZE;
-const WIN_MSI_SIZE = WINDOWS_MSI_SIZE;
 
 const PAGE_TITLE = 'Pulse — AI side panel for Windows and Android, paid with a 14-day trial';
 const PAGE_DESC = 'Pulse is a paid, local-first AI side panel for Windows and a notes app for Android. 14-day trial, then $20/month or $192/year. No account, no cloud, no telemetry.';
@@ -110,19 +96,8 @@ const softwareAppJsonLd = {
           device. No account, no telemetry, no upload.
         </p>
         <div class="home-hero-ray__ctas">
-          <a class="home-hero-ray__btn home-hero-ray__btn--win" id="hero-download" href="/download/" rel="noopener noreferrer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M3 5.5L10.5 4.5v7.5H3v-6.5zM11.5 4.4L21 3v9h-9.5V4.4zM3 13.5h7.5V21L3 19.5v-6zM11.5 13.5H21V21l-9.5-1.5v-6z"></path>
-            </svg>
-            Download for Windows
-            <span class="home-hero-ray__size">↓ {WIN_NSIS_SIZE}</span>
-          </a>
-          <a class="home-hero-ray__btn home-hero-ray__btn--android" href={APK_URL} rel="noopener noreferrer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M6 9c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2v2c0 .55.45 1 1 1s1-.45 1-1v-2h8v2c0 .55.45 1 1 1s1-.45 1-1v-2c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2H6zM8 11.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM16 11.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM7 8L5.5 5.5C5.4 5.3 5.5 5 5.7 5c.2 0 .3.1.4.2L7.5 7.5C8.6 7.2 9.8 7 11 7h2c1.2 0 2.4.2 3.5.5l1.4-2.3c.1-.1.2-.2.4-.2.2 0 .3.3.2.5L17 8H7z"></path>
-            </svg>
-            Download APK
-            <span class="home-hero-ray__size">↓ {APK_SIZE}</span>
+          <a class="btn btn--primary btn--lg" id="hero-download" href="/download/">
+            Download ↓
           </a>
         </div>
         <p class="home-hero-ray__meta">Install via winget · Try Pulse v{latestDesktopVersion}</p>
@@ -446,28 +421,6 @@ const softwareAppJsonLd = {
   <!-- R128 SEO polish: SoftwareApplication JSON-LD for search engines.
        Same data as the visible home page copy, no extra claims. -->
   <script type="application/ld+json" set:html={JSON.stringify(softwareAppJsonLd)} />
-
-  <script is:inline define:vars={{ APK_URL: ANDROID_APK_URL }}>
-    (() => {
-      // R248d: hero has TWO pills now (Windows + APK). On Android
-      // mobile the Windows pill collapses — the APK pill is already
-      // direct. So on Android we just hide the Windows pill (it would
-      // download an .exe that can't run on the phone) and let the APK
-      // pill take the full row. Other platforms see both pills side
-      // by side and can pick whichever fits.
-      const win = document.getElementById('hero-download');
-      if (!win) return;
-      const ua = (navigator.userAgent || '').toLowerCase();
-      const isAndroid = /android/.test(ua);
-      if (isAndroid) {
-        win.style.display = 'none';
-      }
-      // On iOS we also hide it — same reason. (The APK CTA stays.)
-      if (/iphone|ipad|ipod/.test(ua)) {
-        win.style.display = 'none';
-      }
-    })();
-  </script>
 </Base>
 
 <style is:global>
@@ -741,37 +694,6 @@ const softwareAppJsonLd = {
     margin-top: 0.5rem;
     width: 100%;
   }
-  .home-hero-ray__btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.85em 1.4em;
-    background: rgba(192, 202, 245, 0.06);
-    color: var(--fg);
-    border: 1px solid var(--border-strong);
-    border-radius: 9999px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-decoration: none;
-    min-height: 56px;             /* a11y: 56dp touch target */
-    transition:
-      transform var(--dur) var(--ease),
-      border-color var(--dur) var(--ease),
-      background var(--dur) var(--ease),
-      color var(--dur) var(--ease);
-  }
-  .home-hero-ray__btn:hover {
-    transform: translateY(-1px);
-    border-color: var(--fg-dim);
-    background: rgba(192, 202, 245, 0.1);
-    color: var(--fg);
-  }
-  .home-hero-ray__btn svg { width: 16px; height: 16px; flex-shrink: 0; }
-  .home-hero-ray__size {
-    color: var(--fg-dim);
-    font-size: 0.85em;
-    font-weight: 400;
-  }
   .home-hero-ray__meta {
     color: var(--muted);
     font-size: 0.9rem;
@@ -803,12 +725,8 @@ const softwareAppJsonLd = {
   .home-hero-ray__more-link { color: var(--fg-dim); font-weight: 500; padding-right: 0.4rem; }
   .home-hero-ray__more:hover .home-hero-ray__more-link { color: var(--purple); }
 
-  /* Mobile: stack the two CTAs, hide the .ray-header__login
-     (it's a desktop-only link, but the breakpoint should also
-     keep the capsule from clipping). */
   @media (max-width: 639px) {
-    .home-hero-ray__btn { width: 100%; justify-content: center; }
-    .home-hero-ray__ctas { flex-direction: column; }
+    .home-hero-ray__ctas .btn { width: 100%; }
   }
 
   /* ─── What Pulse does ────────────────────────────── */
