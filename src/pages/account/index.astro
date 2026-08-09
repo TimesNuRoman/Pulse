@@ -1,0 +1,36 @@
+---
+// R258: /account/ index placeholder. R259 will replace with full Profile form.
+// Auth is enforced client-side in AccountLayout.astro (fetches /api/account/me).
+import AccountLayout from '../../layouts/AccountLayout.astro';
+---
+
+<AccountLayout title="Profile — Pulse" active="profile">
+  <header class="acct-page__head">
+    <span class="eyebrow">Profile</span>
+    <h1 class="acct-page__title">Your account</h1>
+    <p class="acct-page__sub">Manage your name, email, password, and active sessions.</p>
+  </header>
+
+  <div class="acct-card">
+    <p class="acct-card__placeholder">Profile form lands in R259. Layout + sidebar + topbar work. Auth check: <code>/api/account/me</code> (next round).</p>
+  </div>
+</AccountLayout>
+
+<style>
+  .acct-page__head { margin-bottom: 32px; }
+  .acct-page__title { font-size: 1.8rem; font-weight: 700; color: var(--fg); margin: 0.5rem 0 0.5rem; letter-spacing: -0.015em; }
+  .acct-page__sub { color: var(--fg-dim); font-size: 0.95rem; margin: 0; }
+  .acct-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+  }
+  .acct-card__placeholder { color: var(--fg-dim); font-size: 0.92rem; margin: 0; }
+  .acct-card__placeholder code {
+    background: var(--bg-soft);
+    padding: 2px 6px;
+    color: var(--cyan);
+    font-family: ui-monospace, monospace;
+    font-size: 0.85em;
+  }
+</style>

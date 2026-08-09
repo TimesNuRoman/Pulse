@@ -1,0 +1,15 @@
+---
+// R258: /account/+layout.astro — wraps all account pages with the shared
+// sidebar + topbar layout. Authentication is enforced inside AccountLayout.astro
+// (it reads the session cookie and redirects to /login/ if missing).
+import AccountLayout from '../../layouts/AccountLayout.astro';
+
+// Astro requires a slot to be passed through. AccountLayout handles
+// page-specific title via Astro.props; we forward the active prop from
+// child layouts/pages through Astro.props down the line.
+const { active } = Astro.props as { active?: 'profile' | 'notes' | 'billing' | 'sync' };
+---
+
+<AccountLayout title={Astro.props.title ?? 'Account'} active={active}>
+  <slot />
+</AccountLayout>
