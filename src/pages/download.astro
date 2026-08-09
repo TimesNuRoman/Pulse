@@ -96,10 +96,10 @@ const softwareAppsJsonLd = [
     <div class="dl__stack">
 
     <!-- ═══ STEP 1 ═══ -->
-    <section class="step is-active" id="step-1" data-step="1" aria-labelledby="dl-step1-title">
+    <section class="step is-active" id="step-1" data-step="1" aria-labelledby="dl-pane1-title">
       <div class="container">
         <span class="eyebrow">Download</span>
-        <h1 class="dl__h1" id="dl-step1-title">Pick your platform.</h1>
+        <h1 class="dl__h1" id="dl-pane1-title">Pick your platform.</h1>
         <p class="dl__sub">One app, five platforms. Pulse runs on the device you already use.</p>
 
         <div class="dl__grid">
@@ -165,13 +165,13 @@ const softwareAppsJsonLd = [
 
     <!-- 2A. Windows -->
     <section class="step" id="step-2-windows" data-step="2" aria-labelledby="dl-win-title">
-      <div class="container dl-step">
-        <button class="dl-step__back" type="button" data-back aria-label="Back to platform picker">
+      <div class="container dl-pane">
+        <button class="dl-pane__back" type="button" data-back aria-label="Back to platform picker">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
           Choose another platform
         </button>
-        <h1 class="dl-step__title" id="dl-win-title">Get Pulse for Windows</h1>
-        <p class="dl-step__sub">Pick your installer. NSIS for personal, MSI for managed, portable for no install.</p>
+        <h1 class="dl-pane__title" id="dl-win-title">Get Pulse for Windows</h1>
+        <p class="dl-pane__sub">Pick your installer. NSIS for personal, MSI for managed, portable for no install.</p>
 
         <a class="dl-btn" href={WIN_EXE} rel="noopener noreferrer" download>
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
@@ -201,13 +201,13 @@ const softwareAppsJsonLd = [
 
     <!-- 2B. Android -->
     <section class="step" id="step-2-android" data-step="2" aria-labelledby="dl-and-title">
-      <div class="container dl-step">
-        <button class="dl-step__back" type="button" data-back aria-label="Back to platform picker">
+      <div class="container dl-pane">
+        <button class="dl-pane__back" type="button" data-back aria-label="Back to platform picker">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
           Choose another platform
         </button>
-        <h1 class="dl-step__title" id="dl-and-title">Get Pulse for Android</h1>
-        <p class="dl-step__sub">Universal APK. Sideload on any Android 8.0+ device. No Play Store account required.</p>
+        <h1 class="dl-pane__title" id="dl-and-title">Get Pulse for Android</h1>
+        <p class="dl-pane__sub">Universal APK. Sideload on any Android 8.0+ device. No Play Store account required.</p>
 
         <a class="dl-btn" href={APK_URL} rel="noopener noreferrer" download>
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
@@ -224,13 +224,13 @@ const softwareAppsJsonLd = [
 
     <!-- 2C. macOS — no signed build, build-from-source -->
     <section class="step" id="step-2-macos" data-step="2" aria-labelledby="dl-mac-title">
-      <div class="container dl-step">
-        <button class="dl-step__back" type="button" data-back aria-label="Back to platform picker">
+      <div class="container dl-pane">
+        <button class="dl-pane__back" type="button" data-back aria-label="Back to platform picker">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
           Choose another platform
         </button>
-        <h1 class="dl-step__title" id="dl-mac-title">Build Pulse for macOS from source</h1>
-        <p class="dl-step__sub">No signed <code>.dmg</code> is published — Apple notarization requires a developer account. Build the unsigned <code>.app</code> and <code>.dmg</code> yourself from the same Tauri v2 source that ships on Windows.</p>
+        <h1 class="dl-pane__title" id="dl-mac-title">Build Pulse for macOS from source</h1>
+        <p class="dl-pane__sub">No signed <code>.dmg</code> is published — Apple notarization requires a developer account. Build the unsigned <code>.app</code> and <code>.dmg</code> yourself from the same Tauri v2 source that ships on Windows.</p>
 
         <pre class="code-block" tabindex="0"><code><span class="c"># 1. install Rust + Node 22</span>
 <span class="k">curl</span> --proto <span class="s">'=https'</span> --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -255,13 +255,13 @@ const softwareAppsJsonLd = [
 
     <!-- 2D. Linux — build from source -->
     <section class="step" id="step-2-linux" data-step="2" aria-labelledby="dl-lin-title">
-      <div class="container dl-step">
-        <button class="dl-step__back" type="button" data-back aria-label="Back to platform picker">
+      <div class="container dl-pane">
+        <button class="dl-pane__back" type="button" data-back aria-label="Back to platform picker">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
           Choose another platform
         </button>
-        <h1 class="dl-step__title" id="dl-lin-title">Build Pulse for Linux from source</h1>
-        <p class="dl-step__sub">No prebuilt <code>.deb</code> or <code>.AppImage</code> is published yet. Build the Tauri v2 source against your distro. WebKit2GTK + GTK3 are required.</p>
+        <h1 class="dl-pane__title" id="dl-lin-title">Build Pulse for Linux from source</h1>
+        <p class="dl-pane__sub">No prebuilt <code>.deb</code> or <code>.AppImage</code> is published yet. Build the Tauri v2 source against your distro. WebKit2GTK + GTK3 are required.</p>
 
         <pre class="code-block" tabindex="0"><code><span class="c"># 1. system deps (Debian / Ubuntu — Fedora uses dnf/yum)</span>
 <span class="k">sudo apt install</span> -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
@@ -284,13 +284,13 @@ const softwareAppsJsonLd = [
 
     <!-- 2E. iOS — not available, cross-link to Android -->
     <section class="step" id="step-2-ios" data-step="2" aria-labelledby="dl-ios-title">
-      <div class="container dl-step">
-        <button class="dl-step__back" type="button" data-back aria-label="Back to platform picker">
+      <div class="container dl-pane">
+        <button class="dl-pane__back" type="button" data-back aria-label="Back to platform picker">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
           Choose another platform
         </button>
-        <h1 class="dl-step__title" id="dl-ios-title">Pulse is not on iOS</h1>
-        <p class="dl-step__sub">Two structural blockers: App Store policy (no sideloading unsigned builds on iPhone / iPad) and the 4 GB memory cap (Tauri v2 + WebView2 needs more than that on iOS). The Android APK works as a tablet fallback — same data model, same wikilink engine.</p>
+        <h1 class="dl-pane__title" id="dl-ios-title">Pulse is not on iOS</h1>
+        <p class="dl-pane__sub">Two structural blockers: App Store policy (no sideloading unsigned builds on iPhone / iPad) and the 4 GB memory cap (Tauri v2 + WebView2 needs more than that on iOS). The Android APK works as a tablet fallback — same data model, same wikilink engine.</p>
 
         <button class="dl-btn" type="button" data-jump="android">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
@@ -313,72 +313,123 @@ const softwareAppsJsonLd = [
   <script type="application/ld+json" set:html={JSON.stringify(softwareAppsJsonLd)} />
 
   <!--
-    R253/R256: Two-step state machine.
+    R259: Two-step state machine.
     - .plat[data-platform]  → switches to step 2 for that platform
     - [data-back]           → returns to step 1
     - [data-jump]           → cross-link (iOS → Android)
     - hash routing          → /download#windows opens step 2 windows
     - smooth scroll to top on every switch
-    - R256: step visibility uses class toggle (is-active), not the
-      `hidden` attribute, so opacity + transform transitions in CSS
-      can fade between steps instead of an instant snap.
+    - step visibility uses class toggle (is-active), not the `hidden`
+      attribute, so opacity + transform transitions in CSS can fade
+      between steps instead of an instant snap.
+
+    R259 fix (vs. R253/R256): delegated click handler on document +
+    re-bind on `astro:page-load`. The previous version captured
+    `.plat` / `[data-back]` / `[data-jump]` references at IIFE init
+    and bound handlers to them. With Astro ViewTransitions enabled,
+    navigating to /download/ via the TopNav swaps the body DOM — the
+    old buttons (and their handlers) are gone, the new buttons have
+    no handlers, and the user sees step-1 forever (or step-2 with no
+    way to go back). F5 re-runs the inline IIFE, so the bug only
+    happens on the "soft" navigation. Delegation + page-load re-init
+    fixes it for both flows.
+
+    We also re-resolve `step1`/`step2s`/the indicator dots on every
+    click instead of caching them at startup, so a stale NodeList
+    from a previous DOM can never block a switch.
   -->
-  <script is:inline>
-    (() => {
-      const step1   = document.getElementById('step-1');
-      const step2s  = document.querySelectorAll('[data-step="2"]');
-      const dot1    = document.getElementById('step-dot-1');
-      const dot2    = document.getElementById('step-dot-2');
-      const num1    = document.getElementById('step-num-1');
-      const num2    = document.getElementById('step-num-2');
+  <script>
+    // R259: two-step state machine (event-delegated, ViewTransitions-safe).
+    // The previous version captured `.plat` / `[data-back]` / `[data-jump]`
+    // references at IIFE init and bound handlers to them. With Astro
+    // ViewTransitions enabled, navigating to /download/ via the TopNav
+    // swaps the body DOM — old buttons + handlers are gone, the new
+    // buttons have no handlers, and clicks on the new page do nothing
+    // (the user sees an unchanged step-1 / step-2 with no way out
+    // until F5 re-runs the inline IIFE). Delegation + page-load re-init
+    // fixes it for both soft and hard navigations.
+
+    // Module-scoped state: rebound on every init so it always points at
+    // the current DOM. Click handler is bound ONCE.
+    let showStep1 = () => {};
+    let showStep2 = (_platform) => {};
+    let clickBound = false;
+
+    const initDownloadSteps = () => {
+      const step1  = document.getElementById('step-1');
+      const step2s = document.querySelectorAll('[data-step="2"]');
+      const dot1   = document.getElementById('step-dot-1');
+      const dot2   = document.getElementById('step-dot-2');
+      const num1   = document.getElementById('step-num-1');
+      const num2   = document.getElementById('step-num-2');
+      if (!step1 || step2s.length === 0) return;
 
       const setStepIndicator = (step) => {
         const on2 = step === 2;
-        dot1.classList.toggle('is-active', !on2);
-        dot2.classList.toggle('is-active',  on2);
-        num1.classList.toggle('is-active', !on2);
-        num2.classList.toggle('is-active',  on2);
+        if (dot1) dot1.classList.toggle('is-active', !on2);
+        if (dot2) dot2.classList.toggle('is-active',  on2);
+        if (num1) num1.classList.toggle('is-active', !on2);
+        if (num2) num2.classList.toggle('is-active',  on2);
       };
 
-      const showStep1 = () => {
-        step1.classList.add('is-active');
-        step2s.forEach((s) => s.classList.remove('is-active'));
+      // Rebind the closures so they always see the current DOM. No
+      // captured references that can go stale after a ViewTransitions
+      // body swap.
+      showStep1 = () => {
+        const s1 = document.getElementById('step-1');
+        if (!s1) return;
+        s1.classList.add('is-active');
+        document.querySelectorAll('[data-step="2"]').forEach((s) => s.classList.remove('is-active'));
         setStepIndicator(1);
         if (history.replaceState) history.replaceState(null, '', location.pathname);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
-      const showStep2 = (platform) => {
-        const target = document.getElementById('step-2-' + platform);
-        if (!target) return;
-        step1.classList.remove('is-active');
-        step2s.forEach((s) => s.classList.toggle('is-active', s === target));
+      showStep2 = (platform) => {
+        const s1  = document.getElementById('step-1');
+        const tgt = document.getElementById('step-2-' + platform);
+        if (!s1 || !tgt) return;
+        s1.classList.remove('is-active');
+        document.querySelectorAll('[data-step="2"]').forEach((s) => s.classList.toggle('is-active', s === tgt));
         setStepIndicator(2);
         if (history.replaceState) history.replaceState(null, '', '#' + platform);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
-      document.querySelectorAll('.plat[data-platform]').forEach((b) => {
-        b.addEventListener('click', () => {
-          if (b.disabled || b.getAttribute('aria-disabled') === 'true') return;
-          showStep2(b.dataset.platform);
+      // Bind the click handler exactly once across the whole session.
+      // We re-derive `closest(...)` at click time, so freshly-inserted
+      // nodes from a ViewTransitions swap still match.
+      if (!clickBound) {
+        clickBound = true;
+        document.addEventListener('click', (e) => {
+          const plat = e.target.closest('.plat[data-platform]');
+          if (plat) {
+            if (plat.disabled || plat.getAttribute('aria-disabled') === 'true') return;
+            showStep2(plat.dataset.platform);
+            return;
+          }
+          if (e.target.closest('[data-back]')) {
+            showStep1();
+            return;
+          }
+          if (e.target.closest('[data-jump]')) {
+            showStep2(e.target.closest('[data-jump]').dataset.jump);
+            return;
+          }
         });
-      });
+      }
 
-      document.querySelectorAll('[data-back]').forEach((b) => {
-        b.addEventListener('click', showStep1);
-      });
-
-      document.querySelectorAll('[data-jump]').forEach((b) => {
-        b.addEventListener('click', () => showStep2(b.dataset.jump));
-      });
-
-      // Initial: respect /download#<platform>
+      // Initial: respect /download#<platform> on first paint (or after
+      // a soft navigation that landed on a hash URL).
       const initial = (location.hash || '').replace('#', '');
       if (initial && document.getElementById('step-2-' + initial)) {
         showStep2(initial);
       }
-    })();
+    };
+
+    // Run on initial load AND on every Astro page swap.
+    initDownloadSteps();
+    document.addEventListener('astro:page-load', initDownloadSteps);
   </script>
 
   <style>
@@ -514,8 +565,8 @@ const softwareAppsJsonLd = [
     .plat--disabled:hover .plat__arrow { color: var(--text-dim); }
 
     /* Step 2 per-platform view */
-    .dl-step { max-width: 560px; }
-    .dl-step__back {
+    .dl-pane { max-width: 560px; }
+    .dl-pane__back {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -528,9 +579,9 @@ const softwareAppsJsonLd = [
       padding: 0;
       transition: color var(--dur) var(--ease);
     }
-    .dl-step__back:hover { color: var(--fg); }
-    .dl-step__back svg { width: 14px; height: 14px; }
-    .dl-step__title {
+    .dl-pane__back:hover { color: var(--fg); }
+    .dl-pane__back svg { width: 14px; height: 14px; }
+    .dl-pane__title {
       font-size: clamp(2rem, 4vw + 0.5rem, 2.5rem);
       font-weight: 700;
       letter-spacing: -0.02em;
@@ -538,13 +589,13 @@ const softwareAppsJsonLd = [
       color: var(--fg);
       margin: 0 0 8px;
     }
-    .dl-step__sub {
+    .dl-pane__sub {
       color: var(--fg-dim);
       font-size: var(--fs-body);
       line-height: 1.6;
       margin-bottom: 32px;
     }
-    .dl-step__sub code {
+    .dl-pane__sub code {
       font-size: 0.9em;
       color: var(--cyan);
       background: var(--surface-2);
