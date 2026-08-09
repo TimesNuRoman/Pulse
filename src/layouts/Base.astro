@@ -150,9 +150,12 @@ const showBackground = ['/', '/pricing', '/pricing/', '/download', '/download/']
       </div>
     )}
 
-    <!-- Scroll-reveal via IntersectionObserver -->
-    <script is:inline>
-      (() => {
+    <!-- Scroll-reveal via IntersectionObserver. R263: re-run on every
+         Astro ViewTransitions page swap, otherwise the new DOM's
+         .reveal nodes stay at opacity: 0 and the page renders blank
+         until the user hard-reloads. -->
+    <script>
+      const initReveal = () => {
         if (!('IntersectionObserver' in window)) {
           document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
           return;
@@ -168,8 +171,10 @@ const showBackground = ['/', '/pricing', '/pricing/', '/download', '/download/']
           },
           { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
         );
-        document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
-      })();
+        document.querySelectorAll('.reveal:not(.is-visible)').forEach((el) => io.observe(el));
+      };
+      initReveal();
+      document.addEventListener('astro:page-load', initReveal);
     </script>
 
     {ctaVisible && (
