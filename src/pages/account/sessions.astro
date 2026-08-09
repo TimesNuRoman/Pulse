@@ -1,0 +1,191 @@
+---
+// R261: /account/sessions/ — list active sessions with sign-out buttons.
+// Auth via AccountLayout. GET /api/account/sessions on page load.
+// DELETE /api/account/sessions/<id_hash> on row click.
+import AccountLayout from '../../layouts/AccountLayout.astro';
+---
+
+<AccountLayout title="Active sessions — Pulse" active="profile">
+  <header class="acct-page__head">
+    <span class="eyebrow">Security</span>
+    <h1 class="acct-page__title">Active sessions</h1>
+    <p class="acct-page__sub">Devices where you're currently signed in.</p>
+  </header>
+
+  <section class="acct-card" aria-labelledby="sessions-heading">
+    <header class="acct-card__head acct-card__head--row">
+      <h2 id="sessions-heading" class="acct-card__title">Devices</h2>
+      <button type="button" class="btn btn--ghost btn--sm" data-sessions-signout-all>Sign out all other devices</button>
+    </header>
+
+    <ul class="sessions" role="list" data-sessions-list>
+      <li class="sessions__placeholder" data-sessions-placeholder>Loading sessions…</li>
+    </ul>
+  </section>
+</AccountLayout>
+
+<style>
+  .acct-page__head { margin-bottom: 32px; }
+  .acct-page__title { font-size: 1.8rem; font-weight: 700; color: var(--fg); margin: 0.5rem 0 0.5rem; letter-spacing: -0.015em; }
+  .acct-page__sub { color: var(--fg-dim); font-size: 0.95rem; margin: 0; }
+
+  .acct-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .acct-card__head { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .acct-card__head--row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .acct-card__title { font-size: 1.1rem; font-weight: 600; color: var(--fg); margin: 0; }
+
+  .sessions { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+  .sessions__placeholder { color: var(--muted); font-size: 0.9rem; padding: 12px 0; }
+
+  .session {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+  }
+  .session__icon {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-2);
+    color: var(--purple);
+    flex-shrink: 0;
+  }
+  .session__body { flex: 1; min-width: 0; }
+  .session__name { font-size: 0.95rem; font-weight: 600; color: var(--fg); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .session__meta { color: var(--muted); font-size: 0.82rem; margin-top: 4px; }
+  .session__badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--green);
+    background: rgba(158, 206, 106, 0.12);
+    border: 1px solid rgba(158, 206, 106, 0.3);
+  }
+  .session__action {
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--fg-dim);
+    padding: 8px 14px;
+    min-height: 36px;
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .session__action:hover { color: var(--red); border-color: var(--red); }
+  .session.is-current { border-color: var(--purple); }
+
+  .sessions__empty { color: var(--muted); font-size: 0.9rem; padding: 24px 0; text-align: center; }
+</style>
+
+<script is:inline>
+  (() => {
+    const list = document.querySelector('[data-sessions-list]');
+    const placeholder = document.querySelector('[data-sessions-placeholder]');
+    const signOutAllBtn = document.querySelector('[data-sessions-signout-all]');
+    if (!list) return;
+
+    function deviceIcon(type) {
+      if (type === 'windows') {
+        return '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 5.5L10.5 4.5v7.5H3v-6.5zM11.5 4.4L21 3v9h-9.5V4.4zM3 13.5h7.5V21L3 19.5v-6zM11.5 13.5H21V21l-9.5-1.5v-6z"/></svg>';
+      }
+      if (type === 'android') {
+        return '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M6 9c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2v2c0 .55.45 1 1 1s1-.45 1-1v-2h8v2c0 .55.45 1 1 1s1-.45 1-1v-2c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2H6zM8 11.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM16 11.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM7 8L5.5 5.5C5.4 5.3 5.5 5 5.7 5c.2 0 .3.1.4.2L7.5 7.5C8.6 7.2 9.8 7 11 7h2c1.2 0 2.4.2 3.5.5l1.4-2.3c.1-.1.2-.2.4-.2.2 0 .3.3.2.5L17 8H7z"/></svg>';
+      }
+      return '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>';
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    async function load() {
+      try {
+        const res = await fetch('/api/account/sessions', { credentials: 'same-origin' });
+        if (res.status === 401) {
+          const next = encodeURIComponent(window.location.pathname);
+          window.location.replace('/login/?next=' + next);
+          return;
+        }
+        if (!res.ok) {
+          list.innerHTML = '<li class="sessions__empty">Could not load sessions.</li>';
+          return;
+        }
+        const data = await res.json();
+        if (!data.sessions || data.sessions.length === 0) {
+          list.innerHTML = '<li class="sessions__empty">No active sessions.</li>';
+          if (signOutAllBtn) signOutAllBtn.disabled = true;
+          return;
+        }
+        list.innerHTML = data.sessions.map((s) => `
+          <li class="session${s.is_current ? ' is-current' : ''}" data-session-id="${escapeHtml(s.id)}">
+            <span class="session__icon" aria-hidden="true">${deviceIcon(s.device_type)}</span>
+            <div class="session__body">
+              <div class="session__name">
+                ${escapeHtml(s.device_name)}
+                ${s.is_current ? '<span class="session__badge">This device</span>' : ''}
+              </div>
+              <div class="session__meta">Signed in ${escapeHtml(new Date(s.created_at).toLocaleString())}</div>
+            </div>
+            ${s.is_current ? '' : '<button type="button" class="session__action" data-session-signout>Sign out</button>'}
+          </li>
+        `).join('');
+        // Wire up sign-out buttons.
+        list.querySelectorAll('[data-session-signout]').forEach((btn) => {
+          btn.addEventListener('click', async (e) => {
+            const li = e.target.closest('[data-session-id]');
+            if (!li) return;
+            const id = li.getAttribute('data-session-id');
+            if (!confirm('Sign out this device?')) return;
+            btn.disabled = true;
+            const r = await fetch('/api/account/sessions/' + encodeURIComponent(id), { method: 'DELETE', credentials: 'same-origin' });
+            if (r.ok) {
+              li.remove();
+            } else {
+              btn.disabled = false;
+              alert('Could not sign out.');
+            }
+          });
+        });
+        if (signOutAllBtn) {
+          const otherCount = data.sessions.filter((s) => !s.is_current).length;
+          if (otherCount === 0) signOutAllBtn.disabled = true;
+        }
+      } catch (err) {
+        list.innerHTML = '<li class="sessions__empty">Network error.</li>';
+      }
+    }
+
+    if (signOutAllBtn) {
+      signOutAllBtn.addEventListener('click', async () => {
+        const others = list.querySelectorAll('[data-session-signout]').length;
+        if (others === 0) return;
+        if (!confirm(`Sign out ${others} other device(s)?`)) return;
+        signOutAllBtn.disabled = true;
+        // R262: simple loop, server will reject current session.
+        const items = list.querySelectorAll('[data-session-id]');
+        for (const li of items) {
+          const id = li.getAttribute('data-session-id');
+          if (!id) continue;
+          await fetch('/api/account/sessions/' + encodeURIComponent(id), { method: 'DELETE', credentials: 'same-origin' });
+        }
+        location.reload();
+      });
+    }
+
+    load();
+  })();
+</script>
