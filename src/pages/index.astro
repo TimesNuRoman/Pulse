@@ -324,27 +324,16 @@ const softwareAppJsonLd = {
       </div>
     </section>
 
-    <!-- ─── Pick your device — two download tiles (R260) ── -->
+    <!-- ─── Pick your device — one download CTA (R261) ── -->
     <section class="home-get" id="get">
       <div class="container">
         <header class="home-get__head reveal">
           <h2>Pick your device.</h2>
         </header>
-        <div class="home-get__grid">
-          <article class="home-get__tile reveal" data-pick="windows">
-            <span class="home-get__platform">Windows</span>
-            <a class="btn btn--primary btn--lg home-get__btn" href={WIN_NSIS_URL} rel="noopener noreferrer" download>
-              Download ↓
-            </a>
-            <span class="home-get__meta">{WIN_NSIS_SIZE} · v{WINDOWS_VERSION}</span>
-          </article>
-          <article class="home-get__tile reveal" data-pick="android">
-            <span class="home-get__platform">Android</span>
-            <a class="btn btn--primary btn--lg home-get__btn" href={APK_URL} rel="noopener noreferrer" download>
-              Download ↓
-            </a>
-            <span class="home-get__meta">{APK_SIZE} · v{ANDROID_VERSION}</span>
-          </article>
+        <div class="home-get__cta reveal">
+          <a class="btn btn--primary btn--lg home-get__btn" href="/download/">
+            Download ↓
+          </a>
         </div>
       </div>
     </section>
@@ -858,45 +847,17 @@ const softwareAppJsonLd = {
     margin: 0;
   }
 
-  /* ─── Pick your device — two download tiles (R260) ── */
+  /* ─── Pick your device — one download CTA (R261) ── */
   .home-get { padding: var(--sp-5) 0 4rem; }
-  .home-get__head { text-align: center; margin: 0 auto 2rem; }
+  .home-get__head { text-align: center; margin: 0 auto 1.75rem; }
   .home-get__head h2 { font-size: var(--fs-2); margin: 0; }
-  .home-get__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    max-width: 720px;
-    margin: 0 auto;
-  }
-  @media (min-width: 720px) {
-    .home-get__grid { grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-  }
-  .home-get__tile {
+  .home-get__cta {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.9rem;
-    padding: 1.5rem 1rem 1.25rem;
-    border-radius: var(--radius);
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-  }
-  .home-get__platform {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--fg-dim);
-  }
-  .home-get__btn {
-    width: 100%;
     justify-content: center;
   }
-  .home-get__meta {
-    font-size: 0.8rem;
-    color: var(--fg-dim);
-    font-variant-numeric: tabular-nums;
+  .home-get__btn {
+    min-width: 240px;
+    justify-content: center;
   }
 
   /* ─── Free ────────────────────────────────────────── */
