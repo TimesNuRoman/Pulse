@@ -7,10 +7,12 @@ import '../styles/notes.css';
 import {
   ANDROID_APK_URL,
   ANDROID_APK_SIZE,
+  ANDROID_VERSION,
   WINDOWS_NSIS_URL,
   WINDOWS_MSI_URL,
   WINDOWS_NSIS_SIZE,
   WINDOWS_MSI_SIZE,
+  WINDOWS_VERSION,
 } from '../lib/versions';
 
 // R120: site simplified for users. Strip roadmap / changelog /
@@ -322,43 +324,26 @@ const softwareAppJsonLd = {
       </div>
     </section>
 
-    <!-- ─── Start trial: two cards ─────────────────────── -->
+    <!-- ─── Pick your device — two download tiles (R260) ── -->
     <section class="home-get" id="get">
       <div class="container">
         <header class="home-get__head reveal">
-          <span class="eyebrow">Start trial</span>
           <h2>Pick your device.</h2>
-          <p class="lede">
-            Both versions are the same Pulse. Different install, same data
-            model, same on-device engine.
-          </p>
         </header>
         <div class="home-get__grid">
-          <article class="home-get__card glass reveal" data-pick="windows">
-            <span class="home-get__platform">Pulse for Windows</span>
-            <h3 class="home-get__title">A side panel for your desktop.</h3>
-            <p class="home-get__body">
-              Lives in the system tray, opens with a global hotkey, talks
-              to a local model on your machine. NSIS installer (per-user)
-              or MSI (per-machine). Runs on Windows 10 and 11.
-            </p>
-            <div class="home-get__ctas">
-              <a class="btn btn--primary" href={WIN_NSIS_URL} rel="noopener noreferrer">Download for Windows ↓ {WIN_NSIS_SIZE}</a>
-              <a class="btn btn--ghost" href="/download/#windows">All Windows downloads</a>
-            </div>
+          <article class="home-get__tile reveal" data-pick="windows">
+            <span class="home-get__platform">Windows</span>
+            <a class="btn btn--primary btn--lg home-get__btn" href={WIN_NSIS_URL} rel="noopener noreferrer" download>
+              Download ↓
+            </a>
+            <span class="home-get__meta">{WIN_NSIS_SIZE} · v{WINDOWS_VERSION}</span>
           </article>
-          <article class="home-get__card glass reveal" data-pick="android">
-            <span class="home-get__platform">Pulse for Android</span>
-            <h3 class="home-get__title">A markdown editor for your phone.</h3>
-            <p class="home-get__body">
-              Write notes with backlinks, tags, and voice input. Find
-              anything with full-text search. Sideload the APK — no Play
-              Store account required.
-            </p>
-            <div class="home-get__ctas">
-              <a class="btn btn--primary" href={APK_URL} rel="noopener noreferrer">Download APK ↓ {APK_SIZE}</a>
-              <a class="btn btn--ghost" href="/download/#android">Android details</a>
-            </div>
+          <article class="home-get__tile reveal" data-pick="android">
+            <span class="home-get__platform">Android</span>
+            <a class="btn btn--primary btn--lg home-get__btn" href={APK_URL} rel="noopener noreferrer" download>
+              Download ↓
+            </a>
+            <span class="home-get__meta">{APK_SIZE} · v{ANDROID_VERSION}</span>
           </article>
         </div>
       </div>
@@ -873,51 +858,45 @@ const softwareAppJsonLd = {
     margin: 0;
   }
 
-  /* ─── Start trial cards ────────────────────────────── */
+  /* ─── Pick your device — two download tiles (R260) ── */
   .home-get { padding: var(--sp-5) 0 4rem; }
-  .home-get__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
-  .home-get__head h2 { font-size: var(--fs-2); }
-  .home-get__head .lede { margin: 0.5rem auto 0; }
+  .home-get__head { text-align: center; margin: 0 auto 2rem; }
+  .home-get__head h2 { font-size: var(--fs-2); margin: 0; }
   .home-get__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.25rem;
+    gap: 1rem;
+    max-width: 720px;
+    margin: 0 auto;
   }
-  @media (min-width: 920px) {
-    .home-get__grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (min-width: 720px) {
+    .home-get__grid { grid-template-columns: 1fr 1fr; gap: 1.25rem; }
   }
-  .home-get__card {
-    padding: var(--sp-4) var(--sp-4) 2rem;
-    border-radius: var(--radius);
+  .home-get__tile {
     display: flex;
     flex-direction: column;
-    gap: var(--sp-2);
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1.5rem 1rem 1.25rem;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.06);
   }
   .home-get__platform {
-    font-size: 0.7rem;
-    font-weight: 700;
+    font-size: 0.75rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: var(--purple);
-  }
-  .home-get__title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--fg);
-    margin: 0;
-    line-height: 1.3;
-  }
-  .home-get__body {
     color: var(--fg-dim);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin: 0;
   }
-  .home-get__ctas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-top: 0.5rem;
+  .home-get__btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .home-get__meta {
+    font-size: 0.8rem;
+    color: var(--fg-dim);
+    font-variant-numeric: tabular-nums;
   }
 
   /* ─── Free ────────────────────────────────────────── */
