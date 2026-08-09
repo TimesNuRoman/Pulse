@@ -1,6 +1,8 @@
 ---
-// R258: /account/ index placeholder. R259 will replace with full Profile form.
-// Auth is enforced client-side in AccountLayout.astro (fetches /api/account/me).
+// R259: /account/ — Profile form (name, email).
+// Auth check is client-side (AccountLayout fetches /api/account/me and
+// redirects to /login/ on 401). On submit, this form PATCHes
+// /api/account/profile and shows a toast on success.
 import AccountLayout from '../../layouts/AccountLayout.astro';
 ---
 
@@ -8,29 +10,205 @@ import AccountLayout from '../../layouts/AccountLayout.astro';
   <header class="acct-page__head">
     <span class="eyebrow">Profile</span>
     <h1 class="acct-page__title">Your account</h1>
-    <p class="acct-page__sub">Manage your name, email, password, and active sessions.</p>
+    <p class="acct-page__sub">Update your name and email. Email changes require re-verification.</p>
   </header>
 
-  <div class="acct-card">
-    <p class="acct-card__placeholder">Profile form lands in R259. Layout + sidebar + topbar work. Auth check: <code>/api/account/me</code> (next round).</p>
-  </div>
+  <section class="acct-card" aria-labelledby="profile-heading">
+    <header class="acct-card__head">
+      <h2 id="profile-heading" class="acct-card__title">Profile</h2>
+    </header>
+
+    <div class="acct-card__body">
+      <div class="profile-avatar">
+        <span class="profile-avatar__letter" data-acct-avatar-letter-large>?</span>
+      </div>
+      <form id="profile-form" class="profile-form" novalidate>
+        <label class="profile-field">
+          <span class="profile-field__label">Name</span>
+          <input
+            type="text"
+            name="name"
+            class="profile-field__input"
+            maxlength="80"
+            required
+            data-acct-name
+            autocomplete="name"
+          />
+        </label>
+
+        <label class="profile-field">
+          <span class="profile-field__label">Email</span>
+          <input
+            type="email"
+            name="email"
+            class="profile-field__input"
+            required
+            data-acct-email
+            autocomplete="email"
+          />
+          <span class="profile-field__hint" data-acct-email-hint>Changing your email requires re-verification.</span>
+        </label>
+
+        <div class="profile-form__actions">
+          <button type="submit" class="btn btn--primary" data-acct-save>Save changes</button>
+          <span class="profile-form__status" data-acct-status role="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
 </AccountLayout>
 
 <style>
   .acct-page__head { margin-bottom: 32px; }
   .acct-page__title { font-size: 1.8rem; font-weight: 700; color: var(--fg); margin: 0.5rem 0 0.5rem; letter-spacing: -0.015em; }
   .acct-page__sub { color: var(--fg-dim); font-size: 0.95rem; margin: 0; }
+
   .acct-card {
     background: var(--surface);
     border: 1px solid var(--border);
     padding: 24px;
+    margin-bottom: 24px;
   }
-  .acct-card__placeholder { color: var(--fg-dim); font-size: 0.92rem; margin: 0; }
-  .acct-card__placeholder code {
+  .acct-card__head { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .acct-card__title { font-size: 1.1rem; font-weight: 600; color: var(--fg); margin: 0; }
+
+  .profile-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background: rgba(187, 154, 247, 0.18);
+    color: var(--purple);
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  .profile-form { display: flex; flex-direction: column; gap: 16px; }
+  .profile-field { display: flex; flex-direction: column; gap: 6px; }
+  .profile-field__label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+  }
+  .profile-field__input {
     background: var(--bg-soft);
-    padding: 2px 6px;
-    color: var(--cyan);
-    font-family: ui-monospace, monospace;
-    font-size: 0.85em;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    min-height: 48px;
+    font: inherit;
   }
+  .profile-field__input:focus {
+    outline: 2px solid var(--purple);
+    outline-offset: 1px;
+    border-color: var(--purple);
+  }
+  .profile-field__input.is-invalid { border-color: var(--red); }
+  .profile-field__hint { color: var(--muted); font-size: 0.8rem; }
+
+  .profile-form__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .profile-form__status {
+    font-size: 0.88rem;
+    color: var(--green);
+    min-height: 1em;
+  }
+  .profile-form__status[data-state="error"] { color: var(--red); }
+  .profile-form__status[data-state="info"] { color: var(--fg-dim); }
 </style>
+
+<script is:inline>
+  (() => {
+    const form = document.getElementById('profile-form');
+    if (!form) return;
+    const nameInput = form.querySelector('[data-acct-name]');
+    const emailInput = form.querySelector('[data-acct-email]');
+    const statusEl = form.querySelector('[data-acct-status]');
+    const saveBtn = form.querySelector('[data-acct-save]');
+    const largeLetter = document.querySelector('[data-acct-avatar-letter-large]');
+    const emailHint = form.querySelector('[data-acct-email-hint]');
+
+    if (!nameInput || !emailInput || !statusEl || !saveBtn) return;
+
+    // Populate form from /api/account/me.
+    fetch('/api/account/me', { credentials: 'same-origin' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data) return;
+        if (data.name) nameInput.value = data.name;
+        if (data.email) emailInput.value = data.email;
+        if (data.name && largeLetter) {
+          largeLetter.textContent = (data.name.trim().charAt(0) || '?').toUpperCase();
+        }
+      })
+      .catch(() => {});
+
+    const setStatus = (msg, state) => {
+      statusEl.textContent = msg;
+      if (state) statusEl.setAttribute('data-state', state);
+      else statusEl.removeAttribute('data-state');
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setStatus('Saving…', 'info');
+      saveBtn.disabled = true;
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      if (!name) {
+        setStatus('Name is required.', 'error');
+        saveBtn.disabled = false;
+        nameInput.classList.add('is-invalid');
+        nameInput.focus();
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/account/profile', {
+          method: 'PATCH',
+          credentials: 'same-origin',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name, email }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const msg = data.error === 'invalid_email' ? 'Enter a valid email.'
+            : data.error === 'email_taken' ? 'That email is already registered.'
+            : data.error === 'invalid_name' ? 'Name must be 1-80 characters.'
+            : 'Could not save. Try again.';
+          setStatus(msg, 'error');
+          return;
+        }
+        if (data.email_changed) {
+          setStatus('Email change sent — check your new inbox to confirm.', 'info');
+          if (emailHint) emailHint.textContent = 'A confirmation link was sent to the new address. Your old email stays active until you confirm.';
+        } else {
+          setStatus('Saved.', null);
+          setTimeout(() => setStatus('', null), 3000);
+        }
+        if (data.user && largeLetter) {
+          largeLetter.textContent = (data.user.name.trim().charAt(0) || '?').toUpperCase();
+        }
+      } catch (err) {
+        setStatus('Network error. Try again.', 'error');
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    // Clear invalid state on input.
+    [nameInput, emailInput].forEach((el) => {
+      el.addEventListener('input', () => el.classList.remove('is-invalid'));
+    });
+  })();
+</script>
