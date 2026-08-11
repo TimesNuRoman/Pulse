@@ -25,7 +25,7 @@ const {
 const links: { href: string; label: string }[] = [
   { href: '/',           label: 'Home' },
   { href: '/pricing/',   label: 'Pricing' },
-  { href: '/agent/',     label: 'Agent' },
+  { href: '/agent/',     label: 'Ask Pulse' },
   { href: '/download/',  label: 'Download' },
   { href: '/faq/',       label: 'FAQ' },
   { href: '/changelog/', label: 'Changelog' },
@@ -55,7 +55,7 @@ const isActive = (href: string) =>
     <nav class="topnav__links" aria-label="Primary">
       {links.map(({ href, label }) => (
         <a
-          class="topnav__link"
+          class={`topnav__link${href === '/agent/' ? ' topnav__link--cta' : ''}`}
           href={href}
           aria-current={isActive(href) ? 'page' : undefined}
         >{label}</a>

@@ -359,6 +359,35 @@ section + section { border-top: 1px solid var(--border); }
   color: var(--purple);
   background: rgba(187, 154, 247, 0.10);
 }
+/* R270: "Ask Pulse" nav link — purple outline pill, matches the
+   chat icon in the spec. Hover lifts the bg to 20% purple. */
+.topnav__link--cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  height: 32px;
+  border: 1px solid var(--purple);
+  background: rgba(187, 154, 247, 0.10);
+  color: var(--purple);
+  font-weight: 600;
+  border-radius: 0;
+}
+.topnav__link--cta::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/></svg>") center / contain no-repeat;
+          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/></svg>") center / contain no-repeat;
+}
+.topnav__link--cta:hover {
+  background: rgba(187, 154, 247, 0.20);
+  color: var(--purple);
+}
+.topnav__link--cta[aria-current="page"] {
+  background: rgba(187, 154, 247, 0.20);
+}
 
 .topnav__login {
   display: inline-flex;
