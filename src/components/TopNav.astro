@@ -108,18 +108,24 @@ const isActive = (href: string) =>
 
 <script>
   // R264: topnav state must survive Astro ViewTransitions soft-nav.
-  // The previous IIFE bound scroll + burger handlers once on initial
-  // load; after a soft swap the new <header> and <nav-drawer> nodes
-  // either lose the .is-scrolled class or get new IDs with no
-  // listeners. Fix: bind scroll once on window, and use a delegated
-  // click + keydown handler on document that always resolves the
-  // current #nav-burger / #nav-drawer / #topnav from the live DOM.
-  let scrollBound = false;
+  // R271: hamburger click was bound per `astro:page-load` and after
+  // two soft-navs a single click toggled the drawer twice (back to
+  // the same state) — appeared dead. Fix: bind scroll once, and
+  // resolve burger/drawer state from the live DOM inside a delegated
+  // click handler that's attached to `document` exactly once.
+
+  const setOpen = (open) => {
+    const b = document.getElementById('nav-burger');
+    const d = document.getElementById('nav-drawer');
+    if (!b || !d) return;
+    b.setAttribute('aria-expanded', String(open));
+    d.setAttribute('aria-hidden', String(!open));
+    d.classList.toggle('is-open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
 
   const initTopNav = () => {
     const nav = document.getElementById('topnav');
-    const burger = document.getElementById('nav-burger');
-    const drawer = document.getElementById('nav-drawer');
     document.body.classList.add('has-nav');
 
     if (nav) {
@@ -129,43 +135,36 @@ const isActive = (href: string) =>
       nav.classList.toggle('is-scrolled', window.scrollY > 80);
       document.body.classList.toggle('is-scrolled', window.scrollY > 80);
     }
-
-    if (!scrollBound) {
-      scrollBound = true;
-      let scrolled = window.scrollY > 80;
-      window.addEventListener('scroll', () => {
-        const next = window.scrollY > 80;
-        if (next === scrolled) return;
-        scrolled = next;
-        const n = document.getElementById('topnav');
-        if (n) n.classList.toggle('is-scrolled', next);
-        document.body.classList.toggle('is-scrolled', next);
-      }, { passive: true });
-    }
-
-    const setOpen = (open) => {
-      const b = document.getElementById('nav-burger');
-      const d = document.getElementById('nav-drawer');
-      if (!b || !d) return;
-      b.setAttribute('aria-expanded', String(open));
-      d.setAttribute('aria-hidden', String(!open));
-      d.classList.toggle('is-open', open);
-      document.body.style.overflow = open ? 'hidden' : '';
-    };
-
-    if (burger) {
-      burger.addEventListener('click', () => {
-        const d = document.getElementById('nav-drawer');
-        if (!d) return;
-        setOpen(!d.classList.contains('is-open'));
-      });
-    }
-    if (drawer) {
-      drawer.querySelectorAll('a').forEach((a) => {
-        a.addEventListener('click', () => setOpen(false));
-      });
-    }
   };
+
+  // Bind scroll ONCE on initial load — never re-attach on
+  // astro:page-load, otherwise the handler list grows unbounded.
+  let scrolled = window.scrollY > 80;
+  window.addEventListener('scroll', () => {
+    const next = window.scrollY > 80;
+    if (next === scrolled) return;
+    scrolled = next;
+    const n = document.getElementById('topnav');
+    if (n) n.classList.toggle('is-scrolled', next);
+    document.body.classList.toggle('is-scrolled', next);
+  }, { passive: true });
+
+  // Delegated click on document. Survives DOM swaps, and exactly one
+  // handler total no matter how many times astro:page-load fires.
+  // Closes drawer on any nav-link click too — single source of truth.
+  document.addEventListener('click', (e) => {
+    const burger = e.target.closest('#nav-burger');
+    if (burger) {
+      const d = document.getElementById('nav-drawer');
+      if (!d) return;
+      setOpen(!d.classList.contains('is-open'));
+      return;
+    }
+    // Click inside drawer that is a link → close on navigate.
+    if (e.target.closest('#nav-drawer a')) {
+      setOpen(false);
+    }
+  });
 
   // Delegated escape: works regardless of which burger/drawer is live.
   document.addEventListener('keydown', (e) => {
