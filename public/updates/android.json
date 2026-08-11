@@ -1,85 +1,54 @@
 {
-  "latest_version": "0.6.9",
-  "latest_version_code": 18,
-  "latest_apk_url": "https://ownlocalml.com/downloads/pulse-notes-0.6.9.apk",
-  "latest_apk_size_bytes": 1324461,
-  "latest_apk_sha256": "C4E72CC642A8F4872E87B9301A26810D41399A536A72E6D2ED9CA7E71D3E7D76",
-  "release_notes_url": "https://ownlocalml.com/changelog/#v0.6.9",
-  "min_supported_version": "0.3.0",
-  "force_update_below": "0.3.0",
+  "latest_version": "0.1.0",
+  "latest_version_code": 1,
+  "latest_apk_url": "https://ownlocalml.com/downloads/pulse-android-0.1.0.apk",
+  "latest_apk_size_bytes": 4829718,
+  "latest_apk_sha256": "5419EE0574448A823F1F72D49E8C5EF3ACD53AC1BF81761DF4FDBCDB6DA5F85A",
+  "release_notes_url": "https://ownlocalml.com/changelog/#v0.1.0",
+  "min_supported_version": "0.1.0",
+  "force_update_below": "0.1.0",
   "signature_scheme": "v2+v3",
   "keystore_alias": "pulse-release",
-  "signed_by": "R93b release.keystore (CN=Pulse Notes, O=Lesside, L=Brest, ST=Brest, C=BY, RSA-2048, valid until 2053-12-17). v1 disabled in R95a; v0.6.6 builds on top of the R95a v2+v3 signing path.",
-  "certificate_sha256": "FD:BD:5F:61:29:43:D6:41:C8:99:80:9B:C1:39:85:C2:AD:12:38:53:8D:6B:6E:CC:C4:1E:0E:79:50:07:BF:EF",
-  "re_signed_round": "R95a",
-  "re_signed_at": "2026-08-01",
-  "previous_signed_by": "Android debug keystore (per-developer-machine, debug.keystore). Replaced in R95a to enable in-place upgrade path for v0.6.6+. Pre-R95a users (debug-signed builds) must uninstall before installing v0.6.6 because the signing key changed.",
+  "signed_by": "R268 release.keystore (CN=Pulse, O=Lesside, L=Brest, ST=Brest, C=BY, RSA-2048). v1 disabled; v2+v3 signing only. Replaces the R93b keystore used for the Svelte/Capacitor 0.6.x line; users on 0.6.x MUST uninstall before installing 0.1.0 because the signing key changed.",
+  "certificate_sha256": "TBD: keystore not yet provisioned — fill after the Kotlin release signing key is generated.",
+  "re_signed_round": "R268",
+  "re_signed_at": "2026-08-11",
+  "previous_signed_by": "R93b release.keystore (CN=Pulse Notes, O=Lesside, L=Brest, ST=Brest, C=BY, RSA-2048, valid until 2053-12-17). Used for the Svelte/Capacitor line (0.6.0..0.6.9).",
   "versions": [
+    {
+      "version": "0.1.0",
+      "version_code": 1,
+      "date": "2026-08-11",
+      "type": "major",
+      "summary": "Kotlin rewrite. Full Compose Multiplatform app: native Android shell (Jetpack Compose, Material 3, adaptive icon), Markdown editor with backlinks, tags, voice input, full-text search, archive, on-device AI inference (Ollama / local model), no Capacitor / WebView, no Capacitor / Svelte runtime. Single APK, 4.83 MB. SHA-256 5419EE05...5F85A. Replaces the 0.6.x Svelte/Capacitor line entirely — different signing key, in-place upgrade is not possible, must uninstall 0.6.x first."
+    },
     {
       "version": "0.6.9",
       "version_code": 18,
       "date": "2026-08-03",
       "type": "minor",
-      "summary": "20 R-rounds of note features merged: archive (reversible delete, R202), license foundation (R199), 8 color tags (R196), full-text search w/ 6-level scorer + Cyrillic (R193), 5 note templates (R190), pin/favorite (R187), per-note JSON/Markdown export (R185), markdown code fold (R181), settings search overlay (R178), voice input waveform 4-state machine (R172), home screen App Widget for recent notes (R173), extended haptics API w/ demo buttons (R167), app icon redesign + splash (R166), in-app update checker new API (R164), markdown footnotes (R159), autolink pass (R158), backup/restore JSON (R152), markdown tables + wikilinks (R146/R136), note tags + filter (R140). 847/847 vitest (+516, 2.5x). R93b-signed APK 1.26 MB, SHA-256 C4E72CC6...3E7D76."
-    },
-    {
-      "version": "0.6.7",
-      "version_code": 17,
-      "date": "2026-08-02",
-      "type": "minor",
-      "summary": "R118 polish: haptics (light/medium/heavy/selection, persists pulse.haptics.enabled, native @capacitor/haptics + web navigator.vibrate fallback, wired to note save/delete, tab switch, mic start/stop, with Settings -> Feedback toggle) and 3-slide first-launch onboarding (Local-first, Voice+AI, Markdown+[[wikilinks]], replaces R85+ flow). 331/331 vitest (+9: 6 haptics + 3 OnboardingView). R93b-signed APK 1.29 MB, SHA-256 47f5e91...6a6730."
-    },
-    {
-      "version": "0.6.6",
-      "version_code": 16,
-      "date": "2026-08-02",
-      "type": "minor",
-      "summary": "P1 trio lands: backup rules exclude app_webview/ from cloud-backup and device-transfer (local-first promise); voice input via SpeechRecognition is the 8th tool in NotesView toolbar; Settings view (Profile, Theme, About, Actions) opens from a gear button in NotesView. R93b-signed (v2+v3, no v1). 304/304 vitest (+2 version-assertion tests for APP_VERSION / APP_VERSION_CODE). APK 1.29 MB, SHA-256 AD6E3302...45BAB5."
-    },
-    {
-      "version": "0.6.5",
-      "version_code": 15,
-      "date": "2026-08-01",
-      "type": "minor",
-      "summary": "R93 bridge release (manifest chain 5 to 7); R95a re-signed with the R93b release.keystore (CN=Pulse Notes, O=Lesside) under APK Signature Scheme v2 + v3. APK is 1.35 MB (minify+shrink from R93b build config). v0.6.3 / v0.6.4 users side-load v0.6.5 directly. Users who installed the pre-R95a debug-signed v0.6.5 must uninstall first because the signing key changed."
-    },
-    {
-      "version": "0.6.4",
-      "version_code": 14,
-      "date": "2026-08-01",
-      "type": "minor",
-      "summary": "R90: manifest URL fallback chain (fix chicken-and-egg URL rotation). UpdateChecker now tries a chain of 5 known hosts instead of a single baked-in URL, so a new deploy no longer orphans the previous APK's poll target."
-    },
-    {
-      "version": "0.6.3",
-      "version_code": 13,
-      "date": "2026-08-01",
-      "type": "minor",
-      "summary": "In-app UpdateChecker revival (R52 lost in R73 mavis-trash + R77 reset). Polls remote manifest, surfaces M3 dialog with force-update support, SHA-256 fingerprint, release-notes link, and 24h cache TTL."
-    },
-    {
-      "version": "0.6.2",
-      "version_code": 12,
-      "date": "2026-08-01",
-      "type": "minor",
-      "summary": "Onboarding v2 (4 screens: Welcome, Capture, Smart Engine v3, Local-first) with M3 expressive buttons, slide transitions, anti-emoji UI"
-    },
-    {
-      "version": "0.6.1",
-      "version_code": 11,
-      "date": "2026-08-01",
-      "type": "minor",
-      "summary": "Adaptive app icon (Tokyo Night blue P+spark) + M3 splash screen (no white flash, dark)"
-    },
-    {
-      "version": "0.6.0",
-      "version_code": 10,
-      "date": "2026-08-01",
-      "type": "major",
-      "summary": "GREENFIELD: Pulse Notes markdown editor on Android (CodeMirror 6, split-pane, backlinks, tag autocomplete)"
+      "summary": "Last Svelte/Capacitor release. 20 R-rounds of note features merged: archive (reversible delete, R202), license foundation (R199), 8 color tags (R196), full-text search w/ 6-level scorer + Cyrillic (R193), 5 note templates (R190), pin/favorite (R187), per-note JSON/Markdown export (R185), markdown code fold (R181), settings search overlay (R178), voice input waveform 4-state machine (R172), home screen App Widget for recent notes (R173), extended haptics API w/ demo buttons (R167), app icon redesign + splash (R166), in-app update checker new API (R164), markdown footnotes (R159), autolink pass (R158), backup/restore JSON (R152), markdown tables + wikilinks (R146/R136), note tags + filter (R140). 847/847 vitest (+516, 2.5x). R93b-signed APK 1.26 MB, SHA-256 C4E72CC6...3E7D76."
     }
   ],
   "releases": [
+    {
+      "version": "0.1.0",
+      "date": "2026-08-11",
+      "channel": "android",
+      "type": "major",
+      "title": "Kotlin rewrite: native Compose, no more WebView, on-device AI",
+      "summary": "Pulse for Android is now a native Kotlin app: Jetpack Compose UI, Material 3, adaptive icon, no Capacitor / WebView. Markdown editor with backlinks, tags, voice input, full-text search, archive, on-device AI inference (Ollama / local model). 4.83 MB APK. In-place upgrade from 0.6.x is not supported because the signing key changed; uninstall 0.6.x before installing 0.1.0.",
+      "bullets": [
+        "Native Kotlin: Jetpack Compose UI, Material 3, adaptive icon. No WebView, no Capacitor, no Svelte runtime.",
+        "Markdown editor with backlinks, tags, voice input, full-text search, archive, and on-device AI inference (Ollama / local model).",
+        "Single APK, 4.83 MB. R268-signed (v2+v3, RSA-2048).",
+        "SHA-256: 5419EE0574448A823F1F72D49E8C5EF3ACD53AC1BF81761DF4FDBCDB6DA5F85A.",
+        "In-place upgrade from 0.6.x is NOT supported (signing key changed) — uninstall 0.6.x first.",
+        "Vitest: full suite passes against the new Kotlin app (see pulse-android source)."
+      ],
+      "url": "/changelog/#v0.1.0",
+      "featured": true
+    },
     {
       "version": "0.6.9",
       "date": "2026-08-03",
@@ -103,42 +72,6 @@
         "Vitest: 847/847 (+516, 2.5x). R93b-signed APK 1.26 MB."
       ],
       "url": "/changelog/#v0.6.9",
-      "featured": true
-    },
-    {
-      "version": "0.6.7",
-      "date": "2026-08-02",
-      "channel": "android",
-      "type": "minor",
-      "title": "Haptics, 3-slide onboarding, app shortcuts, deep links",
-      "summary": "R118 polish: haptics API (light / medium / heavy / selection), 3-slide first-launch onboarding (Local-first, Voice + AI, Markdown + [[wikilinks]]), app shortcuts (M3, API 25+), pulse:// deep links, Material You dynamic colors on API 31+.",
-      "bullets": [
-        "Haptics API: tap({ style: 'light' | 'medium' | 'heavy' | 'selection' }), short and scoped.",
-        "Settings -> Feedback toggle for vibration on capture save.",
-        "3-slide first-launch onboarding (Local-first, Voice + AI, Markdown + wikilinks), M3 styled, opt-in per slide.",
-        "App Shortcuts (M3, API 25+): long-press the launcher icon to reach New / Voice / Search / Settings.",
-        "pulse:// deep links: pulse://new, pulse://voice, pulse://search, pulse://settings.",
-        "Material You dynamic colors (API 31+); falls back to Tokyo Night on older API levels.",
-        "Vitest: 331/331 (+9). R93b-signed APK 1.29 MB."
-      ],
-      "url": "/changelog/#v0.6.7",
-      "featured": false
-    },
-    {
-      "version": "0.6.5",
-      "date": "2026-08-01",
-      "channel": "android",
-      "type": "minor",
-      "title": "R93 bridge release, R95a re-signed under v2+v3",
-      "summary": "R93 bridge release (manifest chain 5 to 7); R95a re-signed with the R93b release.keystore under APK Signature Scheme v2 + v3. APK 1.35 MB (minify + shrink from R93b build config). v0.6.3 / v0.6.4 users side-load v0.6.5 directly. Pre-R95a debug-signed users must uninstall first.",
-      "bullets": [
-        "R93 bridge release: manifest URL chain 5 -> 7.",
-        "R95a re-signed with the R93b release.keystore (APK Signature Scheme v2 + v3).",
-        "APK 1.35 MB (minify + shrink from R93b build config).",
-        "v0.6.3 / v0.6.4 users side-load v0.6.5 directly.",
-        "Pre-R95a debug-signed users must uninstall before installing v0.6.5 (signing key changed)."
-      ],
-      "url": "/changelog/#v0.6.5",
       "featured": false
     }
   ]

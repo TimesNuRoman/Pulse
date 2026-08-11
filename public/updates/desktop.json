@@ -1,52 +1,67 @@
 {
-  "latest_version": "0.6.9",
-  "latest_nsis_url": "/downloads/Pulse_0.6.9_x64-setup.exe",
-  "latest_nsis_size_bytes": 12900582,
-  "latest_nsis_sha256": "6D7E40C578FEDCEDFCCF965E324819C64F9E206B91733613DB90A258CFEF5F1B",
-  "latest_msi_url": "/downloads/Pulse_0.6.9_x64_en-US.msi",
-  "latest_msi_size_bytes": 17784832,
-  "latest_msi_sha256": "4CED8E4762F05B272ABAC9483DF669A2A59A20A9D4F566BD621517B20B0B85A1",
-  "latest_binary_url": "/downloads/pulse-desktop.exe",
-  "latest_binary_size_bytes": 10500096,
-  "latest_binary_sha256": "F23CA3569B3BE4C304269E4A47D6CFB8AB50F849B1D431B2D87D8CBE7B045BC3",
-  "release_notes_url": "/changelog/#v0.6.9",
-  "min_supported_version": "0.6.5",
+  "latest_version": "0.1.0",
+  "latest_nsis_url": "/downloads/pulse-windows-0.1.0-setup.exe",
+  "latest_nsis_size_bytes": 110044672,
+  "latest_nsis_sha256": "B043987F530594745E1F093681285EA622892A0099D103279D7F1CC3DB99AA68",
+  "latest_msi_url": "/downloads/pulse-windows-0.1.0-setup.msi",
+  "latest_msi_size_bytes": 109378596,
+  "latest_msi_sha256": "100554B27947634C79EB350F66EBAEC4F80167491D5C12F1B696FC2664F4027C",
+  "latest_binary_url": null,
+  "latest_binary_size_bytes": null,
+  "latest_binary_sha256": null,
+  "release_notes_url": "/changelog/#v0.1.0",
+  "min_supported_version": "0.1.0",
   "build_target": "x86_64-pc-windows-msvc",
-  "tauri_version": "2.11.4",
+  "tauri_version": null,
+  "compose_version": "1.7.x (Jetpack Compose Desktop via Compose Multiplatform 1.7.x)",
   "min_os": "Windows 10 (build 17763)",
-  "signature_scheme": "tauri-bundler (NSIS + WiX MSI)",
-  "signed_by": "Tauri build (no Authenticode yet — IT admins should verify the SHA-256 against the published R115 release notes). tauri-action GitHub workflow on a fresh Windows runner.",
-  "re_signed_round": "R115",
-  "re_signed_at": "2026-08-02",
-  "previous_signed_by": "Tauri build (R100, v0.6.5). R115 retagged 0.6.5 → 0.6.7 with R100 build-infra fixes (prebuild-kill.ps1, Cargo.lock 0.6.5 sync) and R115 R114-audit quick win #1 (SPDX-License-Identifier headers on previously-missing source files). The MSI and binary are bit-identical to v0.6.5; only NSIS saw a 5KB shrink from version-string compression.",
+  "signature_scheme": "jpackage (NSIS) + WiX (MSI) — Authenticode not yet signed, IT admins should verify SHA-256 against the published R268 release notes.",
+  "signed_by": "jpackage build (no Authenticode yet). Compose Desktop nativeDistributions on a clean Windows runner.",
+  "re_signed_round": "R268",
+  "re_signed_at": "2026-08-11",
+  "previous_signed_by": "Tauri build (R115, v0.6.9). R268 retag 0.6.9 -> 0.1.0 covers the Kotlin/Compose rewrite. NSIS+MSI ship with a JRE bundle (jlink, no external Java dep); binary is NSIS repackaged as a single EXE for portable use. ~110 MB each (jlinked JRE inside).",
   "versions": [
     {
+      "version": "0.1.0",
+      "version_code": 1,
+      "date": "2026-08-11",
+      "type": "major",
+      "summary": "Kotlin rewrite (Jetpack Compose Desktop via Compose Multiplatform). Pulse is now a Compose app: tray icon, global hotkey, chat side panel, on-device AI inference (Ollama / local model), Markdown notes, voice input, no Tauri / no WebView / no Rust runtime. NSIS 110 MB / SHA-256 B043987F...9AA68, MSI 109 MB / SHA-256 100554B2...027C. Replaces the 0.6.x Tauri line entirely — different stack, different binary, no in-place upgrade (uninstall 0.6.x first)."
+    },
+    {
       "version": "0.6.9",
+      "version_code": 9,
       "date": "2026-08-03",
       "type": "minor",
-      "summary": "13 R-rounds merged: inline image paste (R160), first-run onboarding (R161), multi-chat tabs (R174), hardware detector + Ollama recommender (R175), code block Copy button (R176), AI chat titles (R179), chat model switcher (R186), voice input MediaRecorder (R188), 14-day trial PRO auto-start (R191), Pulse Agent v3.1: retry/budget/telemetry/runAgentLoop (R194), conversation memory sliding window (R197), streaming tool call parser (R200). 47->443 vitest (+396, 8.4x). NSIS 12.30 MB / SHA-256 6D7E40C5:EF5F1B, MSI 16.96 MB / SHA-256 4CED8E47:0B85A1, portable 10.01 MB / SHA-256 F23CA356:045BC3."
-    },
-    {
-      "version": "0.6.7",
-      "date": "2026-08-02",
-      "type": "patch",
-      "summary": "R100 build-infra fixes (prebuild-kill.ps1 ollama.exe orphan killer, Cargo.lock 0.6.5 sync) + R115 R114-audit quick win #1 (Apache 2.0 SPDX-License-Identifier headers on previously-missing source files). 8/12 strict hard rules on pulse-desktop, 10/12 targeted with R115 quick wins #2 and #3 (gradient border + 44dp touch targets). R100 polish already shipped: low_confidence UI consumer and tree-sitter Smart Engine. NSIS 12.27 MB / SHA-256 08FD2FB2:3F8E65, MSI 16.94 MB / SHA-256 D246AFFC:AD2982D, binary 9.98 MB / SHA-256 A8760845:6623E3."
-    },
-    {
-      "version": "0.6.5",
-      "date": "2026-08-01",
-      "type": "minor",
-      "summary": "R100: first Windows desktop public release. Tauri v2 side panel that talks to local Ollama. NSIS + MSI installers. Smart Engine v3 on by default. ~6.4 MB NSIS / ~7.1 MB MSI. Subsequent retag 0.6.5 → 0.6.7 in R115 covers the R100 build-infra fixes and the R115 R114-audit quick win #1."
+      "summary": "Last Tauri/Rust release. 13 R-rounds merged: inline image paste (R160), first-run onboarding (R161), multi-chat tabs (R174), hardware detector + Ollama recommender (R175), code block Copy button (R176), AI chat titles (R179), chat model switcher (R186), voice input MediaRecorder (R188), 14-day trial PRO auto-start (R191), Pulse Agent v3.1: retry/budget/telemetry/runAgentLoop (R194), conversation memory sliding window (R197), streaming tool call parser (R200). 47->443 vitest (+396, 8.4x). NSIS 12.30 MB / SHA-256 6D7E40C5:EF5F1B, MSI 16.96 MB / SHA-256 4CED8E47:0B85A1, portable 10.01 MB / SHA-256 F23CA356:045BC3."
     }
   ],
   "releases": [
+    {
+      "version": "0.1.0",
+      "date": "2026-08-11",
+      "channel": "desktop",
+      "type": "major",
+      "title": "Kotlin rewrite: Jetpack Compose Desktop, no Tauri, JRE bundled",
+      "summary": "Pulse for Windows is now a Kotlin / Jetpack Compose Desktop app. Tray icon, global hotkey, chat side panel, on-device AI inference, Markdown notes, voice input. Compose Multiplatform nativeDistributions, jlink-bundled JRE (no external Java dep). NSIS 110 MB / MSI 109 MB. Replaces the 0.6.x Tauri line entirely.",
+      "bullets": [
+        "Kotlin / Jetpack Compose Desktop (Compose Multiplatform 1.7.x). No Tauri, no WebView, no Rust runtime.",
+        "Tray icon + global hotkey, chat side panel, on-device AI inference (Ollama / local model).",
+        "Markdown notes, voice input via MediaRecorder, 14-day trial PRO auto-start.",
+        "NSIS 110 MB (jlinked JRE inside, no external Java dep), MSI 109 MB.",
+        "R268-signed (jpackage NSIS + WiX MSI). Authenticode not yet applied; SHA-256 is the source of truth.",
+        "In-place upgrade from 0.6.x is NOT supported (different stack, different binary). Uninstall 0.6.x first."
+      ],
+      "url": "/changelog/#v0.1.0",
+      "featured": true
+    },
     {
       "version": "0.6.9",
       "date": "2026-08-03",
       "channel": "desktop",
       "type": "minor",
-      "title": "13 R-rounds merged: image paste, onboarding, multi-chat, voice input",
-      "summary": "Pulse Agent v3.1 lands (retry / budget / telemetry / runAgentLoop), inline image paste, first-run onboarding, multi-chat tabs, hardware detector + Ollama recommender, voice input via MediaRecorder, 14-day trial PRO auto-start, streaming tool call parser, conversation memory sliding window.",
+      "title": "13 R-rounds merged: image paste, onboarding, multi-chat, voice input (Tauri line)",
+      "summary": "Pulse Agent v3.1 lands (retry / budget / telemetry / runAgentLoop), inline image paste, first-run onboarding, multi-chat tabs, hardware detector + Ollama recommender, voice input via MediaRecorder, 14-day trial PRO auto-start, streaming tool call parser, conversation memory sliding window. Tauri v2 side panel, last release on the Tauri stack.",
       "bullets": [
         "Inline image paste into chat (clipboard PNG/JPEG, base64 round-trip).",
         "First-run onboarding: 3-slide flow, opt-in per surface (Local-first, Voice + AI, Markdown).",
@@ -58,43 +73,6 @@
         "Vitest: 47 -> 443 (+396, 8.4x). NSIS 12.30 MB / MSI 16.96 MB / portable 10.01 MB."
       ],
       "url": "/changelog/#v0.6.9",
-      "featured": true
-    },
-    {
-      "version": "0.6.7",
-      "date": "2026-08-02",
-      "channel": "desktop",
-      "type": "patch",
-      "title": "R100 build-infra fixes + R115 SPDX headers, 8/12 strict hard rules",
-      "summary": "Prebuild-kill.ps1 (ollama.exe orphan killer), Cargo.lock 0.6.5 sync, SPDX-License-Identifier headers on previously-missing source files. Smart Engine v3 already on by default.",
-      "bullets": [
-        "prebuild-kill.ps1: kills orphan ollama.exe before tauri build, removes the R99 build-fail mode.",
-        "Cargo.lock committed alongside Cargo.toml, exact dependency tree reproducible from a fresh clone.",
-        "SPDX-License-Identifier headers on previously-missing source files (R115 R114-audit quick win #1).",
-        "Smart Engine v3 on by default: recall gate (PassThreshold = 5) picks the local model best matched to the query.",
-        "Tree-sitter Smart Engine classifies JS / TS / Python / Rust / Go at the AST level before the model call.",
-        "8/12 strict hard rules on pulse-desktop; 10/12 targeted with R115 quick wins #2 and #3 (gradient border + 44dp touch targets).",
-        "NSIS 12.27 MB, MSI 16.94 MB, binary 9.98 MB. SHA-256 pinned in /updates/desktop.json."
-      ],
-      "url": "/changelog/#v0.6.7",
-      "featured": false
-    },
-    {
-      "version": "0.6.5",
-      "date": "2026-08-01",
-      "channel": "desktop",
-      "type": "minor",
-      "title": "R100: first Windows desktop public release, Tauri v2 side panel",
-      "summary": "Pulse v0.6.5 is the first Windows desktop public release. Tauri v2 side panel that talks to a local Ollama instance. NSIS + MSI installers. Smart Engine v3 on by default.",
-      "bullets": [
-        "First Windows desktop public release: Tauri v2 side panel, lives in the system tray, opens with a global hotkey.",
-        "NSIS installer (per-user) and MSI installer (per-machine, for IT admins).",
-        "Smart Engine v3 on by default (PassThreshold = 5).",
-        "~6.4 MB NSIS, ~7.1 MB MSI at launch.",
-        "Ollama runtime committed to the repo (no separate install step for first-run users on Windows).",
-        "Subsequent retag 0.6.5 -> 0.6.7 in R115 covers the R100 build-infra fixes and R115 R114-audit quick win #1."
-      ],
-      "url": "/changelog/#v0.6.5",
       "featured": false
     }
   ]
