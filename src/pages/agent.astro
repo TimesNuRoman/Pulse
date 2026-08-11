@@ -1,0 +1,455 @@
+---
+// R269: /agent/ — web-demo of Pulse chat. Auth-gated: the first
+// send without a license shows an inline card "Log in to continue"
+// instead of streaming a reply. This is the same gate the desktop
+// app applies on first launch, just surfaced as a marketing
+// conversion: a trial or a license key unlocks the chat.
+//
+// No backend wiring here — the page is static. Once the Pulse Agent
+// HTTP endpoint (R-roadmap, separate task) lands, this view becomes
+// a thin client that POSTs to it with the bearer token. For now
+// it's a UX shell: typing, markdown-ish bubbles, sample prompts.
+
+import Base from '../layouts/Base.astro';
+
+const PAGE_TITLE = 'Pulse Agent — chat with your local AI';
+const PAGE_DESC  = 'Try Pulse Agent in the browser. Sign in with your license or start a 14-day trial to send your first message.';
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-home.png"
+  ctaText="Download ↓"
+  ctaHref="/download/"
+  ctaVisible={true}
+  footerLicense=""
+  footerVersion=""
+  canonical="https://ownlocalml.com/agent/"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <main id="main" class="agent" data-page="agent">
+    <section class="agent__panel reveal">
+      <header class="agent__head">
+        <span class="eyebrow">Pulse Agent</span>
+        <h1 class="agent__title">Talk to a local model. From your browser.</h1>
+        <p class="agent__sub">
+          Pulse Agent is the same engine that lives in the desktop side panel.
+          Type a prompt, hit send, and Pulse routes it through the local model
+          you have running on the machine — gemma, llama, qwen, mistral.
+          No upload, no cloud fallback.
+        </p>
+      </header>
+
+      <div class="agent__chat" id="agent-chat" role="log" aria-live="polite" aria-label="Chat transcript">
+        <div class="agent__bubble agent__bubble--agent" data-role="agent">
+          <span class="agent__avatar" aria-hidden="true">P</span>
+          <div class="agent__msg">
+            Hi, I'm Pulse. To start a conversation I need a license — the same
+            one you use in the desktop app, or a fresh 14-day trial key. Pick
+            one of the prompts below or write your own; once you hit send,
+            I'll ask you to log in.
+          </div>
+        </div>
+      </div>
+
+      <div class="agent__prompts" aria-label="Sample prompts">
+        <button class="agent__prompt" type="button" data-prompt="Summarize the last 5 notes I edited this week.">
+          Summarize my last notes
+        </button>
+        <button class="agent__prompt" type="button" data-prompt="Find the note about the Pulse 0.6 release and rewrite the rollout section.">
+          Find + rewrite a note
+        </button>
+        <button class="agent__prompt" type="button" data-prompt="Plan the steps to migrate the desktop build from Tauri to Compose.">
+          Plan a migration
+        </button>
+        <button class="agent__prompt" type="button" data-prompt="Explain what Pulse Agent v3 routing modes do in plain English.">
+          Explain routing modes
+        </button>
+      </div>
+
+      <form class="agent__form" id="agent-form" autocomplete="off">
+        <label class="visually-hidden" for="agent-input">Message</label>
+        <textarea
+          class="agent__input"
+          id="agent-input"
+          name="message"
+          rows="1"
+          placeholder="Type a message, then press Enter…"
+          aria-describedby="agent-help"
+        ></textarea>
+        <button class="agent__send" type="submit" id="agent-send" aria-label="Send message">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 5v14M19 12l-7 7-7-7"/>
+          </svg>
+        </button>
+      </form>
+      <p class="agent__help" id="agent-help">
+        Enter to send · Shift+Enter for newline · on-device, no upload
+      </p>
+
+      <div class="agent__gate" id="agent-gate" hidden role="status">
+        <div class="agent__gate-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <div class="agent__gate-body">
+          <h2 class="agent__gate-title">Log in to continue.</h2>
+          <p class="agent__gate-text">
+            Your message is held locally — nothing is sent until you unlock Pulse.
+            Use a license key from a previous purchase, or start a fresh 14-day trial.
+          </p>
+          <div class="agent__gate-actions">
+            <a class="btn btn--primary" href="/login/?next=/agent/">Log in →</a>
+            <a class="btn btn--ghost" href="/pricing/">Start 14-day trial</a>
+          </div>
+        </div>
+        <button class="agent__gate-close" type="button" id="agent-gate-close" aria-label="Dismiss">×</button>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style is:global>
+  /* ─── /agent — chat panel (R269) ───────────────────── */
+  .agent {
+    padding: clamp(112px, 14vw, 144px) 0 4rem;
+  }
+  .agent__panel {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .agent__head { text-align: center; }
+  .agent__title {
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0.25rem 0 0.5rem;
+    line-height: 1.2;
+  }
+  .agent__sub {
+    color: var(--fg-dim);
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 60ch;
+    margin: 0 auto;
+  }
+
+  .agent__chat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius);
+    min-height: 320px;
+    max-height: 520px;
+    overflow-y: auto;
+  }
+  .agent__bubble {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+  .agent__bubble--user {
+    flex-direction: row-reverse;
+  }
+  .agent__avatar {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--purple);
+    color: var(--bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .agent__bubble--user .agent__avatar {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--fg);
+  }
+  .agent__msg {
+    padding: 0.6rem 0.85rem;
+    border-radius: 14px;
+    background: rgba(192, 202, 245, 0.08);
+    color: var(--fg);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    max-width: 80%;
+  }
+  .agent__bubble--user .agent__msg {
+    background: var(--purple);
+    color: var(--bg);
+  }
+  .agent__bubble--gate {
+    align-items: stretch;
+  }
+  .agent__bubble--gate .agent__msg {
+    background: rgba(255, 167, 38, 0.08);
+    border: 1px solid rgba(255, 167, 38, 0.25);
+    color: var(--fg);
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .agent__prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+  .agent__prompt {
+    background: transparent;
+    color: var(--fg-dim);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.85rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition:
+      border-color var(--dur) var(--ease),
+      color var(--dur) var(--ease),
+      background var(--dur) var(--ease);
+  }
+  .agent__prompt:hover {
+    border-color: var(--purple);
+    color: var(--fg);
+    background: rgba(192, 202, 245, 0.04);
+  }
+
+  .agent__form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    padding: 0.6rem 0.6rem 0.6rem 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    transition: border-color var(--dur) var(--ease);
+  }
+  .agent__form:focus-within { border-color: var(--purple); }
+  .agent__input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    resize: none;
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    max-height: 200px;
+    padding: 0.4rem 0;
+  }
+  .agent__input::placeholder { color: var(--muted); }
+  .agent__send {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--purple);
+    color: var(--bg);
+    border: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+  }
+  .agent__send:hover { transform: translateY(-1px); }
+  .agent__send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .agent__help {
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-align: center;
+    margin: -0.5rem 0 0;
+  }
+
+  .agent__gate {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    padding: 1.1rem 1.25rem;
+    background: rgba(255, 167, 38, 0.06);
+    border: 1px solid rgba(255, 167, 38, 0.25);
+    border-radius: var(--radius);
+    position: relative;
+  }
+  .agent__gate[hidden] { display: none; }
+  .agent__gate-icon {
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: rgba(255, 167, 38, 0.18);
+    color: #ffa726;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .agent__gate-body { flex: 1; }
+  .agent__gate-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0 0 0.25rem;
+  }
+  .agent__gate-text {
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin: 0 0 0.75rem;
+    max-width: 56ch;
+  }
+  .agent__gate-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .agent__gate-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.6rem;
+    background: transparent;
+    border: 0;
+    color: var(--muted);
+    font-size: 1.4rem;
+    line-height: 1;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .agent__gate-close:hover {
+    color: var(--fg);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  @media (max-width: 640px) {
+    .agent__form { padding: 0.5rem 0.5rem 0.5rem 0.85rem; }
+    .agent__input { font-size: 16px; } /* avoid iOS zoom on focus */
+  }
+</style>
+
+<script>
+  // R269: /agent — chat UX shell. Auth-gate on first send without a
+  // license. No backend wiring; once the Pulse Agent HTTP endpoint
+  // lands, replace the gate branch with a POST to the real API.
+  const $chat = document.getElementById('agent-chat');
+  const $form = document.getElementById('agent-form');
+  const $input = document.getElementById('agent-input');
+  const $send = document.getElementById('agent-send');
+  const $gate = document.getElementById('agent-gate');
+  const $gateClose = document.getElementById('agent-gate-close');
+  const $prompts = document.querySelectorAll('.agent__prompt');
+
+  if (!$chat || !$form || !$input || !$send || !$gate) {
+    // Page structure missing; bail.
+  } else {
+    // Auth heuristic: any of these = "logged in enough to send".
+    // License key stored from /login/ form (login.astro:188) and
+    // explicit session flags from any future account flow.
+    const AUTH_KEYS = ['pulse_session', 'pulse_license', 'pulse_pending_license'];
+    const isAuthed = () => {
+      try {
+        return AUTH_KEYS.some((k) => !!localStorage.getItem(k));
+      } catch { return false; }
+    };
+
+    const addBubble = (role, text) => {
+      const wrap = document.createElement('div');
+      wrap.className = `agent__bubble agent__bubble--${role}`;
+      wrap.dataset.role = role;
+      const av = document.createElement('span');
+      av.className = 'agent__avatar';
+      av.setAttribute('aria-hidden', 'true');
+      av.textContent = role === 'user' ? 'You' : 'P';
+      const msg = document.createElement('div');
+      msg.className = 'agent__msg';
+      msg.textContent = text;
+      wrap.append(av, msg);
+      $chat.append(wrap);
+      $chat.scrollTop = $chat.scrollHeight;
+      return wrap;
+    };
+
+    const showGate = () => {
+      $gate.hidden = false;
+      $gate.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+    const hideGate = () => { $gate.hidden = true; };
+
+    // Auto-resize the textarea as the user types.
+    $input.addEventListener('input', () => {
+      $input.style.height = 'auto';
+      $input.style.height = Math.min($input.scrollHeight, 200) + 'px';
+    });
+
+    // Enter to send, Shift+Enter for newline.
+    $input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        $form.requestSubmit();
+      }
+    });
+
+    // Click any sample prompt -> fill the input.
+    $prompts.forEach((p) => {
+      p.addEventListener('click', () => {
+        $input.value = p.dataset.prompt || '';
+        $input.focus();
+        $input.dispatchEvent(new Event('input'));
+      });
+    });
+
+    $gateClose?.addEventListener('click', hideGate);
+
+    $form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = ($input.value || '').trim();
+      if (!text) return;
+
+      addBubble('user', text);
+      $input.value = '';
+      $input.style.height = 'auto';
+      $send.disabled = true;
+
+      if (!isAuthed()) {
+        // R269: gate the reply. We don't fake a streaming answer;
+        // the message sits in the transcript and the gate prompts
+        // the user to log in or start a trial.
+        addBubble(
+          'agent',
+          "I held your message locally — it isn't on the wire yet. " +
+          'Log in or start a trial below and the next send will go through.'
+        );
+        showGate();
+        $send.disabled = false;
+        return;
+      }
+
+      // Authed: a thin reply placeholder until the real Agent HTTP
+      // endpoint lands (separate R). The point of R269 is the gate,
+      // not a fake streaming UX.
+      addBubble(
+        'agent',
+        "Auth check passed. The web Agent endpoint isn't wired up yet — " +
+        'this is a UX shell. Use the desktop app for the real conversation.'
+      );
+      $send.disabled = false;
+    });
+  }
+</script>

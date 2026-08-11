@@ -50,8 +50,9 @@ export const RELEASE_CHANNEL: ReleaseTrack = 'stable';
 export const WINDOWS_NSIS_URL: string = desktopManifest.latest_nsis_url;
 /** Windows MSI installer (per-machine, for IT admins). Relative path. */
 export const WINDOWS_MSI_URL: string = desktopManifest.latest_msi_url;
-/** Windows portable binary (no installer wrapper). Relative path. */
-export const WINDOWS_PORTABLE_URL: string = desktopManifest.latest_binary_url;
+/** Windows portable binary (no installer wrapper). Empty string if the
+ *  manifest omits it — Compose rewrite (R268) ships NSIS+MSI only. */
+export const WINDOWS_PORTABLE_URL: string = desktopManifest.latest_binary_url ?? '';
 /** Android APK. The JSON stores a full https URL; we strip the host
  *  so every URL constant in this module has the same shape (relative). */
 export const ANDROID_APK_URL: string = androidManifest.latest_apk_url.replace(
@@ -62,13 +63,13 @@ export const ANDROID_APK_URL: string = androidManifest.latest_apk_url.replace(
 // ─── File sizes (bytes) ────────────────────────────────────────────
 export const WINDOWS_NSIS_SIZE_BYTES: number = desktopManifest.latest_nsis_size_bytes;
 export const WINDOWS_MSI_SIZE_BYTES: number = desktopManifest.latest_msi_size_bytes;
-export const WINDOWS_PORTABLE_SIZE_BYTES: number = desktopManifest.latest_binary_size_bytes;
+export const WINDOWS_PORTABLE_SIZE_BYTES: number = desktopManifest.latest_binary_size_bytes ?? 0;
 export const ANDROID_APK_SIZE_BYTES: number = androidManifest.latest_apk_size_bytes;
 
 // ─── SHA-256 fingerprints (full 64-char hex) ───────────────────────
 export const WINDOWS_NSIS_SHA256: string = desktopManifest.latest_nsis_sha256;
 export const WINDOWS_MSI_SHA256: string = desktopManifest.latest_msi_sha256;
-export const WINDOWS_PORTABLE_SHA256: string = desktopManifest.latest_binary_sha256;
+export const WINDOWS_PORTABLE_SHA256: string = desktopManifest.latest_binary_sha256 ?? '';
 export const ANDROID_APK_SHA256: string = androidManifest.latest_apk_sha256;
 
 // ─── Android specifics ─────────────────────────────────────────────
@@ -141,8 +142,12 @@ export function formatSizeMB(bytes: number): string {
   return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 }
 
-/** Formats a 64-char SHA-256 as "first8…last4" for compact UI display. */
-export function shortSha(sha: string): string {
+/** Formats a 64-char SHA-256 as "first8…last4" for compact UI display.
+ *  Returns an empty string if `sha` is missing — Compose rewrite
+ *  (R268) drops the Windows portable .exe, so the corresponding
+ *  `latest_binary_sha256` field is null in the manifest. */
+export function shortSha(sha: string | null | undefined): string {
+  if (!sha) return '';
   return `${sha.slice(0, 8)}…${sha.slice(-4)}`;
 }
 
