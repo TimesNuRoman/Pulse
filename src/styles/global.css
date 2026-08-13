@@ -360,13 +360,18 @@ section + section { border-top: 1px solid var(--border); }
   background: rgba(187, 154, 247, 0.10);
 }
 /* R270: "Ask Pulse" nav link — purple outline pill, matches the
-   chat icon in the spec. Hover lifts the bg to 20% purple. */
+   chat icon in the spec. Hover lifts the bg to 20% purple.
+   R273: nowrap + flex-shrink:0 so the chip never collapses to two
+   lines when the nav row is tight (was: "Ask / Pulse" wrapping on
+   1280px viewports with 7 nav items + Login + CTA in the row). */
 .topnav__link--cta {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
   height: 32px;
+  white-space: nowrap;
+  flex-shrink: 0;
   border: 1px solid var(--purple);
   background: rgba(187, 154, 247, 0.10);
   color: var(--purple);

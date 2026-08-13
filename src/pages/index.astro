@@ -101,7 +101,7 @@ const softwareAppJsonLd = {
           </a>
         </div>
         <p class="home-hero-ray__meta">Install via winget · Try Pulse v{latestDesktopVersion}</p>
-        <a class="home-hero-ray__more" href="/changelog/#v0.6.9">
+        <a class="home-hero-ray__more" href="/changelog/#v3-1-0">
           <span class="home-hero-ray__more-pill">Meet Pulse v3.1</span>
           <span class="home-hero-ray__more-sep" aria-hidden="true">|</span>
           <span class="home-hero-ray__more-link">Learn more →</span>
@@ -299,7 +299,7 @@ const softwareAppJsonLd = {
       </div>
     </section>
 
-    <!-- ─── Pick your device — one download CTA (R261) ── -->
+    <!-- ─── Pick your device — one download CTA (R261) + platforms row (R273) ── -->
     <section class="home-get" id="get">
       <div class="container">
         <header class="home-get__head reveal">
@@ -310,6 +310,9 @@ const softwareAppJsonLd = {
             Download ↓
           </a>
         </div>
+        <p class="home-get__platforms reveal" aria-label="Supported platforms">
+          Windows · Android · macOS · Linux · iOS
+        </p>
       </div>
     </section>
 
@@ -765,7 +768,7 @@ const softwareAppJsonLd = {
     margin: 0;
   }
 
-  /* ─── Pick your device — one download CTA (R261) ── */
+  /* ─── Pick your device — one download CTA (R261) + platforms row (R273) ── */
   .home-get { padding: var(--sp-5) 0 4rem; }
   .home-get__head { text-align: center; margin: 0 auto 1.75rem; }
   .home-get__head h2 { font-size: var(--fs-2); margin: 0; }
@@ -776,6 +779,13 @@ const softwareAppJsonLd = {
   .home-get__btn {
     min-width: 240px;
     justify-content: center;
+  }
+  .home-get__platforms {
+    margin: 1.25rem 0 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.92rem;
+    letter-spacing: 0.04em;
   }
 
   /* ─── Free ────────────────────────────────────────── */
