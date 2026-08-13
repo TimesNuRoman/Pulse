@@ -1,6 +1,12 @@
 // R257: /changelog/rss.xml — RSS 2.0 feed of the changelog
 // content collection. Replaces the old hardcoded /changelog.xml
 // (the old endpoint is no longer published; the URL has moved).
+//
+// RSS fix: RSS 2.0 says <description> is plain text. We were putting
+// HTML in it, so readers showed literal <p>/<h3>/<ul>/<li>/<b> tags.
+// Fix: put HTML in <content:encoded> (via the `content` field on each
+// item — @astrojs/rss auto-wraps in CDATA and adds the namespace)
+// and a short plain-text teaser in <description>.
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
@@ -29,14 +35,14 @@ export async function GET(context: APIContext) {
       const html = renderItemHtml(e.data.title, e.data.summary, groups);
       return {
         title: `Pulse v${e.data.version} — ${e.data.title}`,
+        link: itemLink,
         pubDate: e.data.date,
-        description: html,
+        description: renderItemText(e.data.summary, groups),
+        content: html,
         categories: e.data.platforms.map((p) =>
           p === 'pro' ? 'PRO' : p.charAt(0).toUpperCase() + p.slice(1)
         ),
-        customData:
-          `<link>${itemLink}</link>` +
-          `<guid isPermaLink="false">pulse-v${e.data.version}</guid>`,
+        customData: `<guid isPermaLink="false">pulse-v${e.data.version}</guid>`,
       };
     }),
     stylesheet: false,
@@ -49,6 +55,14 @@ function esc(s: string): string {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+}
+function escText(s: string): string {
+  // Plain-text for <description>: escape entities, strip backticks/stars
+  // so feed readers don't show literal `code` or **bold** markers.
+  return esc(s)
+    .replace(/`/g, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
 }
 function inlineMdLite(s: string): string {
   let out = esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
@@ -69,4 +83,17 @@ function renderItemHtml(
     parts.push('</ul>');
   }
   return parts.join('');
+}
+function renderItemText(
+  summary: string | undefined,
+  groups: ReturnType<typeof parseChanges>,
+): string {
+  const lines: string[] = [];
+  if (summary) lines.push(escText(summary));
+  for (const g of groups) {
+    lines.push('');
+    lines.push(`${g.label}:`);
+    for (const it of g.items) lines.push(`  - ${escText(it)}`);
+  }
+  return lines.join('\n').trim();
 }
