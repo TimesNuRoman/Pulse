@@ -1,78 +1,70 @@
 {
-  "latest_version": "0.1.0",
-  "latest_nsis_url": "/downloads/pulse-windows-0.1.0-setup.exe",
-  "latest_nsis_size_bytes": 110044672,
-  "latest_nsis_sha256": "B043987F530594745E1F093681285EA622892A0099D103279D7F1CC3DB99AA68",
-  "latest_msi_url": "/downloads/pulse-windows-0.1.0-setup.msi",
-  "latest_msi_size_bytes": 109378596,
-  "latest_msi_sha256": "100554B27947634C79EB350F66EBAEC4F80167491D5C12F1B696FC2664F4027C",
+  "latest_version": "0.4.0",
+  "latest_nsis_url": "/downloads/pulse-windows-0.4.0-setup.exe",
+  "latest_nsis_size_bytes": 117487616,
+  "latest_nsis_sha256": "259F44A50CE4E1EB1492F07424FFE89CA4793EFBE123071A17C60289DD85B480",
+  "latest_msi_url": "/downloads/pulse-windows-0.4.0-setup.msi",
+  "latest_msi_size_bytes": 116821209,
+  "latest_msi_sha256": "720A57CD1EE093AD5A4FDA5162489C126877A260DB5C3AD4C5A2A6444C335367",
   "latest_binary_url": null,
   "latest_binary_size_bytes": null,
   "latest_binary_sha256": null,
-  "release_notes_url": "/changelog/#v0.1.0",
-  "min_supported_version": "0.1.0",
+  "release_notes_url": "/changelog/#v0.4.0",
+  "min_supported_version": "0.4.0",
   "build_target": "x86_64-pc-windows-msvc",
   "tauri_version": null,
-  "compose_version": "1.7.x (Jetpack Compose Desktop via Compose Multiplatform 1.7.x)",
+  "compose_version": "1.7.x (Jetpack Compose Desktop via Compose Multiplatform 1.7.x); Kotlin 2.0.21; jpackage via Gradle `packageVersion = 1.0.0` (binary name Pulse-1.0.0.{exe,msi}; renamed on upload to pulse-windows-0.4.0-setup.{exe,msi}).",
   "min_os": "Windows 10 (build 17763)",
-  "signature_scheme": "jpackage (NSIS) + WiX (MSI) — Authenticode not yet signed, IT admins should verify SHA-256 against the published R268 release notes.",
+  "signature_scheme": "jpackage (NSIS) + WiX (MSI) — Authenticode not yet signed, IT admins should verify SHA-256 against the published R272 release notes.",
   "signed_by": "jpackage build (no Authenticode yet). Compose Desktop nativeDistributions on a clean Windows runner.",
-  "re_signed_round": "R268",
-  "re_signed_at": "2026-08-11",
-  "previous_signed_by": "Tauri build (R115, v0.6.9). R268 retag 0.6.9 -> 0.1.0 covers the Kotlin/Compose rewrite. NSIS+MSI ship with a JRE bundle (jlink, no external Java dep); binary is NSIS repackaged as a single EXE for portable use. ~110 MB each (jlinked JRE inside).",
+  "re_signed_round": "R272",
+  "re_signed_at": "2026-08-13",
+  "previous_signed_by": "R268 Kotlin/Compose 0.1.0 (B043987F/100554B2). R272 retag 0.1.0 -> 0.4.0 — same jpackage build flow, Coder re-ran gradle packageExe/packageMsi against the initial-commit tree (67e9d32). NSIS 117 MB / SHA-256 259F44A5...B480, MSI 116 MB / SHA-256 720A57CD...5367. ~7 MB larger than R268 because the Compose 1.7.0 / Skiko runtime is identical but the jpackage layer produced slightly more compressed bundled resources. Different binary, no in-place upgrade (uninstall 0.1.0 first).",
   "versions": [
+    {
+      "version": "0.4.0",
+      "version_code": 1,
+      "date": "2026-08-13",
+      "type": "minor",
+      "summary": "R272 second Coder pass — re-built via jpackage from the same Kotlin/Compose source as 0.1.0. NSIS 117 MB / SHA-256 259F44A5...B480, MSI 116 MB / SHA-256 720A57CD...5367. Binary name on disk is Pulse-1.0.0.{exe,msi} (Gradle packageVersion=1.0.0); renamed on upload to pulse-windows-0.4.0-setup.{exe,msi}. Supersedes R268/0.1.0 (different binary, no in-place upgrade)."
+    },
     {
       "version": "0.1.0",
       "version_code": 1,
       "date": "2026-08-11",
       "type": "major",
-      "summary": "Kotlin rewrite (Jetpack Compose Desktop via Compose Multiplatform). Pulse is now a Compose app: tray icon, global hotkey, chat side panel, on-device AI inference (Ollama / local model), Markdown notes, voice input, no Tauri / no WebView / no Rust runtime. NSIS 110 MB / SHA-256 B043987F...9AA68, MSI 109 MB / SHA-256 100554B2...027C. Replaces the 0.6.x Tauri line entirely — different stack, different binary, no in-place upgrade (uninstall 0.6.x first)."
-    },
-    {
-      "version": "0.6.9",
-      "version_code": 9,
-      "date": "2026-08-03",
-      "type": "minor",
-      "summary": "Last Tauri/Rust release. 13 R-rounds merged: inline image paste (R160), first-run onboarding (R161), multi-chat tabs (R174), hardware detector + Ollama recommender (R175), code block Copy button (R176), AI chat titles (R179), chat model switcher (R186), voice input MediaRecorder (R188), 14-day trial PRO auto-start (R191), Pulse Agent v3.1: retry/budget/telemetry/runAgentLoop (R194), conversation memory sliding window (R197), streaming tool call parser (R200). 47->443 vitest (+396, 8.4x). NSIS 12.30 MB / SHA-256 6D7E40C5:EF5F1B, MSI 16.96 MB / SHA-256 4CED8E47:0B85A1, portable 10.01 MB / SHA-256 F23CA356:045BC3."
+      "summary": "R268 first Kotlin/Compose rewrite. NSIS 110 MB / SHA-256 B043987F...9AA68, MSI 109 MB / SHA-256 100554B2...027C. Superseded by R272/0.4.0 (never published to R2)."
     }
   ],
   "releases": [
+    {
+      "version": "0.4.0",
+      "date": "2026-08-13",
+      "channel": "desktop",
+      "type": "minor",
+      "title": "R272 second Coder pass on the desktop rewrite",
+      "summary": "Kotlin/Compose desktop, second Coder build. NSIS 117 MB / MSI 116 MB, jpackage output, no Authenticode yet (verify SHA-256). Supersedes R268/0.1.0.",
+      "bullets": [
+        "Kotlin 2.0.21 + Jetpack Compose Multiplatform 1.7.0 (same as R268).",
+        "NSIS 117 MB / SHA-256 259F44A5...B480, MSI 116 MB / SHA-256 720A57CD...5367.",
+        "jpackage output named Pulse-1.0.0.{exe,msi} on disk; renamed to pulse-windows-0.4.0-setup.{exe,msi} for R2 download.",
+        "Different binary from R268/0.1.0 — no in-place upgrade (uninstall 0.1.0 first if it ever ran)."
+      ],
+      "url": "/changelog/#v0.4.0",
+      "featured": true
+    },
     {
       "version": "0.1.0",
       "date": "2026-08-11",
       "channel": "desktop",
       "type": "major",
-      "title": "Kotlin rewrite: Jetpack Compose Desktop, no Tauri, JRE bundled",
-      "summary": "Pulse for Windows is now a Kotlin / Jetpack Compose Desktop app. Tray icon, global hotkey, chat side panel, on-device AI inference, Markdown notes, voice input. Compose Multiplatform nativeDistributions, jlink-bundled JRE (no external Java dep). NSIS 110 MB / MSI 109 MB. Replaces the 0.6.x Tauri line entirely.",
+      "title": "Kotlin rewrite (never published to R2)",
+      "summary": "First Kotlin/Compose Multiplatform build. Superseded by R272/0.4.0; never shipped.",
       "bullets": [
-        "Kotlin / Jetpack Compose Desktop (Compose Multiplatform 1.7.x). No Tauri, no WebView, no Rust runtime.",
-        "Tray icon + global hotkey, chat side panel, on-device AI inference (Ollama / local model).",
-        "Markdown notes, voice input via MediaRecorder, 14-day trial PRO auto-start.",
-        "NSIS 110 MB (jlinked JRE inside, no external Java dep), MSI 109 MB.",
-        "R268-signed (jpackage NSIS + WiX MSI). Authenticode not yet applied; SHA-256 is the source of truth.",
-        "In-place upgrade from 0.6.x is NOT supported (different stack, different binary). Uninstall 0.6.x first."
+        "Kotlin/Compose 1.7.0 (R268). NSIS 110 MB / MSI 109 MB. Never uploaded to R2.",
+        "Build SHA was B043987F/100554B2 (R268 reference); no R2 download ever pointed at these."
       ],
       "url": "/changelog/#v0.1.0",
-      "featured": true
-    },
-    {
-      "version": "0.6.9",
-      "date": "2026-08-03",
-      "channel": "desktop",
-      "type": "minor",
-      "title": "13 R-rounds merged: image paste, onboarding, multi-chat, voice input (Tauri line)",
-      "summary": "Pulse Agent v3.1 lands (retry / budget / telemetry / runAgentLoop), inline image paste, first-run onboarding, multi-chat tabs, hardware detector + Ollama recommender, voice input via MediaRecorder, 14-day trial PRO auto-start, streaming tool call parser, conversation memory sliding window. Tauri v2 side panel, last release on the Tauri stack.",
-      "bullets": [
-        "Inline image paste into chat (clipboard PNG/JPEG, base64 round-trip).",
-        "First-run onboarding: 3-slide flow, opt-in per surface (Local-first, Voice + AI, Markdown).",
-        "Multi-chat tabs: open N parallel conversations, switch via the top tab bar.",
-        "Voice input on Windows: MediaRecorder captures mic audio, Whisper transcript posts to chat.",
-        "Pulse Agent v3.1: retry-with-budget, telemetry ring buffer, streaming tool call parser, runAgentLoop.",
-        "Hardware detector + Ollama recommender: picks a model from VRAM / RAM and lists compatible sizes.",
-        "Code block Copy button, AI chat titles (auto-name from first user turn), chat model switcher.",
-        "Vitest: 47 -> 443 (+396, 8.4x). NSIS 12.30 MB / MSI 16.96 MB / portable 10.01 MB."
-      ],
-      "url": "/changelog/#v0.6.9",
       "featured": false
     }
   ]
