@@ -34,6 +34,23 @@
   --shadow-sm:    0 1px 2px rgba(0,0,0,0.3);
   --shadow-md:    0 8px 24px rgba(0,0,0,0.4);
 
+  /* Glass surfaces (light/dark-aware).
+   * Dark mode uses semi-transparent white for the "frosted glass" effect
+   * over the deep blue background. Light mode flips to semi-transparent
+   * black so the same effect works over a light background. */
+  --glass:        rgba(255, 255, 255, 0.04);
+  --glass-strong: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --overlay:      rgba(0, 0, 0, 0.4);
+
+  /* TopNav / drawer — dark glass capsule on dark page, light glass on light page. */
+  --topnav-bg:           rgba(31, 35, 53, 0.72);
+  --topnav-bg-scrolled:  rgba(26, 27, 38, 0.88);
+  --topnav-border:       rgba(255, 255, 255, 0.08);
+
+  /* Decorative bg-layers: muted on dark, near-invisible on light. */
+  --bg-layer-opacity: 1;
+
   /* Layout */
   --radius:       14px;
   --radius-sm:    8px;
@@ -52,6 +69,58 @@
   /* Motion */
   --ease:         cubic-bezier(0.22, 1, 0.36, 1);
   --dur:          320ms;
+}
+
+/* ── Light theme (auto-applied when the device asks for light mode) ──
+   Tokyo Night Light palette. Same accent hues, but darker / more
+   saturated for legibility on a light background. Text and surfaces
+   flip to the Light side of the Tokyo Night family. The CSS custom
+   properties above are redefined wholesale — every consumer that
+   already uses var(--bg) / var(--fg) / var(--border) / etc picks up
+   the light values with no source change. */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:           #e1e2e7;
+    --bg-soft:      #d4d5de;
+    --surface:      #f3f4f8;
+    --surface-2:    #e8e9f0;
+    --border:       #a9b1d6;
+    --border-strong:#8990b3;
+    --fg:           #1f2335;
+    --fg-dim:       #4a5578;
+    --muted:        #5f6592;
+    --comment:      #848cb2;
+
+    --purple:       #7847bd;
+    --blue:         #2e7de9;
+    --cyan:         #4d8b9c;
+    --green:        #587539;
+    --yellow:       #8c6c00;
+    --red:          #8c4351;
+    --magenta:      #7c3a96;
+    --orange:       #b15c00;
+
+    --glow-purple:  0 0 40px rgba(120, 71, 189, 0.20);
+    --glow-blue:    0 0 40px rgba(46, 125, 233, 0.18);
+    --shadow-sm:    0 1px 2px rgba(31, 35, 53, 0.10);
+    --shadow-md:    0 8px 24px rgba(31, 35, 53, 0.12);
+
+    --glass:        rgba(31, 35, 53, 0.04);
+    --glass-strong: rgba(31, 35, 53, 0.08);
+    --glass-border: rgba(31, 35, 53, 0.10);
+    --overlay:      rgba(31, 35, 53, 0.35);
+
+    /* TopNav — frosted white capsule on light background. */
+    --topnav-bg:           rgba(255, 255, 255, 0.78);
+    --topnav-bg-scrolled:  rgba(255, 255, 255, 0.92);
+    --topnav-border:       rgba(31, 35, 53, 0.10);
+
+    /* Decorative bg-layers — quiet in light mode. The dark-mode beams /
+     * sweep / particles were tuned for a near-black backdrop; on light
+     * they read as noise. Multiply their container opacity by 0.25 and
+     * the page still feels alive but stops looking like a CSS glitch. */
+    --bg-layer-opacity: 0.25;
+  }
 }
 
 /* ── Modern reset ─────────────────────────────────────── */
@@ -78,6 +147,9 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  /* Tell the UA which scrollbar / form-control palette to use.
+   * "light dark" = follow the prefers-color-scheme media query. */
+  color-scheme: light dark;
   /* P0-2: Safe-area baseline (iPhone notch / dynamic island) */
   padding-top:    env(safe-area-inset-top, 0px);
   padding-right:  env(safe-area-inset-right, 0px);
@@ -298,13 +370,13 @@ section + section { border-top: 1px solid var(--border); }
   align-items: center;
   gap: 12px;
   padding: 0 12px 0 16px;
-  background: rgba(31, 35, 53, 0.72);
+  background: var(--topnav-bg);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--topnav-border);
   border-radius: 14px;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 var(--glass),
     0 8px 32px rgba(0, 0, 0, 0.32);
   transition: max-width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
               border-radius 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
@@ -316,8 +388,8 @@ section + section { border-top: 1px solid var(--border); }
   border-left: 0;
   border-right: 0;
   border-top: 0;
-  background: rgba(26, 27, 38, 0.85);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  background: var(--topnav-bg-scrolled);
+  box-shadow: inset 0 1px 0 var(--glass-strong);
 }
 
 .topnav__brand {
@@ -353,7 +425,7 @@ section + section { border-top: 1px solid var(--border); }
 }
 .topnav__link:hover {
   color: var(--fg);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--glass);
 }
 .topnav__link[aria-current="page"] {
   color: var(--purple);
@@ -456,7 +528,7 @@ section + section { border-top: 1px solid var(--border); }
 }
 .topnav__burger:hover {
   color: var(--fg);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--glass);
 }
 .topnav__burger svg { width: 18px; height: 18px; }
 
@@ -590,6 +662,10 @@ body.has-nav.is-scrolled main { padding-top: 56px; }
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
+  /* Light mode dials the decorative noise back; --bg-layer-opacity
+   * is 1 in dark, 0.25 in light. */
+  opacity: var(--bg-layer-opacity);
+  transition: opacity var(--dur) var(--ease);
 }
 .bg-sweep   { z-index: 1; }
 .bg-dots,

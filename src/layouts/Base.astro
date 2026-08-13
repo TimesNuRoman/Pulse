@@ -70,8 +70,13 @@ const showBackground = ['/', '/pricing', '/pricing/', '/download', '/download/']
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#1a1b26" />
+    {/* Follow the device's color scheme — the page renders dark by
+     * default and switches to a Tokyo Night Light palette when the
+     * device asks for light. The browser's own UI (scrollbar, form
+     * controls, autofill) follows the same value. */}
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#1a1b26" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#e1e2e7" media="(prefers-color-scheme: light)" />
 
     <title>{title}</title>
     <meta name="description" content={description} />

@@ -440,18 +440,18 @@ const softwareAppJsonLd = {
     gap: 0.75rem;
     padding: 0 0.5rem 0 1.1rem;
     border-radius: 9999px;       /* pill / capsule */
-    background: rgba(26, 27, 38, 0.6);
-    border: 1px solid var(--border);
+    background: var(--topnav-bg);
+    border: 1px solid var(--topnav-border);
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.4),
-      0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+      0 0 0 1px var(--glass) inset;
     transition:
       background var(--dur) var(--ease),
       border-color var(--dur) var(--ease),
       box-shadow var(--dur) var(--ease);
   }
   .ray-header.is-scrolled .ray-header__inner {
-    background: rgba(26, 27, 38, 0.85);
+    background: var(--topnav-bg-scrolled);
     border-color: var(--border-strong);
   }
 
@@ -558,7 +558,7 @@ const softwareAppJsonLd = {
     position: fixed;
     inset: calc(56px + clamp(12px, 1.6vw, 20px) + 8px) 0 0;
     z-index: 49;
-    background: rgba(26, 27, 38, 0.96);
+    background: var(--topnav-bg-scrolled);
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     display: flex;
@@ -614,6 +614,14 @@ const softwareAppJsonLd = {
     border-radius: 50%;
     filter: blur(80px);
     will-change: transform;
+    /* Light mode: the colored halos read too loud against a pale
+     * background. Half the intensity restores the glow without
+     * washing the page out. */
+    opacity: var(--home-hero-shape-opacity, 1);
+    transition: opacity var(--dur) var(--ease);
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --home-hero-shape-opacity: 0.45; }
   }
   .home-hero-ray__shape--1 {
     top: 70%;
