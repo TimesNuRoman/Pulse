@@ -22,14 +22,14 @@ const {
   showLogin = true,
 } = Astro.props;
 
-const links: { href: string; label: string }[] = [
+const links: { href: string; label: string; tuck?: boolean }[] = [
   { href: '/',           label: 'Home' },
   { href: '/pricing/',   label: 'Pricing' },
   { href: '/agent/',     label: 'Ask Pulse' },
   { href: '/download/',  label: 'Download' },
-  { href: '/faq/',       label: 'FAQ' },
-  { href: '/changelog/', label: 'Changelog' },
-  { href: '/privacy/',   label: 'Privacy' },
+  { href: '/faq/',       label: 'FAQ',         tuck: true },
+  { href: '/changelog/', label: 'Changelog',   tuck: true },
+  { href: '/privacy/',   label: 'Privacy',     tuck: true },
 ];
 
 // Active match: exact for `/`, prefix for everything else.
@@ -53,9 +53,13 @@ const isActive = (href: string) =>
     </a>
 
     <nav class="topnav__links" aria-label="Primary">
-      {links.map(({ href, label }) => (
+      {links.map(({ href, label, tuck }) => (
         <a
-          class={`topnav__link${href === '/agent/' ? ' topnav__link--cta' : ''}`}
+          class:list={[
+            'topnav__link',
+            href === '/agent/' && 'topnav__link--cta',
+            tuck && 'topnav__link--tuck',
+          ]}
           href={href}
           aria-current={isActive(href) ? 'page' : undefined}
         >{label}</a>

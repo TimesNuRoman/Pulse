@@ -465,6 +465,14 @@ section + section { border-top: 1px solid var(--border); }
   .topnav__links   { display: flex; }
   .topnav__inner   { padding: 0 12px 0 20px; gap: 16px; }
 }
+/* R274: on intermediate widths (768–1023) the row would otherwise
+   clip the right-side Download CTA (visible on /, /download, /pricing
+   at 777px: "Log in" + a sliver of purple square, "Download ↓" cut).
+   Hide the "tuck" links (FAQ / Changelog / Privacy — all duplicated in
+   the footer) so the row fits. Bring them back at ≥1024px. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .topnav__link--tuck { display: none; }
+}
 
 /* Drawer (mobile only) — same UX as the legacy drawer but bound to
    .nav-drawer so it pairs with the new .topnav. */
