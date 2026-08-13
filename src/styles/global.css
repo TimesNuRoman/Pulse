@@ -655,27 +655,26 @@ main, header, footer { position: relative; z-index: 20; }
   -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 90%);
 }
 
-/* ── Layer 4: vertical thin lines (static) ── */
+/* ── Layer 4: vertical thin lines (R275 — softened from 0.06 to 0.02) ── */
 .bg-vert {
   display: flex;
   justify-content: space-between;
   padding: 0 10%;
+  opacity: 0.35;
 }
 .bg-vert__line {
   width: 1px;
   height: 100%;
-  background: linear-gradient(to bottom, transparent 0%, rgba(187, 154, 247, 0.06) 30%, rgba(187, 154, 247, 0.06) 70%, transparent 100%);
+  background: linear-gradient(to bottom, transparent 0%, rgba(187, 154, 247, 0.02) 30%, rgba(187, 154, 247, 0.02) 70%, transparent 100%);
 }
 
-/* ── Layer 5: animated SVG lines (drift horizontally) ── */
-.bg-lines svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.bg-line { stroke-width: 1.5; fill: none; }
-.bg-line--1 { animation: drift-r  6s linear infinite; }
-.bg-line--2 { animation: drift-l  8s linear infinite; }
-.bg-line--3 { animation: drift-r 10s linear infinite; }
-.bg-line--4 { animation: drift-l  7s linear infinite; }
-@keyframes drift-r { from { transform: translateX(-40%); } to { transform: translateX(40%); } }
-@keyframes drift-l { from { transform: translateX(40%);  } to { transform: translateX(-40%); } }
+/* ── Layer 5: animated SVG lines — R275 removed.
+   The drifting horizontal SVG paths (drift-r / drift-l) cut
+   through hero text and looked like unfinished design. The other
+   background layers (beams + sweep + dots + particles) provide
+   enough motion. .bg-lines element is still mounted in Base.astro
+   for now but the SVG paths are no-ops without animation. ── */
+.bg-lines { display: none !important; }
 
 /* ── Layer 6: floating particles ── */
 .particle {
