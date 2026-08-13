@@ -2,21 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
-import { getLatestRelease } from '../data/releases';
 import '../styles/notes.css';
-import {
-  getLatestRelease,
-} from '../data/releases';
 
 // R120: site simplified for users. Strip roadmap / changelog /
 // implementation detail. Two product names (Pulse for Windows,
 // Pulse for Android), one download CTA, three plain bullets.
-// R239: the desktop "latest" version is now sourced from the
-// `releases` SSOT in public/updates/desktop.json (via
-// getLatestRelease). The download URLs in the JSON's
-// `latest_nsis_url` field remain the source of truth for the
-// artifact paths; the R239 SSOT provides the version string for
-// the visible "Latest vX.Y.Z" pill on the hero.
 //
 // R248d: home page only — replaced the inlined full-width nav
 // with a centered floating frosted-glass capsule, and rebuilt
@@ -31,9 +21,6 @@ import {
 // R234: every URL + size + version is sourced from
 // `src/lib/versions.ts` (the SSOT). The next version bump is a
 // 1-line edit to public/updates/*.json, not a search-replace.
-
-const latestDesktop = getLatestRelease('desktop');
-const latestDesktopVersion: string = latestDesktop.version;
 
 const PAGE_TITLE = 'Pulse — AI side panel for Windows and Android, paid with a 14-day trial';
 const PAGE_DESC = 'Pulse is a paid, local-first AI side panel for Windows and a notes app for Android. 14-day trial, then $20/month or $192/year. No account, no cloud, no telemetry.';
@@ -100,11 +87,11 @@ const softwareAppJsonLd = {
             Download ↓
           </a>
         </div>
-        <p class="home-hero-ray__meta">Install via winget · Try Pulse v{latestDesktopVersion}</p>
-        <a class="home-hero-ray__more" href="/changelog/#v3-1-0">
-          <span class="home-hero-ray__more-pill">Meet Pulse v3.1</span>
+        <p class="home-hero-ray__meta">Local install · 14-day trial · No account required</p>
+        <a class="home-hero-ray__more" href="/changelog/">
+          <span class="home-hero-ray__more-pill">Recent changes</span>
           <span class="home-hero-ray__more-sep" aria-hidden="true">|</span>
-          <span class="home-hero-ray__more-link">Learn more →</span>
+          <span class="home-hero-ray__more-link">Read the changelog →</span>
         </a>
       </div>
     </section>
@@ -311,7 +298,7 @@ const softwareAppJsonLd = {
           </a>
         </div>
         <p class="home-get__platforms reveal" aria-label="Supported platforms">
-          Windows · Android · macOS · Linux · iOS
+          Windows · Android · build from source for macOS / Linux
         </p>
       </div>
     </section>
