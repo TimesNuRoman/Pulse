@@ -1,0 +1,91 @@
+# Auto-deploy pulse-landing to Cloudflare Pages on every push to main.
+#
+# Setup (one-time, ~3 min):
+#   1. Create a Cloudflare API token with Pages:Edit permission:
+#      https://dash.cloudflare.com/profile/api-tokens
+#      Template: "Edit Cloudflare Pages" (or custom: Account > Cloudflare Pages > Edit)
+#   2. In the GitHub repo (TimesNuRoman/Pulse) go to:
+#        Settings -> Secrets and variables -> Actions -> New repository secret
+#      Add two secrets:
+#        CLOUDFLARE_API_TOKEN     <- the token from step 1
+#        CLOUDFLARE_ACCOUNT_ID    <- 6ffa9962caf4f7cccea377813149d009
+#   3. In the Cloudflare dashboard (one-time):
+#        Workers & Pages -> Create application -> Pages -> Upload assets
+#        Project name: pulse-landing
+#      (or skip this - the first `wrangler pages deploy` below will auto-create the project)
+#      Then in the Pages project -> Custom domains -> Set up a custom domain
+#        Domain: ownlocalml.com
+#        (this redirects the production traffic from the Worker to the Pages deployment)
+#
+# After the one-time setup: every push to main builds + deploys automatically.
+# Preview deployments are created for every PR; production deploys only on push to main.
+#
+# Why Pages, not the existing pulse-cf-worker?
+#   The CF Worker (pulse-cf-worker) currently serves the dist + handles /api/* routes
+#   (D1, R2, license checks). Pages only serves static assets, so /api/* would 404.
+#   The marketing pages (home, /pricing, /download, /changelog, /faq, /security, etc.)
+#   are pure static and deploy cleanly to Pages. The /api/* migration to Pages
+#   Functions is tracked as a separate R-round.
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build + Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # --ignore-scripts: pnpm 11 blocks post-install build scripts by default.
+      # esbuild + sharp are pre-built binaries so we don't need to compile them.
+      - name: Install dependencies
+        run: pnpm install --ignore-scripts
+
+      - name: Build
+        run: pnpm run build
+        env:
+          NODE_OPTIONS: --no-warnings
+
+      # `wrangler pages deploy dist --project-name pulse-landing`:
+      # - First run auto-creates the `pulse-landing` Pages project.
+      # - On main: deploys to production (the `pulse-landing.pages.dev` hostname,
+      #   and the `ownlocalml.com` custom domain once that's wired up in the
+      #   Cloudflare dashboard).
+      # - On PR: deploys to a preview URL (wrangler prints it).
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            pages deploy dist
+            --project-name=pulse-landing
+            --commit-dirty=true
+            --branch=${{ github.ref_name }}
