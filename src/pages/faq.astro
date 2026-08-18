@@ -6,51 +6,73 @@ import '../styles/notes.css';
 // R128: First-time-visitor FAQ. Plain English, anonymous voice,
 // no "we" / "Pulse team" / "by Roman" / marketing fluff. Links go to
 // /pricing/, /download/, /license/, /privacy/. <details>/<summary>
-// for collapsibles (no JS). R141e: paid model — no "free" mention,
-// no "open source" / "Apache 2.0" copy, no Lesside / Roman / pulse.tld.
+// for collapsibles (no JS).
+// R279 Luna: freemium model — Free tier (100K GPT-4o mini tokens/mo)
+// is the default, Pro is $20/mo or $192/yr with unlimited everything.
+// 14-day Pro trial for new signups.
 
 const PAGE_TITLE = 'Pulse — Frequently asked questions';
 const PAGE_DESC =
-  'Common questions about Pulse: pricing, trial, privacy, offline use, supported platforms, and how to report issues. Plain answers, no marketing.';
+  'Common questions about Pulse: Free vs Pro, GPT-4o mini token cap, Pro pricing, privacy, offline use, supported platforms, and how to report issues. Plain answers, no marketing.';
 
 // Q&A content lives in the frontmatter so the structured-data block
 // (FAQPage JSON-LD) is generated from the same source of truth.
 const faqs = [
   {
-    q: 'Is there a free tier?',
-    a: 'No. Pulse is paid, with a 14-day trial. The trial includes single-model chat, 50 web-search queries per day, code-aware chat, and local notes. Cloud STT, multi-model hot-swap, and sync are PRO only. After 14 days the app works in read-only mode unless you upgrade.',
+    q: "What's the difference between Free and Pro?",
+    a: 'Free uses GPT-4o mini for cloud model access with a 100,000 token monthly cap, no credit card. Pro gives unlimited tokens on every cloud model we route (GPT-4o, Claude Sonnet and Haiku, Gemini Flash) plus cloud Whisper voice input, multi-model hot-swap, and unlimited web search. Both tiers include the full local Ollama routing path with no token cap on local models. New signups get a 14-day Pro trial — the whole product with no limit — and after 14 days can downgrade to Free or stay on Pro.',
   },
   {
-    q: 'What happens after the 14-day trial?',
-    a: 'The app continues to work in read-only mode: you can view existing notes and chat with the local model, but you cannot create new notes, save chats, or use PRO features. Upgrade to PRO ($20/mo or $192/yr) to unlock full functionality.',
+    q: 'Is the Free tier really free forever?',
+    a: 'Yes. The 100K tokens per month on GPT-4o mini is the rate limit on the cloud model path. Local Ollama routing has no token cap on Free — run any model you have on your machine and Pulse routes the prompts there. The Free tier does not expire, does not require a credit card, and does not ask for an email.',
   },
   {
-    q: 'Do I need to sign up for an account?',
-    a: 'No. Pulse does not require an account, email, phone number, or sign-in. Download the installer, run it, open the app. The only thing PRO needs is a license key, which is delivered by email after checkout.',
+    q: 'What happens after the 14-day Pro trial?',
+    a: 'After 14 days the Pro features pause: cloud Whisper, multi-model hot-swap, unlimited web search, and access to GPT-4o / Claude / Gemini all stop. Free tier features keep working exactly as before. You can subscribe to Pro any time from the in-app account screen — the license key arrives by email and unlocks Pro for the billing period you picked.',
   },
   {
-    q: 'What does PRO add?',
-    a: 'PRO adds multi-model hot-swap (switch between local models without restarting), voice input on desktop (cloud Whisper), unlimited web search, cross-device sync, and priority updates. The full list lives on the <a href="/pricing/">pricing page</a>.',
+    q: 'How much does Pro cost?',
+    a: 'Pro is $20 per month, or $192 per year (save $48 vs monthly). Billing is in crypto via NOWPayments (BTC, USDT-TRC20, XMR) because the team is based in Belarus and Stripe, Polar.sh, Paddle, Lemon Squeezy, and Gumroad do not pay out to Belarusian bank accounts. There is no lifetime deal and no student discount. The 14-day Pro trial is the only way to try Pro before paying.',
   },
   {
-    q: 'How much does PRO cost?',
-    a: 'PRO Monthly is $20 per month. PRO Annual is $192 per year (save $48 vs monthly). There is no lifetime deal and no student discount. Billing is handled by Polar.sh. See the <a href="/pricing/">pricing page</a> for the current tiers.',
+    q: 'How is the 100K GPT-4o mini cap counted?',
+    a: 'Tokens in plus tokens out, across all cloud model prompts in a calendar month. A typical Q&A is around 500-1,500 tokens end-to-end, so 100K covers roughly 70-200 exchanges per month for everyday use. Local Ollama prompts do not count against the cap. The cap resets on the first of each month in your local timezone. You can see your running total in Settings → Usage.',
+  },
+  {
+    q: 'How do I receive my Pro license key after I pay?',
+    a: 'After the NOWPayments webhook confirms your transaction, a Cloudflare Email Service worker sends the 24-character license key to the email address you entered at checkout. The key is also written to your account at <code>ownlocalml.com/account/</code> and is recoverable any time from the receipt email. If the email does not arrive within 10 minutes, write to the support address on the receipt and we resend.',
+  },
+  {
+    q: 'Do I need to sign up for an account to use Free?',
+    a: 'No. Pulse does not require an account, email, phone number, or sign-in to use the Free tier. Download the installer, run it, open the app. Pro needs a license key, which is delivered by email after checkout, but the app itself does not log you in to use Free.',
+  },
+  {
+    q: 'Is my data private?',
+    a: 'Yes. Notes, chats, voice transcriptions, and routing mode caches never leave your device. The cloud model calls (GPT-4o mini on Free, GPT-4o / Claude / Gemini on Pro) are sent directly to the provider under your prompts. Pulse does not run an analytics SDK, an error reporter, or a "phone home" endpoint. You can verify the network calls in the app logs (Settings → Logs). The full data model is on the <a href="/privacy/">privacy page</a>.',
+  },
+  {
+    q: 'Can I use Pulse offline?',
+    a: 'Yes for local models. If Pulse talks to an Ollama model on your machine and the model is already pulled, the full prompt-response cycle works offline: hotkey opens the panel, prompt goes to Ollama over <code>localhost</code>, response streams back. Internet is only required for cloud model calls (GPT-4o mini, GPT-4o, Claude, Gemini), the optional update check, and any Smart Engine tool that hits the network (HN, RSS).',
   },
   {
     q: 'Can I use my own AI model?',
-    a: 'Yes. Pulse for Windows talks to any OpenAI-compatible local endpoint. Ollama works out of the box (run <code>ollama serve</code> and Pulse finds it). LM Studio, vLLM, llama.cpp, and any other server that speaks the OpenAI HTTP API also work. Pulse does not lock you to a provider or a model.',
+    a: 'Yes. Pulse for Windows talks to any OpenAI-compatible local endpoint. Ollama works out of the box (run <code>ollama serve</code> and Pulse finds it). LM Studio, vLLM, llama.cpp, and any other server that speaks the OpenAI HTTP API also work. Pulse does not lock you to a provider or a model, and local Ollama routing has no token cap on either Free or Pro.',
   },
   {
-    q: 'Does Pulse work offline?',
-    a: 'Yes, after the first install. The first launch pulls a small update-check and the OG image for share links; everything else runs locally. Once installed, Pulse works on a plane, on a train, or with the network unplugged. There is no required cloud connection and no always-on telemetry.',
+    q: 'Do you offer refunds?',
+    a: 'Yes — 30-day money-back on any Pro purchase, no questions asked. Email the support address from your receipt and the refund goes through the same NOWPayments channel you paid with. After 30 days, Pro is still cancelable at any time but is not refunded for the unused billing period.',
   },
   {
-    q: 'What is the data privacy story?',
-    a: 'Pulse is local-first. Your notes, your chats, and your model never leave the device you installed Pulse on. There is no analytics, no crash reporting, no usage beacons, and no remote config. The code is on GitHub so you can read every byte Pulse sends. The full data model is on the <a href="/privacy/">privacy page</a>.',
+    q: 'Why is payment crypto-only?',
+    a: 'The Pulse team is based in Brest, Belarus, and Stripe, Polar.sh, Paddle, Lemon Squeezy, and Gumroad do not pay out to Belarusian bank accounts. NOWPayments handles BTC, USDT-TRC20, and XMR at 0.5% per transaction and pays out in the same currencies. The only fiat-shaped piece is the Cloudflare Email Service worker that sends the license key after the NOWPayments webhook fires. If you need an invoice in USD or EUR, write to the support email and we can do a manual stablecoin transfer.',
   },
   {
     q: 'Which platforms are supported?',
     a: 'Windows 10 and 11 (NSIS or MSI installer) and Android 7.0+ (sideloaded APK). iOS, macOS, and Linux are not currently shipping. The download page has the current list: <a href="/download/">/download/</a>.',
+  },
+  {
+    q: 'How do I install Pulse?',
+    a: 'Go to <a href="/download/">/download/</a> and pick your platform. Pulse for Windows is a 12 MB side-panel installer (NSIS or MSI). Pulse for Android is a 1.32 MB APK. Both are signed binaries with SHA-256 checksums published on the download page. No account, no email, no activation server roundtrip.',
   },
   {
     q: 'How do updates work?',
@@ -58,7 +80,7 @@ const faqs = [
   },
   {
     q: 'How do I report a bug or suggest a feature?',
-    a: 'Open an issue on the public GitHub repository. The repo lives under the same organization that hosts this site. Bug reports, feature requests, and pull requests are all welcome. There is no support email, no Discord, and no private ticket queue.',
+    a: 'Open an issue on the public GitHub repository. The repo lives under the same organization that hosts this site. Bug reports, feature requests, and pull requests are all welcome. There is no support email, no Discord, and no private ticket queue for general questions.',
   },
 ];
 
@@ -81,7 +103,7 @@ const faqJsonLd = {
   title={PAGE_TITLE}
   description={PAGE_DESC}
   ogImage="/og-home.png"
-  ctaText="Start trial ↓"
+  ctaText="Start free ↓"
   ctaHref="/download/"
   ctaVisible={true}
   footerLicense=""
@@ -108,7 +130,7 @@ const faqJsonLd = {
             fine print, no "contact sales".
           </p>
           <p class="home-hero__meta">
-            {faqs.length} questions · Trial + PRO · last updated 2026-08-03
+            {faqs.length} questions · Free + Pro · last updated 2026-08-18
           </p>
         </div>
       </div>
@@ -135,7 +157,7 @@ const faqJsonLd = {
           <h2>More places to look.</h2>
           <ul role="list">
             <li><a href="/download/">Download Pulse for Windows or Android</a></li>
-            <li><a href="/pricing/">What PRO adds (and what it costs)</a></li>
+            <li><a href="/pricing/">Free vs Pro pricing</a></li>
             <li><a href="/privacy/">Privacy and data model</a></li>
             <li><a href="/license/">License</a></li>
             <li><a href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">Source on GitHub</a></li>

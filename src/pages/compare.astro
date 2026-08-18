@@ -23,11 +23,11 @@ const APK_URL = ANDROID_APK_URL;
 const APK_SIZE = ANDROID_APK_SIZE;
 
 const PAGE_TITLE = 'Pulse vs Raycast AI, Notion AI, GitHub Copilot, Claude Pro, AnythingLLM, LM Studio, Ollama — local-first AI';
-const PAGE_DESC = "Honest side-by-side: Pulse (trial and PRO), Raycast AI, Notion AI, GitHub Copilot, Claude Pro, AnythingLLM, LM Studio, Ollama. Local-first, voice input, markdown notes, price, mobile, RAM, privacy - no asterisks, no marketing fluff. Updated 2026-08-03.";
+const PAGE_DESC = "Honest side-by-side: Pulse (Free and Pro), Raycast AI, Notion AI, GitHub Copilot, Claude Pro, AnythingLLM, LM Studio, Ollama. Local-first, voice input, markdown notes, price, mobile, RAM, privacy - no asterisks, no marketing fluff. Updated 2026-08-18.";
 
 const products = [
-  { key: 'pulse',     name: 'Pulse',             tagline: 'Voice + notes. Local. Yours to use.',          highlight: true  },
-  { key: 'pulsepro',  name: 'Pulse PRO',         tagline: 'Multi-model, code-aware, web search.', highlight: true  },
+  { key: 'pulse',     name: 'Pulse Free',        tagline: 'GPT-4o mini, 100K tokens/mo. Local-first.',          highlight: true  },
+  { key: 'pulsepro',  name: 'Pulse Pro',         tagline: 'Unlimited everything. $20/mo or $192/yr.', highlight: true  },
   { key: 'raycast',   name: 'Raycast AI',        tagline: 'macOS only. $8/mo. Cloud-tied.' },
   { key: 'notion',    name: 'Notion AI',         tagline: 'Cloud wiki + AI. $10/mo. Tracking.' },
   { key: 'copilot',   name: 'GitHub Copilot',    tagline: 'IDE AI. $10/mo. GitHub cloud.' },
@@ -40,24 +40,25 @@ const products = [
 const rows = [
   { label: 'Platform',           values: { pulse: 'Windows + Android',  pulsepro: 'Windows + Android', raycast: 'macOS only',        notion: 'Web + iOS + Android', copilot: 'IDE plugin',  claude: 'Web + API', anyllm: 'Docker (any OS)',  lmstu: 'Win / macOS / Linux',  ollama: 'CLI / API only' } },
   { label: 'Local-first',        values: { pulse: 'yes',                pulsepro: 'yes',               raycast: 'no',                notion: 'no',                copilot: 'no',           claude: 'no',        anyllm: 'yes',              lmstu: 'yes',                  ollama: 'yes' } },
-  { label: 'Voice input',        values: { pulse: 'yes',                pulsepro: 'yes',               raycast: 'partial',           notion: 'no',                copilot: 'no',           claude: 'no',        anyllm: 'partial',          lmstu: 'no',                   ollama: 'no' } },
+  { label: 'Voice input',        values: { pulse: 'On-device',          pulsepro: 'On-device + cloud Whisper', raycast: 'partial',     notion: 'no',                copilot: 'no',           claude: 'no',        anyllm: 'partial',          lmstu: 'no',                   ollama: 'no' } },
   { label: 'Markdown notes',     values: { pulse: 'yes',                pulsepro: 'yes',               raycast: 'no',                notion: 'partial',           copilot: 'no',           claude: 'no',        anyllm: 'no',               lmstu: 'no',                   ollama: 'no' } },
-  { label: 'Price',              values: { pulse: '14-day trial, then $20/mo', pulsepro: 'see /pricing/', raycast: '$8 / mo',           notion: '$10 / mo',          copilot: '$10 / mo',     claude: '$20 / mo',  anyllm: 'Free',             lmstu: 'Free',                 ollama: 'Free' } },
+  { label: 'Price',              values: { pulse: 'Free',  pulsepro: '$20/mo or $192/yr', raycast: '$8 / mo',           notion: '$10 / mo',          copilot: '$10 / mo',     claude: '$20 / mo',  anyllm: 'Free',             lmstu: 'Free',                 ollama: 'Free' } },
+  { label: 'Cloud model cap',    values: { pulse: '100K GPT-4o mini / mo', pulsepro: 'Unlimited',    raycast: 'n/a (cloud-only)', notion: 'Pay per token',     copilot: 'Pay per token',claude: 'Pay per token',anyllm: 'Free (local only)',lmstu: 'Free (local only)',    ollama: 'Free (local only)' } },
   { label: 'Mobile',             values: { pulse: 'Android',            pulsepro: 'Android',           raycast: 'no',                notion: 'iOS + Android',     copilot: 'no',           claude: 'no',        anyllm: 'no',               lmstu: 'no',                   ollama: 'no' } },
   { label: 'Setup time',         values: { pulse: '~2 min',             pulsepro: '~2 min + key',      raycast: '~5 min + sub',      notion: '~10 min + account', copilot: '~5 min + sub',claude: '~2 min + sub',anyllm: '~30+ min',         lmstu: '~10 min',              ollama: '~5+ min' } },
   { label: 'RAM for 7B model',   values: { pulse: '~4-8 GB',            pulsepro: '~4-8 GB',           raycast: 'n/a (cloud)',       notion: 'n/a (cloud)',       copilot: 'n/a (cloud)',claude: 'n/a (cloud)',anyllm: '~4-16 GB',         lmstu: '~4-16 GB',             ollama: '~4-16 GB' } },
   { label: 'Privacy',            values: { pulse: 'On-device. No tracking.', pulsepro: 'On-device. No tracking.', raycast: 'Cloud. OpenAI terms.', notion: 'Cloud. Telemetry.', copilot: 'Cloud. GitHub terms.', claude: 'Cloud. Anthropic terms.', anyllm: 'On-device. Self-hosted.', lmstu: 'On-device. No tracking.', ollama: 'On-device. No tracking.' } },
   { label: 'Multi-model hot-swap', values: { pulse: 'no',               pulsepro: 'yes',               raycast: 'partial',           notion: 'no',                copilot: 'no',           claude: 'no',        anyllm: 'yes',              lmstu: 'partial',              ollama: 'partial' } },
-  { label: 'Code-aware chat',    values: { pulse: 'no',                 pulsepro: 'yes',               raycast: 'partial',           notion: 'no',                copilot: 'yes',          claude: 'yes',       anyllm: 'partial',          lmstu: 'no',                   ollama: 'no' } },
-  { label: 'Web search',         values: { pulse: 'no',                 pulsepro: 'yes',               raycast: 'partial',           notion: 'partial',           copilot: 'partial',      claude: 'yes',       anyllm: 'partial',          lmstu: 'no',                   ollama: 'no' } },
+  { label: 'Code-aware chat',    values: { pulse: 'yes',                pulsepro: 'yes',               raycast: 'partial',           notion: 'no',                copilot: 'yes',          claude: 'yes',       anyllm: 'partial',          lmstu: 'no',                   ollama: 'no' } },
+  { label: 'Web search',         values: { pulse: '20 / day',           pulsepro: 'Unlimited',         raycast: 'partial',           notion: 'partial',           copilot: 'partial',      claude: 'yes',       anyllm: 'partial',          lmstu: 'no',                   ollama: 'no' } },
   { label: 'Priority updates',   values: { pulse: 'no',                 pulsepro: 'yes',               raycast: 'no',                notion: 'no',                copilot: 'no',           claude: 'yes',       anyllm: 'no',               lmstu: 'no',                   ollama: 'no' } },
 ];
 
 const verdicts = [
   { name: 'Raycast AI',     text: 'Eight dollars a month, macOS only, fast prompt bar. But your prompts go to OpenAI by default. The local-model extension is paid, separate, and still routes through Raycast servers. Good if you live in Raycast and trust the chain.' },
   { name: 'Notion AI',      text: 'Ten dollars a month, polished cloud editor with AI baked into every doc. But every note, every prompt, every keystroke is on Notion servers under their terms. The product is the wiki, the AI is the upsell.' },
-  { name: 'GitHub Copilot', text: 'Ten dollars a month, AI pair programmer inside your IDE. Code completions, chat, and the agent mode are excellent for daily coding. But every prompt goes through GitHub cloud, the IDE is the only surface, and there is no notes, no voice, no mobile. Pulse PRO at half the price adds notes, voice, and on-device inference.' },
-  { name: 'Claude Pro',     text: 'Twenty dollars a month, deep reasoning and long-context chat. Sonnet and Opus in one subscription, file upload, web search, Claude Code CLI. The trade-off: every prompt lives on Anthropic servers, no on-device option, no notes app, no mobile surface. Pulse PRO does the local-privacy half of the job for a quarter of the price.' },
+  { name: 'GitHub Copilot', text: 'Ten dollars a month, AI pair programmer inside your IDE. Code completions, chat, and the agent mode are excellent for daily coding. But every prompt goes through GitHub cloud, the IDE is the only surface, and there is no notes, no voice, no mobile. Pulse Free with GPT-4o mini covers the same IDE-aware flow on local models with a 100K token monthly cap; Pulse Pro at $20/mo adds every cloud model and unlimited tokens.' },
+  { name: 'Claude Pro',     text: 'Twenty dollars a month, deep reasoning and long-context chat. Sonnet and Opus in one subscription, file upload, web search, Claude Code CLI. The trade-off: every prompt lives on Anthropic servers, no on-device option, no notes app, no mobile surface. Pulse Pro at the same price adds notes, voice, mobile, and on-device inference; Pulse Free covers everyday Q&A via GPT-4o mini without the cloud round-trip for every prompt.' },
   { name: 'AnythingLLM',    text: 'Free, MIT, local-first, multi-model. Power-user surface: Docker, vector DB config, workspace permissions. Best choice if you want to roll your own and have a weekend.' },
   { name: 'LM Studio',      text: 'Free, MIT, polished local-model GUI. Runs GGUF models on your hardware. Stops at the chat window — no notes, no voice, no app layer. You wire your own front-end on top.' },
   { name: 'Ollama',         text: 'Free, MIT, the model engine everyone else builds on. No UI at all. You talk to it via curl, a script, or a third-party wrapper. Pulse uses Ollama as its local backend on desktop.' },
@@ -80,9 +81,9 @@ const whyCards = [
     body: 'There is no analytics SDK. There is no error reporter. There is no "phone home" with usage data. The only network call Pulse makes is the manifest poll for updates, and you can disable it. PRO only checks the license key against the license server — your content never leaves the device.',
   },
   {
-    label: 'Trial + PRO',
-    title: 'Try it for 14 days. Then $20/mo or $192/yr.',
-    body: 'The trial unlocks single-model chat, local notes, code-aware chat, and 50 web-search queries per day. PRO adds multi-model hot-swap, voice input, unlimited web search, and cross-device sync. No credit card to start.',
+    label: 'Free + Pro',
+    title: 'Free with GPT-4o mini. Pro at $20/mo for unlimited everything.',
+    body: 'Free unlocks the full Pulse side panel, on your device, with cloud model access via GPT-4o mini. 100,000 tokens per month is enough for daily notes and short Q&A. Local Ollama routing has no token cap on Free. Pro adds every cloud model, unlimited tokens, cloud Whisper voice input, and priority support. New signups get a 14-day Pro trial — the whole product with no limit.',
   },
 ];
 
@@ -102,9 +103,9 @@ const faqs = [
   { q: 'Which AI models does Pulse support?', a: 'Anything Ollama serves on desktop: Llama 3, Qwen 2.5, Mistral, Gemma 2, Phi-3, DeepSeek, and any other GGUF model. The 4-8B range (Qwen 2.5 7B, Llama 3.1 8B, Mistral Nemo 12B) hits the best latency / quality balance on a 16 GB laptop. On Android, Pulse for Android uses its on-device model for the recall step and ships the Smart Engine v3 router.' },
   { q: 'Can I sync notes between Android and desktop?', a: 'The on-device SQLite file is plain and portable — copy notes.db off the device with any file manager, restore the same way. No proprietary export format. End-to-end encrypted sync between Android and desktop is not in v0.6.x. The current release notes track what is shipping now.' },
   { q: 'Does Pulse work on Linux or iOS?', a: 'Linux desktop is not in v0.6.x. The desktop binary is Windows (Tauri 2). iOS is not planned for the Notes surface. Android is minSdk 24 (Android 7.0) with targetSdk 36.' },
-  { q: 'Is there a paid tier?', a: 'Yes. PRO is $20/mo or $192/yr. There is a 14-day trial — no credit card. After 14 days the app continues in read-only mode. The full list of PRO features lives on the pricing page.' },
-  { q: 'How is Pulse different from ChatGPT or Claude?', a: 'Privacy, cost, and offline use. ChatGPT and Claude route every prompt through their cloud, log it, and charge per token. Pulse runs the model on your hardware, costs nothing per query, and works on a plane. The trade-off: a 7B local model is not as capable than GPT-4 on hard reasoning tasks. If you need frontier capability, use a frontier tool. If you need a fast, private, always-available AI for daily work, Pulse is the better fit.' },
-  { q: 'What does Pulse PRO add that GitHub Copilot or Claude Pro does not?', a: 'PRO adds notes, voice, mobile (Android), and an on-device engine. Copilot is IDE-only. Claude Pro is web-and-API only. Both are excellent at their core use cases, but neither ships a notes app, neither runs offline, neither has a mobile surface, and both send your prompts to their cloud. PRO gives you notes + voice + multi-model + web search, on your hardware, for less than either.' },
+  { q: "What's the difference between Pulse Free and Pulse Pro?", a: 'Pulse Free is the full Pulse side panel on your device, with cloud model access via GPT-4o mini and a 100,000 token monthly cap. Pulse Pro is $20/mo or $192/yr with unlimited tokens on every cloud model we route (GPT-4o, Claude Sonnet and Haiku, Gemini Flash) plus cloud Whisper voice input and priority support. Local Ollama routing has no token cap on either tier. New signups get a 14-day Pro trial. The full feature list lives on the pricing page.' },
+  { q: 'How is Pulse different from ChatGPT or Claude?', a: 'Privacy, cost, and offline use. ChatGPT and Claude route every prompt through their cloud, log it, and charge per token. Pulse Free uses GPT-4o mini with a 100K token monthly cap, no per-token cost; Pulse Pro gives unlimited tokens on the same model and others. Local Ollama routing has no token cap on either tier. The trade-off: a 7B local model is not as capable as GPT-4 on hard reasoning tasks. If you need frontier capability, use a frontier tool. If you need a fast, private, always-available AI for daily work, Pulse is the better fit.' },
+  { q: 'What does Pulse Pro add that GitHub Copilot or Claude Pro does not?', a: 'Pro adds notes, voice, mobile (Android), and an on-device engine. Copilot is IDE-only. Claude Pro is web-and-API only. Both are excellent at their core use cases, but neither ships a notes app, neither runs offline, neither has a mobile surface, and both send your prompts to their cloud. Pro gives you notes + voice + multi-model + web search, on your hardware, for the same price as Claude Pro.' },
   { q: 'Can I self-host Pulse?', a: 'There is nothing to host. Pulse is local-first. The desktop app talks to your local Ollama; the Android app runs on-device. The site is a static Astro build. The only network endpoint is the manifest poll for updates, and the chain of hosts is public.' },
   { q: 'What about voice input on Android?', a: 'Pulse for Android v0.6.x uses Android’s on-device speech recognizer (free, accurate, no network round-trip). Desktop Pulse uses Whisper.cpp running locally on the device — the same model that powers the OpenAI Whisper API, but offline. There is no cloud STT in either surface.' },
 ];
@@ -127,8 +128,8 @@ const faqJsonLd = {
   title={PAGE_TITLE}
   description={PAGE_DESC}
   ogImage="/og/compare.svg"
-  ctaText={`Start trial ↓ ${APK_SIZE}`}
-  ctaHref={APK_URL}
+  ctaText={`Start free ↓`}
+  ctaHref="/download/"
   ctaVisible={true}
   footerLicense=""
   footerVersion={`v${WINDOWS_VERSION}`}
@@ -154,20 +155,21 @@ const faqJsonLd = {
           </h1>
           <p class="compare-hero__sub">
             Pulse is a voice-first AI side panel for Windows and a markdown
-            notes app for Android. Both run on-device. Both start with a
-            This page is the honest side-by-side: how Pulse (trial and PRO)
-            stacks up against Raycast AI, Notion AI, GitHub Copilot,
+            notes app for Android. Both run on-device. Free with GPT-4o mini
+            and 100,000 tokens per month, or Pro at $20/mo for unlimited
+            everything. This page is the honest side-by-side: how Pulse Free
+            and Pro stack up against Raycast AI, Notion AI, GitHub Copilot,
             Claude Pro, AnythingLLM, LM Studio, and bare Ollama. No
             asterisks, no marketing copy.
           </p>
           <div class="compare-hero__ctas">
-            <a class="btn btn--primary btn--lg" href={APK_URL} rel="noopener noreferrer">
-              Start trial ↓ {APK_SIZE}
+            <a class="btn btn--primary btn--lg" href="/download/">
+              Start free
             </a>
-            <a class="btn btn--ghost btn--lg" href="#matrix">See the matrix</a>
+            <a class="btn btn--ghost btn--lg" href="/pricing/">See pricing</a>
           </div>
           <p class="compare-hero__meta">
-            Updated <time datetime="2026-08-02">2026-08-02</time> · 9 products · 14 features · 0 affiliate links
+            Updated <time datetime="2026-08-18">2026-08-18</time> · 9 products · 15 features · 0 affiliate links
           </p>
         </div>
       </div>

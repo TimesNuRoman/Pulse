@@ -47,26 +47,36 @@ const WIN_MSI_URL = WINDOWS_MSI_URL;
 const WIN_NSIS_SIZE = WINDOWS_NSIS_SIZE;
 const WIN_MSI_SIZE = WINDOWS_MSI_SIZE;
 
-const PAGE_TITLE = 'Pulse — AI side panel for Windows and Android, paid with a 14-day trial';
-const PAGE_DESC = 'Pulse is a paid, local-first AI side panel for Windows and a notes app for Android. 14-day trial, then $20/month or $192/year. No account, no cloud, no telemetry.';
+const PAGE_TITLE = 'Pulse — Free local-first AI side panel with GPT-4o mini, or $20/mo Pro for unlimited';
+const PAGE_DESC = 'Pulse is a local-first AI side panel for Windows and a notes app for Android. Free with GPT-4o mini and 100K tokens per month, no card. Pro is $20/month or $192/year with unlimited tokens and every cloud model. No account, no telemetry.';
 
 // R128 SEO polish: JSON-LD SoftwareApplication block for the home page.
-// R141e: offers is no longer price:0 — it's the trial model. priceSpecification
-// would be ideal but we keep the schema minimal and honest: price = "0" means
-// the trial is free; the subscription lives on the Polar.sh product pages.
+// R279 Luna: freemium model — Free is $0, 100K GPT-4o mini tokens/mo.
+// Pro is $20/mo or $192/yr, unlimited. offers is the Free tier (price: 0);
+// the Pro tier is a separate Offer on the same product.
 const softwareAppJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'Pulse',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Windows, Android',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
-    description: '14-day trial, then $20/month or $192/year subscription',
-  },
-  description: 'Local-first AI side panel for Windows and notes app for Android. 14-day trial, then $20/month or $192/year.',
+  offers: [
+    {
+      '@type': 'Offer',
+      name: 'Free',
+      price: '0',
+      priceCurrency: 'USD',
+      description: 'Free tier with GPT-4o mini and 100,000 tokens per month. No credit card.',
+    },
+    {
+      '@type': 'Offer',
+      name: 'Pro',
+      price: '20',
+      priceCurrency: 'USD',
+      description: 'Pro tier with unlimited tokens on GPT-4o, Claude, Gemini, and local Ollama. $20/month or $192/year.',
+    },
+  ],
+  description: 'Local-first AI side panel for Windows and notes app for Android. Free with GPT-4o mini, or Pro with unlimited everything.',
 };
 ---
 
@@ -74,7 +84,7 @@ const softwareAppJsonLd = {
   title={PAGE_TITLE}
   description={PAGE_DESC}
   ogImage="/og-home.png"
-  ctaText="Start 14-day trial ↓"
+  ctaText="Start free ↓"
   ctaHref="/download/"
   ctaVisible={true}
   footerLicense=""
@@ -100,34 +110,24 @@ const softwareAppJsonLd = {
       </div>
       <div class="container home-hero-ray__inner reveal">
         <h1 class="home-hero-ray__title">
-          AI on your machine.<br /><span class="home-hero-ray__hl">Not in someone else's cloud.</span>
+          Start free with <span class="home-hero-ray__hl">GPT-4o mini.</span><br />Upgrade to Pro for unlimited.
         </h1>
         <p class="home-hero-ray__sub">
-          Pulse is a paid, local-first AI side panel for Windows and a
-          notes app for Android. Notes, chat, and your model stay on the
-          device. No account, no telemetry, no upload.
+          A local-first AI side panel for Windows and a notes app for Android. Free with 100,000 GPT-4o mini tokens per month, no card, no account. Pro adds unlimited tokens on every cloud model — GPT-4o, Claude, Gemini — and your local Ollama models, no token cap.
         </p>
         <div class="home-hero-ray__ctas">
-          <a class="home-hero-ray__btn home-hero-ray__btn--win" id="hero-download" href="/download/" rel="noopener noreferrer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M3 5.5L10.5 4.5v7.5H3v-6.5zM11.5 4.4L21 3v9h-9.5V4.4zM3 13.5h7.5V21L3 19.5v-6zM11.5 13.5H21V21l-9.5-1.5v-6z"></path>
-            </svg>
-            Download for Windows
-            <span class="home-hero-ray__size">↓ {WIN_NSIS_SIZE}</span>
+          <a class="btn btn--primary btn--lg" id="hero-download" href="/download/">
+            Start free
           </a>
-          <a class="home-hero-ray__btn home-hero-ray__btn--android" href={APK_URL} rel="noopener noreferrer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M6 9c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2v2c0 .55.45 1 1 1s1-.45 1-1v-2h8v2c0 .55.45 1 1 1s1-.45 1-1v-2c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2H6zM8 11.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM16 11.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM7 8L5.5 5.5C5.4 5.3 5.5 5 5.7 5c.2 0 .3.1.4.2L7.5 7.5C8.6 7.2 9.8 7 11 7h2c1.2 0 2.4.2 3.5.5l1.4-2.3c.1-.1.2-.2.4-.2.2 0 .3.3.2.5L17 8H7z"></path>
-            </svg>
-            Download APK
-            <span class="home-hero-ray__size">↓ {APK_SIZE}</span>
+          <a class="btn btn--ghost btn--lg" href="/pricing/">
+            See pricing
           </a>
         </div>
-        <p class="home-hero-ray__meta">Install via winget · Try Pulse v{latestDesktopVersion}</p>
+        <p class="home-hero-ray__meta">12 MB Tauri 2 installer · No Electron, no telemetry, no account · 14-day Pro trial for new signups</p>
         <a class="home-hero-ray__more" href="/changelog/#v0.6.9">
           <span class="home-hero-ray__more-pill">Meet Pulse v3.1</span>
           <span class="home-hero-ray__more-sep" aria-hidden="true">|</span>
-          <span class="home-hero-ray__more-link">Learn more →</span>
+          <span class="home-hero-ray__more-link">Read the changelog →</span>
         </a>
       </div>
     </section>
@@ -322,62 +322,33 @@ const softwareAppJsonLd = {
       </div>
     </section>
 
-    <!-- ─── Start trial: two cards ─────────────────────── -->
+    <!-- ─── Pick your device — one download CTA (R261) + platforms row (R273) ── -->
     <section class="home-get" id="get">
       <div class="container">
         <header class="home-get__head reveal">
-          <span class="eyebrow">Start trial</span>
           <h2>Pick your device.</h2>
-          <p class="lede">
-            Both versions are the same Pulse. Different install, same data
-            model, same on-device engine.
-          </p>
         </header>
-        <div class="home-get__grid">
-          <article class="home-get__card glass reveal" data-pick="windows">
-            <span class="home-get__platform">Pulse for Windows</span>
-            <h3 class="home-get__title">A side panel for your desktop.</h3>
-            <p class="home-get__body">
-              Lives in the system tray, opens with a global hotkey, talks
-              to a local model on your machine. NSIS installer (per-user)
-              or MSI (per-machine). Runs on Windows 10 and 11.
-            </p>
-            <div class="home-get__ctas">
-              <a class="btn btn--primary" href={WIN_NSIS_URL} rel="noopener noreferrer">Download for Windows ↓ {WIN_NSIS_SIZE}</a>
-              <a class="btn btn--ghost" href="/download/#windows">All Windows downloads</a>
-            </div>
-          </article>
-          <article class="home-get__card glass reveal" data-pick="android">
-            <span class="home-get__platform">Pulse for Android</span>
-            <h3 class="home-get__title">A markdown editor for your phone.</h3>
-            <p class="home-get__body">
-              Write notes with backlinks, tags, and voice input. Find
-              anything with full-text search. Sideload the APK — no Play
-              Store account required.
-            </p>
-            <div class="home-get__ctas">
-              <a class="btn btn--primary" href={APK_URL} rel="noopener noreferrer">Download APK ↓ {APK_SIZE}</a>
-              <a class="btn btn--ghost" href="/download/#android">Android details</a>
-            </div>
-          </article>
+        <div class="home-get__cta reveal">
+          <a class="btn btn--primary btn--lg home-get__btn" href="/download/">
+            Download ↓
+          </a>
         </div>
+        <p class="home-get__platforms reveal" aria-label="Supported platforms">
+          Windows · Android · build from source for macOS / Linux
+        </p>
       </div>
     </section>
 
-    <!-- ─── Trial ──────────────────────────────────────── -->
-    <section class="home-free" id="trial">
+    <!-- ─── Free ──────────────────────────────────────── -->
+    <section class="home-free" id="free">
       <div class="container home-free__inner reveal">
-        <span class="eyebrow">Trial</span>
-        <h2>14 days, no credit card. After that, decide.</h2>
+        <span class="eyebrow">Free</span>
+        <h2>Free with GPT-4o mini. Upgrade to Pro when you need more than 100K tokens a month.</h2>
         <p>
-          The trial unlocks the basics: notes, chat with a local model,
-          full-text search, backlinks, code-aware chat, and 50 web-search
-          queries per day. The trial clock starts at first launch. After
-          14 days the app continues to work in read-only mode unless you
-          upgrade to PRO.
+          Free unlocks the full Pulse side panel, on your device, with cloud model access via GPT-4o mini. 100,000 tokens per month is enough for daily notes and short Q&A. Local Ollama routing has no token cap on Free. No credit card, no account, no expiry. New signups also get a 14-day Pro trial — the whole product with no limit — and after 14 days can downgrade to Free or stay on Pro.
         </p>
         <div class="home-free__row">
-          <a class="btn btn--primary btn--lg" href="/download/">Start 14-day trial ↓</a>
+          <a class="btn btn--primary btn--lg" href="/download/">Start free ↓</a>
           <a class="btn btn--ghost btn--lg" href="/pricing/">See pricing →</a>
         </div>
       </div>
