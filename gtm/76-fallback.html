@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pulse — temporary outage</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Pulse is a local-first AI workspace. The main site is temporarily down for scaling.">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #1a1b26; color: #c0caf5; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; -webkit-text-size-adjust: 100%; }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+header { padding: 32px 24px; border-bottom: 1px solid #24283b; }
+.wordmark { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: #c0caf5; }
+.tag { margin-top: 8px; color: #565f89; font-size: 14px; }
+main { flex: 1; padding: 48px 24px; max-width: 720px; width: 100%; margin: 0 auto; }
+h1 { font-size: 24px; font-weight: 600; margin-bottom: 16px; color: #c0caf5; }
+p { margin-bottom: 16px; color: #a9b1d6; }
+p.lede { font-size: 18px; color: #c0caf5; margin-bottom: 24px; }
+.links { list-style: none; margin-top: 24px; }
+.links li { padding: 14px 0; border-bottom: 1px solid #24283b; }
+.links li:last-child { border-bottom: none; }
+.links a { color: #7aa2f7; text-decoration: none; word-break: break-word; }
+.links a:hover { text-decoration: underline; }
+.links .label { display: block; color: #565f89; font-size: 13px; margin-bottom: 2px; }
+footer { padding: 24px; border-top: 1px solid #24283b; color: #565f89; font-size: 14px; text-align: center; }
+</style>
+</head>
+<body>
+<header>
+<div class="wordmark">Pulse</div>
+<div class="tag">Local-first AI workspace. 0 servers. 0 telemetry. 0 accounts.</div>
+</header>
+<main>
+<h1>Temporary outage</h1>
+<p class="lede">We're experiencing higher traffic than expected and the main site is being scaled. Here's what's happening and what you can do in the meantime.</p>
+<p>The product itself is fine. Pulse is a 12 MB Windows side panel that runs on your laptop. This outage is the marketing site and the license-key validation endpoint. The desktop app and any license keys you already have are unaffected.</p>
+<p>If you came here from the Show HN post, the desktop app download is on the working endpoints below. If you're a current Pro user, your license key still works.</p>
+<ul class="links">
+<li>
+<span class="label">Desktop app + source</span>
+<a href="__GITHUB_REPO_URL__">__GITHUB_REPO_URL__</a>
+</li>
+<li>
+<span class="label">Show HN discussion</span>
+<a href="https://news.ycombinator.com/item?id=__POST_ID__">[link to HN post — placeholder, filled at deploy time]</a>
+</li>
+<li>
+<span class="label">Email support</span>
+<a href="mailto:support@ownlocalml.com">support@ownlocalml.com</a>
+</li>
+</ul>
+</main>
+<footer>
+We expect to be back within 30 minutes. &mdash; Pulse team
+</footer>
+</body>
+</html>
