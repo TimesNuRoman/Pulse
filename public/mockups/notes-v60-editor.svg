@@ -68,7 +68,7 @@
       <text x="56" y="160" font-family="ui-sans-serif, system-ui" font-size="10" fill="#9ece6a">#travel</text>
       <text x="92" y="160" font-family="ui-sans-serif, system-ui" font-size="10" fill="#9ece6a">#bkk</text>
       <text x="122" y="160" font-family="ui-sans-serif, system-ui" font-size="10" fill="#9ece6a">#oct</text>
-      <text x="20" y="180" font-family="ui-sans-serif, system-ui" font-size="10" fill="#bb9af7" font-weight="500">— Roman, Aug 1</text>
+      <text x="20" y="180" font-family="ui-sans-serif, system-ui" font-size="10" fill="#bb9af7" font-weight="500">— Pulse team, Aug 1</text>
 
       <!-- Drag divider -->
       <rect x="198" y="0" width="4" height="320" fill="#bb9af7" opacity="0.6"/>

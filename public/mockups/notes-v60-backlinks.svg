@@ -62,7 +62,7 @@
   <text x="116" y="372" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9ece6a">#travel</text>
   <text x="170" y="372" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9ece6a">#bkk</text>
   <text x="212" y="372" font-family="ui-sans-serif, system-ui" font-size="14" fill="#9ece6a">#oct</text>
-  <text x="80" y="396" font-family="ui-sans-serif, system-ui" font-size="14" fill="#bb9af7">— Roman, Aug 1</text>
+  <text x="80" y="396" font-family="ui-sans-serif, system-ui" font-size="14" fill="#bb9af7">— Pulse team, Aug 1</text>
 
   <!-- Autocomplete dropdown floating over editor -->
   <g transform="translate(80, 360)">

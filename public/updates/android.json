@@ -9,7 +9,7 @@
   "force_update_below": "0.3.0",
   "signature_scheme": "v2+v3",
   "keystore_alias": "pulse-release",
-  "signed_by": "R93b release.keystore (CN=Pulse Notes, O=Lesside, L=Brest, ST=Brest, C=BY, RSA-2048, valid until 2053-12-17). v1 disabled in R95a; v0.6.6 builds on top of the R95a v2+v3 signing path.",
+  "signed_by": "R93b release.keystore (CN=Pulse Notes, O=Pulse, RSA-2048, valid until 2053-12-17). v1 disabled in R95a; v0.6.6 builds on top of the R95a v2+v3 signing path.",
   "certificate_sha256": "FD:BD:5F:61:29:43:D6:41:C8:99:80:9B:C1:39:85:C2:AD:12:38:53:8D:6B:6E:CC:C4:1E:0E:79:50:07:BF:EF",
   "re_signed_round": "R95a",
   "re_signed_at": "2026-08-01",
@@ -41,7 +41,7 @@
       "version_code": 15,
       "date": "2026-08-01",
       "type": "minor",
-      "summary": "R93 bridge release (manifest chain 5 to 7); R95a re-signed with the R93b release.keystore (CN=Pulse Notes, O=Lesside) under APK Signature Scheme v2 + v3. APK is 1.35 MB (minify+shrink from R93b build config). v0.6.3 / v0.6.4 users side-load v0.6.5 directly. Users who installed the pre-R95a debug-signed v0.6.5 must uninstall first because the signing key changed."
+      "summary": "R93 bridge release (manifest chain 5 to 7); R95a re-signed with the R93b release.keystore (CN=Pulse Notes, O=Pulse) under APK Signature Scheme v2 + v3. APK is 1.35 MB (minify+shrink from R93b build config). v0.6.3 / v0.6.4 users side-load v0.6.5 directly. Users who installed the pre-R95a debug-signed v0.6.5 must uninstall first because the signing key changed."
     },
     {
       "version": "0.6.4",

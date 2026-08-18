@@ -16,7 +16,7 @@ const PAGE_DESC =
 const TALK_TITLE = 'Building a local-first AI side panel in Tauri 2: 12 MB, 0 telemetry, and 0 Electron';
 const TALK_LENGTH = '25 minutes + 5 min Q&A';
 const AUDIENCE = 'Tauri / Rust developers, indie hackers, local-AI builders';
-const BIO = 'The Pulse team is a 1-person local-first AI company based in Belarus. Pulse ships a 12 MB Windows side panel, accepts Monero, and has zero telemetry. The team has been shipping Rust + Tauri since 2024 and writes about local-first architecture at ownlocalml.com/blog.';
+const BIO = 'The Pulse team is a 1-person local-first AI company. Pulse ships a 12 MB Windows side panel, accepts Monero, and has zero telemetry. The team has been shipping Rust + Tauri since 2024 and writes about local-first architecture at ownlocalml.com/blog.';
 
 const SLIDES = [
   { n: 1,  title: 'Title slide',                              duration: '30s',  body: 'TauriConf 2026. Building a local-first AI side panel in Tauri 2. 12 MB, 0 telemetry, 0 Electron. Pulse team.' },
@@ -25,7 +25,7 @@ const SLIDES = [
   { n: 4,  title: 'The 8-month build timeline',               duration: '90s',  body: 'Electron prototype (month 1) → Tauri 1.0 (month 3) → Tauri 2.0 (month 5) → cloud-first v1 killed in month 5 → local-first v2 launched in month 8. What worked, what got killed, and what the 4-month opportunity cost bought us.' },
   { n: 5,  title: 'llama.cpp FFI integration',                duration: '3m',   body: 'Streaming inference back through Tauri IPC. 0.3-0.8s first-token latency on a 7B Qwen2.5-Coder on an M2 Air. Why we chose llama.cpp over Candle (5 lines vs 200) and over Ollama as a dependency (we ship the binary, the user does not install it).' },
   { n: 6,  title: 'MCP host mode (v0.7 feature)',             duration: '3m',   body: 'Pulse as the first local-first MCP host. How the user configures servers, what the prompt routing looks like, why MCP is the API layer we waited for, and the demo screenshot of Claude + filesystem + Pulse in the same panel.' },
-  { n: 7,  title: 'The Monero-only payment',                  duration: '3m',   body: 'Why we accept Monero but not Visa. The Belarus fiat blockage that became a brand asset. NOWPayments integration, 0% setup fee, $0.50 minimum, BTC / USDT-TRC20 / XMR / 200+ others. The math: 1 chargeback on Stripe wipes 70 free users for a month.' },
+  { n: 7,  title: 'The Monero-only payment',                  duration: '3m',   body: 'Why we accept Monero but not Visa. The fiat blockage from card networks that became a brand asset. NOWPayments integration, 0% setup fee, $0.50 minimum, BTC / USDT-TRC20 / XMR / 200+ others. The math: 1 chargeback on Stripe wipes 70 free users for a month.' },
   { n: 8,  title: 'The "would do differently" section',      duration: '3m',   body: '3 killed prototypes. The Electron prototype we killed in month 1. The cloud-first v1 we killed in month 5. The 2-month Tauri 1.0 detour before switching to 2.0. The 4-month opportunity cost, and why it was worth it.' },
   { n: 9,  title: 'D30 numbers (if available)',               duration: '2m',   body: 'MRR, conversion, signups, channel mix, the actual 25-day post-launch shape of the business. (Will be replaced with real numbers on Aug 31, 2026. If D30 numbers are not yet public, this slide is the published "by Sep 17" D30 checkpoint.)' },
   { n: 10, title: 'Q&A',                                      duration: '5m',   body: 'Open mic. Bring hard questions about WebView2 quirks, MCP, NOWPayments, llama.cpp FFI in Rust, and 1-person local-first product economics.' },
@@ -104,7 +104,7 @@ const blogPostingJsonLd = {
               Pulse is a 12 MB Windows side panel for AI chat. It runs on Tauri 2 (Rust core + WebView frontend), talks to local Ollama out of the box, and ships an MCP host mode so any model on the user&apos;s machine can be a tool. The full installer is 12 MB, the app starts in 200ms, and there are zero network requests on idle. We will not raise money. We will not show ads. We will not phone home.
             </p>
             <p>
-              This talk is a postmortem of building Pulse in 8 months as a 1-person team in Belarus, the architectural decisions, the parts that worked, and the parts we would do differently.
+              This talk is a postmortem of building Pulse in 8 months as a 1-person team, the architectural decisions, the parts that worked, and the parts we would do differently.
             </p>
           </div>
         </div>
