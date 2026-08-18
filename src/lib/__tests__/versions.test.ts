@@ -210,13 +210,13 @@ describe('versions SSOT — anti-fluff', () => {
     // Note: "Pulse" appears legitimately in installer file names
     // (Pulse_0.6.9_x64-setup.exe) — that's the product brand, not
     // marketing fluff. The brand rule catches "Pulse team" / "by
-    // Roman" / first-person copy, not the product name in a file path.
+    // author" / first-person copy, not the product name in a file path.
     const FLUFF = /(roman|lesside|revolutionary|amazing|powerful|incredible|best ever|next gen|coming soon|буде|скоро)/i;
     const hits = ALL_STRINGS.filter((s) => FLUFF.test(s));
     expect(hits).toEqual([]);
   });
 
-  it('no brand-rule violations (Pulse team / by Roman / by Lesside)', () => {
+  it('no brand-rule violations (Pulse team / by author / by Lesside)', () => {
     const BRAND_VIOLATIONS = /(pulse\s+team|pulse-team|by\s+roman|by\s+lesside|pulsesec)/i;
     const hits = ALL_STRINGS.filter((s) => BRAND_VIOLATIONS.test(s));
     expect(hits).toEqual([]);

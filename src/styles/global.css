@@ -168,7 +168,7 @@ section + section { border-top: 1px solid var(--border); }
 .nav__link[aria-current="page"] { color: var(--purple); }
 
 /* ── Buttons (R248f: unified rectangle system) ─────────
-   Roman: прямоугольные кнопки без закруглений, красивая рамка,
+   spec: прямоугольные кнопки без закруглений, красивая рамка,
    один стиль на весь сайт, hover — без translateY (плоский,
    только смена фона/рамки/тени). ─────────────────────── */
 .btn {

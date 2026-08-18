@@ -41,7 +41,7 @@ const {
   ctaText = 'Start trial ↓ 12 MB',
   ctaHref = '/#download',
   ctaVisible = true,
-  // R141e: default footer license is '' (Roman: "Никакого опенсорс"). Pages can override
+  // R141e: default footer license is '' (spec: "Никакого опенсорс"). Pages can override
   // by passing `footerLicense="Apache 2.0"` if they need to surface the Apache label
   // (e.g. the /license/ page). Marketing pages stay neutral.
   footerLicense = '',
@@ -111,7 +111,7 @@ const showBackground = ['/', '/pricing', '/pricing/', '/download', '/download/']
     {/*
       R256: Astro View Transitions — cross-fade on every internal link
       click instead of a hard MPA navigation. Keeps the page feel
-      reactive (per Roman: "не дёрганые а реактивные по ссылкам").
+      reactive (per spec: "не дёрганые а реактивные по ссылкам").
     */}
     <ViewTransitions transition:animate="fade" />
   </head>

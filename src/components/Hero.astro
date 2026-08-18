@@ -7,7 +7,7 @@ import { DESKTOP_VERSION } from '../lib/versions';
 
 let githubStars: number | null = null;
 try {
-  const res = await fetch('https://api.github.com/repos/TimesNuRoman/pulse', {
+  const res = await fetch('https://api.github.com/repos/TimesNuRoman/Pulse', {
     headers: { 'Accept': 'application/vnd.github+json' },
   });
   if (res.ok) {
@@ -49,7 +49,7 @@ const formattedStars = githubStars !== null
         <a class="btn btn--primary" href="#download">
           Start trial ↓
         </a>
-        <a class="btn btn--ghost" href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer" target="_blank">
+        <a class="btn btn--ghost" href="https://github.com/TimesNuRoman/Pulse" rel="noopener noreferrer" target="_blank">
           View on GitHub →
         </a>
       </div>

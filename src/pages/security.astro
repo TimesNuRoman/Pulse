@@ -182,7 +182,7 @@ const securityJsonLd = {
             Responsible disclosure is welcome and acknowledged. Reports are triaged by the maintainers of the Pulse repository.
           </p>
           <ul>
-            <li><strong>Where to report</strong> — <a href="https://github.com/TimesNuRoman/pulse/security/advisories/new" rel="noopener noreferrer">GitHub Security Advisories</a> for the Pulse organisation. A private advisory keeps the report out of the public issue tracker while triage is in progress.</li>
+            <li><strong>Where to report</strong> — <a href="https://github.com/TimesNuRoman/Pulse/security/advisories/new" rel="noopener noreferrer">GitHub Security Advisories</a> for the Pulse organisation. A private advisory keeps the report out of the public issue tracker while triage is in progress.</li>
             <li><strong>What to include</strong> — affected component (desktop / Android / website), reproduction steps, observed vs. expected behaviour, and impact. A minimal proof-of-concept is preferred over a long prose description.</li>
             <li><strong>Initial triage</strong> — within seven calendar days of submission. A follow-up with a timeline lands in the same advisory thread.</li>
             <li><strong>Disclosure timeline</strong> — coordinated with the reporter. Default is 90 days from the triage confirmation, in line with industry practice. Shorter windows are honoured on request for severe issues.</li>
@@ -195,7 +195,7 @@ const securityJsonLd = {
         <section id="updates" class="legal__section" aria-label="Update policy">
           <h2 class="legal__h2">Update policy.</h2>
           <ul>
-            <li><strong>Windows</strong> — Pulse ships the Tauri updater. A manifest poll runs on launch; the user is prompted to install when a newer version is published. The check is disable-able in Settings. Manual install is also supported: download the latest NSIS / MSI / portable binary from <a href="https://github.com/TimesNuRoman/pulse/releases" rel="noopener noreferrer">GitHub Releases</a> and run it over the existing install.</li>
+            <li><strong>Windows</strong> — Pulse ships the Tauri updater. A manifest poll runs on launch; the user is prompted to install when a newer version is published. The check is disable-able in Settings. Manual install is also supported: download the latest NSIS / MSI / portable binary from <a href="https://github.com/TimesNuRoman/Pulse/releases" rel="noopener noreferrer">GitHub Releases</a> and run it over the existing install.</li>
             <li><strong>Android</strong> — Pulse is distributed as a signed APK on GitHub Releases. There is no Play Store listing; updates are sideloaded by installing the new APK over the existing one. The signing key fingerprint is published in the release notes for every release.</li>
             <li><strong>Critical patches</strong> — shipped as fast as the fix is ready. There is no fixed patch-day schedule.</li>
             <li><strong>Signing</strong> — Windows binaries are Authenticode-signed. Android APKs are signed with a long-lived key; the SHA-256 fingerprint of the certificate is published in the release notes and is reproducible against the downloaded APK. Maintainer commits are GPG-signed and verifiable on the GitHub web UI.</li>
@@ -220,7 +220,7 @@ const securityJsonLd = {
         <section id="build" class="legal__section" aria-label="Build pipeline">
           <h2 class="legal__h2">Build pipeline.</h2>
           <ul>
-            <li><strong>Source of truth.</strong> The source code in the <a href="https://github.com/TimesNuRoman/pulse" rel="noopener noreferrer">Pulse repositories</a> is canonical. A binary is a build artefact, not the source.</li>
+            <li><strong>Source of truth.</strong> The source code in the <a href="https://github.com/TimesNuRoman/Pulse" rel="noopener noreferrer">Pulse repositories</a> is canonical. A binary is a build artefact, not the source.</li>
             <li><strong>Release branch.</strong> Tagged releases are cut from the <code>main</code> branch of the relevant repository. The tag SHA is recorded in the release notes and matches the source commit that produced the binary.</li>
             <li><strong>Reproducible builds.</strong> For a given commit SHA the build is deterministic. The SHA-256 of a downloaded binary can be cross-checked against the manifest in the corresponding GitHub Release.</li>
             <li><strong>Commit signing.</strong> Maintainer commits on the <code>main</code> branch are GPG-signed. The signature is verifiable from the GitHub web UI by clicking the "Verified" badge next to any commit.</li>
@@ -230,7 +230,7 @@ const securityJsonLd = {
 
         <!-- ─── Bottom of page ─────────────────────────────── -->
         <p class="legal__updated">
-          Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time>. This page documents what Pulse does today. A discrepancy between this page and the actual behaviour of the binary is a bug — please <a href="https://github.com/TimesNuRoman/pulse/issues" rel="noopener noreferrer">open an issue</a> or use the <a href="https://github.com/TimesNuRoman/pulse/security/advisories/new" rel="noopener noreferrer">advisory channel</a> above.
+          Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time>. This page documents what Pulse does today. A discrepancy between this page and the actual behaviour of the binary is a bug — please <a href="https://github.com/TimesNuRoman/Pulse/issues" rel="noopener noreferrer">open an issue</a> or use the <a href="https://github.com/TimesNuRoman/Pulse/security/advisories/new" rel="noopener noreferrer">advisory channel</a> above.
         </p>
       </article>
 
