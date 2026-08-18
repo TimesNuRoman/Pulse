@@ -1,0 +1,227 @@
+---
+// SPDX-License-Identifier: Proprietary
+// R284: /blog/monero-manifesto — payment policy page.
+// Source: gtm/64-MONERO-MANIFESTO-2026-08-18.md. Anonymous "Pulse team" voice.
+// No emoji, no marketing polish, no first-person romance, no apologetics.
+// R129 rule: structural Pulse mentions only (logo, nav, footer, button labels).
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import { DESKTOP_VERSION } from '../../lib/versions';
+import '../../styles/notes.css';
+
+const PAGE_TITLE = 'Why we accept Monero but not Visa — Pulse payment policy';
+const PAGE_DESC =
+  'A local-first product is not a feature. It is a contract. Stripe, Visa, Mastercard, and PayPal do not honor this contract. ' +
+  'This page documents why Pulse accepts only cryptocurrency (Monero preferred, Bitcoin, USDT-TRC20, 200+ others via NOWPayments).';
+
+const PUBLISHED = '2026-08-26';
+const UPDATED = '2026-08-26';
+const READING_MIN = 7;
+const HERO_PILL_LABEL = READING_MIN + ' min read';
+
+const SECTIONS = [
+  { id: 'what-we-believe', title: 'What we believe' },
+  { id: 'why-crypto', title: 'Why crypto, and why Monero specifically' },
+  { id: 'why-no-card-free', title: 'Why we do not have a free tier that requires a card' },
+  { id: 'no-lifetime', title: 'Why we do not have a "lifetime" deal' },
+  { id: 'what-this-means', title: 'What this means for you' },
+  { id: 'why-we-wrote-this', title: 'Why we are writing this' },
+];
+
+const blogPostingJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: 'Why we accept Monero but not Visa: a local-first AI company payment policy',
+  description: PAGE_DESC,
+  datePublished: PUBLISHED,
+  dateModified: UPDATED,
+  author: { '@type': 'Organization', name: 'Pulse' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Pulse',
+    logo: { '@type': 'ImageObject', url: 'https://ownlocalml.com/favicon.svg' },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': 'https://ownlocalml.com/blog/monero-manifesto/',
+  },
+  image: 'https://ownlocalml.com/og-home.png',
+  url: 'https://ownlocalml.com/blog/monero-manifesto/',
+  wordCount: 1200,
+};
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-home.png"
+  ctaVisible={false}
+  footerLicense=""
+  footerVersion={`v${DESKTOP_VERSION}`}
+  canonical="https://ownlocalml.com/blog/monero-manifesto/"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <main id="main" class="notes-main">
+    <article class="post" id="post">
+
+      <header class="post-hero">
+        <div class="bg-glow"></div>
+        <div class="container post-hero__grid">
+          <div class="post-hero__copy reveal">
+            <div class="post-hero__badges">
+              <span class="post-hero__eyebrow">Pulse · Blog · Payment policy</span>
+              <span class="post-hero__pill" aria-label={HERO_PILL_LABEL}>
+                <span class="post-hero__pill-dot" aria-hidden="true"></span>
+                {READING_MIN} min read
+              </span>
+            </div>
+            <h1 class="post-hero__title">Why we accept Monero but not Visa.</h1>
+            <p class="post-hero__sub">A local-first product is not a feature. It is a contract. The contract says your data stays on your device, your prompts do not train someone else&apos;s model, your payment does not become a credit file entry that follows you for seven years. This page documents what the contract is and why we honor it the only way that works for a 1-person company in Belarus.</p>
+            <p class="post-hero__meta">
+              <time datetime={PUBLISHED}>Published {PUBLISHED}</time>
+              <span aria-hidden="true">·</span>
+              <a href="/blog/">All posts</a>
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <section class="post-section" id="what-we-believe" aria-label="What we believe">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Section 1</span>
+            <h2 class="post-section__h2">What we believe</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              A local-first product is not a feature. It is a contract. The contract says: your data stays on your device, your prompts do not train someone else&apos;s model, your payment does not become a credit file entry that follows you for seven years. The product is the contract. The contract is the product.
+            </p>
+            <p>
+              Stripe, Visa, Mastercard, and PayPal do not honor this contract. They do not refuse to honor it because they are evil. They refuse because the contracts they have with acquiring banks, the card networks, and the regulators in their jurisdictions make honoring it expensive, slow, or impossible. They will hold your funds for 180 days if a chargeback happens. They will shut down your account if a customer files a complaint. They will not let you serve customers in jurisdictions their bank considers high-risk. They will not let you accept payment from a privacy user without a name on a card.
+            </p>
+            <p>
+              We are a 1-person company shipping a 12 MB Windows side panel. Our business model is $20 per month or $192 per year, and we sell up to $1,000 per month on the Enterprise tier. We have 50 to 100 trial users. We do not have a compliance department. We do not have a finance team. We do not have the runway to absorb a $5,000 chargeback fee or a 30-day payout freeze.
+            </p>
+            <p>
+              So we made a choice: we accept Monero, Bitcoin, USDT-TRC20, and 200+ other cryptocurrencies via NOWPayments. We do not accept Visa, Mastercard, American Express, Discover, JCB, or PayPal. We do not accept ACH or wire transfers. We do not accept Apple Pay or Google Pay. We are not on the App Store. We are not on the Play Store. We are not in any app store. We are a Tauri 2 binary on our own domain, and we are paid in cryptocurrency.
+            </p>
+            <p>
+              This is not a stunt. This is the only payment infrastructure that works for a product like ours.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="post-section" id="why-crypto" aria-label="Why crypto, and why Monero specifically">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Section 2</span>
+            <h2 class="post-section__h2">Why crypto, and why Monero specifically</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              Cryptocurrency is the only payment rail where:
+            </p>
+            <ol class="post-list post-list--ordered">
+              <li><strong>The customer does not need to identify themselves to the merchant.</strong> The customer generates a wallet address, sends funds, the merchant receives funds. No KYC. No name. No address. No phone number.</li>
+              <li><strong>The payment processor does not have a relationship with the customer&apos;s bank.</strong> NOWPayments settles to our wallet. They do not see the customer&apos;s card. They do not see the customer&apos;s name. They cannot reverse the charge because there is no charge to reverse — the transaction is on a public ledger.</li>
+              <li><strong>The funds clear in minutes, not days.</strong> A customer in Berlin pays $20 in Monero at 3am. We have the funds at 3:07am. We do not have to wait 3 business days for ACH. We do not have to wait 30 days for a Stripe payout.</li>
+              <li><strong>The customer is not funding a credit file.</strong> When you pay $20 with a credit card, your bank knows you bought a local-first AI product. When you pay $20 with Monero, nobody knows.</li>
+              <li><strong>The merchant is not a target for chargeback fraud.</strong> 1% of transactions on Stripe are chargebacks. For a $20 product with 1,000 customers, that is 10 chargebacks a month, $200 in fees, $500 in lost product, and a Stripe account review. With Monero, chargebacks are cryptographically impossible. The transaction is final.</li>
+            </ol>
+            <p>
+              We chose Monero as the headline option because Monero is the only cryptocurrency with mandatory on-by-default privacy. Bitcoin and USDT-TRC20 are pseudonymous, not private. Anyone with a Bitcoin address can look up the entire transaction history of that address on a public block explorer. Chainalysis sells this data to the IRS, ICE, and anyone with a budget. Monero hides the sender, the receiver, and the amount. It is the only cryptocurrency that does what the original Bitcoin whitepaper promised.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="post-section" id="why-no-card-free" aria-label="Why we do not have a free tier that requires a card">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Section 3</span>
+            <h2 class="post-section__h2">Why we do not have a free tier that requires a card</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              We do. It is called the Free tier. It does not require a card because it does not require an account. You download Pulse. You run it. You get 100,000 GPT-4o mini tokens a month. You get 200 premium chat messages. You get unlimited local Ollama. We do not know who you are. We do not know your email. We do not know your IP address beyond what Cloudflare logs for 30 days for abuse prevention.
+            </p>
+            <p>
+              This is the Free tier. It is not a &quot;free trial.&quot; It is not &quot;free for 14 days and then you must pay.&quot; It is free, forever, for anyone who downloads it, with no account, no card, no email, no telemetry.
+            </p>
+            <p>
+              We can offer this because the marginal cost of a Free user is low. GPT-4o mini costs $0.15 per million input tokens and $0.60 per million output tokens. A heavy Free user costs us $0.30 a month in inference. A casual Free user costs us $0.03. The Free tier pays for itself as long as 1 in 14 Free users upgrades to Pro. The Pro tier is $20 per month and covers the cost of 70 Free users.
+            </p>
+            <p>
+              This is not a charity. This is a sustainable business model for a local-first product.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="post-section" id="no-lifetime" aria-label="Why we do not have a lifetime deal">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Section 4</span>
+            <h2 class="post-section__h2">Why we do not have a &quot;lifetime&quot; deal</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              A &quot;lifetime&quot; deal is a bet that the product will die before the customer does. If we sell 1,000 lifetime deals at $200, we collect $200,000 today. If the product survives 3 years, we have returned $200,000 against a customer base that has stopped paying. We are a 1-person company. We cannot afford to be right about lifetime deals. We are a recurring-revenue business. We sell monthly and annual subscriptions. We do not sell lifetime subscriptions. The annual subscription is 20% off monthly. That is the best deal we offer. It is a good deal.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="post-section" id="what-this-means" aria-label="What this means for you">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Section 5</span>
+            <h2 class="post-section__h2">What this means for you</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              If you are a customer who wants to pay with a credit card, you cannot. This is not negotiable. We are not adding Stripe. We are not adding PayPal. We are not adding Apple Pay. If you want Pulse, you need a cryptocurrency wallet. Coinbase, Kraken, Cake Wallet, Feather Wallet, Monerujo, or any wallet that supports one of the 200+ cryptocurrencies NOWPayments accepts. If you do not have a wallet and do not want one, Pulse is not for you. We are sorry. We hope the Free tier works for you.
+            </p>
+            <p>
+              If you are a journalist writing about Pulse, the payment model is the story, not the feature. The payment model is the reason Pulse can offer a Free tier that does not require a card. The payment model is the reason Pulse can ship without an app store. The payment model is the reason Pulse can be local-first. The feature is a side effect of the architecture. The architecture is a side effect of the payment model.
+            </p>
+            <p>
+              If you are a regulator reading this, we are not evading anything. We are not hiding revenue. We are not laundering money. We are a Belarus-resident company shipping a Windows application. We pay Belarusian taxes on the revenue we receive. We file the appropriate reports with the appropriate authorities. We comply with all applicable laws. We do not have customers in sanctioned jurisdictions. We screen transactions via NOWPayments&apos; built-in compliance layer. We are not anonymous to the state. We are anonymous to each other, which is the only anonymity that matters for a product whose entire value proposition is &quot;your data stays on your device.&quot;
+            </p>
+            <p>
+              If you are an Enterprise customer who needs to pay $499 or $1,000+ per month, NOWPayments sends a custom invoice link and the wire happens directly to our wallet. The full terms are on the <a href="/pricing/#enterprise">pricing page</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="post-section" id="why-we-wrote-this" aria-label="Why we are writing this">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Section 6</span>
+            <h2 class="post-section__h2">Why we are writing this</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              Because the standard SaaS payment stack is structurally incompatible with a local-first product. Because the question &quot;why do not you accept credit cards?&quot; comes up in every conversation we have with potential customers, and the answer is too long for a tweet. Because the answer is the product, and the product deserves its own page.
+            </p>
+            <p>
+              This page is at <a href="/blog/monero-manifesto">/blog/monero-manifesto</a>. It is not a press release. It is a contract. We are Pulse. We accept Monero, Bitcoin, and 200+ other cryptocurrencies. We do not accept Visa, Mastercard, or any card. We are a 1-person company. We are local-first. We are anonymous. We are not going to change.
+            </p>
+            <p>
+              If this is the kind of product you want to use, you know what to do. Download Pulse. Run it locally. Use the Free tier. Upgrade to Pro with Monero. That is the whole product.
+            </p>
+            <p class="post-signoff">— Pulse team</p>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <Footer license="" version={`v${DESKTOP_VERSION}`} />
+</Base>
+
+<script type="application/ld+json" set:html={JSON.stringify(blogPostingJsonLd)} is:inline />

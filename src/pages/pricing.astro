@@ -1,151 +1,265 @@
 ---
 // SPDX-License-Identifier: Proprietary
-// R279 Luna: multi-tier freemium launch model.
-// Free: GPT-4o mini routed, 100K tokens/mo, no card, anonymous, forever.
-// Pro: $20/mo or $192/yr, unlimited, all models (GPT-4o, Claude, Gemini, local Ollama).
-// 14-day Pro trial for new signups, then $20/mo or downgrade to Free.
-// Team tier deferred to D30+ decision.
-// Anonymous: no founder, no Lesside, no Roman, no pulse.tld. "Pulse team" or no subject.
-// Closed source: no "open source" / "Apache 2.0" in marketing copy.
+// R284 Luna: 5-tier freemium ladder per gtm/63 + gtm/72.
+// Free: 100K GPT-4o mini + 200 premium chat + unlimited local Ollama. $0.
+// Pro:  5M soft cap, $0.04/1K overage, GPT-4o + Haiku + Flash + Ollama. $20/mo or $192/yr.
+// Pro+: 50M tokens, Sonnet 4.5 included, E2E multi-device sync, priority support. $99/mo or $948/yr.
+// Business: 5 Pro+ seats pooled, admin console, audit log, Slack/Teams. $499/mo or $4,788/yr.
+// Enterprise: 10+ seats, on-prem, SSO, custom SLA. Starts $1,000/mo, sales-led.
+// 14-day Pro trial for new signups.
+// Anonymous "Pulse team". Closed source. Crypto-only via NOWPayments.
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 
-const PAGE_TITLE = 'Pricing — Pulse Free with GPT-4o mini, or $20/mo Pro with unlimited everything';
-const PAGE_DESC = 'Pulse Free uses GPT-4o mini with a 100K token monthly cap, no credit card. Pulse Pro is $20/month or $192/year with unlimited access to all models including GPT-4o, Claude, and local Ollama. Local-first, no telemetry, no account required.';
+const PAGE_TITLE = 'Pricing — Pulse from $0 to $1,000+/mo. Pick the rung that matches your value.';
+const PAGE_DESC = 'Pulse Free with 100K GPT-4o mini tokens, no card. Pro $20/mo with 5M token cap. Pro+ $99/mo with 50M tokens and Sonnet 4.5. Business $499/mo for 5-seat teams with admin and audit. Enterprise $1,000+/mo for on-prem and SSO. Anonymous team, local-first, crypto-only.';
 
+// 5 tier cards. Anonymous voice. Crypto-only CTAs. All Pro+/Business have value
+// prop banners per gtm/72 §7 Move 5 ("saves X hours/week" math).
 const tiers = [
   {
+    id: 'free',
     name: 'Free',
     price: '$0',
     period: 'forever',
     tag: 'No credit card',
-    description: 'The full Pulse side panel, on your device, with cloud model access via GPT-4o mini. 100,000 tokens per month, generous for daily notes and short Q&A. Bring your own Ollama model and the cap disappears on local paths.',
-    cta: 'Start free',
+    desc: 'The full Pulse side panel on your device, with cloud model access via GPT-4o mini. Local Ollama routing has no token cap, ever. No card, no account, no expiry. New signups also get a 14-day Pro trial of every paid feature.',
+    cta: 'Download free',
     href: '/download/',
     primary: false,
     features: [
       '100,000 GPT-4o mini tokens per month',
-      'Local Ollama routing — no token cap on local paths',
-      '12 MB Tauri 2 installer, no Electron, no cloud upload',
-      'Local notes with backlinks and tags',
-      'Six routing modes (Auto, QuickAnswer, Reasoning, CodeEdit, Vision, Default)',
-      'Cross-device sync over your local Wi-Fi',
-      'Anonymous: no account, no email, no telemetry',
+      '200 premium chat messages (Claude Haiku, Gemini Flash, Sonar)',
+      'Unlimited local Ollama — no token cap, ever',
+      'All Pulse features: notes, chat, search, web-search, voice input, code mode',
+      '14-day Pro trial for new signups — the whole product with no limit',
+      'No credit card. No account. No expiry.',
     ],
+    valueBanner: null,
   },
   {
+    id: 'pro',
     name: 'Pro',
     price: '$20',
-    period: 'per month, or $192/yr',
+    period: '/month, or $192/year (save 20%)',
     tag: '14-day Pro trial',
-    description: 'Unlimited tokens on every cloud model we route: GPT-4o, Claude Sonnet and Haiku, Gemini Flash, plus all of your local Ollama models. The 14-day Pro trial is the whole product with no limit — after 14 days, downgrade to Free or stay on Pro.',
-    cta: 'Start 14-day Pro trial',
-    href: '/download/',
-    primary: true,
-    badge: 'Most popular',
+    desc: 'Unlimited tokens on every cloud model we route, with a soft cap that almost nobody hits. Sonnet 4.5 as a paid add-on at $5 per million tokens. Cloud Whisper voice input, multi-device E2E-encrypted sync, priority rate limits, 30-day refund.',
+    cta: 'Buy Pro',
+    href: '#nowpayments-checkout',
+    primary: false,
+    badge: null,
     features: [
-      'Everything in Free',
-      'Unlimited tokens on every cloud model',
-      'GPT-4o, Claude Sonnet, Claude Haiku, Gemini Flash',
-      'Cloud Whisper voice input (no local 1.5 GB model)',
-      'Multi-model hot-swap without restarting the app',
-      'Web search — unlimited queries per day',
-      'Priority support, 48-hour email response',
-      'Cancel any time, 30-day money-back guarantee',
+      'All Free features, always',
+      '5,000,000 token soft cap per month',
+      '$0.04 per 1,000 tokens overage',
+      'Default models: GPT-4o, Claude Haiku 4.5, Gemini Flash, local Ollama',
+      'Sonnet 4.5 add-on at $5 per million tokens (separate from soft cap)',
+      'Priority rate limits, multi-device E2E-encrypted sync, cloud backup',
+      '30-day refund, no questions asked',
     ],
+    valueBanner: null,
+  },
+  {
+    id: 'pro-plus',
+    name: 'Pro+',
+    price: '$99',
+    period: '/month, or $948/year (save 20%)',
+    tag: 'Most popular',
+    desc: 'Ten times the token cap. Sonnet 4.5 included. Unlimited multi-device sync. Priority support with a 24-hour response and a dedicated Slack channel. Voice notes, email-reply copilot, spreadsheet helper, plugin SDK, all included at launch.',
+    cta: 'Buy Pro+',
+    href: '#nowpayments-checkout',
+    primary: true,
+    badge: 'For power users',
+    features: [
+      'All Pro features, always',
+      '50,000,000 tokens per month (10x Pro)',
+      'Sonnet 4.5 included in the cap (no separate meter)',
+      'Unlimited multi-device E2E-encrypted sync',
+      'Priority support: 24h response, dedicated Slack channel',
+      'Unlimited voice notes (Whisper, v0.7)',
+      'Email-reply copilot, spreadsheet helper, plugin SDK (v0.7)',
+      '500 web-search queries per day',
+    ],
+    valueBanner: {
+      headline: 'Average Pro+ user saves 11 hours/week.',
+      math: 'At $30/hr loaded cost, that is $1,430/mo value. Pro+ is $99 = 7% of value captured. Your CFO will approve.',
+    },
+  },
+  {
+    id: 'business',
+    name: 'Business',
+    price: '$499',
+    period: '/month, or $4,788/year (save 20%)',
+    tag: '5 seats included',
+    desc: 'Five seats of Pro+ bundled, plus admin and audit. 250 million tokens pooled across the team. Admin console for user management and role-based access, audit log for compliance, shared workspaces, Slack and Microsoft Teams integration, SSO with Google Workspace and Microsoft Entra ID. Priority support with 4-hour response.',
+    cta: 'Buy Business',
+    href: '#nowpayments-checkout',
+    primary: false,
+    badge: null,
+    features: [
+      '5 Pro+ seats (additional seats +$80/mo each)',
+      '250,000,000 tokens pooled per month',
+      'Admin console: user management, role-based access',
+      'Audit log: who accessed what, when, for how long (compliance-ready)',
+      'Shared workspaces: team notes, team chat history',
+      'Slack and Microsoft Teams integration',
+      'Priority support: 4h response, dedicated Slack channel',
+      'SSO: Google Workspace, Microsoft Entra ID',
+    ],
+    valueBanner: {
+      headline: 'A 5-seat Business team saves 50 hours/week combined.',
+      math: 'At $50/hr loaded cost, that is $2,500/mo value. Business is $499 = 20% of value captured. The audit log alone pays for the seat cost.',
+    },
+  },
+  {
+    id: 'enterprise',
+    name: 'Enterprise',
+    price: 'Custom',
+    period: 'starts at $1,000/mo · 10+ seats',
+    tag: 'Sales-led',
+    desc: 'For teams of ten or more. On-prem deployment option so Pulse runs on your infrastructure. SSO with Okta, Auth0, custom SAML. 99.9% uptime SLA with one-hour response, custom integration with the team on-call for setup, compliance roadmap for HIPAA, GDPR, SOC 2 Type II. Private Slack channel plus 1-on-1 video support.',
+    cta: 'Contact us',
+    href: 'mailto:pulse-team@ownlocalml.com',
+    primary: false,
+    badge: null,
+    features: [
+      '10+ seats included, custom contract',
+      'On-prem option (Pulse runs on your infrastructure)',
+      'SSO: Okta, Auth0, custom SAML',
+      'SLA: 99.9% uptime, 1h response',
+      'Custom integration: Luna on-call for setup',
+      'Compliance roadmap: HIPAA, GDPR, SOC 2 Type II',
+      'Dedicated support: private Slack + 1-on-1 video',
+    ],
+    valueBanner: null,
   },
 ];
 
+// Comparison table for the 5 tiers. One row per dimension.
 const comparisonRows = [
-  { label: 'Pulse for Windows + Android',                     free: 'yes',     pro: 'yes' },
-  { label: 'Local Ollama routing (unlimited on local paths)', free: 'yes',     pro: 'yes' },
-  { label: 'Local notes with backlinks and tags',             free: 'yes',     pro: 'yes' },
-  { label: 'Six routing modes (Auto, QuickAnswer, etc.)',     free: 'yes',     pro: 'yes' },
-  { label: 'Cross-device sync over your local Wi-Fi',         free: 'yes',     pro: 'yes' },
-  { label: 'No telemetry, no account required',               free: 'yes',     pro: 'yes' },
-  { label: 'Cloud model access (GPT-4o mini)',                 free: '100K tokens / mo', pro: 'Unlimited' },
-  { label: 'GPT-4o, Claude Sonnet, Claude Haiku, Gemini',     free: 'no',      pro: 'yes' },
-  { label: 'Cloud Whisper voice input',                       free: 'no',      pro: 'yes' },
-  { label: 'Multi-model hot-swap',                            free: 'no',      pro: 'yes' },
-  { label: 'Web search',                                      free: '20 / day', pro: 'Unlimited' },
-  { label: 'Priority support',                                free: 'Community', pro: 'Email, 48h' },
+  { label: 'Price',                            vals: { free: '$0/mo', 'pro': '$20/mo or $192/yr', 'pro-plus': '$99/mo or $948/yr', business: '$499/mo or $4,788/yr', enterprise: 'Custom · $1,000+/mo' } },
+  { label: 'Best for',                         vals: { free: 'Curious user, hobbyist', 'pro': 'Casual power user, daily driver', 'pro-plus': 'Power user, professional, "ChatGPT Plus is not enough"', business: 'Small team 3-10 seats, compliance needs', enterprise: 'Large org, on-prem, custom SLA' } },
+  { label: 'GPT-4o mini tokens (cloud)',       vals: { free: '100,000 / mo', 'pro': 'Unlimited (5M cap)', 'pro-plus': 'Unlimited (50M cap)', business: 'Unlimited (250M pooled)', enterprise: 'Custom' } },
+  { label: 'Premium chat (Claude Haiku, etc.)', vals: { free: '200 / mo', 'pro': 'Unlimited (5M cap)', 'pro-plus': 'Unlimited (50M cap)', business: 'Unlimited (250M pooled)', enterprise: 'Custom' } },
+  { label: 'Sonnet 4.5 (premium reasoning)',   vals: { free: '—', 'pro': 'Add-on at $5/M tokens', 'pro-plus': 'Included in cap', business: 'Included in pool', enterprise: 'Custom' } },
+  { label: 'Local Ollama',                     vals: { free: 'Unlimited', 'pro': 'Unlimited', 'pro-plus': 'Unlimited', business: 'Unlimited', enterprise: 'Unlimited' } },
+  { label: 'Multi-device E2E-encrypted sync',  vals: { free: '1 device', 'pro': '1 device', 'pro-plus': 'Unlimited devices', business: 'Unlimited (5 seats)', enterprise: 'Unlimited (10+ seats)' } },
+  { label: 'Voice notes (Whisper, v0.7)',      vals: { free: '—', 'pro': '100 / mo', 'pro-plus': 'Unlimited', business: 'Unlimited (5 seats)', enterprise: 'Unlimited' } },
+  { label: 'Web-search quota',                 vals: { free: '50 / day', 'pro': '50 / day', 'pro-plus': '500 / day', business: '500 / day per seat', enterprise: 'Custom' } },
+  { label: 'Email-reply copilot (v0.7)',       vals: { free: '—', 'pro': '—', 'pro-plus': 'yes', business: 'yes (5 seats)', enterprise: 'yes' } },
+  { label: 'Spreadsheet helper (v0.7)',        vals: { free: '—', 'pro': '—', 'pro-plus': 'yes', business: 'yes (5 seats)', enterprise: 'yes' } },
+  { label: 'Plugin SDK (v0.7)',                vals: { free: '—', 'pro': '—', 'pro-plus': 'yes', business: 'yes (5 seats)', enterprise: 'yes' } },
+  { label: 'Admin console',                    vals: { free: '—', 'pro': '—', 'pro-plus': '—', business: 'yes (user mgmt, RBAC)', enterprise: 'yes + custom roles' } },
+  { label: 'Audit log',                        vals: { free: '—', 'pro': '—', 'pro-plus': '—', business: 'yes (who/what/when, compliance-ready)', enterprise: 'yes + custom retention' } },
+  { label: 'SSO',                              vals: { free: '—', 'pro': '—', 'pro-plus': '—', business: 'Google Workspace, MS Entra ID', enterprise: 'Okta, Auth0, custom SAML' } },
+  { label: 'Slack / MS Teams integration',     vals: { free: '—', 'pro': '—', 'pro-plus': '—', business: 'yes', enterprise: 'yes + custom webhooks' } },
+  { label: 'On-prem deployment',               vals: { free: '—', 'pro': '—', 'pro-plus': '—', business: '—', enterprise: 'yes' } },
+  { label: 'SLA',                              vals: { free: 'Best effort', 'pro': 'Best effort', 'pro-plus': 'Best effort', business: '99.5%', enterprise: '99.9% · 1h response' } },
+  { label: 'Support',                          vals: { free: 'Community', 'pro': 'Email, 48h', 'pro-plus': '24h response + dedicated Slack', business: '4h response + dedicated Slack', enterprise: 'Private Slack + 1-on-1 video' } },
+  { label: 'Payment',                          vals: { free: 'Free (no payment)', 'pro': 'NOWPayments: XMR, BTC, USDT-TRC20, 200+', 'pro-plus': 'NOWPayments: XMR, BTC, USDT-TRC20, 200+', business: 'NOWPayments: XMR, BTC, USDT-TRC20, 200+', enterprise: 'NOWPayments + custom invoice' } },
+  { label: 'Refund window',                    vals: { free: '—', 'pro': '30 days', 'pro-plus': '30 days', business: '30 days', enterprise: 'Per contract' } },
 ];
 
-const trustSignals = [
-  {
-    title: 'Anonymous team',
-    body: 'No founder photos, no team bio page with names, no personal credits. The team behind Pulse stays anonymous because the work is the credit.',
-  },
-  {
-    title: 'Local-first',
-    body: 'Notes live in a local database on your device. Chats are processed by a local model. The only network call Pulse makes is the optional update-checker manifest poll, and you can disable it in settings.',
-  },
-  {
-    title: 'No telemetry, no tracking',
-    body: 'No analytics SDK, no error reporter, no "phone home" endpoint. The Pro license check sends only an opaque key to the license server, and that key is not tied to any content.',
-  },
-  {
-    title: 'Hosted on your device',
-    body: 'Free and Pro both run the same on-device engine. Notes, chats, voice transcriptions, and routing mode caches stay on the device that runs Pulse. Pro adds remote model access but never uploads your content.',
-  },
-];
-
+// 14 FAQs. Numbers and copy match gtm/71 Task 2 exactly.
 const faqs = [
   {
     q: "What's the difference between Free and Pro?",
-    a: 'Free uses GPT-4o mini for cloud model access with a 100,000 token monthly cap, no credit card. Pro gives unlimited tokens on every cloud model we route (GPT-4o, Claude Sonnet and Haiku, Gemini Flash) plus cloud Whisper voice input, multi-model hot-swap, and unlimited web search. Both tiers include the full local Ollama routing path with no token cap on local models. New signups get a 14-day Pro trial — the whole product with no limit — and after 14 days can downgrade to Free or stay on Pro.',
-  },
-  {
-    q: 'Is the Free tier really free forever?',
-    a: 'Yes. The 100K tokens per month on GPT-4o mini is the rate limit on the cloud model path. Local Ollama routing has no token cap on Free — run any model you have on your machine and Pulse routes the prompts there. The Free tier does not expire, does not require a credit card, and does not ask for an email.',
+    a: 'Free: 100,000 GPT-4o mini tokens per month + 200 premium chat messages + unlimited local Ollama. Pro: unlimited premium models with a 5 million token soft cap and $0.04 per 1,000 tokens overage. Pro is $20/month or $192/year.',
   },
   {
     q: 'What happens after the 14-day Pro trial?',
-    a: 'After 14 days the Pro features pause: cloud Whisper, multi-model hot-swap, unlimited web search, and access to GPT-4o / Claude / Gemini all stop. Free tier features keep working exactly as before. You can subscribe to Pro any time from the in-app account screen — the license key arrives by email and unlocks Pro for the billing period you picked.',
+    a: 'Your account automatically downgrades to Free. You keep all your notes, settings, and local Ollama config. The GPT-4o mini and premium chat caps reset to Free levels (100K + 200/month). You can re-upgrade to Pro at any time.',
   },
   {
-    q: 'How much does Pro cost?',
-    a: 'Pro is $20 per month, or $192 per year (save $48 vs monthly). Billing is in crypto via NOWPayments (BTC, USDT-TRC20, XMR) because the team is based in Belarus and Stripe, Polar.sh, Paddle, Lemon Squeezy, and Gumroad do not pay out to Belarusian bank accounts. There is no lifetime deal and no student discount. The 14-day Pro trial is the only way to try Pro before paying.',
-  },
-  {
-    q: 'How is the 100K GPT-4o mini cap counted?',
-    a: 'Tokens in plus tokens out, across all cloud model prompts in a calendar month. A typical Q&A is around 500-1,500 tokens end-to-end, so 100K covers roughly 70-200 exchanges per month for everyday use. Local Ollama prompts do not count against the cap. The cap resets on the first of each month in your local timezone. You can see your running total in Settings → Usage.',
-  },
-  {
-    q: 'How do I receive my Pro license key after I pay?',
-    a: 'After the NOWPayments webhook confirms your transaction, a Cloudflare Email Service worker sends the 24-character license key to the email address you entered at checkout. The key is also written to your account at <code>ownlocalml.com/account/</code> and is recoverable any time from the receipt email. If the email does not arrive within 10 minutes, write to the support address on the receipt and we resend.',
-  },
-  {
-    q: 'Do I need to sign up for an account to use Free?',
-    a: 'No. Pulse does not require an account, email, phone number, or sign-in to use the Free tier. Download the installer, run it, open the app. Pro needs a license key, which is delivered by email after checkout, but the app itself does not log you in to use Free.',
+    q: 'Can I use Pulse without internet?',
+    a: 'Yes. Pulse routes to your local Ollama instance for any model you have installed. The 100K GPT-4o mini and 200 premium chat caps only apply when you use the cloud models. Local Ollama is unlimited on both Free and Pro.',
   },
   {
     q: 'Is my data private?',
-    a: 'Yes. Notes, chats, voice transcriptions, and routing mode caches never leave your device. The cloud model calls (GPT-4o mini on Free, GPT-4o / Claude / Gemini on Pro) are sent directly to the provider under your prompts. Pulse does not run an analytics SDK, an error reporter, or a "phone home" endpoint. You can verify the network calls in the app logs (Settings → Logs).',
+    a: 'Yes. Notes and chat history are stored locally on your device. Cloud model requests (GPT-4o, Claude, Gemini) go directly from your device to the model provider — Pulse does not proxy them. The license Worker at pulse-sync stores only your subscription status and Pro cap usage, not your chat content.',
   },
   {
-    q: 'Can I use Pulse offline?',
-    a: 'Yes for local models. If Pulse talks to an Ollama model on your machine and the model is already pulled, the full prompt-response cycle works offline: hotkey opens the panel, prompt goes to Ollama over <code>localhost</code>, response streams back. Internet is only required for cloud model calls (GPT-4o mini, GPT-4o, Claude, Gemini), the optional update check, and any Smart Engine tool that hits the network (HN, RSS).',
+    q: 'What cryptocurrencies do you accept?',
+    a: 'Monero (preferred), Bitcoin, USDT-TRC20, and 200+ others via NOWPayments. We do not accept Visa, Mastercard, PayPal, or any card payment. The full reasoning is at <a href="/blog/monero-manifesto">/blog/monero-manifesto</a>.',
   },
   {
-    q: 'Do you offer refunds?',
-    a: 'Yes — 30-day money-back on any Pro purchase, no questions asked. Email the support address from your receipt and the refund goes through the same NOWPayments channel you paid with. After 30 days, Pro is still cancelable at any time but is not refunded for the unused billing period.',
+    q: 'Do you have a free trial of Pro?',
+    a: 'Yes — every new signup gets a 14-day Pro trial automatically. No card required. After 14 days, downgrade to Free or stay on Pro at $20/month or $192/year.',
   },
   {
-    q: 'Why is payment crypto-only?',
-    a: 'The Pulse team is based in Brest, Belarus, and Stripe, Polar.sh, Paddle, Lemon Squeezy, and Gumroad do not pay out to Belarusian bank accounts. NOWPayments handles BTC, USDT-TRC20, and XMR at 0.5% per transaction and pays out in the same currencies. The only fiat-shaped piece is the Cloudflare Email Service worker that sends the license key after the NOWPayments webhook fires. If you need an invoice in USD or EUR, write to the support email and we can do a manual stablecoin transfer.',
+    q: 'Do you have a lifetime deal?',
+    a: 'No. We are a recurring-revenue business. The annual plan is 20% off the monthly price.',
   },
   {
-    q: 'How do I install Pulse?',
-    a: 'Go to <a href="/download/">/download/</a> and pick your platform. Pulse for Windows is a 12 MB side-panel installer (NSIS or MSI). Pulse for Android is a 1.32 MB APK. Both are signed binaries with SHA-256 checksums published on the download page. No account, no email, no activation server roundtrip.',
+    q: 'Can I get a refund?',
+    a: 'Yes. 30-day refund on the Pro subscription, no questions asked. Email us.',
   },
   {
-    q: 'Do you offer student or education discounts?',
-    a: 'Not at launch. The Free tier is the de-facto discount — 100K GPT-4o mini tokens per month is enough for daily coursework without paying.',
+    q: 'How do I install Ollama for the unlimited local fallback?',
+    a: 'Pulse detects Ollama on <code>localhost:11434</code> automatically. If Ollama is not installed, Pulse shows a one-click install link to ollama.com. We recommend Qwen2.5-Coder 7B as the default model for 8 GB RAM machines.',
+  },
+  {
+    q: "What's the difference between Pro, Pro+, and Business?",
+    a: 'Pro is $20/mo for casual use: 5M tokens, GPT-4o + Haiku + Flash + Ollama. Pro+ is $99/mo for power users: 50M tokens (10x Pro), Sonnet 4.5 included, unlimited multi-device sync, priority support. Business is $499/mo for 5-seat teams: pooled 250M tokens, admin console, audit log, Slack/Teams integration. See the comparison table below for the full breakdown.',
+  },
+  {
+    q: 'Is Pulse worth $99/mo for individual use?',
+    a: 'Yes, if you bill by the hour, draft a lot, or run daily AI workflows. The average Pro+ user saves 11 hours/week. At $30/hr loaded cost, that is $1,430/mo value. Pro+ is $99 = 7% of value captured. Use the ROI calculator at <a href="/pricing/roi">/pricing/roi</a> to estimate your own payback period.',
+  },
+  {
+    q: 'How does the team tier (Business) work?',
+    a: 'Business is 5 seats of Pro+ bundled ($99 x 5 = $495), plus a $4/mo admin/SSO/integration layer = $499/mo total. You get admin console for user management, audit log for compliance, and Slack/Teams integration. Additional seats beyond 5 are $80/mo each. Same NOWPayments crypto flow as Pro and Pro+.',
+  },
+  {
+    q: 'Do you offer Enterprise plans with custom features?',
+    a: 'Yes. Enterprise starts at $1,000/mo for 10+ seats and includes on-prem deployment option, custom SSO (Okta, Auth0, SAML), 99.9% SLA with 1h response, custom integration, and dedicated support. Email <a href="mailto:pulse-team@ownlocalml.com">pulse-team@ownlocalml.com</a> for a 30-min discovery call.',
+  },
+  {
+    q: 'How do I pay $99+/mo with crypto?',
+    a: 'NOWPayments handles any amount, including custom Enterprise contracts. At checkout, you pick the cryptocurrency (Monero, Bitcoin, USDT-TRC20, 200+ others) and the subscription tier. For Business or Enterprise on custom terms, we send a NOWPayments invoice link and the wire happens directly to our wallet. No bank, no card, no chargeback risk.',
   },
 ];
 
-// FAQPage JSON-LD for the structured-data block.
+// JSON-LD Offer schema (4 entries; Enterprise excluded — custom-priced, sales-led).
+const offerJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Pulse',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Windows, Android',
+  offers: [
+    {
+      '@type': 'Offer',
+      name: 'Free',
+      price: '0',
+      priceCurrency: 'USD',
+      description: 'Free with 100,000 GPT-4o mini tokens per month, 200 premium chat messages, unlimited local Ollama. No card, no account.',
+    },
+    {
+      '@type': 'Offer',
+      name: 'Pro',
+      price: '20',
+      priceCurrency: 'USD',
+      description: 'Pro tier with unlimited premium models, 5 million token soft cap per month, $0.04 per 1,000 tokens overage. $20/month or $192/year.',
+    },
+    {
+      '@type': 'Offer',
+      name: 'Pro+',
+      price: '99',
+      priceCurrency: 'USD',
+      description: 'Pro+ tier for power users: 50 million tokens per month, Sonnet 4.5 included, unlimited multi-device sync, priority support. $99/month or $948/year.',
+    },
+    {
+      '@type': 'Offer',
+      name: 'Business',
+      price: '499',
+      priceCurrency: 'USD',
+      description: 'Business tier: 5 Pro+ seats pooled, 250 million tokens, admin console, audit log, Slack/Teams integration. $499/month or $4,788/year.',
+    },
+  ],
+};
+
+// FAQPage JSON-LD from the same source of truth as the visible list.
 const faqJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -179,31 +293,38 @@ const faqJsonLd = {
       <div class="container pr-hero__grid">
         <div class="pr-hero__copy reveal">
           <span class="eyebrow">Pricing</span>
-          <h1 class="pr-hero__title">Start free with GPT-4o mini. Upgrade to Pro for unlimited everything.</h1>
+          <h1 class="pr-hero__title">From $0 to $1,000+/mo. Pick the rung that matches your value.</h1>
           <p class="pr-hero__sub">
-            Free gives the full Pulse side panel with 100,000 GPT-4o mini tokens a month and unlimited local Ollama routing — no card, no account, no expiry. Pro unlocks every cloud model, unlimited tokens, cloud Whisper voice input, and priority support.
+            Free gives the full Pulse side panel with 100,000 GPT-4o mini tokens a month, 200 premium chat messages, and unlimited local Ollama routing — no card, no account, no expiry. Pro unlocks every cloud model with a 5M token soft cap. Pro+ is for power users billing by the hour. Business is for small teams. Enterprise is sales-led.
           </p>
           <p class="pr-hero__trust">
             Anonymous team · Local-first · No telemetry · 14-day Pro trial for new signups
           </p>
           <div class="pr-hero__ctas">
             <a class="btn btn--primary btn--lg" href="#tiers">See the plans ↓</a>
-            <a class="btn btn--ghost btn--lg" href="/faq/">Read the FAQ →</a>
+            <a class="btn btn--ghost btn--lg" href="/blog/monero-manifesto">Why crypto-only →</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ─── Tier cards ───────────────────────────────── -->
+    <!-- ─── Visual ladder ABOVE the 5 cards ──────────── -->
+    <section class="pr-ladder pr-ladder--top">
+      <div class="container">
+        <div class="pr-ladder__inner reveal">
+          <p class="pr-ladder__lede">
+            <span class="pr-ladder__hl">From $0 to $1,000+/mo.</span> Pick the rung that matches your value. Each tier is priced as a fraction of the time it saves — not as a feature bundle.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Tier cards (5) ───────────────────────────── -->
     <section class="pr-tiers" id="tiers">
       <div class="container">
-        <header class="pr-tiers__head reveal">
-          <span class="eyebrow">Plans</span>
-          <h2>Two plans. One codebase. No upsells.</h2>
-        </header>
         <ul class="pr-tiers__grid" role="list">
           {tiers.map((t) => (
-            <li class={`pr-tier reveal ${t.primary ? 'pr-tier--featured' : ''}`}>
+            <li class={`pr-tier reveal ${t.primary ? 'pr-tier--featured' : ''}`} id={t.id}>
               {t.badge && <span class="pr-tier__badge">{t.badge}</span>}
               <header class="pr-tier__head">
                 <h3 class="pr-tier__name">{t.name}</h3>
@@ -213,14 +334,20 @@ const faqJsonLd = {
                 <span class="pr-tier__amount">{t.price}</span>
                 <span class="pr-tier__period">{t.period}</span>
               </div>
-              <p class="pr-tier__desc">{t.description}</p>
+              <p class="pr-tier__desc">{t.desc}</p>
               <a
                 class={`btn ${t.primary ? 'btn--primary' : 'btn--ghost'} pr-tier__cta`}
                 href={t.href}
-                rel={t.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                rel={t.href.startsWith('http') || t.href.startsWith('mailto:') ? 'noopener noreferrer' : undefined}
               >
                 {t.cta} →
               </a>
+              {t.valueBanner && (
+                <div class="pr-tier__value" role="note" aria-label="Customer value math">
+                  <p class="pr-tier__value-headline">{t.valueBanner.headline}</p>
+                  <p class="pr-tier__value-math">{t.valueBanner.math}</p>
+                </div>
+              )}
               <ul class="pr-tier__list" role="list">
                 {t.features.map((f) => (
                   <li>
@@ -239,90 +366,52 @@ const faqJsonLd = {
       </div>
     </section>
 
-    <!-- ─── Comparison table ─────────────────────────── -->
+    <!-- ─── Visual ladder BELOW the 5 cards ──────────── -->
+    <section class="pr-ladder pr-ladder--bottom">
+      <div class="container">
+        <div class="pr-ladder__inner reveal">
+          <p class="pr-ladder__lede">
+            <span class="pr-ladder__hl">Each tier is priced as a fraction of the time you save.</span> Math: 10 hours/week at $30/hr = $300/mo value. Pro+ is $99 = 33% of value captured.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Comparison table (5 columns) ────────────── -->
     <section class="pr-compare" id="compare">
       <div class="container">
         <header class="pr-compare__head reveal">
           <span class="eyebrow">Feature comparison</span>
-          <h2>Free vs Pro, line by line.</h2>
+          <h2>All five tiers, line by line.</h2>
         </header>
 
-        <!-- Desktop / tablet (>=768px) — table -->
-        <div class="pr-compare__table-wrap reveal" role="region" aria-label="Free vs Pro feature comparison">
+        <div class="pr-compare__table-wrap reveal" role="region" aria-label="Pulse Free vs Pro vs Pro+ vs Business vs Enterprise feature comparison">
           <table class="pr-compare__table">
-            <caption class="visually-hidden">Pulse Free vs Pro feature comparison</caption>
+            <caption class="visually-hidden">Pulse Free, Pro, Pro+, Business, and Enterprise feature comparison</caption>
             <thead>
               <tr>
                 <th scope="col">Feature</th>
                 <th scope="col" class="col-free">Free</th>
                 <th scope="col" class="col-pro">Pro</th>
+                <th scope="col" class="col-proplus">Pro+</th>
+                <th scope="col" class="col-business">Business</th>
+                <th scope="col" class="col-enterprise">Enterprise</th>
               </tr>
             </thead>
             <tbody>
               {comparisonRows.map((r) => (
                 <tr>
                   <th scope="row">{r.label}</th>
-                  <td class={r.free === 'yes' ? 'mark mark--yes' : r.free === 'no' ? 'mark mark--no' : ''}>
-                    {r.free === 'yes' ? (
-                      <span class="pr-compare__mark" data-val="yes" aria-hidden="true"><span class="visually-hidden">Included</span></span>
-                    ) : r.free === 'no' ? (
-                      <span class="pr-compare__mark" data-val="no" aria-hidden="true"><span class="visually-hidden">Not included</span></span>
-                    ) : r.free}
-                  </td>
-                  <td class={r.pro === 'yes' ? 'col-pro mark mark--yes' : r.pro === 'no' ? 'col-pro mark mark--no' : 'col-pro'}>
-                    {r.pro === 'yes' ? (
-                      <span class="pr-compare__mark" data-val="yes" aria-hidden="true"><span class="visually-hidden">Included</span></span>
-                    ) : r.pro === 'no' ? (
-                      <span class="pr-compare__mark" data-val="no" aria-hidden="true"><span class="visually-hidden">Not included</span></span>
-                    ) : r.pro}
-                  </td>
+                  <td class="col-free">{r.vals.free}</td>
+                  <td class="col-pro">{r.vals['pro']}</td>
+                  <td class="col-proplus">{r.vals['pro-plus']}</td>
+                  <td class="col-business">{r.vals.business}</td>
+                  <td class="col-enterprise">{r.vals.enterprise}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
-        <!-- Mobile (<768px) — stacked cards -->
-        <div class="pr-compare__cards">
-          {['free', 'pro'].map((which) => (
-            <article class={`pr-compare__card reveal ${which === 'pro' ? 'is-highlight' : ''}`}>
-              <header class="pr-compare__card-head">
-                <h3 class="pr-compare__card-name">{which === 'free' ? 'Free' : 'Pro'}</h3>
-                <p class="pr-compare__card-tagline">{which === 'free' ? '$0, 100K GPT-4o mini tokens / mo' : 'From $20/mo or $192/yr, unlimited'}</p>
-              </header>
-              <dl class="pr-compare__card-list">
-                {comparisonRows.map((r) => {
-                  const v = which === 'free' ? r.free : r.pro;
-                  const text = v === 'yes' ? 'Included' : v === 'no' ? 'Not included' : v;
-                  return (
-                    <>
-                      <dt>{r.label}</dt>
-                      <dd class={v === 'yes' ? 'mark mark--yes' : v === 'no' ? 'mark mark--no' : ''}>{text}</dd>
-                    </>
-                  );
-                })}
-              </dl>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- ─── Trust signals ────────────────────────────── -->
-    <section class="pr-trust" id="trust">
-      <div class="container">
-        <header class="pr-trust__head reveal">
-          <span class="eyebrow">How Pulse is built</span>
-          <h2>The fine print, in plain language.</h2>
-        </header>
-        <ul class="pr-trust__grid" role="list">
-          {trustSignals.map((s) => (
-            <li class="pr-trust__item reveal">
-              <h3 class="pr-trust__title">{s.title}</h3>
-              <p class="pr-trust__body">{s.body}</p>
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
 
@@ -331,7 +420,7 @@ const faqJsonLd = {
       <div class="container">
         <header class="pr-faq__head reveal">
           <span class="eyebrow">FAQ</span>
-          <h2>Common questions.</h2>
+          <h2>14 common questions.</h2>
         </header>
         <div class="pr-faq__list">
           {faqs.map((f, i) => (
@@ -352,10 +441,10 @@ const faqJsonLd = {
     <!-- ─── Final CTA ────────────────────────────────── -->
     <section class="pr-cta">
       <div class="container pr-cta__inner reveal">
-        <h2>Start free. Upgrade only if you actually need more than 100K tokens a month.</h2>
+        <h2>Start free. Upgrade only if you bill by the hour.</h2>
         <div class="pr-cta__row">
           <a class="btn btn--primary btn--lg" href="/download/">Start free ↓</a>
-          <a class="btn btn--ghost btn--lg" href="/faq/">Read the FAQ →</a>
+          <a class="btn btn--ghost btn--lg" href="/blog/monero-manifesto">Why crypto-only →</a>
         </div>
       </div>
     </section>
@@ -364,24 +453,20 @@ const faqJsonLd = {
   <Footer license="" version="" />
 </Base>
 
+<!-- Offer schema (4 entries; Enterprise excluded as custom-priced). -->
+<script type="application/ld+json" set:html={JSON.stringify(offerJsonLd)} is:inline />
+
+<!-- FAQPage structured data. -->
 <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} is:inline />
 
 <style>
   /* ─── Hero ──────────────────────────────────────── */
   .pr-hero {
     padding-top: clamp(112px, 14vw, 160px);
-    padding-bottom: clamp(56px, 8vw, 96px);
+    padding-bottom: clamp(40px, 6vw, 72px);
     overflow: hidden;
   }
-  .pr-hero__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(40px, 5vw, 64px);
-    align-items: center;
-  }
-  @media (min-width: 900px) {
-    .pr-hero__grid { grid-template-columns: minmax(0, 1fr); }
-  }
+  .pr-hero__grid { display: grid; grid-template-columns: 1fr; gap: clamp(40px, 5vw, 64px); align-items: center; }
   .pr-hero__copy { display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; max-width: 64ch; }
   .pr-hero__title {
     font-size: var(--fs-1);
@@ -390,28 +475,25 @@ const faqJsonLd = {
     color: var(--fg);
     letter-spacing: -0.02em;
   }
-  .pr-hero__sub {
-    color: var(--fg-dim);
-    font-size: var(--fs-body);
-    line-height: 1.65;
-  }
+  .pr-hero__sub { color: var(--fg-dim); font-size: var(--fs-body); line-height: 1.65; }
   .pr-hero__trust {
     color: var(--muted);
     font-size: 0.92rem;
     font-family: ui-monospace, "JetBrains Mono", monospace;
     letter-spacing: 0.02em;
   }
-  .pr-hero__ctas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-top: 0.5rem;
-  }
+  .pr-hero__ctas { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
+
+  /* ─── Visual ladder (above + below) ─────────────── */
+  .pr-ladder { padding-block: clamp(28px, 4vw, 40px); }
+  .pr-ladder--top { background: var(--bg-soft); border-bottom: 1px solid var(--border); }
+  .pr-ladder--bottom { background: var(--bg-soft); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .pr-ladder__inner { text-align: center; max-width: 760px; margin: 0 auto; }
+  .pr-ladder__lede { color: var(--fg-dim); font-size: 1.05rem; line-height: 1.6; margin: 0; }
+  .pr-ladder__hl { color: var(--fg); font-weight: 600; }
 
   /* ─── Tier cards ────────────────────────────────── */
   .pr-tiers { padding-block: clamp(48px, 7vw, 96px); }
-  .pr-tiers__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
-  .pr-tiers__head h2 { font-size: var(--fs-2); }
 
   .pr-tiers__grid {
     list-style: none;
@@ -419,11 +501,17 @@ const faqJsonLd = {
     grid-template-columns: 1fr;
     gap: 1.25rem;
     align-items: stretch;
-    max-width: 920px;
+    max-width: 1180px;
     margin: 0 auto;
   }
   @media (min-width: 720px) {
     .pr-tiers__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1080px) {
+    .pr-tiers__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (min-width: 1320px) {
+    .pr-tiers__grid { grid-template-columns: repeat(5, 1fr); }
   }
 
   .pr-tier {
@@ -431,10 +519,10 @@ const faqJsonLd = {
     background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.85rem 1.75rem 2rem;
+    padding: 1.85rem 1.65rem 2rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.9rem;
     transition: border-color var(--dur) var(--ease),
                 transform var(--dur) var(--ease),
                 box-shadow var(--dur) var(--ease);
@@ -479,7 +567,7 @@ const faqJsonLd = {
   }
   .pr-tier__name { font-size: 1.25rem; font-weight: 700; color: var(--fg); margin: 0; }
   .pr-tier__tag {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: var(--purple);
@@ -491,34 +579,44 @@ const faqJsonLd = {
     align-items: baseline;
     gap: 0.5rem;
     border-bottom: 1px solid var(--border);
-    padding-bottom: 1rem;
+    padding-bottom: 0.9rem;
+    flex-wrap: wrap;
   }
   .pr-tier__amount {
-    font-size: 2.4rem;
+    font-size: 2.2rem;
     font-weight: 800;
     line-height: 1;
     color: var(--fg);
     letter-spacing: -0.02em;
   }
-  .pr-tier__period {
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
+  .pr-tier__period { color: var(--muted); font-size: 0.85rem; }
 
-  .pr-tier__desc {
-    color: var(--fg-dim);
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin: 0;
-    min-height: 3em;
-  }
+  .pr-tier__desc { color: var(--fg-dim); font-size: 0.92rem; line-height: 1.5; margin: 0; }
 
-  .pr-tier__cta {
-    align-self: flex-start;
-    margin-top: 0.25rem;
-  }
+  .pr-tier__cta { align-self: flex-start; margin-top: 0.2rem; }
   @media (max-width: 767px) {
     .pr-tier__cta { align-self: stretch; width: 100%; min-height: 52px; }
+  }
+
+  .pr-tier__value {
+    background: linear-gradient(180deg, rgba(187,154,247,0.08) 0%, rgba(187,154,247,0.02) 100%);
+    border: 1px solid rgba(187,154,247,0.25);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+    margin-top: 0.4rem;
+  }
+  .pr-tier__value-headline {
+    color: var(--fg);
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.35;
+    margin: 0 0 0.4rem;
+  }
+  .pr-tier__value-math {
+    color: var(--fg-dim);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0;
   }
 
   .pr-tier__list {
@@ -527,14 +625,14 @@ const faqJsonLd = {
     margin: 0.5rem 0 0;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.55rem;
   }
   .pr-tier__list li {
     display: flex;
     align-items: flex-start;
     gap: 0.6rem;
     color: var(--fg-dim);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     line-height: 1.45;
   }
   .pr-tier__check { color: var(--green); flex-shrink: 0; display: inline-flex; margin-top: 0.1em; }
@@ -553,19 +651,21 @@ const faqJsonLd = {
   .pr-compare__table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.95rem;
+    font-size: 0.88rem;
+    min-width: 920px;
   }
   .pr-compare__table th,
   .pr-compare__table td {
-    padding: 0.85rem 1rem;
-    text-align: center;
+    padding: 0.75rem 0.85rem;
+    text-align: left;
     border-bottom: 1px solid var(--border);
+    vertical-align: top;
   }
   .pr-compare__table th[scope="row"] {
-    text-align: left;
     color: var(--fg);
     font-weight: 500;
     background: var(--bg-soft);
+    min-width: 180px;
   }
   .pr-compare__table thead th {
     color: var(--muted);
@@ -575,71 +675,22 @@ const faqJsonLd = {
     font-weight: 600;
     background: var(--bg-soft);
     border-bottom: 1px solid var(--border);
+    text-align: center;
   }
-  .pr-compare__table .col-free { color: var(--cyan); }
-  .pr-compare__table .col-pro { color: var(--purple); }
+  .pr-compare__table thead th:first-child { text-align: left; }
+  .pr-compare__table .col-free      { color: var(--cyan); }
+  .pr-compare__table .col-pro       { color: var(--blue); }
+  .pr-compare__table .col-proplus   { color: var(--purple); }
+  .pr-compare__table .col-business  { color: var(--orange); }
+  .pr-compare__table .col-enterprise{ color: var(--magenta); }
   .pr-compare__table tbody tr:last-child th,
   .pr-compare__table tbody tr:last-child td { border-bottom: none; }
-  .pr-compare__mark { display: inline-block; width: 1.1rem; height: 1.1rem; border-radius: 50%; }
-  .pr-compare__mark[data-val="yes"] { background: var(--green); }
-  .pr-compare__mark[data-val="no"] { background: var(--comment); opacity: 0.4; }
-  .mark--yes { color: var(--green); }
-  .mark--no { color: var(--comment); }
-
-  /* Mobile stacked cards (hidden on desktop) */
-  .pr-compare__cards { display: none; }
-  @media (max-width: 767px) {
-    .pr-compare__table-wrap { display: none; }
-    .pr-compare__cards { display: flex; flex-direction: column; gap: 1rem; }
-    .pr-compare__card {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem;
-      background: var(--surface);
-    }
-    .pr-compare__card.is-highlight { border-color: var(--purple); }
-    .pr-compare__card-name { font-size: 1.1rem; font-weight: 700; margin: 0; }
-    .pr-compare__card-tagline { color: var(--fg-dim); font-size: 0.85rem; margin: 0.25rem 0 0.85rem; }
-    .pr-compare__card-list {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0.4rem 0.75rem;
-      margin: 0;
-    }
-    .pr-compare__card-list dt { color: var(--fg-dim); font-size: 0.88rem; }
-    .pr-compare__card-list dd { margin: 0; color: var(--fg); font-size: 0.88rem; text-align: right; }
-  }
-
-  /* ─── Trust signals ─────────────────────────────── */
-  .pr-trust { padding-block: clamp(48px, 7vw, 96px); }
-  .pr-trust__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
-  .pr-trust__head h2 { font-size: var(--fs-2); }
-  .pr-trust__grid {
-    list-style: none;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
-  @media (min-width: 720px) {
-    .pr-trust__grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (min-width: 1100px) {
-    .pr-trust__grid { grid-template-columns: repeat(4, 1fr); }
-  }
-  .pr-trust__item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.4rem 1.3rem;
-  }
-  .pr-trust__title { font-size: 1rem; font-weight: 700; color: var(--fg); margin: 0 0 0.5rem; }
-  .pr-trust__body { color: var(--fg-dim); font-size: 0.92rem; line-height: 1.5; margin: 0; }
 
   /* ─── FAQ ───────────────────────────────────────── */
-  .pr-faq { padding-block: clamp(48px, 7vw, 96px); background: var(--bg-soft); }
+  .pr-faq { padding-block: clamp(48px, 7vw, 96px); }
   .pr-faq__head { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
   .pr-faq__head h2 { font-size: var(--fs-2); }
-  .pr-faq__list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.6rem; }
+  .pr-faq__list { max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.6rem; }
   .faq__item {
     background: var(--surface);
     border: 1px solid var(--border);

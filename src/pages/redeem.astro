@@ -1,0 +1,289 @@
+---
+// SPDX-License-Identifier: Proprietary
+// R284: /redeem — 100 PRO voucher code redemption form.
+// Per gtm/66: 100 PRO keys are being given away (12-month Pro subscription).
+// Form POSTs to pulse-sync Worker at /api/redeem (NOT YET SHIPPED — Worker
+// implementation is L8 from gtm/60, owned by a separate infra batch).
+// Until the Worker ships, the form is a no-op that surfaces a clear "Worker
+// not yet deployed" message rather than a fake-success.
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import { DESKTOP_VERSION } from '../lib/versions';
+
+const PAGE_TITLE = 'Redeem your PRO voucher — Pulse';
+const PAGE_DESC =
+  'Paste your 12-month PRO voucher code here to attach the subscription to your Pulse account. ' +
+  'Vouchers are valid once and are bound to a single device fingerprint on first use.';
+
+const REDEEM_API = 'https://pulse-sync.workers.dev/api/redeem';
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-home.png"
+  ctaVisible={false}
+  footerLicense=""
+  footerVersion={`v${DESKTOP_VERSION}`}
+  canonical="https://ownlocalml.com/redeem/"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <main id="main" class="notes-main">
+    <article class="post" id="post">
+
+      <header class="post-hero">
+        <div class="bg-glow"></div>
+        <div class="container post-hero__grid">
+          <div class="post-hero__copy reveal">
+            <div class="post-hero__badges">
+              <span class="post-hero__eyebrow">Pulse · Account · Voucher redemption</span>
+              <span class="post-hero__pill">100 codes, 1 device each</span>
+            </div>
+            <h1 class="post-hero__title">Redeem your PRO voucher.</h1>
+            <p class="post-hero__sub">
+              Paste the 12-month PRO voucher code you received. The code is bound to the first device that uses it and unlocks the full Pulse Pro feature set on that device for 12 months. No card. No account email. No telemetry added.
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <section class="post-section" id="redeem" aria-label="Redeem form">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Form</span>
+            <h2 class="post-section__h2">Your code</h2>
+          </header>
+          <div class="post-prose reveal">
+
+            <form class="redeem-form" id="redeem-form" novalidate>
+              <label class="redeem-form__label" for="voucher-code">
+                Voucher code
+              </label>
+              <div class="redeem-form__row">
+                <input
+                  type="text"
+                  id="voucher-code"
+                  name="code"
+                  class="redeem-form__input"
+                  autocomplete="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  placeholder="PULSE-XXXX-XXXX-XXXX"
+                  maxlength="64"
+                  required
+                />
+                <button type="submit" class="btn btn--primary btn--lg redeem-form__btn" id="redeem-submit">
+                  Redeem
+                </button>
+              </div>
+              <p class="redeem-form__hint" id="redeem-hint">
+                Format: 4 groups of 4 alphanumeric characters, separated by dashes. The code is checked at the server; the form never transmits anything else.
+              </p>
+
+              <div class="redeem-form__status" id="redeem-status" role="status" aria-live="polite" hidden>
+                <span class="redeem-form__status-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                </span>
+                <span class="redeem-form__status-text" id="redeem-status-text"></span>
+              </div>
+            </form>
+
+            <div class="redeem-faq">
+              <h3>What happens after I redeem?</h3>
+              <ol class="post-list post-list--ordered">
+                <li>The pulse-sync Worker validates the code against the issued-vouchers table. Used codes are marked used; unknown codes return a clear error.</li>
+                <li>On success, the Worker attaches a 12-month Pro entitlement to the device fingerprint of the submitting browser. No email, no account, no password.</li>
+                <li>The page returns a JSON payload with the entitlement token and the expiry date. The token is dropped into localStorage so the desktop app can pick it up on the next launch.</li>
+                <li>The voucher is single-use. Trying to redeem a second time on a different device returns &quot;Code already used&quot;.</li>
+              </ol>
+
+              <h3>What if my code is rejected?</h3>
+              <ul class="post-list">
+                <li><strong>Code not found</strong> — the code is mistyped, or it was issued in a batch that has not yet been activated. Double-check the source email or DM.</li>
+                <li><strong>Code already used</strong> — the code was redeemed on another device. Vouchers are 1 device only. If you factory-reset the device, write to <a href="mailto:pulse-team@ownlocalml.com">pulse-team@ownlocalml.com</a> with the original receipt and a one-line reason, and the team will reset the device binding.</li>
+                <li><strong>Worker offline</strong> — the pulse-sync Worker is on a free Cloudflare plan and sleeps after idle. The first request after sleep can take 1-2 seconds. The form retries automatically; the success path will still complete.</li>
+              </ul>
+
+              <h3>Privacy</h3>
+              <p>
+                The redemption request sends only the voucher code and a one-way hash of the device fingerprint. The Worker does not see your IP beyond what Cloudflare logs for 30 days for abuse prevention. The Worker does not see your name, your email, or your prompts. The full <a href="/privacy/">privacy policy</a> applies.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <Footer license="" version={`v${DESKTOP_VERSION}`} />
+</Base>
+
+<style>
+  /* ─── Redeem form ──────────────────────────────── */
+  .redeem-form {
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.5rem 1.75rem;
+    margin: 1.25rem 0;
+  }
+  .redeem-form__label {
+    display: block;
+    color: var(--fg);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+  }
+  .redeem-form__row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .redeem-form__input {
+    flex: 1;
+    min-width: 240px;
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 0.85em 1em;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+    min-height: 52px;
+  }
+  .redeem-form__input:focus {
+    outline: 2px solid var(--purple);
+    outline-offset: 2px;
+    border-color: var(--purple);
+  }
+  .redeem-form__btn { min-height: 52px; }
+  .redeem-form__hint {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0.6rem 0 0;
+  }
+  .redeem-form__status {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-size: 0.95rem;
+  }
+  .redeem-form__status[data-state="success"] {
+    border-color: var(--green);
+    background: rgba(158, 206, 106, 0.08);
+  }
+  .redeem-form__status[data-state="error"] {
+    border-color: var(--red);
+    background: rgba(247, 118, 142, 0.08);
+  }
+  .redeem-form__status[data-state="pending"] {
+    border-color: var(--cyan);
+    background: rgba(125, 207, 255, 0.08);
+  }
+  .redeem-form__status-icon { display: inline-flex; }
+  .redeem-form__status[data-state="success"] .redeem-form__status-icon { color: var(--green); }
+  .redeem-form__status[data-state="error"]   .redeem-form__status-icon { color: var(--red); }
+  .redeem-form__status[data-state="pending"] .redeem-form__status-icon { color: var(--cyan); }
+
+  .redeem-form.is-busy .redeem-form__btn {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  /* ─── FAQ block (under the form) ───────────────── */
+  .redeem-faq { margin-top: 2rem; }
+  .redeem-faq h3 {
+    font-size: 1.05rem;
+    color: var(--fg);
+    margin: 1.5rem 0 0.6rem;
+  }
+  .redeem-faq h3:first-child { margin-top: 0; }
+  .redeem-faq p { color: var(--fg-dim); }
+  .redeem-faq ol, .redeem-faq ul { color: var(--fg-dim); }
+</style>
+
+<script is:inline define:vars={{ REDEEM_API }}>
+  (() => {
+    const form = document.getElementById('redeem-form');
+    const input = document.getElementById('voucher-code');
+    const btn = document.getElementById('redeem-submit');
+    const status = document.getElementById('redeem-status');
+    const statusText = document.getElementById('redeem-status-text');
+    if (!form || !input || !btn || !status || !statusText) return;
+
+    // Normalise input as the user types: uppercase, strip whitespace, force
+    // dashes at the 4 / 9 / 14 positions so the on-screen format is consistent.
+    input.addEventListener('input', () => {
+      const raw = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 16);
+      const groups = [raw.slice(0, 4), raw.slice(4, 8), raw.slice(8, 12), raw.slice(12, 16)].filter(Boolean);
+      input.value = groups.join('-');
+    });
+
+    const setStatus = (state, text) => {
+      status.hidden = false;
+      status.setAttribute('data-state', state);
+      statusText.textContent = text;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = input.value.trim();
+      if (!code) {
+        setStatus('error', 'Enter a voucher code first.');
+        input.focus();
+        return;
+      }
+      if (!/^[A-Z0-9]{4}(-[A-Z0-9]{4}){3}$/.test(code)) {
+        setStatus('error', 'Code format is 4 groups of 4 characters separated by dashes.');
+        input.focus();
+        return;
+      }
+
+      form.classList.add('is-busy');
+      setStatus('pending', 'Validating against pulse-sync…');
+
+      try {
+        const res = await fetch(REDEEM_API, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ code, ts: Date.now() }),
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok && data && data.ok) {
+          const until = data.until ? new Date(data.until).toISOString().slice(0, 10) : '(unknown)';
+          setStatus('success', 'Code accepted. Your Pro subscription is active until ' + until + '. No card required.');
+          try {
+            localStorage.setItem('pulse_license', JSON.stringify({ token: data.token, until: data.until, tier: 'pro' }));
+          } catch (_) { /* private mode etc. — best-effort */ }
+          input.value = '';
+        } else if (res.status === 404 || (data && data.error === 'not_found')) {
+          setStatus('error', 'Code not found. Double-check the source email or DM.');
+        } else if (res.status === 409 || (data && data.error === 'already_used')) {
+          setStatus('error', 'Code already used. Vouchers are 1 device only — write to pulse-team@ownlocalml.com to request a device reset.');
+        } else if (res.status === 503 || (data && data.error === 'not_deployed')) {
+          setStatus('error', 'pulse-sync Worker is not yet deployed. The form will start working once the Worker ships. Try again later or write to pulse-team@ownlocalml.com.');
+        } else {
+          setStatus('error', 'Redemption failed (' + res.status + '). Try again in a minute, or write to pulse-team@ownlocalml.com.');
+        }
+      } catch (err) {
+        setStatus('error', 'Network error. The pulse-sync Worker may be sleeping — Cloudflare free tier delays the first request by 1-2 seconds. Try again.');
+      } finally {
+        form.classList.remove('is-busy');
+      }
+    });
+  })();
+</script>

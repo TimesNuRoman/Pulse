@@ -1,8 +1,8 @@
 ---
-// R141e: paid model — Trial (14 days) + PRO Monthly + PRO Annual.
-// Roman's pricing decision: $20/mo, $192/yr (20% off monthly), no lifetime, no Free tier.
-// Trial features: single-model chat, local notes, code-aware chat, web search (50/day).
-// PRO features: multi-model hot-swap, cloud STT, sync, priority updates, email support.
+// R284: deprecated component — superseded by /pricing/ page (src/pages/pricing.astro).
+// Kept for any legacy /legacy/ URLs that may still reference it. P0 fix: dead
+// polar.sh checkout URLs replaced with /pricing/#pro in-page anchor. All Polar
+// references removed; the canonical checkout is NOWPayments (crypto-only).
 const tiers = [
   {
     name: 'Trial',
@@ -27,7 +27,7 @@ const tiers = [
     price: '$20',
     sub: 'per month',
     cta: 'Start Monthly',
-    href: 'https://buy.polar.sh/pulse-monthly',
+    href: '/pricing/#pro',
     primary: false,
     features: [
       'Everything in Trial',
@@ -45,7 +45,7 @@ const tiers = [
     price: '$192',
     sub: 'per year · save $48/yr',
     cta: 'Start Annual',
-    href: 'https://buy.polar.sh/pulse-annual',
+    href: '/pricing/#pro',
     primary: true,
     badge: 'Most popular',
     features: [

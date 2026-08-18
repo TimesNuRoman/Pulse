@@ -1,0 +1,272 @@
+---
+// SPDX-License-Identifier: Proprietary
+// R284: /talks/tauriconf-2026 — slide preview for the TauriConf 2026 talk submission.
+// Source: gtm/70-TAURICONF-TALK-SUBMISSION-2026-08-18.md. Anonymous "Pulse team".
+// Talk title: "Building a local-first AI side panel in Tauri 2: 12 MB, 0 telemetry, and 0 Electron"
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import { DESKTOP_VERSION } from '../../lib/versions';
+import '../../styles/notes.css';
+
+const PAGE_TITLE = 'TauriConf 2026 — Building a local-first AI side panel in Tauri 2';
+const PAGE_DESC =
+  'A 25-minute talk proposal for TauriConf 2026. Pulse is a 12 MB Windows side panel for AI chat, runs on Tauri 2 (Rust core + WebView frontend), ' +
+  'talks to local Ollama out of the box, ships an MCP host mode, and accepts Monero. The full slide outline, abstract, and bio are on this page.';
+
+const TALK_TITLE = 'Building a local-first AI side panel in Tauri 2: 12 MB, 0 telemetry, and 0 Electron';
+const TALK_LENGTH = '25 minutes + 5 min Q&A';
+const AUDIENCE = 'Tauri / Rust developers, indie hackers, local-AI builders';
+const BIO = 'The Pulse team is a 1-person local-first AI company based in Belarus. Pulse ships a 12 MB Windows side panel, accepts Monero, and has zero telemetry. The team has been shipping Rust + Tauri since 2024 and writes about local-first architecture at ownlocalml.com/blog.';
+
+const SLIDES = [
+  { n: 1,  title: 'Title slide',                              duration: '30s',  body: 'TauriConf 2026. Building a local-first AI side panel in Tauri 2. 12 MB, 0 telemetry, 0 Electron. Pulse team.' },
+  { n: 2,  title: 'The 200 MB Electron problem',              duration: '90s',  body: 'Side-by-side installer sizes: ChatGPT desktop 247 MB, Claude desktop 412 MB, Pulse 12 MB. The size is the whole UX story.' },
+  { n: 3,  title: 'Tauri 2 architecture diagram',             duration: '90s',  body: 'Rust core, WebView frontend, IPC channels over the Wry host, no Node.js. What Tauri 2 is, and why it matters for local-AI tools specifically.' },
+  { n: 4,  title: 'The 8-month build timeline',               duration: '90s',  body: 'Electron prototype (month 1) → Tauri 1.0 (month 3) → Tauri 2.0 (month 5) → cloud-first v1 killed in month 5 → local-first v2 launched in month 8. What worked, what got killed, and what the 4-month opportunity cost bought us.' },
+  { n: 5,  title: 'llama.cpp FFI integration',                duration: '3m',   body: 'Streaming inference back through Tauri IPC. 0.3-0.8s first-token latency on a 7B Qwen2.5-Coder on an M2 Air. Why we chose llama.cpp over Candle (5 lines vs 200) and over Ollama as a dependency (we ship the binary, the user does not install it).' },
+  { n: 6,  title: 'MCP host mode (v0.7 feature)',             duration: '3m',   body: 'Pulse as the first local-first MCP host. How the user configures servers, what the prompt routing looks like, why MCP is the API layer we waited for, and the demo screenshot of Claude + filesystem + Pulse in the same panel.' },
+  { n: 7,  title: 'The Monero-only payment',                  duration: '3m',   body: 'Why we accept Monero but not Visa. The Belarus fiat blockage that became a brand asset. NOWPayments integration, 0% setup fee, $0.50 minimum, BTC / USDT-TRC20 / XMR / 200+ others. The math: 1 chargeback on Stripe wipes 70 free users for a month.' },
+  { n: 8,  title: 'The "would do differently" section',      duration: '3m',   body: '3 killed prototypes. The Electron prototype we killed in month 1. The cloud-first v1 we killed in month 5. The 2-month Tauri 1.0 detour before switching to 2.0. The 4-month opportunity cost, and why it was worth it.' },
+  { n: 9,  title: 'D30 numbers (if available)',               duration: '2m',   body: 'MRR, conversion, signups, channel mix, the actual 25-day post-launch shape of the business. (Will be replaced with real numbers on Aug 31, 2026. If D30 numbers are not yet public, this slide is the published "by Sep 17" D30 checkpoint.)' },
+  { n: 10, title: 'Q&A',                                      duration: '5m',   body: 'Open mic. Bring hard questions about WebView2 quirks, MCP, NOWPayments, llama.cpp FFI in Rust, and 1-person local-first product economics.' },
+];
+
+const blogPostingJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: TALK_TITLE,
+  description: PAGE_DESC,
+  datePublished: '2026-08-30',
+  dateModified: '2026-08-30',
+  author: { '@type': 'Organization', name: 'Pulse' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Pulse',
+    logo: { '@type': 'ImageObject', url: 'https://ownlocalml.com/favicon.svg' },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': 'https://ownlocalml.com/talks/tauriconf-2026/',
+  },
+  image: 'https://ownlocalml.com/og-home.png',
+  url: 'https://ownlocalml.com/talks/tauriconf-2026/',
+  wordCount: 600,
+};
+---
+
+<Base
+  title={PAGE_TITLE}
+  description={PAGE_DESC}
+  ogImage="/og-home.png"
+  ctaVisible={true}
+  ctaText="Send talk feedback →"
+  ctaHref="mailto:pulse-team@ownlocalml.com?subject=TauriConf%202026%20talk%20feedback"
+  footerLicense=""
+  footerVersion={`v${DESKTOP_VERSION}`}
+  canonical="https://ownlocalml.com/talks/tauriconf-2026/"
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <main id="main" class="notes-main">
+    <article class="post" id="post">
+
+      <header class="post-hero">
+        <div class="bg-glow"></div>
+        <div class="container post-hero__grid">
+          <div class="post-hero__copy reveal">
+            <div class="post-hero__badges">
+              <span class="post-hero__eyebrow">Pulse · Talks · TauriConf 2026</span>
+              <span class="post-hero__pill">Submission preview</span>
+            </div>
+            <h1 class="post-hero__title">{TALK_TITLE}</h1>
+            <p class="post-hero__sub">
+              A 25-minute talk for TauriConf 2026 (CFP opens Aug 25 2026, event Dec 2026). The slide outline, the abstract, the bio, and the &quot;would do differently&quot; honesty section are below. Send feedback to <a href="mailto:pulse-team@ownlocalml.com">pulse-team@ownlocalml.com</a> before Sep 1 2026.
+            </p>
+            <p class="post-hero__meta">
+              <span>CFP opens Aug 25, 2026</span>
+              <span aria-hidden="true">·</span>
+              <span>Decision Sep 15, 2026</span>
+              <span aria-hidden="true">·</span>
+              <a href="#outline">Skip to slides</a>
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <section class="post-section" id="abstract" aria-label="Abstract">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Abstract</span>
+            <h2 class="post-section__h2">What the talk is about</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              Pulse is a 12 MB Windows side panel for AI chat. It runs on Tauri 2 (Rust core + WebView frontend), talks to local Ollama out of the box, and ships an MCP host mode so any model on the user&apos;s machine can be a tool. The full installer is 12 MB, the app starts in 200ms, and there are zero network requests on idle. We will not raise money. We will not show ads. We will not phone home.
+            </p>
+            <p>
+              This talk is a postmortem of building Pulse in 8 months as a 1-person team in Belarus, the architectural decisions, the parts that worked, and the parts we would do differently.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="post-section" id="details" aria-label="Talk details">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Details</span>
+            <h2 class="post-section__h2">Talk details</h2>
+          </header>
+          <div class="post-prose reveal">
+            <dl class="post-dl">
+              <dt>Title</dt>
+              <dd>{TALK_TITLE}</dd>
+              <dt>Length</dt>
+              <dd>{TALK_LENGTH}</dd>
+              <dt>Audience</dt>
+              <dd>{AUDIENCE}</dd>
+              <dt>Bio</dt>
+              <dd>{BIO}</dd>
+              <dt>CFP window</dt>
+              <dd>Opens Aug 25, 2026 · Closes Oct 15, 2026 · Decision Sep 15, 2026</dd>
+              <dt>Event</dt>
+              <dd>Dec 2026 (TBD)</dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="post-section" id="outline" aria-label="Slide outline">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Slides</span>
+            <h2 class="post-section__h2">Slide outline (10 slides · 25 min)</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              The deck is structured for 1 slide per 90 seconds on average, with three 3-minute deep-dive sections (llama.cpp FFI, MCP host mode, Monero payment). The final slide is open Q&amp;A. Every slide is content-dense; the slides themselves are the speaker notes.
+            </p>
+
+            <ol class="post-slide-list">
+              {SLIDES.map((s) => (
+                <li class="post-slide">
+                  <div class="post-slide__num">{s.n}</div>
+                  <div class="post-slide__body">
+                    <h3 class="post-slide__title">{s.title}</h3>
+                    <p class="post-slide__duration">{s.duration}</p>
+                    <p class="post-slide__copy">{s.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="post-section" id="feedback" aria-label="Submit feedback">
+        <div class="container post-section__inner">
+          <header class="post-section__head reveal">
+            <span class="post-section__num">Feedback</span>
+            <h2 class="post-section__h2">Submit feedback before Sep 1, 2026</h2>
+          </header>
+          <div class="post-prose reveal">
+            <p>
+              The CFP submission is locked Aug 30 and goes in Sep 1, 2026. If you have feedback on the title, the abstract, or the slide outline — write to <a href="mailto:pulse-team@ownlocalml.com?subject=TauriConf%202026%20talk%20feedback">pulse-team@ownlocalml.com</a> before the window closes. Honest negative feedback is more useful than polite positive feedback. The team is a single person and reads every email.
+            </p>
+            <p>
+              If the talk is accepted, the rehearsal video goes on YouTube within 24 hours of the December 2026 event. If it is rejected, the slides and the rehearsal video are still published on this page (the &quot;talk that did not get accepted&quot; angle) and the talk is submitted to Local First Conf 2027 (CFP opens Dec 2026) and AI Engineer Summit 2027 (CFP opens fall 2026).
+            </p>
+            <div class="post-cta-row">
+              <a class="btn btn--primary btn--lg" href="mailto:pulse-team@ownlocalml.com?subject=TauriConf%202026%20talk%20feedback">
+                Send feedback
+              </a>
+              <a class="btn btn--ghost btn--lg" href="/blog/">
+                Read other posts
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <Footer license="" version={`v${DESKTOP_VERSION}`} />
+</Base>
+
+<script type="application/ld+json" set:html={JSON.stringify(blogPostingJsonLd)} is:inline />
+
+<style>
+  /* ─── Talk details (definition list) ────────────── */
+  .post-dl {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem 1rem;
+    margin: 1rem 0;
+  }
+  @media (min-width: 720px) {
+    .post-dl { grid-template-columns: 160px 1fr; }
+  }
+  .post-dl dt {
+    color: var(--muted);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  .post-dl dd {
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ─── Slide list ─────────────────────────────────── */
+  .post-slide-list {
+    list-style: none;
+    margin: 1rem 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .post-slide {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+  }
+  .post-slide__num {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--purple);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .post-slide__title {
+    font-size: 1.05rem;
+    color: var(--fg);
+    margin: 0 0 0.25rem;
+    font-weight: 600;
+  }
+  .post-slide__duration {
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    color: var(--muted);
+    font-size: 0.78rem;
+    margin: 0 0 0.4rem;
+  }
+  .post-slide__copy {
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .post-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+  }
+</style>
